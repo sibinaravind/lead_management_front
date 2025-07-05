@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'config/flavour_config.dart';
 import 'core/shared/app_routes.dart';
-import 'view/features/drawer/drawer_screen.dart';
 
 class MyApp extends StatelessWidget {
   final String? flavour;
