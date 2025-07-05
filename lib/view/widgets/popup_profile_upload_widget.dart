@@ -54,7 +54,7 @@ class _ProfilePhotoUploadWidgetState extends State<PopupProfileUploadWidget> {
           Center(
             child: Row(
               children: [
-                const Icon(Icons.photo_camera_rounded,
+                 Icon(Icons.photo_camera_rounded,
                     size: 18, color: AppColors.violetPrimaryColor),
                 const SizedBox(width: 8),
                 CustomText(
@@ -119,7 +119,7 @@ class _ProfilePhotoUploadWidgetState extends State<PopupProfileUploadWidget> {
                   label: const CustomText(text: 'Upload', fontSize: 12),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    side: const BorderSide(color: AppColors.violetPrimaryColor),
+                    side:  BorderSide(color: AppColors.violetPrimaryColor),
                     foregroundColor: AppColors.violetPrimaryColor,
                   ),
                 ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ResponsiveFormRow extends StatelessWidget {
   final List<Widget> fields;
@@ -13,7 +12,7 @@ class ResponsiveFormRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = Get.width < breakpoint;
+    final isSmallScreen = MediaQuery.of(context).size.width < 1000;
 
     if (isSmallScreen) {
       return Column(
