@@ -7,7 +7,7 @@ class ConfigModel {
   String? country;
   String? province;
   Status? status;
-  String colour;
+  String? colour;
 
   ConfigModel({
     this.id,
@@ -16,7 +16,7 @@ class ConfigModel {
     this.country,
     this.province,
     this.status,
-    required this.colour,
+    this.colour,
   });
 
   factory ConfigModel.fromMap(Map<String, dynamic> json) => ConfigModel(

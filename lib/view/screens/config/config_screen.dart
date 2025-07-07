@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/config/config_provider.dart';
+import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/core/shared/enums.dart';
 import 'package:overseas_front_end/view/screens/config/widget/action_button.dart';
 import 'package:overseas_front_end/view/screens/config/widget/add_item_dialog.dart';
-import 'package:overseas_front_end/view/screens/config/widget/delete_dialogue.dart';
 import 'package:overseas_front_end/view/screens/config/widget/permission_item.dart';
-import 'package:overseas_front_end/view/screens/config/widget/show_dialogue_widget.dart';
-import 'package:overseas_front_end/view/widgets/widgets.dart';
+import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/app_configs/config_model.dart';
@@ -20,127 +19,129 @@ class ConfigScreen extends StatefulWidget {
 
 class _SystemConfigState extends State<ConfigScreen> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Provider.of<ConfigProvider>(context, listen: false).getConfigData();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Consumer<ConfigProvider>(
-        builder: (context, value, child) => Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.backgroundGraident,
-          ),
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: value.configModelList!.getTotalKeysCount(),
-            itemBuilder: (context, index) {
-              String category =
-                  value.configModelList!.getAllKeys().elementAt(index);
-              List<ConfigModel> items =
-                  value.configModelList!.toJson()[category]!;
+        builder: (context, configProvider, child) {
+          final configList = configProvider.configModelList;
+          final keys = configList?.getAllKeys().toList() ?? [];
 
-              return Card(
-                borderOnForeground: false,
-                margin: const EdgeInsets.only(bottom: 20.0),
-                elevation: 8,
-                shadowColor: AppColors.primaryColor.withOpacity(0.1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: AppColors.backgroundGraident,
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: keys.length,
+              itemBuilder: (context, index) {
+                final category = keys[index];
+                final items = configList?.getItems(category) ?? [];
+
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 20.0),
+                  elevation: 8,
+                  shadowColor: AppColors.primaryColor.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.whiteMainColor,
-                        AppColors.whiteMainColor.withOpacity(0.9),
-                      ],
-                    ),
                   ),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      tilePadding: const EdgeInsets.all(8),
-                      childrenPadding: const EdgeInsets.all(8),
-                      collapsedBackgroundColor: Colors.transparent,
-                      backgroundColor: Colors.transparent,
-                      title: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              gradient: _getCategoryGradient(category),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      _getCategoryColor(index).withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              _getCategoryIcon(category),
-                              color: AppColors.whiteMainColor,
-                              size: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  category,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryColor,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.whiteMainColor,
+                          AppColors.whiteMainColor.withOpacity(0.9),
+                        ],
+                      ),
+                    ),
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        tilePadding: const EdgeInsets.all(8),
+                        childrenPadding: const EdgeInsets.all(8),
+                        collapsedBackgroundColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                        title: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: _getCategoryGradient(category),
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: _getCategoryColor(index)
+                                        .withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${items.length} items • ${items.where((item) => item.status == 'active').length} active',
-                                  style: const TextStyle(
+                                ],
+                              ),
+                              child: Icon(
+                                _getCategoryIcon(category),
+                                color: AppColors.whiteMainColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    category.replaceAll('_', ' ').toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  CustomText(
+                                    text:
+                                        '${items.length} items • ${items.where((e) => e?.status == Status.ACTIVE).length} active',
                                     color: AppColors.textGrayColour,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          ActionButton(
-                            icon: Icons.add,
-                            gradient: AppColors.buttonGraidentColour,
-                            onTap: () => AddItemDialog(
+                            ActionButton(
+                              icon: Icons.add,
+                              gradient: AppColors.buttonGraidentColour,
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AddItemDialog(
+                                    category: category,
+                                    item: ConfigModel(),
+                                  ),
+                                );
+                              },
+                              tooltip: 'Add New Item',
+                            ),
+                          ],
+                        ),
+                        children: [
+                          ...items.map((item) {
+                            return PermissionItem(
                               category: category,
-                              item: items.elementAt(index),
-                            ),
-                            tooltip: 'Add New Item',
-                          ),
+                              item: item ?? ConfigModel(),
+                            );
+                          }),
                         ],
                       ),
-                      children: [
-                        ...items.map((item) {
-                          return PermissionItem(category: category, item: item);
-                        }).toList(),
-                      ],
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

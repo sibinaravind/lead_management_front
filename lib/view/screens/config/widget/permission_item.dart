@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/view/screens/config/widget/delete_dialogue.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../res/style/colors/colors.dart';
 import 'action_button.dart';
@@ -123,16 +121,16 @@ class PermissionItem extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ActionButton(
-                  icon: isActive ? Icons.toggle_on : Icons.toggle_off,
-                  gradient: isActive
-                      ? AppColors.greenGradient
-                      : AppColors.redGradient,
-                  onTap: () =>
-                      Provider.of<ConfigProvider>(context, listen: false)
-                          .toggleStatus(category, item),
-                  tooltip: isActive ? 'Deactivate' : 'Activate',
-                ),
+                // ActionButton(
+                //   icon: isActive ? Icons.toggle_on : Icons.toggle_off,
+                //   gradient: isActive
+                //       ? AppColors.greenGradient
+                //       : AppColors.redGradient,
+                //   onTap: () =>
+                //       Provider.of<ConfigProvider>(context, listen: false)
+                //           .toggleStatus(category, item),
+                //   tooltip: isActive ? 'Deactivate' : 'Activate',
+                // ),
                 SizedBox(width: 8),
                 ActionButton(
                   icon: Icons.edit_rounded,

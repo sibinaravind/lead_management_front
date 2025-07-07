@@ -29,8 +29,6 @@ class FlavourConfig {
         return 'partner1';
       case Partner.partner2:
         return '';
-      default:
-        return '';
     }
   }
 
@@ -42,8 +40,6 @@ class FlavourConfig {
         return 'assets/images/app_logo.png';
       case Partner.partner2:
         return 'assets/images/app_logo.png';
-      default:
-        return '';
     }
   }
 }

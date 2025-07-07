@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/campaign_provider.dart';
-import 'package:overseas_front_end/controller/config/config_provider.dart';
+import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';

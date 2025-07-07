@@ -10,8 +10,6 @@ class Constant {
         return '';
       case Partner.partner2:
         return "";
-      default:
-        return ".";
     }
   }
 
