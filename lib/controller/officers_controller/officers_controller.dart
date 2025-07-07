@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/core/shared/contants.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
 
 import '../../core/services/api_service.dart';
+import '../../core/shared/constants.dart';
 
 class OfficersControllerProvider with ChangeNotifier {
   OfficersControllerProvider._privateConstructor();

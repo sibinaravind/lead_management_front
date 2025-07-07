@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/core/shared/contants.dart';
 
 import '../../core/services/api_service.dart';
+import '../../core/shared/constants.dart';
 import '../../model/access_permissions/access_permissions.dart';
 
 class AccessPermissionProvider with ChangeNotifier {

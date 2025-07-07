@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/network_client.dart';
 import '../services/user_cache_service.dart';
-import '../shared/contants.dart';
+import '../shared/constants.dart';
 
 final serviceLocator = GetIt.instance;
 

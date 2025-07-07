@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:overseas_front_end/core/shared/contants.dart';
+import 'package:overseas_front_end/core/shared/constants.dart';
 
 import '../di/service_locator.dart';
 
@@ -69,7 +69,7 @@ class ApiService {
 
   Future<dynamic> delete(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.delete(endpoint, data: data);
+      final response = await _dio.delete(endpoint);
       return response.data;
     } on DioException catch (e) {
       _handleError(e);

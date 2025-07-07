@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
-import 'package:overseas_front_end/controller/campaign_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/employee/employee_permission_screen.dart';
+import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (context) => AccessPermissionProvider()),
         ChangeNotifierProvider(
-            create: (context) => OfficersControllerProvider())
+            create: (context) => OfficersControllerProvider()),
       ],
       child: MaterialApp(
         title: ' ${FlavourConfig.partnerName()} ',
