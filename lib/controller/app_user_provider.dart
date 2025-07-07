@@ -4,6 +4,11 @@ import '../model/app_configs/config_model.dart';
 import '../model/officer/user_model.dart';
 
 class AppUserProvider extends ChangeNotifier {
+  AppUserProvider._privateConstructor();
+  static final _instance = AppUserProvider._privateConstructor();
+  factory AppUserProvider() {
+    return _instance;
+  }
   int? selectedIndex = 0;
   UserModel? userModel;
   ConfigModel? configModel;

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/view/widgets/custom_text.dart';
 
-class CampaignSccreen extends StatefulWidget {
-  CampaignSccreen({super.key});
+class CampaignScreen extends StatefulWidget {
+  CampaignScreen({super.key});
 
   @override
-  State<CampaignSccreen> createState() => _CampaignSccreenState();
+  State<CampaignScreen> createState() => _CampaignScreenState();
 }
 
-class _CampaignSccreenState extends State<CampaignSccreen> {
+class _CampaignScreenState extends State<CampaignScreen> {
   final TextEditingController _controller = TextEditingController();
 
-  bool _isLoading = false;
+  // bool _isLoading = false;
 
-  String? _responseMessage;
+  // String? _responseMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +55,8 @@ class _CampaignSccreenState extends State<CampaignSccreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Campaign Management Dashboard",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        const CustomText(
+                          text: "Campaign Management Dashboard",
                         ),
                         const SizedBox(height: 4),
                         // Text(
@@ -106,26 +102,16 @@ class _CampaignSccreenState extends State<CampaignSccreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                campaign["campaignText"],
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              CustomText(
+                                text: campaign["campaignText"],
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                "Status: ${campaign["status"]}",
-                                style: TextStyle(
-                                  color: campaign["status"] == "active"
-                                      ? Colors.green
-                                      : Colors.red,
-                                ),
+                              CustomText(
+                                text: "Status: ${campaign["status"]}",
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                "Start Date: ${campaign["startDate"]}",
-                                style: const TextStyle(color: Colors.grey),
+                              CustomText(
+                                text: "Start Date: ${campaign["startDate"]}",
                               ),
                               const SizedBox(height: 8),
                               Row(
@@ -137,12 +123,13 @@ class _CampaignSccreenState extends State<CampaignSccreen> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
-                                            content: Text(
-                                                "Edit ${campaign["campaignText"]}")),
+                                            content: CustomText(
+                                                text:
+                                                    "Edit ${campaign["campaignText"]}")),
                                       );
                                     },
                                     icon: const Icon(Icons.edit, size: 18),
-                                    label: const Text("Edit"),
+                                    label: const CustomText(text: "Edit"),
                                   ),
                                   const SizedBox(width: 8),
                                   TextButton.icon(
@@ -151,12 +138,13 @@ class _CampaignSccreenState extends State<CampaignSccreen> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
-                                            content: Text(
-                                                "Delete ${campaign["campaignText"]}")),
+                                            content: CustomText(
+                                                text:
+                                                    "Delete ${campaign["campaignText"]}")),
                                       );
                                     },
                                     icon: const Icon(Icons.delete, size: 18),
-                                    label: const Text("Delete"),
+                                    label: const CustomText(text: "Delete"),
                                   ),
                                 ],
                               )

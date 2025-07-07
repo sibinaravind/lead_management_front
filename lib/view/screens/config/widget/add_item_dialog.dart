@@ -1,31 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/view/widgets/widgets.dart';
+import 'package:overseas_front_end/model/app_configs/config_model.dart';
 
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_action_button.dart';
+import '../../../widgets/custom_snackbar.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_form_field.dart';
 
-void configEditDialog(
-    BuildContext context, String category, Map<String, dynamic> item
-    // Map<String, dynamic> client
-    ) {
-  // _vacancyController.clear();
-  // _commissionController.clear();
-  TextEditingController nameController =
-      TextEditingController(text: item['name']);
-  TextEditingController codeController =
-      TextEditingController(text: item['code'] ?? '');
-  TextEditingController countryController =
-      TextEditingController(text: item['country'] ?? '');
-  TextEditingController provinceController =
-      TextEditingController(text: item['province'] ?? '');
-  TextEditingController rangeController =
-      TextEditingController(text: item['range'] ?? '');
+class AddItemDialog extends StatelessWidget {
+  AddItemDialog({super.key, required this.category, required this.item});
+  final String category;
+  final ConfigModel item;
 
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController provinceController = TextEditingController();
+  final TextEditingController rangeController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         width: 450,
@@ -43,7 +38,7 @@ void configEditDialog(
               Row(
                 children: [
                   CustomText(
-                    text: "Edit ${category}",
+                    text: "Add ${category}",
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryColor,
                     fontSize: 18,
@@ -58,9 +53,9 @@ void configEditDialog(
                 controller: nameController,
                 label: 'Name',
                 isRequired: true,
-                keyboardType: TextInputType.number,
+                // keyboardType: TextInputType.number,
               ),
-              if (item.containsKey('code')) ...[
+              if (item.hasField('code')) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: codeController,
@@ -69,31 +64,31 @@ void configEditDialog(
                   keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.containsKey('country')) ...[
+              if (item.hasField('country')) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: countryController,
                   label: 'Country',
                   isRequired: true,
-                  keyboardType: TextInputType.number,
+                  // keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.containsKey('province')) ...[
+              if (item.hasField('province')) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: provinceController,
                   label: 'Province',
                   isRequired: true,
-                  keyboardType: TextInputType.number,
+                  // keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.containsKey('range')) ...[
+              if (item.hasField('range')) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: rangeController,
                   label: 'Range',
                   isRequired: true,
-                  keyboardType: TextInputType.number,
+                  // keyboardType: TextInputType.number,
                 ),
               ],
               SizedBox(height: 16),
@@ -114,27 +109,27 @@ void configEditDialog(
                   const SizedBox(width: 16),
                   Expanded(
                     child: CustomActionButton(
-                      text: 'Edit $category',
+                      text: 'Add $category',
                       icon: Icons.check,
                       onPressed: () {
                         ///-- setstate
-                        item['name'] = nameController.text;
-                        if (item.containsKey('code')) {
-                          item['code'] = codeController.text;
+                        item.name = nameController.text;
+                        if (item.hasField('code')) {
+                          item.code = codeController.text;
                         }
-                        if (item.containsKey('country')) {
-                          item['country'] = countryController.text;
+                        if (item.hasField('country')) {
+                          item.country = countryController.text;
                         }
-                        if (item.containsKey('province')) {
-                          item['province'] = provinceController.text;
+                        if (item.hasField('province')) {
+                          item.province = provinceController.text;
                         }
-                        if (item.containsKey('range')) {
-                          item['range'] = rangeController.text;
-                        }
+                        // if (item.hasField('range')) {
+                        //   item['range'] = rangeController.text;
+                        // }
 
                         Navigator.of(context).pop();
                         CustomSnackBar.show(
-                            context, '${item['name']} updated successfully');
+                            context, '${item.name} updated successfully');
                       },
                       isFilled: true,
                       gradient: AppColors.orangeGradient,
@@ -146,6 +141,6 @@ void configEditDialog(
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

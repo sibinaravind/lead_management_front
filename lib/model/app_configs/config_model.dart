@@ -1,6 +1,7 @@
 import '../../core/shared/enums.dart';
 
 class ConfigModel {
+  String? id;
   String? name;
   String? code;
   String? country;
@@ -9,6 +10,7 @@ class ConfigModel {
   String colour;
 
   ConfigModel({
+    this.id,
     this.name,
     this.code,
     this.country,
@@ -18,6 +20,7 @@ class ConfigModel {
   });
 
   factory ConfigModel.fromMap(Map<String, dynamic> json) => ConfigModel(
+        id: json["_id"],
         name: json["name"],
         code: json["code"],
         country: json["country"],
@@ -28,6 +31,7 @@ class ConfigModel {
       );
 
   Map<String, dynamic> toMap() => {
+        "id": id,
         "name": name,
         "code": code,
         "country": country,
@@ -35,4 +39,33 @@ class ConfigModel {
         "status": statusValues.reverse[status],
         "colour": colour,
       };
+
+  bool hasField(String fieldName) {
+    return _getFieldValue(fieldName) != null;
+  }
+
+  dynamic getFieldValue(String fieldName) {
+    return _getFieldValue(fieldName);
+  }
+
+  dynamic _getFieldValue(String fieldName) {
+    switch (fieldName) {
+      case 'id':
+        return id;
+      case 'name':
+        return name;
+      case 'code':
+        return code;
+      case 'country':
+        return country;
+      case 'province':
+        return province;
+      case 'status':
+        return status;
+      case 'colour':
+        return colour;
+      default:
+        return null;
+    }
+  }
 }
