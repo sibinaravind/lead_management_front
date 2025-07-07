@@ -8,6 +8,7 @@ import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../dashboard/dashbaord_screen.dart';
 import '../employee/employee_permission_screen.dart';
+import '../officers/employee_data_display.dart';
 import 'custom_drawer.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -95,29 +96,63 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final isDesktop = MediaQuery.of(context).size.width > 1000;
-          // return Container();
-          return isDesktop
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Consumer<AppUserProvider>(
-                        builder: (context, value, child) =>
-                            CustomDrawer(user: value.userModel ?? UserModel())),
-                    Consumer<AppUserProvider>(
-                      builder: (context, value, child) => Expanded(
-                        child: value.selectedIndex == 36
-                            ? ConfigScreen()
-                            : value.selectedIndex == 37
-                                ? AccessPermissionScreen()
-                                : DashboardScreen(),
-                      ),
-                    ),
-                  ],
-                )
-              : Container();
-        },
-      ),
+      final isDesktop = MediaQuery.of(context).size.width > 1000;
+      // return Container();
+      return isDesktop
+          ? Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Consumer<AppUserProvider>(
+              builder: (context, value, child) =>
+                  CustomDrawer(user: value.userModel ?? UserModel())),
+          Consumer<AppUserProvider>(builder: (context, value, child) {
+            switch (value.selectedIndex) {
+              case 23:
+                return Expanded(child: EmployeeDataDisplay());
+              case 37:
+                return Expanded(child: AccessPermissionScreen());
+
+            // case 37:
+            // return Expanded(child: CampaignScreen());
+              case 36:
+                return Expanded(child: ConfigScreen());
+              default:
+                return Expanded(
+                  child: DashboardScreen(),
+                );
+            }
+          }),
+        ],
+      )
+          : Container();
+    },
+    ),
+
+    // body: LayoutBuilder(
+    //     builder: (context, constraints) {
+    //       final isDesktop = MediaQuery.of(context).size.width > 1000;
+    //       // return Container();
+    //       return isDesktop
+    //           ? Row(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 Consumer<AppUserProvider>(
+    //                     builder: (context, value, child) =>
+    //                         CustomDrawer(user: value.userModel ?? UserModel())),
+    //                 Consumer<AppUserProvider>(
+    //                   builder: (context, value, child) => Expanded(
+    //                     child: value.selectedIndex == 36
+    //                         ? ConfigScreen()
+    //                         : value.selectedIndex == 37
+    //                             ? AccessPermissionScreen()
+    //                             : DashboardScreen(),
+    //                   ),
+    //                 ),
+    //               ],
+    //             )
+    //           : Container();
+    //     },
+    //   ),
     );
   }
 
