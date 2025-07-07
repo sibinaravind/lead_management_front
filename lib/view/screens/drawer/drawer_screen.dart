@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/view/screens/configuration/config_screen.dart';
+import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
@@ -106,12 +107,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             CustomDrawer(user: value.userModel ?? UserModel())),
                     Consumer<AppUserProvider>(
                       builder: (context, value, child) => Expanded(
-
-                        child: value.selectedIndex == 36
-                            ? ConfigScreen()
-                            : value.selectedIndex == 37
-                                ? AccessPermissionScreen()
-                                : DashboardScreen(),
+                        child: value.selectedIndex == 37
+                            ? CampaignSccreen()
+                            : DashboardScreen(),
                       ),
                     ),
                   ],

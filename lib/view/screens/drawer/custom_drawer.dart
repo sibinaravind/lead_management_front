@@ -231,10 +231,19 @@ class _CustomDrawerState extends State<CustomDrawer>
     ),
     DrawerSection(
       title: 'Config',
-      icon: Icons.message_rounded,
+      icon: Icons.settings,
       color: AppColors.greenSecondaryColor,
       items: [
-        DrawerItem(label: 'Config', index: 36, icon: Icons.send_rounded),
+        DrawerItem(label: 'Config', index: 36, icon: Icons.settings),
+      ],
+    ),
+
+    DrawerSection(
+      title: 'Campaign',
+      icon: Icons.campaign,
+      color: AppColors.greenSecondaryColor,
+      items: [
+        DrawerItem(label: 'Campaign', index: 37, icon: Icons.campaign),
       ],
     ),
     // DrawerSection(
