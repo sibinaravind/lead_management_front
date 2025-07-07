@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
-import 'package:overseas_front_end/controller/campaign_provider.dart';
+import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ConfigProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CampaignProvider(),
         ),
       ],
       child: MaterialApp(
