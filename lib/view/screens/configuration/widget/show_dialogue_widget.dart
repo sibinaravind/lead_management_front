@@ -1,7 +1,5 @@
-
-
-
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_action_button.dart';
@@ -9,22 +7,21 @@ import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_form_field.dart';
 
 void configEditDialog(
-    BuildContext context,
-    String category, Map<String, dynamic> item
+    BuildContext context, String category, Map<String, dynamic> item
     // Map<String, dynamic> client
     ) {
   // _vacancyController.clear();
   // _commissionController.clear();
   TextEditingController nameController =
-  TextEditingController(text: item['name']);
+      TextEditingController(text: item['name']);
   TextEditingController codeController =
-  TextEditingController(text: item['code'] ?? '');
+      TextEditingController(text: item['code'] ?? '');
   TextEditingController countryController =
-  TextEditingController(text: item['country'] ?? '');
+      TextEditingController(text: item['country'] ?? '');
   TextEditingController provinceController =
-  TextEditingController(text: item['province'] ?? '');
+      TextEditingController(text: item['province'] ?? '');
   TextEditingController rangeController =
-  TextEditingController(text: item['range'] ?? '');
+      TextEditingController(text: item['range'] ?? '');
 
   showDialog(
     context: context,
@@ -52,7 +49,6 @@ void configEditDialog(
                     fontSize: 18,
                   ),
                   const SizedBox(width: 16),
-
                 ],
               ),
               const SizedBox(height: 24),
@@ -84,24 +80,21 @@ void configEditDialog(
               ],
               if (item.containsKey('province')) ...[
                 SizedBox(height: 16),
-
-              CustomTextFormField(
+                CustomTextFormField(
                   controller: provinceController,
                   label: 'Province',
                   isRequired: true,
                   keyboardType: TextInputType.number,
                 ),
-
               ],
               if (item.containsKey('range')) ...[
                 SizedBox(height: 16),
-                 CustomTextFormField(
+                CustomTextFormField(
                   controller: rangeController,
                   label: 'Range',
                   isRequired: true,
                   keyboardType: TextInputType.number,
                 ),
-
               ],
               SizedBox(height: 16),
 
@@ -124,27 +117,24 @@ void configEditDialog(
                       text: 'Edit $category',
                       icon: Icons.check,
                       onPressed: () {
-                      ///-- setstate
-                          item['name'] = nameController.text;
-                          if (item.containsKey('code'))
-                            item['code'] = codeController.text;
-                          if (item.containsKey('country'))
-                            item['country'] = countryController.text;
-                          if (item.containsKey('province'))
-                            item['province'] = provinceController.text;
-                          if (item.containsKey('range'))
-                            item['range'] = rangeController.text;
+                        ///-- setstate
+                        item['name'] = nameController.text;
+                        if (item.containsKey('code')) {
+                          item['code'] = codeController.text;
+                        }
+                        if (item.containsKey('country')) {
+                          item['country'] = countryController.text;
+                        }
+                        if (item.containsKey('province')) {
+                          item['province'] = provinceController.text;
+                        }
+                        if (item.containsKey('range')) {
+                          item['range'] = rangeController.text;
+                        }
 
                         Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${item['name']} updated successfully'),
-                            backgroundColor: AppColors.greenSecondaryColor,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                        );
+                        CustomSnackBar.show(
+                            context, '${item['name']} updated successfully');
                       },
                       isFilled: true,
                       gradient: AppColors.orangeGradient,

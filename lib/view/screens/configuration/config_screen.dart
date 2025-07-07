@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/configuration/widget/show_dialogue_widget.dart';
-import 'package:overseas_front_end/view/widgets/custom_button.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 import '../../../res/style/colors/colors.dart';
 
@@ -12,7 +12,6 @@ class ConfigScreen extends StatefulWidget {
 }
 
 class _SystemConfigState extends State<ConfigScreen> {
-
   Map<String, List<Map<String, dynamic>>> permissionsData = {
     'Education Programs': [
       {'name': 'PG', 'status': 'active'},
@@ -189,25 +188,25 @@ class _SystemConfigState extends State<ConfigScreen> {
     bool isActive = item['status'] == 'active';
 
     return Container(
-      margin:const  EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       decoration: BoxDecoration(
         gradient: isActive
             ? LinearGradient(
-          colors: [
-            AppColors.greenSecondaryColor.withOpacity(0.1),
-            AppColors.greenSecondaryColor.withOpacity(0.05),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        )
+                colors: [
+                  AppColors.greenSecondaryColor.withOpacity(0.1),
+                  AppColors.greenSecondaryColor.withOpacity(0.05),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              )
             : LinearGradient(
-          colors: [
-            AppColors.redSecondaryColor.withOpacity(0.1),
-            AppColors.redSecondaryColor.withOpacity(0.05),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
+                colors: [
+                  AppColors.redSecondaryColor.withOpacity(0.1),
+                  AppColors.redSecondaryColor.withOpacity(0.05),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isActive
@@ -235,7 +234,7 @@ class _SystemConfigState extends State<ConfigScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient:
-                isActive ? AppColors.greenGradient : AppColors.redGradient,
+                    isActive ? AppColors.greenGradient : AppColors.redGradient,
                 boxShadow: [
                   BoxShadow(
                     color: isActive
@@ -272,7 +271,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                       padding: EdgeInsets.only(top: 6),
                       child: Container(
                         padding:
-                        EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppColors.blueNeutralColor.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(8),
@@ -306,7 +305,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                   icon: Icons.edit_rounded,
                   gradient: AppColors.buttonGraidentColour,
                   // onTap: () => _showEditDialog(category, item),
-                  onTap: () => configEditDialog(context,category,item),
+                  onTap: () => configEditDialog(context, category, item),
                   tooltip: 'Edit',
                 ),
                 SizedBox(width: 8),
@@ -361,8 +360,9 @@ class _SystemConfigState extends State<ConfigScreen> {
     List<String> parts = [];
     if (item.containsKey('code')) parts.add('Code: ${item['code']}');
     if (item.containsKey('country')) parts.add('Country: ${item['country']}');
-    if (item.containsKey('province'))
+    if (item.containsKey('province')) {
       parts.add('Province: ${item['province']}');
+    }
     if (item.containsKey('range')) parts.add('Range: ${item['range']}');
     return parts.join(' • ');
   }
@@ -470,15 +470,15 @@ class _SystemConfigState extends State<ConfigScreen> {
 
   void _showEditDialog(String category, Map<String, dynamic> item) {
     TextEditingController nameController =
-    TextEditingController(text: item['name']);
+        TextEditingController(text: item['name']);
     TextEditingController codeController =
-    TextEditingController(text: item['code'] ?? '');
+        TextEditingController(text: item['code'] ?? '');
     TextEditingController countryController =
-    TextEditingController(text: item['country'] ?? '');
+        TextEditingController(text: item['country'] ?? '');
     TextEditingController provinceController =
-    TextEditingController(text: item['province'] ?? '');
+        TextEditingController(text: item['province'] ?? '');
     TextEditingController rangeController =
-    TextEditingController(text: item['range'] ?? '');
+        TextEditingController(text: item['range'] ?? '');
 
     showDialog(
       context: context,
@@ -498,12 +498,10 @@ class _SystemConfigState extends State<ConfigScreen> {
               children: [
                 Icon(Icons.edit_rounded, color: AppColors.whiteMainColor),
                 SizedBox(width: 12),
-                Text(
-                  'Edit ${category.substring(0, category.length - 1)}',
-                  style: TextStyle(
-                    color: AppColors.whiteMainColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                CustomText(
+                  text: 'Edit ${category.substring(0, category.length - 1)}',
+                  color: AppColors.whiteMainColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ],
             ),
@@ -572,25 +570,22 @@ class _SystemConfigState extends State<ConfigScreen> {
                 onPressed: () {
                   setState(() {
                     item['name'] = nameController.text;
-                    if (item.containsKey('code'))
+                    if (item.containsKey('code')) {
                       item['code'] = codeController.text;
-                    if (item.containsKey('country'))
+                    }
+                    if (item.containsKey('country')) {
                       item['country'] = countryController.text;
-                    if (item.containsKey('province'))
+                    }
+                    if (item.containsKey('province')) {
                       item['province'] = provinceController.text;
-                    if (item.containsKey('range'))
+                    }
+                    if (item.containsKey('range')) {
                       item['range'] = rangeController.text;
+                    }
                   });
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${item['name']} updated successfully'),
-                      backgroundColor: AppColors.greenSecondaryColor,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                  );
+                  CustomSnackBar.show(
+                      context, '${item['name']} updated successfully');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -620,9 +615,10 @@ class _SystemConfigState extends State<ConfigScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete ${item['name']}'),
-          content: Text(
-              'Are you sure you want to delete this item? This action cannot be undone.'),
+          title: CustomText(text: 'Delete ${item['name']}'),
+          content: CustomText(
+              text:
+                  'Are you sure you want to delete this item? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -642,7 +638,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: Text('Delete', style: TextStyle(color: Colors.white)),
+              child: CustomText(text: 'Delete', color: Colors.white),
             ),
           ],
         );
@@ -697,7 +693,10 @@ class _SystemConfigState extends State<ConfigScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildStyledTextField(
-                      nameController, 'Name', Icons.badge_rounded, ),
+                      nameController,
+                      'Name',
+                      Icons.badge_rounded,
+                    ),
                     if (category == 'Universities') ...[
                       SizedBox(height: 16),
                       _buildStyledTextField(
@@ -723,12 +722,13 @@ class _SystemConfigState extends State<ConfigScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child:const  Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(
                   color: AppColors.textGrayColour,
@@ -766,7 +766,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
-                        Text('${nameController.text} added successfully'),
+                            Text('${nameController.text} added successfully'),
                         backgroundColor: AppColors.greenSecondaryColor,
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
@@ -926,7 +926,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                       padding:
-                      EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -952,8 +952,7 @@ class _SystemConfigState extends State<ConfigScreen> {
       TextEditingController controller, String label, IconData icon) {
     return Container(
       decoration: BoxDecoration(
-        gradient:
-        LinearGradient(
+        gradient: LinearGradient(
           colors: [
             AppColors.whiteMainColor,
             AppColors.whiteMainColor.withOpacity(0.8),
