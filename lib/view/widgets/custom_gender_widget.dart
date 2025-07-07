@@ -127,7 +127,7 @@ class CustomGenderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                   Row(
                     children: [
                       Icon(Icons.person_outline_rounded,
                           size: 18, color: AppColors.violetPrimaryColor),

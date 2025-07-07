@@ -217,6 +217,8 @@ class _CustomDrawerState extends State<CustomDrawer>
       items: [
         DrawerItem(
             label: 'Employee', index: 23, icon: Icons.person_outline_rounded),
+        DrawerItem(
+            label: 'Employee Permission', index: 37, icon: Icons.person_outline_rounded),
         // DrawerItem(
         //     label: 'Employee Role',
         //     index: 24,

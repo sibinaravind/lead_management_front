@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
+import 'package:overseas_front_end/view/screens/configuration/config_screen.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../dashboard/dashbaord_screen.dart';
+import '../employee/employee_permission_screen.dart';
 import 'custom_drawer.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -104,7 +106,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             CustomDrawer(user: value.userModel ?? UserModel())),
                     Consumer<AppUserProvider>(
                       builder: (context, value, child) => Expanded(
-                        child: DashboardScreen(),
+
+                        child: value.selectedIndex == 36
+                            ? ConfigScreen()
+                            : value.selectedIndex == 37
+                                ? AccessPermissionScreen()
+                                : DashboardScreen(),
                       ),
                     ),
                   ],

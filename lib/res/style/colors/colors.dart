@@ -53,7 +53,23 @@ class AppColors {
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
-  static const Color violetPrimaryColor = Color(0xFF6366F1);
+  static const LinearGradient pinkGradient = LinearGradient(
+    colors: [
+      Color(0xFFEC4899),
+      Color(0xFFD81B60),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  static const LinearGradient blueGradient = LinearGradient(
+    colors: [
+      Color(0xFF3B82F6),
+      Color(0xFF1E40AF),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  static Color get violetPrimaryColor => Color(0xFF6366F1);
 
   static const Color blueSecondaryColor = Color(0xFF3B82F6);
   static const Color greenSecondaryColor = Color(0xFF10B981); // Light Blue
