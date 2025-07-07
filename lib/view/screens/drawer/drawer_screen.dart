@@ -106,6 +106,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             CustomDrawer(user: value.userModel ?? UserModel())),
                     Consumer<AppUserProvider>(
                       builder: (context, value, child) => Expanded(
+
                         child: value.selectedIndex == 36
                             ? ConfigScreen()
                             : value.selectedIndex == 37
