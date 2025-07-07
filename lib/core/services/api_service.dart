@@ -1,87 +1,87 @@
 import 'package:dio/dio.dart';
+import 'package:overseas_front_end/core/shared/contants.dart';
+
+import '../di/service_locator.dart';
 
 class ApiService {
-  // Singleton pattern (optional but recommended)
   static final ApiService _instance = ApiService._internal();
-  factory ApiService() => _instance;
-  ApiService._internal();
+  static final String _baseUrl = Constant().featureBaseUrl;
 
-  late Dio _dio;
+  late final Dio _dio;
 
-  void init() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: '',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      ),
-    );
-    _dio.interceptors.add(LogInterceptor(responseBody: true));
+  factory ApiService() {
+    return _instance;
   }
 
-  Future<Response> get(String endpoint,
-      {Map<String, dynamic>? queryParams}) async {
+  ApiService._internal() {
+    BaseOptions options = BaseOptions(
+      baseUrl: _baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        // 'Authorization': 'Bearer your_token_here',
+      },
+    );
+
+    _dio = serviceLocator();
+  }
+
+  Future<dynamic> get(String endpoint) async {
     try {
-      final response = await _dio.get(endpoint, queryParameters: queryParams);
-      return response;
+      final response = await _dio.get(endpoint);
+      return response.data;
     } on DioException catch (e) {
       _handleError(e);
-      rethrow;
     }
   }
 
-  Future<Response> post(String endpoint, dynamic data) async {
+  Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      return response;
+      return response.data;
     } on DioException catch (e) {
       _handleError(e);
-      rethrow;
     }
   }
 
-  Future<Response> patch(String endpoint, dynamic data) async {
-    try {
-      final response = await _dio.patch(endpoint, data: data);
-      return response;
-    } on DioException catch (e) {
-      _handleError(e);
-      rethrow;
-    }
-  }
-
-  Future<Response> put(String endpoint, dynamic data) async {
+  Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.put(endpoint, data: data);
-      return response;
+      return response.data;
     } on DioException catch (e) {
       _handleError(e);
-      rethrow;
     }
   }
 
-  Future<Response> delete(String endpoint, data) async {
+  Future<dynamic> patch(
+    String endpoint,
+    Map<String, dynamic> data,
+  ) async {
     try {
-      final response = await _dio.delete(endpoint, data: data);
-      return response;
+      final response = await _dio.patch(endpoint, data: data);
+      return response.data;
     } on DioException catch (e) {
       _handleError(e);
-      rethrow;
+    }
+  }
+
+  Future<dynamic> delete(String endpoint, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.delete(endpoint, data: data);
+      return response.data;
+    } on DioException catch (e) {
+      _handleError(e);
     }
   }
 
   void _handleError(DioException e) {
-    // Basic error handling
-    if (e.type == DioExceptionType.connectionTimeout) {
-    } else if (e.type == DioExceptionType.receiveTimeout) {
-      print("Receive Timeout");
-    } else if (e.type == DioExceptionType.badResponse) {
-      print("Bad Response: ${e.response?.statusCode} - ${e.response?.data}");
+    if (e.response != null) {
+      throw Exception(
+          'Dio Error ${e.response?.statusCode}: ${e.response?.data}');
     } else {
-      print("Unhandled Dio error: $e");
+      throw Exception('Dio Error: ${e.message}');
     }
   }
 }

@@ -1,6 +1,12 @@
 // import 'package:get/get.dart';
 
+import 'package:flutter/cupertino.dart';
+
 class Dimension {
+  bool getHeight(context){
+    bool isMobile=false;
+    return isMobile=MediaQuery.of(context).size.width<600;
+  }
   // static double get screenHeight => Get.height;
   // static double get screenWidth => Get.width;
 

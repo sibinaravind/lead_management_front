@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
-import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../dashboard/dashbaord_screen.dart';
+import '../employee/employee_permission_screen.dart';
+import '../officers/employee_data_display.dart';
 import 'custom_drawer.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -102,34 +103,62 @@ class _DrawerScreenState extends State<DrawerScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isDesktop = MediaQuery.of(context).size.width > 1000;
-
+          // return Container();
           return isDesktop
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Consumer<AppUserProvider>(
-                        builder: (context, value, child) => CustomDrawer(
-                            ismobile: !isDesktop,
-                            user: value.userModel ?? UserModel())),
+                        builder: (context, value, child) =>
+                            CustomDrawer(user: value.userModel ?? UserModel())),
                     Consumer<AppUserProvider>(builder: (context, value, child) {
-                      Widget selectedScreen;
                       switch (value.selectedIndex) {
+                        case 23:
+                          return Expanded(child: EmployeeDataDisplay());
                         case 37:
-                          selectedScreen = CampaignScreen();
-                          break;
+                          return Expanded(child: AccessPermissionScreen());
+
+                        // case 37:
+                        // return Expanded(child: CampaignScreen());
                         case 36:
-                          selectedScreen = ConfigScreen();
-                          break;
+                          return Expanded(child: ConfigScreen());
                         default:
-                          selectedScreen = DashboardScreen();
+                          return Expanded(
+                            child: DashboardScreen(),
+                          );
                       }
-                      return Expanded(child: selectedScreen);
                     }),
                   ],
                 )
               : Container();
         },
       ),
+
+      // body: LayoutBuilder(
+      //     builder: (context, constraints) {
+      //       final isDesktop = MediaQuery.of(context).size.width > 1000;
+      //       // return Container();
+      //       return isDesktop
+      //           ? Row(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Consumer<AppUserProvider>(
+      //                     builder: (context, value, child) =>
+      //                         CustomDrawer(user: value.userModel ?? UserModel())),
+      //                 Consumer<AppUserProvider>(
+      //                   builder: (context, value, child) => Expanded(
+      //                     child: value.selectedIndex == 36
+      //                         ? ConfigScreen()
+      //                         : value.selectedIndex == 37
+      //                             ? AccessPermissionScreen()
+      //                             : DashboardScreen(),
+      //                   ),
+      //                 ),
+      //               ],
+      //             )
+      //           : Container();
+      //     },
+      //   ),
     );
   }
 }

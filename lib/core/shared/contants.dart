@@ -22,6 +22,9 @@ class Constant {
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
+
+  String accessPermissions = 'config/access_permission';
+  String accessPermissionsEdit = 'config/edit_accessList';
 }
 
 
