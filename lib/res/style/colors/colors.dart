@@ -71,6 +71,18 @@ class AppColors {
   );
   static Color get violetPrimaryColor => Color(0xFF6366F1);
 
+  static List<Color> roleColors = [
+    Color(0xFF3B82F6),
+    Color(0xFF10B981), // Light Blue
+    Color(0xFF8B5CF6),
+    Color(0xFFF59E0B),
+    Color(0xFFEF4444), // Light Blue
+    Color(0xFFEC4899),
+    Color(0xFF06B6D4),
+    Color(0xFF6366F1), // Indigo 500
+    Color(0xFFEC4899),
+    Color(0xFF06B6D4),
+  ];
   static const Color blueSecondaryColor = Color(0xFF3B82F6);
   static const Color greenSecondaryColor = Color(0xFF10B981); // Light Blue
   static const Color viloletSecondaryColor = Color(0xFF8B5CF6);

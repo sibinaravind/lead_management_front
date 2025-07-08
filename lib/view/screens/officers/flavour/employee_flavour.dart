@@ -13,8 +13,6 @@ class EmployeeFlavour {
         return partner1Fields().userTableList();
       case Partner.partner2:
         return MaximaFields().userTableList();
-      default:
-        return [];
     }
   }
 }

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/model/client/client_data_model.dart';
-import 'package:overseas_front_end/model/models.dart';
-import 'package:overseas_front_end/res/style/colors/dimension.dart';
-
+import '../../../../model/officer/officer_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../flavour/employee_flavour.dart';
 
 class EmployeeListTable extends StatelessWidget {
-  final List userList;
+  final List<OfficersModel> userList;
   const EmployeeListTable({super.key, required this.userList});
 
   @override
@@ -46,12 +43,7 @@ class EmployeeListTable extends StatelessWidget {
                 DataRow(
                   cells: columnsData.map((column) {
                     final extractor = column['extractor'] as Function;
-                    final value = (column['name'] == 'Offer' ||
-                            column['name'] == 'Offer Amount' ||
-                            column['name'] == 'Eligibility Date')
-                        ? extractor(listUser, null)
-                        : extractor(listUser);
-
+                    final value = extractor(listUser);
                     return DataCell(
                       Builder(
                         builder: (context) {
@@ -60,13 +52,15 @@ class EmployeeListTable extends StatelessWidget {
                               return Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
+
                                   ///---- status---------
                                   // color: getColorBasedOnStatus(
                                   //     Dimension.mobile ?? ''),
                                 ),
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 6),
-                                child: CustomText(text: '',
+                                child: CustomText(
+                                  text: getTextBasedOnStatus(listUser.status),
                                   // text: getTextBasedOnStatus(
                                   //     listUser.mobile ?? ''),
                                   fontWeight: FontWeight.w600,

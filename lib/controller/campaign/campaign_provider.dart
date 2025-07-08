@@ -57,7 +57,6 @@ class CampaignProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
       final response = await _api.delete("${Constant().deleteCampaign}$id", {});
       // _campaignModel = CampaignModel.fromJson(response.data);

@@ -44,7 +44,6 @@ class AccessPermissionProvider with ChangeNotifier {
   }) async {
     _isPatching = true;
     notifyListeners();
-
     try {
       final payload = {
         "category": category,

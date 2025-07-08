@@ -10,7 +10,7 @@ import '../../../model/campaign/campaign_model.dart';
 import '../../../res/style/colors/colors.dart';
 
 class CampaignScreen extends StatefulWidget {
-  CampaignScreen({super.key});
+  const CampaignScreen({super.key});
 
   @override
   State<CampaignScreen> createState() => _CampaignScreenState();
@@ -19,7 +19,6 @@ class CampaignScreen extends StatefulWidget {
 class _CampaignScreenState extends State<CampaignScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Provider.of<CampaignProvider>(context, listen: false).getCampaignList();
   }
