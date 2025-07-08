@@ -5,6 +5,7 @@ import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/employee/employee_permission_screen.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
+import 'package:overseas_front_end/view/screens/officers/employee_creation_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/not-found': (context) =>
               Center(child: Text('404 - Page not found')),
-          // '/': (context) => AccessPermissionScreen()
+          // '/': (context) => EmployeeCreationScreen()
           '/': (context) => DrawerScreen()
         },
         initialRoute: '/',

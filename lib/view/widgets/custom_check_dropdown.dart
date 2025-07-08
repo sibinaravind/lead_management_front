@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_gradient_button.dart';
 
-class CutomCheckDropdown<T> extends FormField<List<T>> {
-  CutomCheckDropdown({
+class CustomCheckDropdown<T> extends FormField<List<T>> {
+  CustomCheckDropdown({
     super.key,
     required String label,
     required List<T> items,

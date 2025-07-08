@@ -6,7 +6,7 @@ class OfficersModel {
   String phone;
   String gender;
   String companyPhoneNumber;
-  List<int> designation;
+  List<String> designation;
   List<String> department;
   List<String> branch;
   DateTime createdAt;
@@ -35,7 +35,7 @@ class OfficersModel {
         phone: json["phone"],
         gender: json["gender"],
         companyPhoneNumber: json["company_phone_number"],
-        designation: List<int>.from(json["designation"].map((x) => x)),
+        designation: List<String>.from(json["designation"].map((x) => x)),
         department: List<String>.from(json["department"].map((x) => x)),
         branch: List<String>.from(json["branch"].map((x) => x)),
         createdAt: DateTime.parse(json["created_at"]),

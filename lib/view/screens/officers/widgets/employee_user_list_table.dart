@@ -38,7 +38,7 @@ class EmployeeListTable extends StatelessWidget {
                 ),
               );
             }).toList(),
-            rows: userList.expand((listUser) {
+            rows:userList.isNotEmpty? userList.expand((listUser) {
               return [
                 DataRow(
                   cells: columnsData.map((column) {
@@ -109,7 +109,7 @@ class EmployeeListTable extends StatelessWidget {
                   }).toList(),
                 )
               ];
-            }).toList(),
+            }).toList():[],
           ),
         ),
       ),

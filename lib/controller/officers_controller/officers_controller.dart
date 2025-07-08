@@ -14,37 +14,41 @@ class OfficersControllerProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   List<OfficersModel>? _officersListData;
+  List<OfficersModel>? _filteredOfficersList;
+
   bool _isLoading = false;
   String? _error;
+  String _searchQuery = '';
 
-  List<OfficersModel>? get officersListModel => _officersListData;
+  // List<OfficersModel>? get officersListModel => _officersListData;
+  List<OfficersModel>? get officersListModel =>
+      _searchQuery.isEmpty ? _officersListData : _filteredOfficersList;
+
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  // Future fetchOfficersList()async{
-  //   _isLoading=true;
-  //   _error=null;
-  //   notifyListeners();
-  //
-  //   try{
-  //     final response=await _apiService.get(Constant().officerList);
-  //     if(response.statusCode==200){
-  //       final officersList = await OfficersList.fromJson(jsonDecode(response.body));
-  //
-  //
-  //       // _officersListData=OfficersList.fromJson(response.data);
-  //       return officersList.data;
-  //
-  //     } else{
-  //       return [];
-  //     }
-  //   }catch(e){
-  //     _error="failed to load permission $e";
-  //   }finally{
-  //     _isLoading=false;
-  //     notifyListeners();
-  //   }
-  // }
+  void setSearchQuery(String query) {
+    _searchQuery = query.trim().toLowerCase();
+
+    if (_officersListData == null) return;
+
+    _filteredOfficersList = _officersListData!.where((officer) {
+      final employeeName = officer.name.toLowerCase() ?? '';
+      final phone = officer.phone.toLowerCase() ?? '';
+      final employeePhone = officer.companyPhoneNumber.toLowerCase() ?? '';
+      return employeeName.contains(_searchQuery) ||employeePhone.contains(_searchQuery)||
+          phone.contains(_searchQuery);
+    }).toList();
+
+    _filteredOfficersList!.sort((a, b) {
+      final aId = int.tryParse(a.officerId ?? '') ?? 0;
+      final bId = int.tryParse(b.officerId ?? '') ?? 0;
+      return aId.compareTo(bId);
+    });
+
+    notifyListeners();
+  }
+
   Future<List<OfficersModel>?> fetchOfficersList() async {
     _isLoading = true;
     _error = null;
@@ -54,9 +58,16 @@ class OfficersControllerProvider with ChangeNotifier {
       dynamic json = await _apiService.get(Constant().officerList);
 
       if (json['success'] == true && json['data'] != null) {
-        final List<dynamic> dataList = json['data']; // ✅ cast to List
+        final List<dynamic> dataList = json['data'];
         _officersListData =
             dataList.map((e) => OfficersModel.fromJson(e)).toList();
+
+        _officersListData!.sort((a, b) {
+          final aId = int.tryParse(a.officerId ?? '') ?? 0;
+          final bId = int.tryParse(b.officerId ?? '') ?? 0;
+          return aId.compareTo(bId);
+        });
+
         return _officersListData;
       } else {
         _error = 'Invalid response structure';
@@ -70,4 +81,29 @@ class OfficersControllerProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> createOfficer(Map<String,dynamic> officer) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response =
+      await _apiService.post(Constant().officerInsert, officer);
+
+      if (response['success'] == true) {
+        await fetchOfficersList();
+        return true;
+      } else {
+        _error = response['message'] ?? 'Creation failed';
+        return false;
+      }
+    } catch (e) {
+      _error = 'Error creating officer: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
 }

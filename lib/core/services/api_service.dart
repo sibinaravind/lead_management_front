@@ -31,7 +31,12 @@ class ApiService {
   Future<dynamic> get(String endpoint) async {
     try {
       final response = await _dio.get(endpoint);
-      return response.data;
+      if(response.statusCode==200||response.statusCode==201){
+        return response.data;
+
+      }else{
+        _handleError(response.data['message']);
+      }
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -40,7 +45,12 @@ class ApiService {
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      return response.data;
+      if(response.statusCode==200||response.statusCode==201){
+        return response.data;
+
+      }else {
+        _handleError(response.data['message']);
+      }
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -48,8 +58,15 @@ class ApiService {
 
   Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     try {
+
       final response = await _dio.put(endpoint, data: data);
-      return response.data;
+      if(response.statusCode==200||response.statusCode==201){
+        return response.data;
+
+      }else{
+        _handleError(response.data['message']);
+
+      }
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -61,7 +78,13 @@ class ApiService {
   ) async {
     try {
       final response = await _dio.patch(endpoint, data: data);
-      return response.data;
+      if(response.statusCode==200||response.statusCode==201){
+        return response.data;
+
+      }else{
+        _handleError(response.data['message']);
+
+      }
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -70,7 +93,13 @@ class ApiService {
   Future<dynamic> delete(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.delete(endpoint);
-      return response.data;
+      if(response.statusCode==200||response.statusCode==201){
+        return response.data;
+
+      }else{
+        _handleError(response.data['message']);
+
+      }
     } on DioException catch (e) {
       _handleError(e);
     }

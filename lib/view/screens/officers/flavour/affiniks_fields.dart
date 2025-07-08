@@ -8,24 +8,34 @@ class AffiniksFields {
         'extractor': (OfficersModel user) => user.officerId.toString()
       },
       {
-        'name': 'Client Name',
+        'name': 'Officer Name',
         'extractor': (OfficersModel user) => user.name.toString()
       },
       {
-        'name': 'Phone Number',
+        'name': 'Phone',
         'extractor': (OfficersModel user) => user.phone.toString()
       },
       {
-        'name': 'Officer Phone',
+        'name': 'Company Phone',
         'extractor': (OfficersModel user) => user.companyPhoneNumber.toString()
       },
       {
         'name': 'Designation',
-        'extractor': (OfficersModel user) => user.designation.toString()
+        // 'extractor': (OfficersModel user) => user.designation.toString()
+        'extractor': (OfficersModel user) =>
+        (user.designation.isNotEmpty )
+            ? (user.designation as List).join('\n')
+            : user.designation.toString()
       },
       {
+        // 'name': 'Department',
+        // 'extractor': (OfficersModel user) => user.department.toString()
+
         'name': 'Department',
-        'extractor': (OfficersModel user) => user.department.toString()
+        'extractor': (OfficersModel user) =>
+        (user.department.isNotEmpty)
+            ? (user.department as List).join('\n')
+            : user.department.toString()
       },
     ];
   }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
+import 'employee_creation_screen.dart';
 
 class EmployeeDataDisplay extends StatefulWidget {
   const EmployeeDataDisplay({super.key});
@@ -22,8 +23,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
     });
     // Provider.of<OfficersControllerProvider>(context, listen: false).fetchOfficersList();
   }
-
-  String selectedFilter = 'all';
+  // String selectedFilter = 'all';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,6 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Enhanced Header Section
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -105,11 +104,11 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                             borderRadius: BorderRadius.circular(20),
                             onTap: () {
                               ///--------------- Employee Creation------
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) =>
-                              //       const EmployeeCreationScreen(),
-                              // );
+                              showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    const EmployeeCreationScreen(),
+                              );
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
@@ -150,7 +149,9 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: TextField(
-                            // controller: controller.searchController,
+                            onChanged: (value){
+                              context.read<OfficersControllerProvider>().setSearchQuery(value);
+                            },
                             decoration: InputDecoration(
                               hintText: "Search Employees...",
                               hintStyle: TextStyle(
@@ -164,8 +165,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                                 icon: const Icon(Icons.search,
                                     size: 20, color: Colors.grey),
                                 onPressed: () {
-                                  // print(
-                                  //     "Search query: ${_searchController.text}");
+                                context.read<OfficersControllerProvider>().setSearchQuery('');
                                 },
                               ),
                               enabledBorder: OutlineInputBorder(
@@ -194,104 +194,6 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                     // _buildFilterToggleButton(),
                   ],
                 ),
-                // _buildFilterPanel(context),
-
-                // Obx(() {
-                //   final userList = controller.userList.value;
-                //   if (userList == null || userList.data.isEmpty) {
-                //     return const SizedBox();
-                //   }
-                //   return Container(
-                //     width: double.maxFinite,
-                //     margin: const EdgeInsets.only(top: 12),
-                //     decoration: BoxDecoration(
-                //       color: Colors.white,
-                //       borderRadius: BorderRadius.circular(20),
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Colors.black.withOpacity(0.2),
-                //           blurRadius: 20,
-                //           offset: const Offset(0, 4),
-                //         ),
-                //       ],
-                //     ),
-                //     child: Column(
-                //       children: [
-                //         // Table Header
-                //         // Table Content
-                //         ClipRRect(
-                //           borderRadius: BorderRadius.circular(16),
-                //           child: EmployeeListTable(userlist: userList.data),
-                //         ),
-                //
-                //         // Footer with Pagination
-                //         Container(
-                //           padding: const EdgeInsets.all(8),
-                //           decoration: BoxDecoration(
-                //             color: const Color(0xFFF8FAFC),
-                //             borderRadius: const BorderRadius.only(
-                //               bottomLeft: Radius.circular(20),
-                //               bottomRight: Radius.circular(20),
-                //             ),
-                //             border: Border(
-                //               top: BorderSide(
-                //                 color:
-                //                     AppColors.textGrayColour.withOpacity(0.1),
-                //                 width: 1,
-                //               ),
-                //             ),
-                //           ),
-                //           child: Row(
-                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //             children: [
-                //               Row(
-                //                 children: [
-                //                   Container(
-                //                     padding: const EdgeInsets.all(12),
-                //                     decoration: BoxDecoration(
-                //                       gradient: AppColors.blackGradient,
-                //                       borderRadius: BorderRadius.circular(12),
-                //                     ),
-                //                     child: const Icon(
-                //                       Icons.analytics_outlined,
-                //                       color: Colors.white,
-                //                       size: 18,
-                //                     ),
-                //                   ),
-                //                   const SizedBox(width: 16),
-                //                   Column(
-                //                     crossAxisAlignment:
-                //                         CrossAxisAlignment.start,
-                //                     children: [
-                //                       CustomText(
-                //                         text:
-                //                             "${userList.totalItems} Employees",
-                //                         color: AppColors.primaryColor,
-                //                         fontWeight: FontWeight.w700,
-                //                         fontSize: 15,
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ],
-                //               ),
-                //               CustomPager(
-                //                 currentPage: controller.currentPage.value + 1,
-                //                 totalPages: min(userList.totalItems, 100),
-                //                 onPageSelected: (page) {
-                //                   if (controller.currentPage.value !=
-                //                       page - 1) {
-                //                     controller.currentPage.value = page - 1;
-                //                     controller.onPageSelected(page - 1);
-                //                   }
-                //                 },
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   );
-                // }),
                 Consumer<OfficersControllerProvider>(
                   builder: (context, controller, _) {
                     final userList = controller.officersListModel;
@@ -306,6 +208,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
 
                     if (userList == null || userList.isEmpty) {
                       return const Center(child: Text("No employees found."));
+
                     }
 
                     return Container(
