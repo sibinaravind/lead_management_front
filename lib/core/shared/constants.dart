@@ -25,6 +25,7 @@ class Constant {
   String camapignList = 'campaign/list';
   String deleteCampaign = 'campaign/delete/';
   String addCampaign = 'campaign/insert';
+  // String editConfig = 'config/edit_configList';
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

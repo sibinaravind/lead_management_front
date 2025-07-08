@@ -78,7 +78,7 @@ class CampaignProvider extends ChangeNotifier {
       required String image64}) async {
     _isLoading = true;
     _error = null;
-    // notifyListeners();
+    notifyListeners();
 
     try {
       final response = await _api.post(Constant().addCampaign, {

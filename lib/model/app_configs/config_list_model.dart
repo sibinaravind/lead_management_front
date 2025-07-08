@@ -7,6 +7,8 @@ class ConfigListModel {
   List<ConfigModel>? educationProgram;
   List<ConfigModel>? knownLanguages;
   List<ConfigModel>? callStatus;
+  List<ConfigModel>? university;
+
   List<ConfigModel>? intake;
   List<ConfigModel>? country;
   List<ConfigModel>? leadCategory;
@@ -27,6 +29,7 @@ class ConfigListModel {
     this.educationProgram,
     this.knownLanguages,
     this.callStatus,
+    this.university,
     this.intake,
     this.country,
     this.leadCategory,
@@ -49,6 +52,7 @@ class ConfigListModel {
         educationProgram: _parseConfigList(json["education_program"]),
         knownLanguages: _parseConfigList(json["known_languages"]),
         callStatus: _parseConfigList(json["call_status"]),
+        university: _parseConfigList(json["university"]),
         intake: _parseConfigList(json["intake"]),
         country: _parseConfigList(json["country"]),
         leadCategory: _parseConfigList(json["lead_category"]),
@@ -63,17 +67,18 @@ class ConfigListModel {
             ? []
             : List<ConfigModel>.from(
                 json["client_status"].map((x) => ConfigModel.fromMap(x))),
-        designation: _parseConfigList(json["designation"]),
+        // designation: _parseConfigList(json["designation"]),
         test: _parseConfigList(json["test"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "name": name,
+        // "_id": id,
+        // "name": name,
         "branch": _mapList(branch),
         "education_program": _mapList(educationProgram),
         "known_languages": _mapList(knownLanguages),
         "call_status": _mapList(callStatus),
+        "university": _mapList(university),
         "intake": _mapList(intake),
         "country": _mapList(country),
         "lead_category": _mapList(leadCategory),
@@ -109,6 +114,8 @@ class ConfigListModel {
 
   List<ConfigModel?> getItems(String category) {
     final map = _asMap();
+    // print("object");
+    // print(map);
     return (map[category] ?? []) as List<ConfigModel?>;
   }
 
@@ -123,6 +130,7 @@ class ConfigListModel {
       "education_program": educationProgram,
       "known_languages": knownLanguages,
       "call_status": callStatus,
+      "university": university,
       "intake": intake,
       "country": country,
       "lead_category": leadCategory,
@@ -145,6 +153,7 @@ class ConfigListModel {
 
     int index = targetList.indexWhere((config) => config.id == item.id);
     if (index != -1) {
+      // print("===> index changed");
       targetList[index] = item;
     }
   }
@@ -157,36 +166,48 @@ class ConfigListModel {
     targetList.removeWhere((config) => config.id == item.id);
   }
 
+  void insertItemList(String category, List<ConfigModel> items) {
+    List<ConfigModel>? targetList = _getListByCategory(category);
+    if (targetList == null) return;
+
+    for (final item in items) {
+      // Prevent duplicates (by ID)
+      if (!targetList.any((config) => config.id == item.id)) {
+        targetList.add(item);
+      }
+    }
+  }
+
 // Helper to get the list based on category
   List<ConfigModel>? _getListByCategory(String category) {
     switch (category) {
       case 'branch':
         return branch ??= [];
-      case 'educationProgram':
+      case 'education_program':
         return educationProgram ??= [];
-      case 'knownLanguages':
+      case 'known_languages':
         return knownLanguages ??= [];
-      case 'callStatus':
+      case 'call_status':
         return callStatus ??= [];
       case 'intake':
         return intake ??= [];
       case 'country':
         return country ??= [];
-      case 'leadCategory':
+      case 'lead_category':
         return leadCategory ??= [];
-      case 'leadSource':
+      case 'lead_source':
         return leadSource ??= [];
-      case 'serviceType':
+      case 'service_type':
         return serviceType ??= [];
       case 'profession':
         return profession ??= [];
-      case 'medicalProfessionCategory':
+      case 'medical_profession_category':
         return medicalProfessionCategory ??= [];
-      case 'nonMedical':
+      case 'non_medical':
         return nonMedical ??= [];
-      case 'callType':
+      case 'call_type':
         return callType ??= [];
-      case 'clientStatus':
+      case 'client_status':
         return clientStatus ??= [];
       case 'designation':
         return designation ??= [];

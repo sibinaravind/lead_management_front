@@ -31,7 +31,10 @@ class ApiService {
   Future<dynamic> get(String endpoint) async {
     try {
       final response = await _dio.get(endpoint);
-      return response.data;
+      if (response.statusCode == 200 || response.statusCode == 201)
+        return response.data;
+      else
+        Exception(response.data["message"] ?? "error to process");
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -40,7 +43,10 @@ class ApiService {
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      return response.data;
+      if (response.statusCode == 200 || response.statusCode == 201)
+        return response.data;
+      else
+        Exception(response.data["message"] ?? "error to process");
     } on DioException catch (e) {
       _handleError(e);
     }
@@ -61,6 +67,10 @@ class ApiService {
   ) async {
     try {
       final response = await _dio.patch(endpoint, data: data);
+      if (response.statusCode == 200 || response.statusCode == 201)
+        return response.data;
+      else
+        Exception(response.data["message"] ?? "error to process");
       return response.data;
     } on DioException catch (e) {
       _handleError(e);

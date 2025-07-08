@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_action_button.dart';
@@ -38,7 +40,7 @@ class AddItemDialog extends StatelessWidget {
               Row(
                 children: [
                   CustomText(
-                    text: "Add ${category}",
+                    text: "Add ${category.replaceAll('_', ' ').toUpperCase()}",
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryColor,
                     fontSize: 18,
@@ -55,7 +57,7 @@ class AddItemDialog extends StatelessWidget {
                 isRequired: true,
                 // keyboardType: TextInputType.number,
               ),
-              if (item.hasField('code')) ...[
+              if (item.code != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: codeController,
@@ -64,7 +66,7 @@ class AddItemDialog extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.hasField('country')) ...[
+              if (item.country != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: countryController,
@@ -73,7 +75,7 @@ class AddItemDialog extends StatelessWidget {
                   // keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.hasField('province')) ...[
+              if (item.province != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: provinceController,
@@ -82,15 +84,15 @@ class AddItemDialog extends StatelessWidget {
                   // keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.hasField('range')) ...[
-                SizedBox(height: 16),
-                CustomTextFormField(
-                  controller: rangeController,
-                  label: 'Range',
-                  isRequired: true,
-                  // keyboardType: TextInputType.number,
-                ),
-              ],
+              // if (item.hasFieldName('range')) ...[
+              //   SizedBox(height: 16),
+              //   CustomTextFormField(
+              //     controller: rangeController,
+              //     label: 'Range',
+              //     isRequired: true,
+              //     // keyboardType: TextInputType.number,
+              //   ),
+              // ],
               SizedBox(height: 16),
 
               // Action buttons
@@ -109,7 +111,7 @@ class AddItemDialog extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: CustomActionButton(
-                      text: 'Add $category',
+                      text: 'ADD',
                       icon: Icons.check,
                       onPressed: () {
                         ///-- setstate
@@ -126,7 +128,10 @@ class AddItemDialog extends StatelessWidget {
                         // if (item.hasField('range')) {
                         //   item['range'] = rangeController.text;
                         // }
-
+                        Provider.of<ConfigProvider>(context, listen: false)
+                            .addConfig(
+                                field: category,
+                                name: nameController.text.trim());
                         Navigator.of(context).pop();
                         CustomSnackBar.show(
                             context, '${item.name} updated successfully');

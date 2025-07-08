@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/core/shared/enums.dart';
@@ -23,8 +25,10 @@ class _SystemConfigState extends State<ConfigScreen> {
     return Expanded(
       child: Consumer<ConfigProvider>(
         builder: (context, configProvider, child) {
+          if (configProvider.isLoading == true)
+            return CircularProgressIndicator();
           final configList = configProvider.configModelList;
-          final keys = configList?.getAllKeys().toList() ?? [];
+          final keys = configList?.toJson().keys ?? [];
 
           return Container(
             decoration: const BoxDecoration(
@@ -34,9 +38,10 @@ class _SystemConfigState extends State<ConfigScreen> {
               padding: const EdgeInsets.all(16.0),
               itemCount: keys.length,
               itemBuilder: (context, index) {
-                final category = keys[index];
+                final category = keys.elementAt(index);
+                // print(configList?.toJson());
                 final items = configList?.getItems(category) ?? [];
-
+                // print(items.length);
                 return Card(
                   margin: const EdgeInsets.only(bottom: 20.0),
                   elevation: 8,
@@ -69,7 +74,8 @@ class _SystemConfigState extends State<ConfigScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                gradient: _getCategoryGradient(category),
+                                color: _getCategoryColor(index),
+                                // gradient: _getCategoryGradient(category),
                                 borderRadius: BorderRadius.circular(15),
                                 boxShadow: [
                                   BoxShadow(
@@ -114,11 +120,20 @@ class _SystemConfigState extends State<ConfigScreen> {
                               icon: Icons.add,
                               gradient: AppColors.buttonGraidentColour,
                               onTap: () {
+                                // print(items);
                                 showDialog(
                                   context: context,
                                   builder: (_) => AddItemDialog(
                                     category: category,
-                                    item: ConfigModel(),
+                                    item: items.elementAtOrNull(0) ??
+                                        ConfigModel(
+                                            code: "",
+                                            colour: "",
+                                            country: "",
+                                            id: "",
+                                            name: "",
+                                            province: "",
+                                            status: Status.INACTIVE),
                                   ),
                                 );
                               },
@@ -351,7 +366,7 @@ class _SystemConfigState extends State<ConfigScreen> {
   }
 
   Color _getCategoryColor(int index) {
-    final indexList = List.generate(10, (index) {
+    final indexList = List.generate(20, (index) {
       return index;
     });
 
@@ -367,15 +382,15 @@ class _SystemConfigState extends State<ConfigScreen> {
       case 5:
         return AppColors.blueSecondaryColor;
       case 6:
-        return AppColors.blueSecondaryColor;
+        return const Color.fromARGB(255, 59, 246, 174);
       case 7:
-        return AppColors.blueSecondaryColor;
+        return const Color.fromARGB(255, 143, 59, 246);
       case 8:
-        return AppColors.blueSecondaryColor;
+        return const Color.fromARGB(255, 96, 59, 246);
       case 9:
-        return AppColors.blueSecondaryColor;
+        return const Color.fromARGB(255, 246, 168, 59);
       case 10:
-        return AppColors.blueSecondaryColor;
+        return const Color.fromARGB(255, 59, 246, 128);
       default:
         return AppColors.primaryColor;
     }

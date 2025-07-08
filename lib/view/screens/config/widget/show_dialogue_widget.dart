@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_action_button.dart';
@@ -59,7 +61,7 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                 isRequired: true,
                 // keyboardType: TextInputType.number,
               ),
-              if (item.hasField('code')) ...[
+              if (item.code != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: codeController,
@@ -68,7 +70,7 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                   keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.hasField('country')) ...[
+              if (item.country != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: countryController,
@@ -77,7 +79,7 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                   // keyboardType: TextInputType.number,
                 ),
               ],
-              if (item.hasField('province')) ...[
+              if (item.province != null) ...[
                 SizedBox(height: 16),
                 CustomTextFormField(
                   controller: provinceController,
@@ -113,13 +115,13 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                   const SizedBox(width: 16),
                   Expanded(
                     child: CustomActionButton(
-                      text: 'Edit $category',
+                      text: 'Confirm',
                       icon: Icons.check,
                       onPressed: () {
                         ///-- setstate
                         item.name = nameController.text;
                         if (item.hasField('code')) {
-                          item.code = codeController.text;
+                          item.code = (codeController.text);
                         }
                         if (item.hasField('country')) {
                           item.country = countryController.text;
@@ -130,7 +132,12 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                         // if (item.containsKey('range')) {
                         //   item['range'] = rangeController.text;
                         // }
-
+                        Provider.of<ConfigProvider>(context, listen: false)
+                            .updateConfig(
+                                field: category,
+                                name: item.name ?? "",
+                                id: item.id ?? "",
+                                status: "ACTIVE");
                         Navigator.of(context).pop();
                         CustomSnackBar.show(
                             context, '${item.name} updated successfully');

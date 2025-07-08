@@ -25,8 +25,11 @@ class ConfigModel {
         code: json["code"],
         country: json["country"],
         province: json["province"],
-        status:
-            json["status"] != null ? statusValues.map[json["status"]] : null,
+        status: json["status"] != null
+            ? json['status'] == "ACTIVE"
+                ? Status.ACTIVE
+                : Status.INACTIVE
+            : Status.INACTIVE,
         colour: json["colour"] ?? "",
       );
 
@@ -39,6 +42,19 @@ class ConfigModel {
         "status": statusValues.reverse[status],
         "colour": colour,
       };
+
+  bool hasFieldName(String fieldName) {
+    const validFields = [
+      'id',
+      'name',
+      'code',
+      'country',
+      'province',
+      'status',
+      'colour'
+    ];
+    return validFields.contains(fieldName);
+  }
 
   bool hasField(String fieldName) {
     return _getFieldValue(fieldName) != null;
