@@ -12,6 +12,15 @@ class AppColors {
       Color(0xFF8B5CF6), // Violet 500
     ],
   );
+  static const LinearGradient heroGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF1E293B),
+      Color(0xFF222B45),
+      Color(0xFF3B82F6),
+    ],
+  );
   static const LinearGradient orangeGradient = LinearGradient(
     colors: [
       Color.fromARGB(255, 247, 184, 75),

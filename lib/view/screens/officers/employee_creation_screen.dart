@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,9 @@ import '../../../controller/config_provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
 
 class EmployeeCreationScreen extends StatefulWidget {
-  const EmployeeCreationScreen({super.key});
+  final bool isEdit;
+  final OfficersModel? officer;
+  const EmployeeCreationScreen({super.key, required this.isEdit,  this.officer});
 
   @override
   State<EmployeeCreationScreen> createState() => _EmployeeCreationScreenState();
@@ -17,24 +20,29 @@ class EmployeeCreationScreen extends StatefulWidget {
 class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  // AppUserController appUserController = Get.find();
-  // OfficerController officerController = Get.find();
+
   List<dynamic>? _selectedBranch;
   String? _selectedSalutation = "Mr";
   String? _selectedGender;
   Uint8List? imageBytes;
+  List<String>salutationList= [
+  'Mr',
+  'Mrs',
+  'Ms',
+  'Dr'
+  ];
 
-  // Phone/Tele codes
   String? _mobileTeleCode = '91';
   String? _whatsmobileTeleCode = '91';
+  String prefix = '';
+  String name = '';
 
   // Controllers
   final TextEditingController officerNameController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController officerIdController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _companyPhoneNumberController =
-      TextEditingController();
+  final TextEditingController _companyPhoneNumberController = TextEditingController();
   final TextEditingController _branchController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
@@ -48,8 +56,37 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
 
   @override
   void initState() {
+    String name=widget.officer?.name??'';
+    List<String> parts = name.trim().split(' ');
+
+    if (parts.isNotEmpty && salutationList.contains(parts[0])) {
+      prefix = parts[0];
+      name = parts.sublist(1).join(' ');
+    }
+    _selectedGender=widget.officer?.gender??'';
+    officerNameController.text=name??'';
+    _selectedSalutation=prefix??'';
+    officerIdController.text=widget.officer?.officerId??'';
+    _phoneNumberController.text=widget.officer?.phone??'';
+    _companyPhoneNumberController.text=widget.officer?.companyPhoneNumber??'';
+    _branchController.text=widget.officer?.branch.toString()??'';
+    // _statusController.text=widget.officer?.status??'';
+    _statusController.text=widget.officer?.status??'ACTIVE';
+    _designationController.text=widget.officer?.designation.toString()??'';
+    _departmentController.text=widget.officer?.department.toString()??'';
     super.initState();
   }
+
+  // void splitNameWithPrefix(String fullName) {
+  //
+  //   List<String> parts = fullName.trim().split(' ');
+  //
+  //   if (parts.isNotEmpty && salutationList.contains(parts[0])) {
+  //     prefix = parts[0];
+  //     name = parts.sublist(1).join(' ');
+  //   }
+  //
+  // }
 
   @override
   void dispose() {
@@ -140,20 +177,22 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CustomText(
-                                text: 'Officer Registration',
+                           CustomText(
+                                text: widget.isEdit?'Update Officer':
+                             'Officer Registration',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
-                              CustomText(
+                               CustomText(
                                 text:
-                                    'Register new officer with complete details',
+                                widget.isEdit?'Update officers details':
+                                'Register new officer with complete details',
                                 fontSize: 13,
                                 color: Colors.white70,
                               ),
@@ -175,602 +214,273 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                       padding: const EdgeInsets.all(24),
                       child: Form(
                         key: _formKey,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border:
-                                      Border.all(color: Colors.grey.shade200),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Scrollbar(
-                                        thumbVisibility: true,
-                                        child: SingleChildScrollView(
-                                          padding: const EdgeInsets.all(24),
-                                          child: LayoutBuilder(
-                                            builder: (context, constraints) {
-                                              final availableWidth =
-                                                  constraints.maxWidth;
-                                              int columnsCount = 1;
+                        child: Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(16),
+                              border:
+                                  Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Scrollbar(
+                                    thumbVisibility: true,
+                                    child: SingleChildScrollView(
+                                      padding: const EdgeInsets.all(24),
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          final availableWidth =
+                                              constraints.maxWidth;
+                                          int columnsCount = 1;
 
-                                              if (availableWidth > 1000) {
-                                                columnsCount = 3;
-                                              } else if (availableWidth > 600) {
-                                                columnsCount = 2;
-                                              }
+                                          if (availableWidth > 1000) {
+                                            columnsCount = 3;
+                                          } else if (availableWidth > 600) {
+                                            columnsCount = 2;
+                                          }
 
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  // const SectionTitle(
-                                                  //     title:
-                                                  //         'Basic Information',
-                                                  //     icon: Icons
-                                                  //         .info_outline_rounded),
-                                                  // const SizedBox(height: 16),
-                                                  // ResponsiveGrid(
-                                                  //     columns: columnsCount,
-                                                  //     children: [
-                                                  //       // CutomCheckDropdown(
-                                                  //       //   label: 'Branch',
-                                                  //       //   values:
-                                                  //       //       _selectedBranch ??
-                                                  //       //           [],
-                                                  //       //   items: (appUserController
-                                                  //       //           .configList
-                                                  //       //           .value
-                                                  //       //           .branch
-                                                  //       //           ?.map((branch) =>
-                                                  //       //               branch
-                                                  //       //                   .name)
-                                                  //       //           .whereType<
-                                                  //       //               String>()
-                                                  //       //           .toList()) ??
-                                                  //       //       [],
-                                                  //       //   onChanged: (val) =>
-                                                  //       //       setState(() =>
-                                                  //       //           _selectedBranch =
-                                                  //       //               val),
-                                                  //       //   isRequired: true,
-                                                  //       // ),
-                                                  //       // CustomTextFormField(
-                                                  //       //   label: 'Officer Code',
-                                                  //       //   controller:
-                                                  //       //       _codeController,
-                                                  //       //   isRequired: true,
-                                                  //       // ),
-                                                  //      CustomTextFormField(controller: officerNameController,
-                                                  //      label: "Officer Name",)
-                                                  //       // CutomCheckDropdown(
-                                                  //       //   label: 'Designation',
-                                                  //       //   values:
-                                                  //       //       _selectedDesignation ??
-                                                  //       //           [],
-                                                  //       //   items: (appUserController
-                                                  //       //           .configList
-                                                  //       //           .value
-                                                  //       //           .designation
-                                                  //       //           ?.map((designation) =>
-                                                  //       //               designation
-                                                  //       //                   .name)
-                                                  //       //           .whereType<
-                                                  //       //               String>()
-                                                  //       //           .toList()) ??
-                                                  //       //       [],
-                                                  //       //   onChanged: (selected) =>
-                                                  //       //       setState(() =>
-                                                  //       //           _selectedDesignation =
-                                                  //       //               selected),
-                                                  //       //   isRequired: true,
-                                                  //       // ),
-                                                  //     ]),
-                                                  // const SizedBox(height: 32),
-                                                  const SectionTitle(
-                                                      title: 'Basic Details',
-                                                      icon: Icons
-                                                          .person_outline_rounded),
-                                                  const SizedBox(height: 16),
-                                                  ResponsiveGrid(
-                                                      columns: columnsCount,
-                                                      children: [
-                                                        CustomDropdownField(
-                                                          label: 'Salutation',
-                                                          value:
-                                                              _selectedSalutation,
-                                                          items: const [
-                                                            'Mr',
-                                                            'Mrs',
-                                                            'Ms',
-                                                            'Dr'
-                                                          ],
-                                                          onChanged: (val) =>
-                                                              setState(() =>
-                                                                  _selectedSalutation =
-                                                                      val),
-                                                          isRequired: true,
-                                                        ),
-                                                        CustomTextFormField(
-                                                          label: 'Officer Name',
-                                                          controller:
-                                                              officerNameController,
-                                                          isRequired: true,
-                                                        ),
-                                                        CustomTextFormField(
-                                                          readOnly: false,
-                                                          label: 'Officer Id',
-                                                          controller:
-                                                              officerIdController,
-                                                        ),
-                                                        // CustomTextFormField(
-                                                        //   label: 'Last Name',
-                                                        //   controller:
-                                                        //       _lastNameController,
-                                                        //   isRequired: true,
-                                                        // ),
-                                                        // CustomTextFormField(
-                                                        //   label:
-                                                        //       'Date of Birth',
-                                                        //   controller:
-                                                        //       _dobController,
-                                                        //   readOnly: true,
-                                                        //   isdate: true,
-                                                        //   isRequired: true,
-                                                        // ),
-                                                      ]),
-                                                  const SizedBox(height: 24),
-                                                  CustomGenderWidget(
-                                                    isRequired: true,
-                                                    selectedGender:
-                                                        _selectedGender,
-                                                    onGenderChanged: (value) =>
-                                                        setState(() =>
-                                                            _selectedGender =
-                                                                value),
-                                                  ),
-                                                  const SizedBox(height: 32),
-                                                  const SectionTitle(
-                                                      title:
-                                                          'Contact Information',
-                                                      icon: Icons
-                                                          .contact_phone_rounded),
-                                                  const SizedBox(height: 16),
-                                                  ResponsiveGrid(
-                                                      columns: columnsCount,
-                                                      children: [
-                                                        CustomPhoneField(
-                                                          label: 'Phone Number',
-                                                          controller:
-                                                              _phoneNumberController,
-                                                          selectedCountry:
-                                                              _mobileTeleCode,
-                                                          onCountryChanged: (val) =>
-                                                              setState(() =>
-                                                                  _mobileTeleCode =
-                                                                      val),
-                                                          isRequired: false,
-                                                        ),
-                                                        CustomPhoneField(
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SectionTitle(
+                                                  title: 'Basic Details',
+                                                  icon: Icons
+                                                      .person_outline_rounded),
+                                              const SizedBox(height: 16),
+                                              ResponsiveGrid(
+                                                  columns: columnsCount,
+                                                  children: [
+                                                    CustomDropdownField(
+                                                      label: 'Salutation',
+                                                      value:
+                                                          _selectedSalutation,
+                                                      items:  salutationList,
+                                                      onChanged: (val) =>
+                                                          setState(() =>
+                                                              _selectedSalutation =
+                                                                  val),
+                                                      isRequired: true,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      label: 'Officer Name',
+                                                      controller:
+                                                          officerNameController,
+                                                      isRequired: true,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      readOnly: false,
+                                                      label: 'Officer Id',
+                                                      controller:
+                                                          officerIdController,
+                                                    ),
+                                                  ]),
+                                              const SizedBox(height: 24),
+                                              CustomGenderWidget(
+                                                isRequired: true,
+                                                selectedGender:
+                                                    _selectedGender,
+                                                onGenderChanged: (value) =>
+                                                    setState(() =>
+                                                        _selectedGender =
+                                                            value),
+                                              ),
+                                              const SizedBox(height: 32),
+                                              const SectionTitle(
+                                                  title:
+                                                      'Contact Information',
+                                                  icon: Icons
+                                                      .contact_phone_rounded),
+                                              const SizedBox(height: 16),
+                                              ResponsiveGrid(
+                                                  columns: columnsCount,
+                                                  children: [
+                                                    CustomPhoneField(
+                                                      label: 'Phone Number',
+                                                      controller:
+                                                          _phoneNumberController,
+                                                      selectedCountry:
+                                                          _mobileTeleCode,
+                                                      onCountryChanged: (val) =>
+                                                          setState(() =>
+                                                              _mobileTeleCode =
+                                                                  val),
+                                                      isRequired: false,
+                                                    ),
+                                                    CustomPhoneField(
+                                                      label:
+                                                          'Company Phone',
+                                                      controller:
+                                                          _companyPhoneNumberController,
+                                                      selectedCountry:
+                                                          _whatsmobileTeleCode,
+                                                      onCountryChanged: (val) =>
+                                                          setState(() =>
+                                                              _whatsmobileTeleCode =
+                                                                  val),
+                                                      isRequired: false,
+                                                    ),
+                                                  ]),
+                                              const SizedBox(height: 32),
+                                              const SectionTitle(
+                                                  title: 'Official Details',
+                                                  icon: Icons
+                                                      .location_on_rounded),
+                                              const SizedBox(height: 16),
+                                              ResponsiveGrid(
+                                                  columns: columnsCount,
+                                                  children: [
+                                                    // CustomDropdownField(
+                                                    //     label: "ACTIVE",
+                                                    //     value: status,
+                                                    //     items: ['ACTIVE'],
+                                                    //     onChanged: (value) {
+                                                    //       status =
+                                                    //           value ?? '';
+                                                    //     }),
+                                                    CustomTextFormField(label: "Status", controller: _statusController),
+                                                    Consumer<
+                                                        ConfigProvider>(
+                                                      builder: (BuildContext
+                                                              context,
+                                                          value,
+                                                          Widget? child) {
+                                                        return CustomCheckDropdown<
+                                                            String>(
                                                           label:
-                                                              'Company Phone',
-                                                          controller:
-                                                              _companyPhoneNumberController,
-                                                          selectedCountry:
-                                                              _whatsmobileTeleCode,
-                                                          onCountryChanged: (val) =>
-                                                              setState(() =>
-                                                                  _whatsmobileTeleCode =
-                                                                      val),
-                                                          isRequired: false,
-                                                        ),
-                                                        // CustomPhoneField(
-                                                        //   label:
-                                                        //       'Alternate Phone Number',
-                                                        //   controller:
-                                                        //       _alternatePhoneController,
-                                                        //   selectedCountry:
-                                                        //       _alterselectedTeleCode,
-                                                        //   onCountryChanged: (val) =>
-                                                        //       setState(() =>
-                                                        //           _alterselectedTeleCode =
-                                                        //               val),
-                                                        // ),
-                                                        // CustomTextFormField(
-                                                        //   label: 'Email ID',
-                                                        //   controller:
-                                                        //       _emailController,
-                                                        //   isRequired: true,
-                                                        // ),
-                                                      ]),
-                                                  const SizedBox(height: 32),
-                                                  const SectionTitle(
-                                                      title: 'Official Details',
-                                                      icon: Icons
-                                                          .location_on_rounded),
-                                                  const SizedBox(height: 16),
-                                                  // CustomTextFormField(
-                                                  //   label: 'Address',
-                                                  //   controller: _address,
-                                                  //   isRequired: true,
-                                                  // ),
-                                                  // const SizedBox(height: 20),
-                                                  ResponsiveGrid(
-                                                      columns: columnsCount,
-                                                      children: [
-                                                        CustomDropdownField(
-                                                            label: "Status",
-                                                            value: status,
-                                                            items: ['ACTIVE'],
-                                                            onChanged: (value) {
-                                                              status =
-                                                                  value ?? '';
-                                                            }),
-                                                        Consumer<
-                                                            ConfigProvider>(
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              value,
-                                                              Widget? child) {
-                                                            return CustomCheckDropdown<
-                                                                String>(
-                                                              label:
-                                                                  "Designation",
-                                                              items: value
-                                                                      .configModelList
-                                                                      ?.designation
-                                                                      ?.map((e) =>
-                                                                          (e.name ??
-                                                                              "") ??
-                                                                          (''))
-                                                                      .toList() ??
-                                                                  [],
-                                                              onChanged:
-                                                                  (values) {
-                                                                var code = value
-                                                                    .configModelList
-                                                                    ?.designation
-                                                                    ?.where((e) =>
-                                                                        values.contains(e
-                                                                            .name))
-                                                                    .map((e) => int.parse(
-                                                                        e.code ??
-                                                                            '0'))
-                                                                    .toList();
-                                                                designation =
-                                                                    code ?? [];
-                                                                //     value ??
-                                                                //         '';
-                                                              },
-                                                              values: [],
-                                                            );
+                                                              "Designation",
+                                                          items: value
+                                                                  .configModelList
+                                                                  ?.designation
+                                                                  ?.map((e) =>
+                                                                      (e.name ??
+                                                                          "") ??
+                                                                      (''))
+                                                                  .toList() ??
+                                                              [],
+                                                          onChanged:
+                                                              (values) {
+                                                            var code = value
+                                                                .configModelList
+                                                                ?.designation
+                                                                ?.where((e) =>
+                                                                    values.contains(e
+                                                                        .name))
+                                                                .map((e) => int.parse(
+                                                                    e.code ??
+                                                                        '0'))
+                                                                .toList();
+                                                            designation =
+                                                                code ?? [];
+                                                            //     value ??
+                                                            //         '';
                                                           },
-                                                        ),
-                                                        Consumer<
-                                                            ConfigProvider>(
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              value,
-                                                              Widget? child) {
-                                                            return CustomCheckDropdown<
-                                                                String>(
-                                                              label: "Branch",
-                                                              items: value
-                                                                      .configModelList
-                                                                      ?.branch
-                                                                      ?.map((e) =>
-                                                                          (e.name ??
-                                                                              "") ??
-                                                                          (''))
-                                                                      .toList() ??
-                                                                  [],
-                                                              onChanged:
-                                                                  (value) {
-                                                                branch = value;
-                                                              },
-                                                              values: branch,
-                                                            );
+                                                          values: [],
+                                                        );
+                                                      },
+                                                    ),
+                                                    Consumer<
+                                                        ConfigProvider>(
+                                                      builder: (BuildContext
+                                                              context,
+                                                          value,
+                                                          Widget? child) {
+                                                        return CustomCheckDropdown<
+                                                            String>(
+                                                          label: "Branch",
+                                                          items: value
+                                                                  .configModelList
+                                                                  ?.branch
+                                                                  ?.map((e) =>
+                                                                      (e.name ??
+                                                                          "") ??
+                                                                      (''))
+                                                                  .toList() ??
+                                                              [],
+                                                          onChanged:
+                                                              (value) {
+                                                            branch = value;
                                                           },
-                                                        ),
-                                                      ]),
-                                                  const SizedBox(height: 20),
-                                                  const SectionTitle(
-                                                      title:
-                                                          'Additional Details',
-                                                      icon: Icons
-                                                          .more_horiz_rounded),
-                                                  const SizedBox(height: 16),
-                                                  ResponsiveGrid(
-                                                      columns: columnsCount,
-                                                      children: [
-                                                        CustomTextFormField(
-                                                          label: 'Password',
-                                                          controller:
-                                                              _passwordController,
-                                                          isRequired: true,
-                                                        ),
-                                                        // CustomDropdownField(
-                                                        //   label: 'Nationality',
-                                                        //   value:
-                                                        //       _selectedNationality,
-                                                        //   items: const [
-                                                        //     'India',
-                                                        //     'Other'
-                                                        //   ],
-                                                        //   onChanged: (val) =>
-                                                        //       setState(() =>
-                                                        //           _selectedNationality =
-                                                        //               val),
-                                                        //   isRequired: true,
-                                                        // ),
-                                                        // CustomDropdownField(
-                                                        //   label: 'Religion',
-                                                        //   value:
-                                                        //       _selectedReligion,
-                                                        //   items: const [
-                                                        //     'Hindu',
-                                                        //     'Muslim',
-                                                        //     'Christian',
-                                                        //     'Sikh',
-                                                        //     'Buddhist',
-                                                        //     'Other'
-                                                        //   ],
-                                                        //   onChanged: (val) =>
-                                                        //       setState(() =>
-                                                        //           _selectedReligion =
-                                                        //               val),
-                                                        // ),
-                                                        // CustomDropdownField(
-                                                        //   label:
-                                                        //       'Marital Status',
-                                                        //   value:
-                                                        //       _selectedMaritalStatus,
-                                                        //   items: const [
-                                                        //     'Single',
-                                                        //     'Married',
-                                                        //     'Divorced',
-                                                        //     'Widowed'
-                                                        //   ],
-                                                        //   onChanged: (val) =>
-                                                        //       setState(() =>
-                                                        //           _selectedMaritalStatus =
-                                                        //               val),
-                                                        // ),
-                                                      ]),
-                                                  const SizedBox(height: 32),
-                                                  // const SectionTitle(
-                                                  //     title:
-                                                  //         'Emergency Contact',
-                                                  //     icon: Icons
-                                                  //         .emergency_rounded),
-                                                  // const SizedBox(height: 16),
-                                                  // ResponsiveGrid(
-                                                  //     columns: columnsCount,
-                                                  //     children: [
-                                                  //       CustomTextFormField(
-                                                  //         label:
-                                                  //             'Emergency Contact Person',
-                                                  //         controller:
-                                                  //             _emergencyContactController,
-                                                  //         isRequired: true,
-                                                  //       ),
-                                                  //       CustomPhoneField(
-                                                  //         label:
-                                                  //             'Contact Person Number',
-                                                  //         controller:
-                                                  //             _emergencycontactPersonNumberController,
-                                                  //         selectedCountry:
-                                                  //             _emerselectedTeleCode,
-                                                  //         onCountryChanged: (val) =>
-                                                  //             setState(() =>
-                                                  //                 _emerselectedTeleCode =
-                                                  //                     val),
-                                                  //         isRequired: true,
-                                                  //       ),
-                                                  //       CustomTextFormField(
-                                                  //         label: 'Relationship',
-                                                  //         controller:
-                                                  //             _emergencycontactPersonRelationshipController,
-                                                  //         isRequired: true,
-                                                  //       ),
-                                                  //     ]),
-                                                  // const SizedBox(height: 32),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ),
+                                                          values: branch,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ]),
+                                              const SizedBox(height: 20),
+                                              Visibility(
+                                                visible:widget.isEdit?false:true,
+                                                child: const SectionTitle(
+                                                    title:
+                                                        'Additional Details',
+                                                    icon: Icons
+                                                        .more_horiz_rounded),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              Visibility(
+                                                visible:widget.isEdit?false:true,
+                                                child: ResponsiveGrid(
+                                                    columns: columnsCount,
+                                                    children: [
+                                                      CustomTextFormField(
+                                                        label: 'Password',
+                                                        controller:
+                                                            _passwordController,
+                                                        isRequired: true,
+                                                      ),
+                                                    ]),
+                                              ),
+                                              const SizedBox(height: 32),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
-                                    Row(
-                                      children: [
-                                        // Expanded(
-                                        //   child: CustomActionButton(
-                                        //     text: 'Reset',
-                                        //     icon: Icons.refresh_rounded,
-                                        //     onPressed: () {
-                                        //       // Your reset logic
-                                        //     },
-                                        //     borderColor: Colors.grey.shade300,
-                                        //   ),
-                                        // ),
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          child: CustomActionButton(
-                                            text: 'Cancel',
-                                            icon: Icons.close_rounded,
-                                            textColor: Colors.grey,
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            borderColor: Colors.grey.shade300,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          flex: 2,
-                                          child: CustomActionButton(
-                                            text: 'Save Officer',
-                                            icon: Icons.save_rounded,
-                                            isFilled: true,
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Color(0xFF7F00FF),
-                                                Color(0xFFE100FF)
-                                              ],
-                                            ),
-                                            onPressed: () async {
-                                              if (_formKey.currentState
-                                                      ?.validate() ??
-                                                  false) {
-                                                showLoaderDialog(context);
-
-                                                final officer = {
-                                                  "officer_id":
-                                                      officerIdController.text,
-                                                  "name": _selectedSalutation
-                                                          .toString() +
-                                                      officerNameController
-                                                          .text,
-                                                  "gender": _selectedGender
-                                                      .toString(),
-                                                  "phone":
-                                                      _phoneNumberController
-                                                          .text,
-                                                  "company_phone_number":
-                                                      _companyPhoneNumberController
-                                                          .text,
-                                                  "status": status.toString(),
-                                                  "designation": designation,
-                                                  "department": ["Councillor"],
-
-                                                  ///-------------not added - static ----------
-                                                  "branch": branch,
-                                                  "password":
-                                                      _passwordController.text
-                                                };
-
-                                                final provider = Provider.of<
-                                                        OfficersControllerProvider>(
-                                                    context,
-                                                    listen: false);
-                                                final success = await provider
-                                                    .createOfficer(officer);
-
-                                                if (success) {
-                                                  CustomSnackBar.show(context,
-                                                      "Employee created successfully");
-                                                } else {
-                                                  CustomSnackBar.show(context,
-                                                      "Creation failed",
-                                                      backgroundColor: AppColors
-                                                          .redSecondaryColor);
-                                                }
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 24),
-                            Container(
-                              width: 280,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    AppColors.violetPrimaryColor
-                                        .withOpacity(0.08),
-                                    AppColors.blueSecondaryColor
-                                        .withOpacity(0.04),
+                                Row(
+                                  children: [
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: CustomActionButton(
+                                        text: 'Cancel',
+                                        icon: Icons.close_rounded,
+                                        textColor: Colors.grey,
+                                        onPressed: () =>
+                                            Navigator.pop(context),
+                                        borderColor: Colors.grey.shade300,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      flex: 2,
+                                      child: CustomActionButton(
+                                        text:widget.isEdit? 'Update Officer' : 'Save Officer',
+                                        icon: Icons.save_rounded,
+                                        isFilled: true,
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF7F00FF),
+                                            Color(0xFFE100FF)
+                                          ],
+                                        ),
+                                        onPressed: () async {
+                                          if (_formKey.currentState
+                                                  ?.validate() ??
+                                              false) {
+                                            // showLoaderDialog(context);
+                                    widget.isEdit?updateOfficer():createOfficer();
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ],
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                    color: AppColors.violetPrimaryColor
-                                        .withOpacity(0.15)),
-                              ),
-                              child: Column(
-                                children: [
-                                  // ProfilePhotoUploadWidget(
-                                  //   title: 'Profile Photo',
-                                  //   onImageChanged: (bytes) {
-                                  //     setState(() {
-                                  //       imageBytes = bytes;
-                                  //     });
-                                  //   },
-                                  // ),
-                                  const SizedBox(height: 24),
-                                  // Container(
-                                  //   padding: const EdgeInsets.all(24),
-                                  //   child: Column(
-                                  //     crossAxisAlignment:
-                                  //         CrossAxisAlignment.start,
-                                  //     children: [
-                                  //       Row(
-                                  //         children: [
-                                  //           Container(
-                                  //             padding: const EdgeInsets.all(8),
-                                  //             decoration: BoxDecoration(
-                                  //               color: AppColors
-                                  //                   .violetPrimaryColor
-                                  //                   .withOpacity(0.1),
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(10),
-                                  //             ),
-                                  //             child: const Icon(
-                                  //                 Icons
-                                  //                     .notifications_active_rounded,
-                                  //                 size: 20,
-                                  //                 color: AppColors
-                                  //                     .violetPrimaryColor),
-                                  //           ),
-                                  //           const SizedBox(width: 12),
-                                  //           // const CustomText(
-                                  //           //   text: 'Notifications',
-                                  //           //   fontWeight: FontWeight.bold,
-                                  //           //   fontSize: 17,
-                                  //           //   color: AppColors.primaryColor,
-                                  //           // ),
-                                  //         ],
-                                  //       ),
-                                  //       const SizedBox(height: 20),
-                                  //       // Column(
-                                  //       //   children: [
-                                  //       //     EnhancedSwitchTile(
-                                  //       //       label: 'Email Notifications',
-                                  //       //       icon: Icons.email_rounded,
-                                  //       //       value: _emailSelected,
-                                  //       //       onChanged: (val) => setState(
-                                  //       //           () => _emailSelected = val),
-                                  //       //     ),
-                                  //       //     const SizedBox(height: 12),
-                                  //       //     EnhancedSwitchTile(
-                                  //       //       label: 'SMS Notifications',
-                                  //       //       icon: Icons.sms_rounded,
-                                  //       //       value: _smsSelected,
-                                  //       //       onChanged: (val) => setState(
-                                  //       //           () => _smsSelected = val),
-                                  //       //     ),
-                                  //       //   ],
-                                  //       // ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -782,5 +492,79 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
         },
       ),
     );
+  }
+
+  createOfficer()async{
+
+    final officer = {
+      "officer_id":
+      officerIdController.text,
+      "name": '$_selectedSalutation ${officerNameController
+          .text}',
+      "gender": _selectedGender
+          .toString(),
+      "phone":
+      _phoneNumberController
+          .text,
+      "company_phone_number":
+      _companyPhoneNumberController
+          .text,
+      "status": status.toString(),
+      "designation": designation,
+      "department": department,
+
+      ///-------------not added - static ----------
+      "branch": branch,
+      "password":
+      _passwordController.text
+    };
+
+    final provider = Provider.of<
+        OfficersControllerProvider>(
+        context,
+        listen: false);
+    final success = await provider
+        .createOfficer(officer);
+
+    if (success) {
+      CustomSnackBar.show(context,
+          "Employee created successfully");
+    } else {
+      CustomSnackBar.show(context,
+          "Creation failed",
+          backgroundColor: AppColors
+              .redSecondaryColor);
+    }
+  }
+  updateOfficer()async{
+    final updatedData = {
+      "name": "$_selectedSalutation ${officerNameController.text}",
+      "gender": _selectedGender ?? '',
+      "phone": _phoneNumberController.text,
+      "company_phone_number": _companyPhoneNumberController.text,
+      "status": _statusController.text,
+      "designation": designation,
+      "department": department,
+      "branch": branch,
+      // "password": _passwordController.text,
+    };
+
+    final officerId = widget.officer?.id; // or officerIdController.text
+
+    if (officerId != null) {
+      bool success = await OfficersControllerProvider().updateOfficer(officerId, updatedData);
+
+      if (success) {
+        CustomSnackBar.show(context,
+            "Employee updated successfully");
+      } else {
+        CustomSnackBar.show(context,
+            "Creation failed",
+            backgroundColor: AppColors
+                .redSecondaryColor);
+      }
+    }
+
+
   }
 }

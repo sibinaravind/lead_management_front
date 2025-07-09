@@ -105,5 +105,85 @@ class OfficersControllerProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  Future<bool> updateOfficer(String officerId, Map<String, dynamic> updatedData) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.patch(
+        "${Constant().officerUpdate}/$officerId",
+        updatedData,
+      );
+
+      if (response['success'] == true) {
+        await fetchOfficersList();
+        return true;
+      } else {
+        _error = response['message'] ?? 'Update failed';
+        return false;
+      }
+    } catch (e) {
+      _error = 'Error updating officer: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  // Future<bool> updateOfficerPassword(String officerId, Map<String, dynamic> updatedData) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     final response = await _apiService.patch(
+  //       "${Constant().officerUpdate}/$officerId",
+  //       updatedData,
+  //     );
+  //
+  //     if (response['success'] == true) {
+  //       await fetchOfficersList();
+  //       return true;
+  //     } else {
+  //       _error = response['message'] ?? 'Update failed';
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     _error = 'Error updating officer: $e';
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+  Future<bool> deleteOfficer(String officerId,) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      Map<String, dynamic>  data= {
+        "status": "active",
+  };
+      final response = await _apiService.delete(
+        "${Constant().officerDelete}/$officerId",
+       data
+      );
+
+      if (response['success'] == true) {
+        await fetchOfficersList(); // refresh list after deletion
+        return true;
+      } else {
+        _error = response['message'] ?? 'Delete failed';
+        return false;
+      }
+    } catch (e) {
+      _error = 'Error deleting officer: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
 
 }

@@ -13,12 +13,14 @@ class Constant {
     }
   }
 
+  String officerLogin = 'officer/login';
   String officerInsert = 'officer/insert';
   String officerUpdate = 'officer/updateOfficer/';
   String officerList = 'officer/list';
   String officerDetails = 'officer/details/';
   String officerResetPassword = 'officer/updatePassword';
   String officerUpdateStatus = 'officer/updateStatus/';
+  String officerDelete = 'officer/delete';
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';

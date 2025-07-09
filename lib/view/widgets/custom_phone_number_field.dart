@@ -41,7 +41,7 @@ class CustomPhoneField extends StatelessWidget {
           children: [
             Container(
               width: 80,
-              height: 40,
+              height: 49,
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey),

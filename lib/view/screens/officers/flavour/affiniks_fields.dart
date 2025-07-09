@@ -37,6 +37,10 @@ class AffiniksFields {
             ? (user.department as List).join('\n')
             : user.department.toString()
       },
+      {
+        'name':'Action',
+        'extractor':(OfficersModel user)=>user
+      }
     ];
   }
 }

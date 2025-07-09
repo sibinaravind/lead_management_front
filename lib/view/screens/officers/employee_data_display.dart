@@ -107,7 +107,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                               showDialog(
                                 context: context,
                                 builder: (context) =>
-                                    const EmployeeCreationScreen(),
+                                    const EmployeeCreationScreen(isEdit: false,),
                               );
                             },
                             child: const Padding(
