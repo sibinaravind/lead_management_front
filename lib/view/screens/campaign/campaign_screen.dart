@@ -52,7 +52,9 @@ class _CampaignScreenState extends State<CampaignScreen> {
                         CustomTextField(
                           controller: value.titleController,
                           labelText: "Title",
-                          validator: (_) {},
+                          validator: (value) {
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 12),
                         CustomDateField(
@@ -71,7 +73,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                             // context); // Optionally close dialog after add
                           },
                           icon: const Icon(Icons.upload),
-                          label: const Text("Upload Image"),
+                          label: const CustomText(text: "Upload Image"),
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(48),
                           ),
@@ -82,7 +84,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                           children: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text("Cancel"),
+                              child: const CustomText(text: "Cancel"),
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
@@ -98,7 +100,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                 // Add any confirm action if needed
                                 // For example, you could trigger the addCampaign here instead of in the upload button
                               },
-                              child: const Text("Save"),
+                              child: const CustomText(text: "Save"),
                             ),
                           ],
                         )

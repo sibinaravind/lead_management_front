@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -21,20 +19,14 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
   final _formKey = GlobalKey<FormState>();
   // AppUserController appUserController = Get.find();
   // OfficerController officerController = Get.find();
-
   List<dynamic>? _selectedBranch;
   String? _selectedSalutation = "Mr";
-  List<dynamic>? _selectedDesignation;
-  String? _selectedNationality = 'India';
-  String? _selectedMaritalStatus;
   String? _selectedGender;
   Uint8List? imageBytes;
 
   // Phone/Tele codes
   String? _mobileTeleCode = '91';
   String? _whatsmobileTeleCode = '91';
-  String? _alterselectedTeleCode = '91';
-  String? _emerselectedTeleCode = '91';
 
   // Controllers
   final TextEditingController officerNameController = TextEditingController();
@@ -412,68 +404,81 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                   ResponsiveGrid(
                                                       columns: columnsCount,
                                                       children: [
-                                                        CustomDropdownField(label: "Status", value: status, items: ['ACTIVE'], onChanged: (value){
-                                                          status=value??'';
-                                                        }),
+                                                        CustomDropdownField(
+                                                            label: "Status",
+                                                            value: status,
+                                                            items: ['ACTIVE'],
+                                                            onChanged: (value) {
+                                                              status =
+                                                                  value ?? '';
+                                                            }),
                                                         Consumer<
                                                             ConfigProvider>(
                                                           builder: (BuildContext
                                                                   context,
                                                               value,
                                                               Widget? child) {
-                                                          return  CustomCheckDropdown<String>( label:
-                                                            "Designation",
-
-                                                                items: value
+                                                            return CustomCheckDropdown<
+                                                                String>(
+                                                              label:
+                                                                  "Designation",
+                                                              items: value
+                                                                      .configModelList
+                                                                      ?.designation
+                                                                      ?.map((e) =>
+                                                                          (e.name ??
+                                                                              "") ??
+                                                                          (''))
+                                                                      .toList() ??
+                                                                  [],
+                                                              onChanged:
+                                                                  (values) {
+                                                                var code = value
                                                                     .configModelList
                                                                     ?.designation
-                                                                    ?.map((e) =>
-                                                                (e.name ?? "") ??
-                                                                    (''))
-                                                                    .toList() ??
-                                                                    [],
-                                                                onChanged:
-                                                                    (values) {
-                                                                  print("..................");
-                                                                  print(value);
-                                                                 var code= value.configModelList?.designation?.where((e)=>values.contains(e.name)).map((e)=>int.parse(e.code??'0')).toList();
-                                                                  designation=code??[];
-                                                                  //     value ??
-                                                                  //         '';
-                                                                }, values: [],);
-
+                                                                    ?.where((e) =>
+                                                                        values.contains(e
+                                                                            .name))
+                                                                    .map((e) => int.parse(
+                                                                        e.code ??
+                                                                            '0'))
+                                                                    .toList();
+                                                                designation =
+                                                                    code ?? [];
+                                                                //     value ??
+                                                                //         '';
+                                                              },
+                                                              values: [],
+                                                            );
                                                           },
                                                         ),
-
                                                         Consumer<
                                                             ConfigProvider>(
                                                           builder: (BuildContext
-                                                          context,
+                                                                  context,
                                                               value,
                                                               Widget? child) {
-                                                            return  CustomCheckDropdown<String>( label:
-                                                            "Branch",
-
+                                                            return CustomCheckDropdown<
+                                                                String>(
+                                                              label: "Branch",
                                                               items: value
-                                                                  .configModelList
-                                                                  ?.branch
-                                                                  ?.map((e) =>
-                                                              (e.name ?? "") ??
-                                                                  (''))
-                                                                  .toList() ??
+                                                                      .configModelList
+                                                                      ?.branch
+                                                                      ?.map((e) =>
+                                                                          (e.name ??
+                                                                              "") ??
+                                                                          (''))
+                                                                      .toList() ??
                                                                   [],
                                                               onChanged:
                                                                   (value) {
-                                                                print("..................");
-                                                                print(value);
-                                                                branch=value;
-                                                                //     value ??
-                                                                //         '';
-                                                              }, values: [],);
-
+                                                                branch = value;
+                                                              },
+                                                              values: branch,
+                                                            );
                                                           },
                                                         ),
-                                              ]),
+                                                      ]),
                                                   const SizedBox(height: 20),
                                                   const SectionTitle(
                                                       title:
@@ -626,17 +631,28 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                 showLoaderDialog(context);
 
                                                 final officer = {
-                                                  "officer_id": officerIdController.text??'',
-                                                  "name": _selectedSalutation.toString()+officerNameController.text??'',
-                                                  "gender": _selectedGender.toString()??'',
-                                                  "phone": _phoneNumberController.text??'',
+                                                  "officer_id":
+                                                      officerIdController.text,
+                                                  "name": _selectedSalutation
+                                                          .toString() +
+                                                      officerNameController
+                                                          .text,
+                                                  "gender": _selectedGender
+                                                      .toString(),
+                                                  "phone":
+                                                      _phoneNumberController
+                                                          .text,
                                                   "company_phone_number":
-                                                      _companyPhoneNumberController.text??'',
-                                                  "status": status.toString()??'',
-                                                  "designation":designation??[],
-                                                  "department": ["Councillor"], ///-------------not added - static ----------
-                                                  "branch":branch,
-                                                  "password": _passwordController.text??''
+                                                      _companyPhoneNumberController
+                                                          .text,
+                                                  "status": status.toString(),
+                                                  "designation": designation,
+                                                  "department": ["Councillor"],
+
+                                                  ///-------------not added - static ----------
+                                                  "branch": branch,
+                                                  "password":
+                                                      _passwordController.text
                                                 };
 
                                                 final provider = Provider.of<
@@ -647,20 +663,13 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                     .createOfficer(officer);
 
                                                 if (success) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                        content: Text(
-                                                            "Employee created successfully")),
-                                                  );
+                                                  CustomSnackBar.show(context,
+                                                      "Employee created successfully");
                                                 } else {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(provider
-                                                                .error ??
-                                                            "Creation failed")),
-                                                  );
+                                                  CustomSnackBar.show(context,
+                                                      "Creation failed",
+                                                      backgroundColor: AppColors
+                                                          .redSecondaryColor);
                                                 }
                                               }
                                             },

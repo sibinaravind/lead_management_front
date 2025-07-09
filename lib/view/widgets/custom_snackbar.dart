@@ -6,7 +6,8 @@ class CustomSnackBar {
   CustomSnackBar._();
 
   static void show(BuildContext context, String message,
-      {Duration duration = const Duration(seconds: 3)}) {
+      {Duration duration = const Duration(seconds: 3),
+      Color backgroundColor = AppColors.blackNeutralColor}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: CustomText(
@@ -14,7 +15,7 @@ class CustomSnackBar {
           color: Colors.white,
           maxLines: 3,
         ),
-        backgroundColor: AppColors.blackNeutralColor,
+        backgroundColor: backgroundColor,
         duration: duration,
       ),
     );
