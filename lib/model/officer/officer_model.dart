@@ -6,7 +6,7 @@ class OfficersModel {
   String phone;
   String gender;
   String companyPhoneNumber;
-  List<String> designation;
+  List<dynamic> designation;
   List<String> department;
   List<String> branch;
   DateTime createdAt;
@@ -35,7 +35,7 @@ class OfficersModel {
         phone: json["phone"],
         gender: json["gender"],
         companyPhoneNumber: json["company_phone_number"],
-        designation: List<String>.from(json["designation"].map((x) => x)),
+        designation: List<dynamic>.from(json["designation"].map((x) => x)),
         department: List<String>.from(json["department"].map((x) => x)),
         branch: List<String>.from(json["branch"].map((x) => x)),
         createdAt: DateTime.parse(json["created_at"]),
@@ -56,6 +56,31 @@ class OfficersModel {
         "created_at": createdAt.toIso8601String(),
         "officers": List<dynamic>.from(officers.map((x) => x)),
       };
+}
+
+class SubOfficerModel {
+  String? id;
+  String? name;
+  String? branch;
+  int? designation;
+
+  SubOfficerModel({this.id, this.name, this.branch, this.designation});
+
+  SubOfficerModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    branch = json['branch'];
+    designation = json['designation'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['branch'] = this.branch;
+    data['designation'] = this.designation;
+    return data;
+  }
 }
 
 

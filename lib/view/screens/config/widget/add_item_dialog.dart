@@ -115,16 +115,16 @@ class AddItemDialog extends StatelessWidget {
                       icon: Icons.check,
                       onPressed: () {
                         ///-- setstate
-                        item.name = nameController.text;
-                        if (item.hasField('code')) {
-                          item.code = codeController.text;
-                        }
-                        if (item.hasField('country')) {
-                          item.country = countryController.text;
-                        }
-                        if (item.hasField('province')) {
-                          item.province = provinceController.text;
-                        }
+                        // item.name = nameController.text;
+                        // if (item.hasField('code')) {
+                        //   item.code = codeController.text;
+                        // }
+                        // if (item.hasField('country')) {
+                        //   item.country = countryController.text;
+                        // }
+                        // if (item.hasField('province')) {
+                        //   item.province = provinceController.text;
+                        // }
                         // if (item.hasField('range')) {
                         //   item['range'] = rangeController.text;
                         // }

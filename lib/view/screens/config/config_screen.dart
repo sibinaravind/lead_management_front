@@ -27,7 +27,10 @@ class _SystemConfigState extends State<ConfigScreen> {
             return CircularProgressIndicator();
           }
           final configList = configProvider.configModelList;
-          final keys = configList?.toJson().keys ?? [];
+          var keys = configList?.toJson().keys ?? [];
+          keys = keys.where(
+            (element) => element != 'designation',
+          );
 
           return Container(
             decoration: const BoxDecoration(
@@ -41,6 +44,7 @@ class _SystemConfigState extends State<ConfigScreen> {
                 // print(configList?.toJson());
                 final items = configList?.getItems(category) ?? [];
                 // print(items.length);
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 20.0),
                   elevation: 8,
@@ -369,30 +373,32 @@ class _SystemConfigState extends State<ConfigScreen> {
       return index;
     });
 
-    switch (indexList[index]) {
-      case 1:
-        return AppColors.violetPrimaryColor;
-      case 2:
-        return AppColors.orangeSecondaryColor;
-      case 3:
-        return AppColors.greenSecondaryColor;
-      case 4:
-        return AppColors.pinkSecondaryColor;
-      case 5:
-        return AppColors.blueSecondaryColor;
-      case 6:
-        return const Color.fromARGB(255, 59, 246, 174);
-      case 7:
-        return const Color.fromARGB(255, 143, 59, 246);
-      case 8:
-        return const Color.fromARGB(255, 96, 59, 246);
-      case 9:
-        return const Color.fromARGB(255, 246, 168, 59);
-      case 10:
-        return const Color.fromARGB(255, 59, 246, 128);
-      default:
-        return AppColors.primaryColor;
-    }
+    return AppColors.roleColors.elementAt(index % 10);
+
+    // switch (indexList[index]) {
+    //   case 1:
+    //     return AppColors.violetPrimaryColor;
+    //   case 2:
+    //     return AppColors.orangeSecondaryColor;
+    //   case 3:
+    //     return AppColors.greenSecondaryColor;
+    //   case 4:
+    //     return AppColors.pinkSecondaryColor;
+    //   case 5:
+    //     return AppColors.blueSecondaryColor;
+    //   case 6:
+    //     return const Color.fromARGB(255, 59, 246, 174);
+    //   case 7:
+    //     return const Color.fromARGB(255, 143, 59, 246);
+    //   case 8:
+    //     return const Color.fromARGB(255, 96, 59, 246);
+    //   case 9:
+    //     return const Color.fromARGB(255, 246, 168, 59);
+    //   case 10:
+    //     return const Color.fromARGB(255, 59, 246, 128);
+    //   default:
+    //     return AppColors.primaryColor;
+    // }
   }
 
   IconData _getCategoryIcon(String category) {

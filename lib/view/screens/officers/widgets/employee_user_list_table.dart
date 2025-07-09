@@ -38,78 +38,81 @@ class EmployeeListTable extends StatelessWidget {
                 ),
               );
             }).toList(),
-            rows:userList.isNotEmpty? userList.expand((listUser) {
-              return [
-                DataRow(
-                  cells: columnsData.map((column) {
-                    final extractor = column['extractor'] as Function;
-                    final value = extractor(listUser);
-                    return DataCell(
-                      Builder(
-                        builder: (context) {
-                          switch (column['name']) {
-                            case 'Status':
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+            rows: userList.isNotEmpty
+                ? userList.expand((listUser) {
+                    return [
+                      DataRow(
+                        cells: columnsData.map((column) {
+                          final extractor = column['extractor'] as Function;
+                          final value = extractor(listUser);
+                          return DataCell(
+                            Builder(
+                              builder: (context) {
+                                switch (column['name']) {
+                                  case 'Status':
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
 
-                                  ///---- status---------
-                                  // color: getColorBasedOnStatus(
-                                  //     Dimension.mobile ?? ''),
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6),
-                                child: CustomText(
-                                  text: getTextBasedOnStatus(listUser.status),
-                                  // text: getTextBasedOnStatus(
-                                  //     listUser.mobile ?? ''),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  // color: getColorBasedOnStatus(
-                                  //         listUser.mobile ?? '')
-                                  //     .withOpacity(1.0),
-                                ),
-                              );
-                            case 'Phone Number':
-                              return SelectionArea(
-                                  child: CustomText(
-                                text: value,
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                color: AppColors.textColor,
-                              ));
-                            case 'ID':
-                              return CustomText(
-                                text: value,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primaryColor,
-                              );
+                                        ///---- status---------
+                                        // color: getColorBasedOnStatus(
+                                        //     Dimension.mobile ?? ''),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6),
+                                      child: CustomText(
+                                        text: getTextBasedOnStatus(
+                                            listUser.status),
+                                        // text: getTextBasedOnStatus(
+                                        //     listUser.mobile ?? ''),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                        // color: getColorBasedOnStatus(
+                                        //         listUser.mobile ?? '')
+                                        //     .withOpacity(1.0),
+                                      ),
+                                    );
+                                  case 'Phone Number':
+                                    return SelectionArea(
+                                        child: CustomText(
+                                      text: value,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: AppColors.textColor,
+                                    ));
+                                  case 'ID':
+                                    return CustomText(
+                                      text: value,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primaryColor,
+                                    );
 
-                            default:
-                              return CustomText(
-                                text: value,
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                color: AppColors.textColor,
-                              );
-                          }
-                        },
-                      ),
-                      onTap: () {
-                        if (column['name'] == 'ID') {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (context) =>
-                          //       const AddProjectVacancyScreen(),
-                          // );
-                        }
-                      },
-                    );
-                  }).toList(),
-                )
-              ];
-            }).toList():[],
+                                  default:
+                                    return CustomText(
+                                      text: value,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: AppColors.textColor,
+                                    );
+                                }
+                              },
+                            ),
+                            onTap: () {
+                              if (column['name'] == 'ID') {
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) =>
+                                //       const AddProjectVacancyScreen(),
+                                // );
+                              }
+                            },
+                          );
+                        }).toList(),
+                      )
+                    ];
+                  }).toList()
+                : [],
           ),
         ),
       ),

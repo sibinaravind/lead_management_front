@@ -46,6 +46,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
 
   void _buildPermissionsFromAPI(AccessPermissionProvider provider) {
     final data = provider.accessPermission;
+
     permissions = {
       'admin': data?.admin ?? {},
       'counselor': data?.counselor ?? {},
