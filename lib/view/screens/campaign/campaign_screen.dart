@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../model/campaign/campaign_model.dart';
 import '../../../res/style/colors/colors.dart';
+import 'widget/delete_dialogue.dart';
 
 class CampaignScreen extends StatefulWidget {
   const CampaignScreen({super.key});
@@ -181,7 +182,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       childAspectRatio:
-                          1.8, // adjust to control card height vs width
+                          2, // adjust to control card height vs width
                     ),
                     itemCount: value.campaignModel?.data?.length ?? 0,
                     itemBuilder: (context, index) {
@@ -220,18 +221,80 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                     text: campaign.title ?? "",
                                   ),
                                   const SizedBox(height: 4),
-                                  CustomText(
-                                    text:
-                                        "Start Date: ${DateFormat("dd-MM-yyyy").format(DateTime.parse(campaign.startDate ?? ""))}",
-                                  ),
-                                  const SizedBox(height: 8),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.edit, size: 18),
-                                        onPressed: () {
-                                          // showDialog(
+                                      CustomText(
+                                        text:
+                                            "Start Date: ${DateFormat("dd-MM-yyyy").format(DateTime.parse(campaign.startDate ?? ""))}",
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.edit,
+                                                size: 18),
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: CustomText(
+                                                      text:
+                                                          "Edit ${campaign.title}"),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete,
+                                                size: 18),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    DeleteDialogue(
+                                                  id: campaign.sId ?? "",
+                                                  name: campaign.title ?? "",
+                                                ),
+                                              );
+                                              // Provider.of<CampaignProvider>(
+                                              //         context,
+                                              //         listen: false)
+                                              //     .deleteCampaign(
+                                              //         campaign.sId ?? "");
+                                              // ScaffoldMessenger.of(context)
+                                              //     .showSnackBar(
+                                              //   SnackBar(
+                                              //     content: CustomText(
+                                              //         text:
+                                              //             "Delete ${campaign.title}"),
+                                              //   ),
+                                              // );
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+ // showDialog(
                                           //   context: context,
                                           //   builder: (context) => Dialog(
                                           //     shape: RoundedRectangleBorder(
@@ -369,51 +432,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                           //     ),
                                           //   ),
                                           // );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: CustomText(
-                                                  text:
-                                                      "Edit ${campaign.title}"),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon:
-                                            const Icon(Icons.delete, size: 18),
-                                        onPressed: () {
-                                          Provider.of<CampaignProvider>(context,
-                                                  listen: false)
-                                              .deleteCampaign(
-                                                  campaign.sId ?? "");
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: CustomText(
-                                                  text:
-                                                      "Delete ${campaign.title}"),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 
           // showDialog(

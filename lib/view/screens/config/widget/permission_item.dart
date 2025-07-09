@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/core/shared/enums.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/view/screens/config/widget/delete_dialogue.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../controller/config_provider.dart';
 import '../../../../res/style/colors/colors.dart';
 import 'action_button.dart';
 import 'show_dialogue_widget.dart';
@@ -14,8 +17,7 @@ class PermissionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isActive = item.status == 'active';
-
+    bool isActive = item.status == Status.ACTIVE;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       decoration: BoxDecoration(
@@ -121,31 +123,40 @@ class PermissionItem extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ActionButton(
-                //   icon: isActive ? Icons.toggle_on : Icons.toggle_off,
-                //   gradient: isActive
-                //       ? AppColors.greenGradient
-                //       : AppColors.redGradient,
-                //   onTap: () =>
-                //       Provider.of<ConfigProvider>(context, listen: false)
-                //           .toggleStatus(category, item),
-                //   tooltip: isActive ? 'Deactivate' : 'Activate',
-                // ),
-                SizedBox(width: 8),
                 ActionButton(
-                  icon: Icons.edit_rounded,
-                  gradient: AppColors.buttonGraidentColour,
-                  // onTap: () => _showEditDialog(category, item),
-                  onTap: () => configEditDialog(context, category, item),
-                  tooltip: 'Edit',
+                  icon: isActive ? Icons.toggle_on : Icons.toggle_off,
+                  gradient: isActive
+                      ? AppColors.greenGradient
+                      : AppColors.redGradient,
+                  onTap: () {
+                    // print("===> ${item.status == Status.INACTIVE}");
+
+                    Provider.of<ConfigProvider>(context, listen: false)
+                        .toggleStatus(category, item);
+                  },
+                  tooltip: isActive ? 'Deactivate' : 'Activate',
                 ),
                 SizedBox(width: 8),
-                ActionButton(
-                  icon: Icons.delete_rounded,
-                  gradient: AppColors.redGradient,
-                  onTap: () => DeleteDialogue(category: category, item: item),
-                  tooltip: 'Delete',
-                ),
+                if (category != "designation")
+                  ActionButton(
+                    icon: Icons.edit_rounded,
+                    gradient: AppColors.buttonGraidentColour,
+                    // onTap: () => _showEditDialog(category, item),
+                    onTap: () => configEditDialog(context, category, item),
+                    tooltip: 'Edit',
+                  ),
+                SizedBox(width: 8),
+                if (category != "designation")
+                  ActionButton(
+                    icon: Icons.delete_rounded,
+                    gradient: AppColors.redGradient,
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (context) =>
+                          DeleteDialogue(category: category, item: item),
+                    ),
+                    tooltip: 'Delete',
+                  ),
               ],
             ),
           ],
@@ -156,15 +167,15 @@ class PermissionItem extends StatelessWidget {
 
   void _toggleStatus(String category, Map<String, dynamic> item) {
     // setState(() {
-    //   item['status'] = item['status'] == 'active' ? 'inactive' : 'active';
+    item['status'] = item['status'] == 'active' ? 'inactive' : 'active';
     // });
   }
 
   String _buildSubtitle(ConfigModel item) {
     List<String> parts = [];
-    if (item.hasField('code')) parts.add('Code: ${item.code}');
-    if (item.hasField('country')) parts.add('Country: ${item.country}');
-    if (item.hasField('province')) {
+    if (item.code != null) parts.add('Code: ${item.code}');
+    if (item.country != null) parts.add('Country: ${item.country}');
+    if (item.province != null) {
       parts.add('Province: ${item.province}');
     }
     // if (item.hasField('range')) parts.add('Range: ${item.}');

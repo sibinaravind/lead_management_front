@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
+import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
 import '../employee/employee_permission_screen.dart';
 import '../officers/employee_data_display.dart';
@@ -24,7 +25,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      Provider.of<ConfigProvider>(context, listen: false).fetchConfigData();
+      Provider.of<ConfigProvider>(context, listen: false).getConfigList();
     });
   }
 
@@ -118,8 +119,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         case 37:
                           return Expanded(child: AccessPermissionScreen());
 
-                        // case 37:
-                        // return Expanded(child: CampaignScreen());
+                        case 38:
+                          return Expanded(child: CampaignScreen());
                         case 36:
                           return Expanded(child: ConfigScreen());
                         default:

@@ -218,7 +218,9 @@ class _CustomDrawerState extends State<CustomDrawer>
         DrawerItem(
             label: 'Employee', index: 23, icon: Icons.person_outline_rounded),
         DrawerItem(
-            label: 'Employee Permission', index: 37, icon: Icons.person_outline_rounded),
+            label: 'Employee Permission',
+            index: 37,
+            icon: Icons.person_outline_rounded),
         // DrawerItem(
         //     label: 'Employee Role',
         //     index: 24,
@@ -243,7 +245,7 @@ class _CustomDrawerState extends State<CustomDrawer>
       icon: Icons.campaign,
       color: AppColors.greenSecondaryColor,
       items: [
-        DrawerItem(label: 'Campaign', index: 37, icon: Icons.campaign),
+        DrawerItem(label: 'Campaign', index: 38, icon: Icons.campaign),
       ],
     ),
     // DrawerSection(
