@@ -129,8 +129,6 @@ class PermissionItem extends StatelessWidget {
                       ? AppColors.greenGradient
                       : AppColors.redGradient,
                   onTap: () {
-                    // print("===> ${item.status == Status.INACTIVE}");
-
                     Provider.of<ConfigProvider>(context, listen: false)
                         .toggleStatus(category, item);
                   },

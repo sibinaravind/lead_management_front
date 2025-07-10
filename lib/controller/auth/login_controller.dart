@@ -8,7 +8,6 @@ import '../../model/officer/officers_lofin_model.dart';
 import '../../view/screens/drawer/drawer_screen.dart';
 
 class LoginProvider extends ChangeNotifier {
-
   LoginProvider._privateConstructor();
   static final _instance = LoginProvider._privateConstructor();
   factory LoginProvider() {
@@ -32,13 +31,13 @@ class LoginProvider extends ChangeNotifier {
   }) async {
     _isLoading = true;
     notifyListeners();
-    Map<String, dynamic> data= {
+    Map<String, dynamic> data = {
       "officer_id": officerId,
       "password": password,
     };
 
     try {
-      final response= await _apiService.post(Constant().officerLogin, data);
+      final response = await _apiService.post(Constant().officerLogin, data);
 
       final jsonData = response;
       if (jsonData["success"] == true) {
@@ -83,6 +82,7 @@ class LoginProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   //
   // Future<bool> validateToken() async {
   //   try {
@@ -118,7 +118,8 @@ class LoginProvider extends ChangeNotifier {
     };
 
     try {
-      final response = await _apiService.patch(url, body); // Ensure ApiService supports PATCH
+      final response = await _apiService.patch(
+          url, body); // Ensure ApiService supports PATCH
 
       if (response["success"] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -127,7 +128,9 @@ class LoginProvider extends ChangeNotifier {
         return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed: ${response["data"] ?? "Something went wrong"}")),
+          SnackBar(
+              content: Text(
+                  "Failed: ${response["data"] ?? "Something went wrong"}")),
         );
         return false;
       }
@@ -138,7 +141,6 @@ class LoginProvider extends ChangeNotifier {
       return false;
     }
   }
-
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();

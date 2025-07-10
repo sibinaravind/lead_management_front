@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../../core/services/api_service.dart';
 
 class ClientProvider extends ChangeNotifier {
-
   ClientProvider._privateConstructor();
   static final _instance = ClientProvider._privateConstructor();
   factory ClientProvider() {
@@ -39,7 +37,6 @@ class ClientProvider extends ChangeNotifier {
       "state": state,
       "country": country,
     };
-
 
     try {
       final response = await _apiService.post(Constant().addClient, body);

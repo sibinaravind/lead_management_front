@@ -70,7 +70,7 @@ class Officers {
   String? id;
   String? name;
   String? branch;
-  int? designation;
+  String? designation;
 
   Officers({this.id, this.name, this.branch, this.designation});
 

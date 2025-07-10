@@ -161,7 +161,7 @@ class _AppBarContainerState extends State<AppBarContainer> {
                       context: context,
                       builder: (context) => EmployeeEditScreen(
                         isResetPassword: true,
-                        officerId: widget.user.id,
+                        officerId: widget.user.id ?? '',
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20),

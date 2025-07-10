@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
@@ -15,6 +16,9 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
   // _vacancyController.clear();
   // _commissionController.clear();
   TextEditingController nameController = TextEditingController(text: item.name);
+  TextEditingController colourController =
+      TextEditingController(text: item.colour ?? "");
+
   TextEditingController codeController =
       TextEditingController(text: item.code ?? '');
   TextEditingController countryController =
@@ -88,6 +92,26 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                   // keyboardType: TextInputType.number,
                 ),
               ],
+              if (item.colour != null) ...[
+                SizedBox(height: 16),
+                CustomTextFormField(
+                  controller: colourController,
+                  label: 'Colour',
+                  isRequired: true,
+                  readOnly: true,
+                  // keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 16),
+                if (item.colour != null)
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: ColorPicker(
+                        pickerColor: Color(0xffffffff),
+                        onColorChanged: (color) {
+                          colourController.text = "0X" + color.toHexString();
+                        }),
+                  )
+              ],
               // if (item.hasField('range')) ...[
               //   SizedBox(height: 16),
               //   CustomTextFormField(
@@ -134,6 +158,7 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                         // }
                         Provider.of<ConfigProvider>(context, listen: false)
                             .updateConfig(
+                                colour: colourController.text.trim(),
                                 field: category,
                                 name: item.name ?? "",
                                 id: item.id ?? "",

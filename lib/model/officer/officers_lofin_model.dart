@@ -1,28 +1,28 @@
 class Officer {
-  String id;
-  String officerId;
-  String name;
-  String status;
-  String phone;
-  String gender;
-  String companyPhoneNumber;
-  List<dynamic> designation;
-  List<String> department;
-  List<String> branch;
-  String createdAt;
+  String? id;
+  String? officerId;
+  String? name;
+  String? status;
+  String? phone;
+  String? gender;
+  String? companyPhoneNumber;
+  List<dynamic>? designation;
+  List<String>? department;
+  List<String>? branch;
+  String? createdAt;
 
   Officer({
-    required this.id,
-    required this.officerId,
-    required this.name,
-    required this.status,
-    required this.phone,
-    required this.gender,
-    required this.companyPhoneNumber,
-    required this.designation,
-    required this.department,
-    required this.branch,
-    required this.createdAt,
+    this.id,
+    this.officerId,
+    this.name,
+    this.status,
+    this.phone,
+    this.gender,
+    this.companyPhoneNumber,
+    this.designation,
+    this.department,
+    this.branch,
+    this.createdAt,
   });
 
   factory Officer.fromJson(Map<String, dynamic> json) {
@@ -34,9 +34,13 @@ class Officer {
       phone: json["phone"],
       gender: json["gender"],
       companyPhoneNumber: json["company_phone_number"],
-      designation: List<dynamic>.from(json["designation"]),
-      department: List<String>.from(json["department"]),
-      branch: List<String>.from(json["branch"]),
+      designation: json["designation"] != null
+          ? List<dynamic>.from(json["designation"])
+          : null,
+      department: json["department"] != null
+          ? List<String>.from(json["department"])
+          : null,
+      branch: json["branch"] != null ? List<String>.from(json["branch"]) : null,
       createdAt: json["created_at"],
     );
   }

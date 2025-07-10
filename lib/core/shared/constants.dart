@@ -36,7 +36,9 @@ class Constant {
   String addOfficerToLead = 'officer/addOfficerToLead';
   String deleteOfficerFromLead = 'officer/deleteOfficerFromLead';
 
-  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead
+  String allLeads = 'lead/getAllLeads';
+
+  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

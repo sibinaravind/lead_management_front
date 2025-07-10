@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../controller/auth/login_controller.dart';
+import '../../../model/officer/officers_lofin_model.dart';
 import '../Project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
@@ -32,6 +34,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
     Provider.of<LoginProvider>(context, listen: false).loadFromPreferences();
 
     Future.delayed(Duration.zero, () {
+      Provider.of<LeadProvider>(context, listen: false).getLeadList();
+
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
       Provider.of<OfficersControllerProvider>(context, listen: false)
           .fetchOfficersList();
@@ -45,7 +49,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-
       // key: scaffoldKey,
       // drawer: CustomDrawer(
       //   ismobile: true,
@@ -122,10 +125,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Consumer<AppUserProvider>(
-                        builder: (context, value, child) =>
-                            CustomDrawer(user: value.userModel ?? UserModel(), officer: officer!,)),
-
-
+                        builder: (context, value, child) => CustomDrawer(
+                              user: value.userModel ?? UserModel(),
+                              officer: officer ?? Officer(),
+                            )),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -134,26 +137,31 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         child: Column(
                           children: [
                             AppBarContainer(
-                              user: officer!,
+                              user: officer ?? Officer(),
                               isdesktop: isDesktop,
-                              onDrawerButtonPressed: () => scaffoldKey.currentState?.openDrawer(),
+                              onDrawerButtonPressed: () =>
+                                  scaffoldKey.currentState?.openDrawer(),
                             ),
                             Expanded(
-                              child: Consumer<AppUserProvider>(builder: (context, value, child) {
+                              child: Consumer<AppUserProvider>(
+                                  builder: (context, value, child) {
                                 switch (value.selectedIndex) {
                                   case 23:
-                                    return Expanded(child: EmployeeDataDisplay());
+                                    return Expanded(
+                                        child: EmployeeDataDisplay());
                                   case 37:
-                                    return Expanded(child: AccessPermissionScreen());
+                                    return Expanded(
+                                        child: AccessPermissionScreen());
 
                                   case 39:
-                                    return Expanded(child: TeamLeadDataDisplay());
+                                    return Expanded(
+                                        child: TeamLeadDataDisplay());
 
                                   case 38:
                                     return Expanded(child: CampaignScreen());
                                   case 36:
                                     return Expanded(child: ConfigScreen());
-                                    case 31:
+                                  case 31:
                                     return Expanded(child: ClientDataDisplay());
                                   default:
                                     return Expanded(

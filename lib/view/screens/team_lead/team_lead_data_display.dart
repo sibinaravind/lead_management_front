@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
-import 'package:overseas_front_end/view/screens/officers/widgets/employee_user_list_table.dart';
 import 'package:overseas_front_end/view/screens/team_lead/widgets/team_lead_user_list_table.dart';
 import 'package:provider/provider.dart';
-
-import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
 
@@ -22,9 +19,7 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TeamLeadProvider>().fetchTeamLeadList();
     });
-    // Provider.of<OfficersControllerProvider>(context, listen: false).fetchOfficersList();
   }
-  // String selectedFilter = 'all';
 
   @override
   Widget build(BuildContext context) {
@@ -86,55 +81,55 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                           ],
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: AppColors.buttonGraidentColour,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                  AppColors.violetPrimaryColor.withOpacity(0.4),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              ///--------------- Employee Creation------
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) =>
-                              //       const EmployeeCreationScreen(),
-                              // );
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.add_circle_outline,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 12),
-                                  CustomText(
-                                    text: 'Add Employee',
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //     gradient: AppColors.buttonGraidentColour,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //     boxShadow: [
+                      //       BoxShadow(
+                      //         color:
+                      //             AppColors.violetPrimaryColor.withOpacity(0.4),
+                      //         blurRadius: 12,
+                      //         offset: const Offset(0, 6),
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   child: Material(
+                      //     color: Colors.transparent,
+                      //     child: InkWell(
+                      //       borderRadius: BorderRadius.circular(20),
+                      //       onTap: () {
+                      //         ///--------------- Employee Creation------
+                      //         // showDialog(
+                      //         //   context: context,
+                      //         //   builder: (context) =>
+                      //         //       const EmployeeCreationScreen(),
+                      //         // );
+                      //       },
+                      //       child: const Padding(
+                      //         padding: EdgeInsets.symmetric(
+                      //             horizontal: 10, vertical: 10),
+                      //         child: Row(
+                      //           mainAxisSize: MainAxisSize.min,
+                      //           children: [
+                      //             Icon(
+                      //               Icons.add_circle_outline,
+                      //               color: Colors.white,
+                      //               size: 20,
+                      //             ),
+                      //             SizedBox(width: 12),
+                      //             CustomText(
+                      //               text: 'Add Employee',
+                      //               color: Colors.white,
+                      //               fontWeight: FontWeight.w600,
+                      //               fontSize: 15,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/Project/widget/add_client_screen.dart';
-import 'dart:math';
 import '../../../res/style/colors/colors.dart';
-import '../../../res/style/colors/dimension.dart';
-import '../../widgets/custom_date_range_field.dart';
 import '../../widgets/custom_text.dart';
 
 class ClientDataDisplay extends StatefulWidget {
@@ -14,9 +11,7 @@ class ClientDataDisplay extends StatefulWidget {
 }
 
 class _ClientDataDisplayState extends State<ClientDataDisplay> {
-
   String selectedFilter = 'all';
-
   final filterCategories = [
     'Service Type',
     'Designation',
@@ -114,16 +109,16 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
     //   selectedFilters[category] = 'Service Type';
     // }
 
-  //   for (var category in filterCategories) {
-  //     final options = filterOptions[category];
-  //     if (options != null && options.contains('All')) {
-  //       selectedFilters[category] = 'All';
-  //     } else if (options != null && options.isNotEmpty) {
-  //       selectedFilters[category] = options.first;
-  //     } else {
-  //       selectedFilters[category] = '';
-  //     }
-  //   }
+    //   for (var category in filterCategories) {
+    //     final options = filterOptions[category];
+    //     if (options != null && options.contains('All')) {
+    //       selectedFilters[category] = 'All';
+    //     } else if (options != null && options.isNotEmpty) {
+    //       selectedFilters[category] = options.first;
+    //     } else {
+    //       selectedFilters[category] = '';
+    //     }
+    //   }
   }
 
   @override
@@ -143,7 +138,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                 // Enhanced Header Section
                 Container(
                   padding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                   decoration: BoxDecoration(
                     gradient: AppColors.blackGradient,
                     borderRadius: const BorderRadius.only(
@@ -197,7 +192,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                           boxShadow: [
                             BoxShadow(
                               color:
-                              AppColors.violetPrimaryColor.withOpacity(0.4),
+                                  AppColors.violetPrimaryColor.withOpacity(0.4),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),

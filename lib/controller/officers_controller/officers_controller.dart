@@ -69,8 +69,6 @@ class OfficersControllerProvider with ChangeNotifier {
         allOfficersListData =
             dataList.map((e) => OfficersModel.fromJson(e)).toList();
 
-        // print("===> ${allOfficersListData?.length}");
-
         _officersListData!.sort((a, b) {
           final aId = int.tryParse(a.officerId ?? '') ?? 0;
           final bId = int.tryParse(b.officerId ?? '') ?? 0;

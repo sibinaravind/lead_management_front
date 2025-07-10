@@ -19,7 +19,7 @@ class CampaignProvider extends ChangeNotifier {
   Uint8List? imageBytes;
   List<CampaignModel>? _campaignModel;
   bool _isLoading = false;
-  bool _isPatching = false;
+  final bool _isPatching = false;
   String? _error;
 
   List<CampaignModel>? get campaignModelList => _campaignModel;
@@ -38,13 +38,9 @@ class CampaignProvider extends ChangeNotifier {
     // notifyListeners();
 
     try {
-      print("req");
-
       final response = await _api.get(Constant().camapignList);
-      print(response);
       _campaignModel =
           List.from(response['data'].map((e) => CampaignModel.fromJson(e)));
-      print("post req");
     } catch (e) {
       _error = 'Failed to load permissions: $e';
     } finally {

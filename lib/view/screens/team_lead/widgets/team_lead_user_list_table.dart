@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
 import 'package:overseas_front_end/model/team_lead/team_lead_model.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
+import 'package:provider/provider.dart';
 import '../../../../model/officer/officer_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
@@ -26,104 +29,108 @@ class TeamLeadListTable extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
-            child: DataTable(
-              columnSpacing: 16.0,
-              headingRowColor: WidgetStateColor.resolveWith(
-                  (states) => AppColors.primaryColor),
-              columns: columnsData.map((column) {
-                return DataColumn(
-                  label: Flexible(
-                    child: CustomText(
-                      text: column['name'],
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textWhiteColour,
-                      fontSize: 14,
+            child: Consumer2<TeamLeadProvider, OfficersControllerProvider>(
+              builder: (context, valueA, valueB, child) => DataTable(
+                columnSpacing: 16.0,
+                headingRowColor: WidgetStateColor.resolveWith(
+                    (states) => AppColors.primaryColor),
+                columns: columnsData.map((column) {
+                  return DataColumn(
+                    label: Flexible(
+                      child: CustomText(
+                        text: column['name'],
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textWhiteColour,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-              rows: userList.isNotEmpty
-                  ? userList.expand((listUser) {
-                      return [
-                        DataRow(
-                          cells: columnsData.map((column) {
-                            final extractor = column['extractor'] as Function;
-                            final value = extractor(listUser);
-                            return DataCell(
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                    maxWidth: 200, minWidth: 50),
-                                child: Builder(
-                                  builder: (context) {
-                                    switch (column['name']) {
-                                      case 'Status':
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                  );
+                }).toList(),
+                rows: userList.isNotEmpty
+                    ? userList.expand((listUser) {
+                        return [
+                          DataRow(
+                            cells: columnsData.map((column) {
+                              final extractor = column['extractor'] as Function;
+                              final value = extractor(listUser);
+                              return DataCell(
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                      maxWidth: 200, minWidth: 50),
+                                  child: Builder(
+                                    builder: (context) {
+                                      switch (column['name']) {
+                                        case 'Status':
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
 
-                                            ///---- status---------
-                                            // color: getColorBasedOnStatus(
-                                            //     Dimension.mobile ?? ''),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 6),
-                                          child: CustomText(
-                                            text: getTextBasedOnStatus(
-                                                listUser.status ?? ""),
-                                            // text: getTextBasedOnStatus(
-                                            //     listUser.mobile ?? ''),
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12,
-                                            // color: getColorBasedOnStatus(
-                                            //         listUser.mobile ?? '')
-                                            //     .withOpacity(1.0),
-                                          ),
-                                        );
-                                      case 'Phone Number':
-                                        return SelectionArea(
+                                              ///---- status---------
+                                              // color: getColorBasedOnStatus(
+                                              //     Dimension.mobile ?? ''),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6),
                                             child: CustomText(
-                                          text: value,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: AppColors.textColor,
-                                        ));
-                                      case 'ID':
-                                        return CustomText(
-                                          text: value,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primaryColor,
-                                        );
+                                              text: getTextBasedOnStatus(
+                                                  listUser.status ?? ""),
+                                              // text: getTextBasedOnStatus(
+                                              //     listUser.mobile ?? ''),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12,
+                                              // color: getColorBasedOnStatus(
+                                              //         listUser.mobile ?? '')
+                                              //     .withOpacity(1.0),
+                                            ),
+                                          );
+                                        case 'Phone Number':
+                                          return SelectionArea(
+                                              child: CustomText(
+                                            text: value,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal,
+                                            color: AppColors.textColor,
+                                          ));
+                                        case 'ID':
+                                          return CustomText(
+                                            text: value,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primaryColor,
+                                          );
 
-                                      default:
-                                        return CustomText(
-                                          text: value,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: AppColors.textColor,
-                                        );
-                                    }
-                                  },
+                                        default:
+                                          return CustomText(
+                                            text: value,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal,
+                                            color: AppColors.textColor,
+                                          );
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
-                              onTap: () {
-                                if (column['name'] == 'ID') {
-                                  print("object");
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => TeamLeadDisplay(
-                                      id: listUser.officerId ?? "",
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          }).toList(),
-                        )
-                      ];
-                    }).toList()
-                  : [],
+                                onTap: () {
+                                  if (column['name'] == 'ID') {
+                                    valueA.getAllRemainingEmpoyees(
+                                        listUser.officerId ?? '',
+                                        valueB.allOfficersListData ?? []);
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => TeamLeadDisplay(
+                                        officerId: listUser.officerId ?? "",
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            }).toList(),
+                          )
+                        ];
+                      }).toList()
+                    : [],
+              ),
             ),
           ),
         ),

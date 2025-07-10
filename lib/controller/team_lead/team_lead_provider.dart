@@ -20,6 +20,8 @@ class TeamLeadProvider with ChangeNotifier {
   List<TeamLeadModel>? assignedEmployees = [];
 
   List<OfficersModel>? remainingEmployees = [];
+  List<OfficersModel>? allRemainingEmployees = [];
+
   // List<SubOfficerModel> selectedClients = [];
 
   bool _isLoading = false;
@@ -67,18 +69,26 @@ class TeamLeadProvider with ChangeNotifier {
   }
 
   void filterEmployees(String str) {
-    assignedEmployees?.where(
-          (element) =>
-              (element.officerId?.contains(str) ?? false) ||
-              (element.name?.contains(str) ?? false),
-        ) ??
+    print(str);
+    remainingEmployees = allRemainingEmployees;
+
+    remainingEmployees = remainingEmployees
+            ?.where(
+              (element) =>
+                  (element.officerId
+                          ?.toLowerCase()
+                          .contains(str.toLowerCase()) ??
+                      false) ||
+                  (element.name?.toLowerCase().contains(str.toLowerCase()) ??
+                      false),
+            )
+            .toList() ??
         [];
+
     notifyListeners();
   }
 
-  void clearEmployees() {
-    remainingEmployees = [];
-  }
+  void clearEmployees() {}
 
   void addOfficerToLead(
       {required String leadOfficerId, required String officerId}) async {
@@ -125,14 +135,12 @@ class TeamLeadProvider with ChangeNotifier {
     }
   }
 
-  void getAllEmpoyees(String id, List<OfficersModel> officersList) {
-    print("===> ${id}");
-
+  void getAllRemainingEmpoyees(String id, List<OfficersModel> officersList) {
     List listId = _teamLeadListData
-            ?.expand((e) => e.officers?.map((e) => e.id) ?? [])
+            ?.where((element) => element.officerId == id)
+            .expand((e) => e.officers?.map((e) => e.id) ?? [])
             .toList() ??
         [];
-    print("===> ${listId}");
     List<OfficersModel> li = officersList
         .where(
           (element) => !listId.contains(element.officerId),
@@ -144,6 +152,7 @@ class TeamLeadProvider with ChangeNotifier {
     // ) ??
     // [];
     remainingEmployees = li;
+    allRemainingEmployees = li;
     /* .where(
               (element) => !idList.any(
                 (e) => e == element.id,
@@ -166,8 +175,6 @@ class TeamLeadProvider with ChangeNotifier {
         final List<dynamic> dataList = json['data'];
         _teamLeadListData =
             dataList.map((e) => TeamLeadModel.fromJson(e)).toList();
-
-        // print("===> ${_teamLeadListData?.length}");
 
         // _teamLeadListData!.sort((a, b) {
         //   final aId = int.tryParse(a.officerId ?? '') ?? 0;
