@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
+import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';
 import 'package:overseas_front_end/model/officer/user_model.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -7,10 +8,12 @@ import '../../../../config/flavour_config.dart';
 import '../../../../res/style/colors/colors.dart';
 
 class CustomDrawer extends StatefulWidget {
+  final Officer officer;
   final bool? ismobile;
   final UserModel user;
 
   const CustomDrawer({
+    required this.officer,
     super.key,
     this.ismobile = false,
     required this.user,
@@ -359,8 +362,12 @@ class _CustomDrawerState extends State<CustomDrawer>
                       ),
                       const SizedBox(height: 6),
                       CustomText(
-                        text: widget.user.familyName ?? 'Sibin',
-                        fontSize: 25,
+                        text: widget.officer.name ?? '',
+                        fontSize: 15,
+                        color: AppColors.textWhiteColour, // Slate 100
+                      ),  const SizedBox(height: 6), CustomText(
+                        text: widget.officer.officerId ?? '',
+                        fontSize: 12,
                         color: AppColors.textWhiteColour, // Slate 100
                       ),
                       const SizedBox(height: 20),

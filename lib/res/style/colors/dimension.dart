@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 
 class Dimension {
-  bool getHeight(context){
+  bool isMobile(context){
     bool isMobile=false;
     return isMobile=MediaQuery.of(context).size.width<600;
   }

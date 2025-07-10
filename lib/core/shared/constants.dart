@@ -14,6 +14,7 @@ class Constant {
   }
 
   String officerLogin = 'officer/login';
+  String officerPasswordReset = 'officer/resetPassword';
   String officerInsert = 'officer/insert';
   String officerUpdate = 'officer/updateOfficer/';
   String officerList = 'officer/list';
@@ -21,6 +22,8 @@ class Constant {
   String officerResetPassword = 'officer/updatePassword';
   String officerUpdateStatus = 'officer/updateStatus/';
   String officerDelete = 'officer/delete';
+
+  String addClient="project/clientCreate";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';

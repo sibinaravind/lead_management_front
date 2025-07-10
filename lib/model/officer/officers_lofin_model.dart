@@ -6,7 +6,7 @@ class Officer {
   String phone;
   String gender;
   String companyPhoneNumber;
-  List<int> designation;
+  List<dynamic> designation;
   List<String> department;
   List<String> branch;
   String createdAt;
@@ -34,7 +34,7 @@ class Officer {
       phone: json["phone"],
       gender: json["gender"],
       companyPhoneNumber: json["company_phone_number"],
-      designation: List<int>.from(json["designation"]),
+      designation: List<dynamic>.from(json["designation"]),
       department: List<String>.from(json["department"]),
       branch: List<String>.from(json["branch"]),
       createdAt: json["created_at"],

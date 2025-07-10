@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:overseas_front_end/core/shared/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,10 +43,10 @@ class LoginProvider extends ChangeNotifier {
       final jsonData = response;
       if (jsonData["success"] == true) {
         _officer = Officer.fromJson(jsonData["data"]["officer"]);
-        _token = jsonData["data"]["token"];
+        // _token = jsonData["data"]["token"];
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString("token", _token!);
+        // await prefs.setString("token", _token!);
         await prefs.setString("officer", jsonEncode(_officer!.toJson()));
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +83,62 @@ class LoginProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  //
+  // Future<bool> validateToken() async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString("token");
+  //
+  //     if (token == null) return false;
+  //
+  //     final response = await _apiService.post(
+  //       Constant().validateTokenEndpoint,
+  //       {}, // or headers with token
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
+  //
+  //     return response["valid"] == true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  Future<bool> resetPassword({
+    required String officerId,
+    required String currentPassword,
+    required String newPassword,
+    required BuildContext context,
+  }) async {
+    final url = '${Constant().officerPasswordReset}/$officerId';
+
+    final body = {
+      "current_password": currentPassword,
+      "new_password": newPassword,
+    };
+
+    try {
+      final response = await _apiService.patch(url, body); // Ensure ApiService supports PATCH
+
+      if (response["success"] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Password updated successfully")),
+        );
+        return true;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed: ${response["data"] ?? "Something went wrong"}")),
+        );
+        return false;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+      return false;
+    }
+  }
+
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();

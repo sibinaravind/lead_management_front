@@ -15,12 +15,17 @@ import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
 import 'controller/permission_conteroller/access_permission_controller.dart';
+import 'controller/project/client_provider_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
 // import 'view/features/drawer/drawer_screen.dart';
 
 class MyApp extends StatelessWidget {
+  // final bool isLoggedIn;
+
   final String? flavour;
-  const MyApp({super.key, this.flavour});
+  const MyApp({super.key, this.flavour,
+    // required this.isLoggedIn
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +33,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AppUserProvider(),
+        ), ChangeNotifierProvider(
+          create: (context) => ClientProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => CampaignProvider(),

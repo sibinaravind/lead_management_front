@@ -6,13 +6,14 @@ import 'package:overseas_front_end/view/widgets/CustomPasswordTextField.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../controller/auth/login_controller.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
-
 
 class EmployeeEditScreen extends StatefulWidget {
   final bool isResetPassword;
   final String officerId;
-  const EmployeeEditScreen({super.key, required this.officerId, required this.isResetPassword});
+  const EmployeeEditScreen(
+      {super.key, required this.officerId, required this.isResetPassword});
 
   @override
   State<EmployeeEditScreen> createState() => _EmployeeCreationScreenState();
@@ -22,18 +23,14 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
-
-
-  final TextEditingController _resetPasswordController = TextEditingController();
+  final TextEditingController _resetPasswordController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
-
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -116,15 +113,17 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomText(
-                                text:widget.isResetPassword?'Reset Password':'Change Password',
+                                text: widget.isResetPassword
+                                    ? 'Reset Password'
+                                    : 'Change Password',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                               CustomText(
-                                text:
-                                widget.isResetPassword?
-                                'Reset officer password':'Change Your Password',
+                                text: widget.isResetPassword
+                                    ? 'Reset officer password'
+                                    : 'Change Your Password',
                                 fontSize: 13,
                                 color: Colors.white70,
                               ),
@@ -152,8 +151,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                             decoration: BoxDecoration(
                               color: Colors.grey.shade50,
                               borderRadius: BorderRadius.circular(16),
-                              border:
-                              Border.all(color: Colors.grey.shade200),
+                              border: Border.all(color: Colors.grey.shade200),
                             ),
                             child: Column(
                               children: [
@@ -176,42 +174,64 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
 
                                           return Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
-
                                               const SizedBox(height: 16),
-
                                               ResponsiveGrid(
                                                   columns: columnsCount,
                                                   children: [
                                                     CustomPasswordTextFormField(
-                                                      label: 'Password',
+                                                      label: widget
+                                                              .isResetPassword
+                                                          ? 'Current Password'
+                                                          : 'Password',
                                                       controller:
-                                                      _passwordController,
-                                                      isRequired: true, validator: (String? value) {
-                                                        if(value!.isEmpty){
+                                                          _passwordController,
+                                                      isRequired: true,
+                                                      validator:
+                                                          (String? value) {
+                                                        if (value!.isEmpty) {
                                                           return "Required";
                                                         }
-                                                        final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
-                                                        if (!regex.hasMatch(value)) {
-                                                          return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
+                                                        final regex = RegExp(
+                                                            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
+                                                        if (!widget
+                                                            .isResetPassword) {
+                                                          if (!regex.hasMatch(
+                                                              value)) {
+                                                            return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
+                                                          }
                                                         }
+
                                                         return null;
-                                                    },
+                                                      },
                                                     ),
                                                     const SizedBox(height: 16),
-
                                                     Visibility(
-                                                      visible:widget.isResetPassword,
-                                                      child: CustomPasswordTextFormField(
-                                                        label: 'Confirm Password',
+                                                      visible: widget
+                                                          .isResetPassword,
+                                                      child:
+                                                          CustomPasswordTextFormField(
+                                                        label:
+                                                            'Confirm Password',
                                                         controller:
-                                                        _resetPasswordController,
-                                                        isRequired: true, validator: (String? value) {
-                                                          if(value==_resetPasswordController.text){
-                                                            return 'Confirm password not matching';
+                                                            _resetPasswordController,
+                                                        isRequired: widget
+                                                            .isResetPassword,
+                                                        validator:
+                                                            (String? value) {
+                                                          if (value!.isEmpty) {
+                                                            return 'Required';
                                                           }
-                                                      },
+                                                          final regex = RegExp(
+                                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
+
+                                                          if (!regex.hasMatch(
+                                                              value)) {
+                                                            return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
+                                                          }
+                                                          return null;
+                                                        },
                                                       ),
                                                     ),
                                                   ]),
@@ -231,8 +251,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                         text: 'Cancel',
                                         icon: Icons.close_rounded,
                                         textColor: Colors.grey,
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                         borderColor: Colors.grey.shade300,
                                       ),
                                     ),
@@ -240,7 +259,9 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                     Expanded(
                                       flex: 2,
                                       child: CustomActionButton(
-                                        text:widget.isResetPassword?"Reset Password":"Change Password",
+                                        text: widget.isResetPassword
+                                            ? "Reset Password"
+                                            : "Change Password",
                                         icon: Icons.save_rounded,
                                         isFilled: true,
                                         gradient: const LinearGradient(
@@ -251,14 +272,17 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                         ),
                                         onPressed: () async {
                                           if (_formKey.currentState
-                                              ?.validate() ??
+                                                  ?.validate() ??
                                               false) {
-                                           widget.isResetPassword?resetPassword():editPassword();
-                                          }else{
-                                            CustomSnackBar.show(context,
-                                                "Password required",
+                                            widget.isResetPassword
+                                                ? resetPassword()
+                                                : editPassword();
+                                          } else {
+                                            CustomSnackBar.show(
+                                                context, "Password required",
                                                 backgroundColor: AppColors
-                                                    .redSecondaryColor);                                          }
+                                                    .redSecondaryColor);
+                                          }
                                         },
                                       ),
                                     ),
@@ -272,7 +296,6 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                     ),
                   ),
                   const SizedBox(width: 16),
-
                 ],
               ),
             ),
@@ -281,38 +304,59 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
       ),
     );
   }
-void editPassword()async{
 
-  final officer = {
+  void editPassword() async {
+    final officer = {"password": _passwordController.text};
 
-    "password":
-    _passwordController.text
-  };
+    final officerId = widget.officerId; // or officerIdController.text
 
-  final officerId = widget.officerId; // or officerIdController.text
+    if (officerId.isEmpty) {
+      bool success =
+          await OfficersControllerProvider().updateOfficer(officerId, officer);
 
-  if (officerId.isEmpty) {
-    bool success = await OfficersControllerProvider().updateOfficer(officerId, officer);
-
-    if (success) {
-      CustomSnackBar.show(context,
-          "Employee updated successfully");
-    } else {
-      CustomSnackBar.show(context,
-          "Creation failed",
-          backgroundColor: AppColors
-              .redSecondaryColor);
+      if (success) {
+        CustomSnackBar.show(context, "Password updated successfully");
+      } else {
+        CustomSnackBar.show(context, "Failed to update",
+            backgroundColor: AppColors.redSecondaryColor);
+      }
     }
   }
-}
-  void resetPassword(){
-    AlertDialog(
-      title: const Text("Reset Password"),
-      content: const Text("Are you sure?"),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Cancel")),
-        TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Reset")),
-      ],
+
+  void resetPassword() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+         return AlertDialog(
+            title: const Text("Reset Password"),
+            content: const Text("Are you sure?"),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text("Cancel")),
+              TextButton(
+                  onPressed: () async {
+                    final officerId = widget.officerId;
+                    if (officerId.isEmpty) {
+                      bool success = await LoginProvider().resetPassword(
+                          officerId: officerId,
+                          currentPassword: _passwordController.text,
+                          newPassword: _resetPasswordController.text,
+                          context: context);
+                      Navigator.pop(context);
+                      if (success) {
+                        CustomSnackBar.show(context, "Password Rest successfully");
+                      } else {
+                        CustomSnackBar.show(context, "Failed to Update",
+                            backgroundColor: AppColors.redSecondaryColor);
+                      }
+                    }
+                  },
+                  child: const Text("Reset")),
+            ],
+          );
+
+        },
     );
   }
 }

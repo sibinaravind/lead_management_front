@@ -3,12 +3,15 @@ import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
+import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
+import '../../../controller/auth/login_controller.dart';
+import '../Project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
 import '../employee/employee_permission_screen.dart';
@@ -26,6 +29,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   void initState() {
     super.initState();
+    Provider.of<LoginProvider>(context, listen: false).loadFromPreferences();
+
     Future.delayed(Duration.zero, () {
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
       Provider.of<OfficersControllerProvider>(context, listen: false)
@@ -37,9 +42,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 1000;
 
-    // final scaffoldKey = GlobalKey<ScaffoldState>();
+    final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
+
       // key: scaffoldKey,
       // drawer: CustomDrawer(
       //   ismobile: true,
@@ -107,6 +113,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
       body: LayoutBuilder(
         builder: (context, constraints) {
+          final loginProvider = Provider.of<LoginProvider>(context);
+          final officer = loginProvider.officer;
           final isDesktop = MediaQuery.of(context).size.width > 1000;
           // return Container();
           return isDesktop
@@ -115,27 +123,49 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   children: [
                     Consumer<AppUserProvider>(
                         builder: (context, value, child) =>
-                            CustomDrawer(user: value.userModel ?? UserModel())),
-                    Consumer<AppUserProvider>(builder: (context, value, child) {
-                      switch (value.selectedIndex) {
-                        case 23:
-                          return Expanded(child: EmployeeDataDisplay());
-                        case 37:
-                          return Expanded(child: AccessPermissionScreen());
+                            CustomDrawer(user: value.userModel ?? UserModel(), officer: officer!,)),
 
-                        case 39:
-                          return Expanded(child: TeamLeadDataDisplay());
 
-                        case 38:
-                          return Expanded(child: CampaignScreen());
-                        case 36:
-                          return Expanded(child: ConfigScreen());
-                        default:
-                          return Expanded(
-                            child: DashboardScreen(),
-                          );
-                      }
-                    }),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: AppColors.backgroundGraident,
+                        ),
+                        child: Column(
+                          children: [
+                            AppBarContainer(
+                              user: officer!,
+                              isdesktop: isDesktop,
+                              onDrawerButtonPressed: () => scaffoldKey.currentState?.openDrawer(),
+                            ),
+                            Expanded(
+                              child: Consumer<AppUserProvider>(builder: (context, value, child) {
+                                switch (value.selectedIndex) {
+                                  case 23:
+                                    return Expanded(child: EmployeeDataDisplay());
+                                  case 37:
+                                    return Expanded(child: AccessPermissionScreen());
+
+                                  case 39:
+                                    return Expanded(child: TeamLeadDataDisplay());
+
+                                  case 38:
+                                    return Expanded(child: CampaignScreen());
+                                  case 36:
+                                    return Expanded(child: ConfigScreen());
+                                    case 31:
+                                    return Expanded(child: ClientDataDisplay());
+                                  default:
+                                    return Expanded(
+                                      child: DashboardScreen(),
+                                    );
+                                }
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 )
               : Container();
