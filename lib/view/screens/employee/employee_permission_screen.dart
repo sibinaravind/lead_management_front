@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../controller/permission_conteroller/access_permission_controller.dart';
+import '../../../controller/permission_controller/access_permission_controller.dart';
 import 'package:overseas_front_end/view/widgets/custom_shimmer_widget.dart';
 import '../../../res/style/colors/colors.dart';
 

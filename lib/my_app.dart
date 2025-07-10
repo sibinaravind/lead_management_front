@@ -16,7 +16,7 @@ import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
-import 'controller/permission_conteroller/access_permission_controller.dart';
+import 'controller/permission_controller/access_permission_controller.dart';
 import 'controller/project/client_provider_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
 // import 'view/features/drawer/drawer_screen.dart';
@@ -25,7 +25,9 @@ class MyApp extends StatelessWidget {
   // final bool isLoggedIn;
 
   final String? flavour;
-  const MyApp({super.key, this.flavour,
+  const MyApp({
+    super.key,
+    this.flavour,
     // required this.isLoggedIn
   });
 
@@ -35,7 +37,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AppUserProvider(),
-        ), ChangeNotifierProvider(
+        ),
+        ChangeNotifierProvider(
           create: (context) => ClientProvider(),
         ),
         ChangeNotifierProvider(
