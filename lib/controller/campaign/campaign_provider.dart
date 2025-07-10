@@ -17,12 +17,12 @@ class CampaignProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
 
   Uint8List? imageBytes;
-  CampaignModel? _campaignModel;
+  List<CampaignModel>? _campaignModel;
   bool _isLoading = false;
   bool _isPatching = false;
   String? _error;
 
-  CampaignModel? get campaignModel => _campaignModel;
+  List<CampaignModel>? get campaignModelList => _campaignModel;
   bool get isLoading => _isLoading;
   bool get isPatching => _isPatching;
   String? get error => _error;
@@ -42,7 +42,8 @@ class CampaignProvider extends ChangeNotifier {
 
       final response = await _api.get(Constant().camapignList);
       print(response);
-      _campaignModel = CampaignModel.fromJson(response);
+      _campaignModel =
+          List.from(response['data'].map((e) => CampaignModel.fromJson(e)));
       print("post req");
     } catch (e) {
       _error = 'Failed to load permissions: $e';
@@ -50,6 +51,10 @@ class CampaignProvider extends ChangeNotifier {
       _isLoading = false;
       // notifyListeners();
     }
+    notifyListeners();
+  }
+
+  void previewFile() {
     notifyListeners();
   }
 

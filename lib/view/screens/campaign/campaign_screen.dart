@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
@@ -37,75 +39,88 @@ class _CampaignScreenState extends State<CampaignScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 8,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Consumer<CampaignProvider>(
-                    builder: (context, value, child) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Add Campaign",
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
-                          controller: value.titleController,
-                          labelText: "Title",
-                          validator: (value) {
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        CustomDateField(
-                          controller: value.startDateController,
-                          label: "Start Date",
-                          isRequired: true,
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            String? file64 = await FileUploadService()
-                                .pickAndCompressFileAsBase64();
-                            value.file64 = file64;
-
-                            // Navigator.pop(
-                            // context); // Optionally close dialog after add
-                          },
-                          icon: const Icon(Icons.upload),
-                          label: const CustomText(text: "Upload Image"),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(48),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Consumer<CampaignProvider>(
+                      builder: (context, value, child) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: "Add Campaign",
+                            fontSize: 18,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const CustomText(text: "Cancel"),
+                          const SizedBox(height: 16),
+                          CustomTextField(
+                            controller: value.titleController,
+                            labelText: "Title",
+                            validator: (value) {
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          CustomDateField(
+                            controller: value.startDateController,
+                            label: "Start Date",
+                            isRequired: true,
+                          ),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: Image.memory(
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(),
+                              base64Decode(value.file64?.split(",").last ?? ''),
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
                             ),
-                            const SizedBox(width: 8),
-                            ElevatedButton(
-                              onPressed: () {
-                                value.addCampaign(
-                                  docName: value.titleController.text.trim(),
-                                  title: value.titleController.text.trim(),
-                                  image64: value.file64 ?? "",
-                                  startDate:
-                                      value.startDateController.text.trim(),
-                                );
-                                Navigator.pop(context);
-                                // Add any confirm action if needed
-                                // For example, you could trigger the addCampaign here instead of in the upload button
+                          ),
+                          Center(
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                String? file64 = await FileUploadService()
+                                    .pickAndCompressFileAsBase64();
+                                value.file64 = file64;
+                                value.previewFile();
+
+                                // Navigator.pop(
+                                // context); // Optionally close dialog after add
                               },
-                              child: const CustomText(text: "Save"),
+                              icon: const Icon(Icons.upload),
+                              label: const CustomText(text: "Upload Image"),
                             ),
-                          ],
-                        )
-                      ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const CustomText(text: "Cancel"),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  value.addCampaign(
+                                    docName: value.titleController.text.trim(),
+                                    title: value.titleController.text.trim(),
+                                    image64: value.file64 ?? "",
+                                    startDate:
+                                        value.startDateController.text.trim(),
+                                  );
+                                  Navigator.pop(context);
+                                  // Add any confirm action if needed
+                                  // For example, you could trigger the addCampaign here instead of in the upload button
+                                },
+                                child: const CustomText(text: "Save"),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -184,10 +199,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       childAspectRatio:
                           2, // adjust to control card height vs width
                     ),
-                    itemCount: value.campaignModel?.data?.length ?? 0,
+                    itemCount: value.campaignModelList?.length ?? 0,
                     itemBuilder: (context, index) {
-                      final Data campaign =
-                          value.campaignModel?.data?.elementAt(index) as Data;
+                      final CampaignModel campaign = value.campaignModelList
+                          ?.elementAt(index) as CampaignModel;
 
                       return Card(
                         shape: RoundedRectangleBorder(

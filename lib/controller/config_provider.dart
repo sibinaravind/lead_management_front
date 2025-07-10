@@ -66,7 +66,7 @@ class ConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> addConfig({required String field, required String name}) async {
+  Future<void> addConfig({required String field, required String name}) async {
     isLoading = true;
     _error = null;
     // notifyListeners();
@@ -77,19 +77,19 @@ class ConfigProvider extends ChangeNotifier {
         "action": "insert",
         "value": {"name": name, "status": "ACTIVE"}
       });
-      // configModelList = ConfigListModel.fromJson(response.data);
       if (response['success'] == true) {
         configModelList?.insertItem(
             field,
             ConfigModel(
-              name: name,
-            ));
+                name: name,
+                id: response['data']['insertedId'],
+                status: Status.ACTIVE));
         notifyListeners();
       }
-      return response['success'] == true;
+      // return response['success'] == true;
     } catch (e) {
       _error = 'Failed to load permissions: $e';
-      return false;
+      // return false;
     } finally {
       isLoading = false;
       // await getConfigList();

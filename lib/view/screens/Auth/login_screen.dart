@@ -9,6 +9,8 @@ import '../../../controller/auth/login_controller.dart';
 import '../../../res/style/colors/colors.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -406,6 +408,4 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
   }
-
-
 }

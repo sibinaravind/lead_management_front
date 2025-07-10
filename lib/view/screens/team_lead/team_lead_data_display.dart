@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
 import 'package:overseas_front_end/view/screens/officers/widgets/employee_user_list_table.dart';
+import 'package:overseas_front_end/view/screens/team_lead/widgets/team_lead_user_list_table.dart';
 import 'package:provider/provider.dart';
 
 import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
-import 'employee_creation_screen.dart';
 
-class EmployeeDataDisplay extends StatefulWidget {
-  const EmployeeDataDisplay({super.key});
+class TeamLeadDataDisplay extends StatefulWidget {
+  const TeamLeadDataDisplay({super.key});
 
   @override
-  State<EmployeeDataDisplay> createState() => _EmployeeDataDisplayState();
+  State<TeamLeadDataDisplay> createState() => _TeamLeadDataDisplayState();
 }
 
-class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
+class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OfficersControllerProvider>().fetchOfficersList();
+      context.read<TeamLeadProvider>().fetchTeamLeadList();
     });
     // Provider.of<OfficersControllerProvider>(context, listen: false).fetchOfficersList();
   }
@@ -76,7 +77,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomText(
-                              text: "Employee Management Dashboard",
+                              text: "Team Lead Management Dashboard",
                               color: AppColors.textWhiteColour,
                               // fontSize: Dimension().getHeight(context) ? 13 : 19,
                               maxLines: 2,
@@ -104,11 +105,11 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                             borderRadius: BorderRadius.circular(20),
                             onTap: () {
                               ///--------------- Employee Creation------
-                              showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    const EmployeeCreationScreen(isEdit: false,),
-                              );
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) =>
+                              //       const EmployeeCreationScreen(),
+                              // );
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
@@ -150,7 +151,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                           child: TextField(
                             onChanged: (value) {
                               context
-                                  .read<OfficersControllerProvider>()
+                                  .read<TeamLeadProvider>()
                                   .setSearchQuery(value);
                             },
                             decoration: InputDecoration(
@@ -167,7 +168,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                                     size: 20, color: Colors.grey),
                                 onPressed: () {
                                   context
-                                      .read<OfficersControllerProvider>()
+                                      .read<TeamLeadProvider>()
                                       .setSearchQuery('');
                                 },
                               ),
@@ -197,9 +198,9 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                     // _buildFilterToggleButton(),
                   ],
                 ),
-                Consumer<OfficersControllerProvider>(
+                Consumer<TeamLeadProvider>(
                   builder: (context, controller, _) {
-                    final userList = controller.officersListModel;
+                    final userList = controller.teamListListModel;
 
                     if (controller.isLoading) {
                       return const Center(child: CircularProgressIndicator());
@@ -231,7 +232,7 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(16),
-                            child: EmployeeListTable(
+                            child: TeamLeadListTable(
                               userList: userList,
                             ),
                           ),

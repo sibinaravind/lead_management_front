@@ -14,6 +14,8 @@ class OfficersControllerProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   List<OfficersModel>? _officersListData;
+  List<OfficersModel>? allOfficersListData;
+
   List<OfficersModel>? _filteredOfficersList;
 
   bool _isLoading = false;
@@ -36,7 +38,8 @@ class OfficersControllerProvider with ChangeNotifier {
       final employeeName = officer.name.toLowerCase() ?? '';
       final phone = officer.phone.toLowerCase() ?? '';
       final employeePhone = officer.companyPhoneNumber.toLowerCase() ?? '';
-      return employeeName.contains(_searchQuery) ||employeePhone.contains(_searchQuery)||
+      return employeeName.contains(_searchQuery) ||
+          employeePhone.contains(_searchQuery) ||
           phone.contains(_searchQuery);
     }).toList();
 
@@ -59,8 +62,14 @@ class OfficersControllerProvider with ChangeNotifier {
 
       if (json['success'] == true && json['data'] != null) {
         final List<dynamic> dataList = json['data'];
+
         _officersListData =
             dataList.map((e) => OfficersModel.fromJson(e)).toList();
+
+        allOfficersListData =
+            dataList.map((e) => OfficersModel.fromJson(e)).toList();
+
+        // print("===> ${allOfficersListData?.length}");
 
         _officersListData!.sort((a, b) {
           final aId = int.tryParse(a.officerId ?? '') ?? 0;
@@ -82,13 +91,13 @@ class OfficersControllerProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> createOfficer(Map<String,dynamic> officer) async {
+  Future<bool> createOfficer(Map<String, dynamic> officer) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       final response =
-      await _apiService.post(Constant().officerInsert, officer);
+          await _apiService.post(Constant().officerInsert, officer);
 
       if (response['success'] == true) {
         await fetchOfficersList();
@@ -105,7 +114,9 @@ class OfficersControllerProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-  Future<bool> updateOfficer(String officerId, Map<String, dynamic> updatedData) async {
+
+  Future<bool> updateOfficer(
+      String officerId, Map<String, dynamic> updatedData) async {
     _isLoading = true;
     notifyListeners();
 
@@ -130,6 +141,7 @@ class OfficersControllerProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
   // Future<bool> updateOfficerPassword(String officerId, Map<String, dynamic> updatedData) async {
   //   _isLoading = true;
   //   notifyListeners();
@@ -155,18 +167,18 @@ class OfficersControllerProvider with ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
-  Future<bool> deleteOfficer(String officerId,) async {
+  Future<bool> deleteOfficer(
+    String officerId,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      Map<String, dynamic>  data= {
+      Map<String, dynamic> data = {
         "status": "active",
-  };
+      };
       final response = await _apiService.delete(
-        "${Constant().officerDelete}/$officerId",
-       data
-      );
+          "${Constant().officerDelete}/$officerId", data);
 
       if (response['success'] == true) {
         await fetchOfficersList(); // refresh list after deletion
@@ -183,7 +195,4 @@ class OfficersControllerProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-
-
-
 }

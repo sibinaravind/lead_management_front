@@ -232,6 +232,14 @@ class _CustomDrawerState extends State<CustomDrawer>
       ],
     ),
     DrawerSection(
+      title: 'Team Lead',
+      icon: Icons.settings,
+      color: AppColors.greenSecondaryColor,
+      items: [
+        DrawerItem(label: 'Team Lead', index: 39, icon: Icons.settings),
+      ],
+    ),
+    DrawerSection(
       title: 'Config',
       icon: Icons.settings,
       color: AppColors.greenSecondaryColor,

@@ -24,10 +24,16 @@ class Constant {
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
+
   String camapignList = 'campaign/list';
   String deleteCampaign = 'campaign/delete/';
   String addCampaign = 'campaign/insert';
-  // String editConfig = 'config/edit_configList';
+
+  String teamLeadList = 'officer/listLeadOfficers';
+  String addOfficerToLead = 'officer/addOfficerToLead';
+  String deleteOfficerFromLead = 'officer/deleteOfficerFromLead';
+
+  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

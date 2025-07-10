@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
+import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +28,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
+      Provider.of<OfficersControllerProvider>(context, listen: false)
+          .fetchOfficersList();
     });
   }
 
@@ -118,6 +122,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           return Expanded(child: EmployeeDataDisplay());
                         case 37:
                           return Expanded(child: AccessPermissionScreen());
+
+                        case 39:
+                          return Expanded(child: TeamLeadDataDisplay());
 
                         case 38:
                           return Expanded(child: CampaignScreen());
