@@ -8,9 +8,9 @@ import '../../../../controller/officers_controller/officers_controller.dart';
 import '../../../widgets/widgets.dart';
 
 class TeamLeadDisplay extends StatefulWidget {
-  const TeamLeadDisplay({super.key, required this.id});
+  const TeamLeadDisplay({super.key, required this.officerId});
 
-  final String id;
+  final String officerId;
 
   @override
   State<TeamLeadDisplay> createState() => _TeamLeadDisplayState();
@@ -88,22 +88,16 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                   fontWeight: FontWeight.bold,
                 ),
                 const Spacer(),
-                Consumer2<OfficersControllerProvider, TeamLeadProvider>(
-                  builder: (context, valueA, valueB, child) {
-                    return ElevatedButton.icon(
-                      onPressed: () {
-                        valueB.getAllEmpoyees(
-                            widget.id, valueA.allOfficersListData ?? []);
-                        _showAddEmployeeDialog();
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const CustomText(text: 'Add Employee'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.blue.shade600,
-                      ),
-                    );
+                ElevatedButton.icon(
+                  onPressed: () {
+                    _showAddEmployeeDialog();
                   },
+                  icon: const Icon(Icons.add),
+                  label: const CustomText(text: 'Add Employee'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.blue.shade600,
+                  ),
                 ),
               ],
             ),
@@ -114,7 +108,7 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
             builder: (context, value, child) => Expanded(
               child: value.teamListListModel
                           ?.firstWhere(
-                            (element) => element.officerId == widget.id,
+                            (element) => element.officerId == widget.officerId,
                           )
                           .name ==
                       null
@@ -134,15 +128,17 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                         padding: const EdgeInsets.all(16),
                         itemCount: value.teamListListModel
                                 ?.firstWhere(
-                                  (element) => element.officerId == widget.id,
+                                  (element) =>
+                                      element.officerId == widget.officerId,
                                 )
                                 .officers
                                 ?.length ??
                             0,
                         itemBuilder: (context, index) {
-                          final client = value.teamListListModel
+                          final officer = value.teamListListModel
                               ?.firstWhere(
-                                (element) => element.officerId == widget.id,
+                                (element) =>
+                                    element.officerId == widget.officerId,
                               )
                               .officers
                               ?.elementAtOrNull(index);
@@ -151,16 +147,17 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: AppColors.textGrayColour,
-                                child: CustomText(text: client?.name?[0] ?? ""),
+                                child:
+                                    CustomText(text: officer?.name?[0] ?? ""),
                               ),
                               title: CustomText(
-                                text: client?.name ?? "",
+                                text: officer?.name ?? "",
                                 fontSize: 15,
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  CustomText(text: client?.id ?? ""),
+                                  CustomText(text: officer?.id ?? ""),
                                   const SizedBox(height: 4),
                                   // Row(
                                   //   children: [
@@ -209,11 +206,11 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                                     color: Colors.red.shade400,
                                                     size: 24),
                                                 const SizedBox(width: 8),
-                                                const Text('Remove Client'),
+                                                const Text('Remove Employee'),
                                               ],
                                             ),
                                             content: Text(
-                                              'Remove "${client?.name}" from this team lead?',
+                                              'Remove "${officer?.name}" from this team lead?',
                                               style: TextStyle(fontSize: 15),
                                             ),
                                             actions: [
@@ -223,8 +220,14 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                                 child: const Text('Cancel'),
                                               ),
                                               ElevatedButton.icon(
-                                                onPressed: () => Navigator.pop(
-                                                    context, true),
+                                                onPressed: () {
+                                                  value.deleteOfficerFromLead(
+                                                      leadOfficerId:
+                                                          widget.officerId,
+                                                      officerId:
+                                                          officer?.id ?? "");
+                                                  Navigator.pop(context, true);
+                                                },
                                                 icon: const Icon(Icons.delete,
                                                     color: Colors.white),
                                                 label: const Text('Remove'),
@@ -286,239 +289,253 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
     // });
 
     showDialog(
-      context: context,
-      builder: (context) =>
-          Consumer2<OfficersControllerProvider, TeamLeadProvider>(
-        builder: (context, valueA, valueB, child) {
-          valueB.getAllEmpoyees(widget.id, valueA.allOfficersListData ?? []);
-          return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              height: MediaQuery.of(context).size.height * 0.8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  // Header
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: const BoxDecoration(
-                      gradient: AppColors.buttonGraidentColour,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+        context: context,
+        builder: (context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: MediaQuery.of(context).size.height * 0.8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: const BoxDecoration(
+                        gradient: AppColors.buttonGraidentColour,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.person_add,
-                            color: Colors.white, size: 24),
-                        const SizedBox(width: 12),
-                        const CustomText(
-                          text: 'Add Employee to Team Lead',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Search Section
-                  Consumer<TeamLeadProvider>(
-                    builder: (context, value, child) => Container(
-                      padding: const EdgeInsets.all(16),
-                      color: Colors.grey.shade50,
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search employees by name or email...',
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
-                          suffixIcon: _searchController.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                    value.clearEmployees();
-                                    // setDialogState(() {
-                                    //   _filteredClients = _allClients
-                                    //       .where((client) => !_selectedClients.any(
-                                    //           (selected) =>
-                                    //               selected['id'] == client['id']))
-                                    //       .toList();
-                                    // });
-                                  },
-                                )
-                              : null,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.person_add,
+                              color: Colors.white, size: 24),
+                          const SizedBox(width: 12),
+                          const CustomText(
+                            text: 'Add Employee to Team Lead',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                        ),
-                        onChanged: (query) {
-                          value.filterEmployees(query);
-                          // _filteredClients = _allClients
-                          //     .where((client) =>
-                          //         client['name']
-                          //             .toLowerCase()
-                          //             .contains(query.toLowerCase()) ||
-                          //         client['email']
-                          //             .toLowerCase()
-                          //             .contains(query.toLowerCase()))
-                          //     .where((client) => !_selectedClients.any(
-                          //         (selected) => selected['id'] == client['id']))
-                          //     .toList();
-                        },
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close, color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
 
-                  // Results Count
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline,
-                            size: 16, color: Colors.grey.shade600),
-                        const SizedBox(width: 8),
-                        CustomText(
-                          text: '${0} employees available',
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
+                    // Search Section
+                    Consumer2<TeamLeadProvider, OfficersControllerProvider>(
+                      builder: (context, value, value2, child) => Container(
+                        padding: const EdgeInsets.all(16),
+                        color: Colors.grey.shade50,
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            hintText: 'Search employees by name or id...',
+                            prefixIcon:
+                                const Icon(Icons.search, color: Colors.grey),
+                            suffixIcon: _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      value.getAllRemainingEmpoyees(
+                                          widget.officerId,
+                                          value2.allOfficersListData ?? []);
+                                      // value.clearEmployees();
+                                      // setDialogState(() {
+                                      //   _filteredClients = _allClients
+                                      //       .where((client) => !_selectedClients.any(
+                                      //           (selected) =>
+                                      //               selected['id'] == client['id']))
+                                      //       .toList();
+                                      // });
+                                    },
+                                  )
+                                : null,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                          onChanged: (query) {
+                            value.filterEmployees(query);
+                            if (query.isEmpty) {
+                              // value.getAllRemainingEmpoyees(widget.officerId,
+                              //     value2.allOfficersListData ?? []);
+                            }
+                            // _filteredClients = _allClients
+                            //     .where((client) =>
+                            //         client['name']
+                            //             .toLowerCase()
+                            //             .contains(query.toLowerCase()) ||
+                            //         client['email']
+                            //             .toLowerCase()
+                            //             .contains(query.toLowerCase()))
+                            //     .where((client) => !_selectedClients.any(
+                            //         (selected) => selected['id'] == client['id']))
+                            //     .toList();
+                          },
                         ),
-                      ],
+                      ),
                     ),
-                  ),
 
-                  // Client List
-                  Consumer<TeamLeadProvider>(
-                    builder: (context, value, child) => Expanded(
-                      child: value.remainingEmployees?.isEmpty ?? false
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.search_off,
-                                    size: 64,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  CustomText(
-                                    text: _searchController.text.isEmpty
-                                        ? 'No employees available'
-                                        : 'No employees found matching "${_searchController.text}"',
-                                    fontSize: 16,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : ListView.separated(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: value.remainingEmployees?.length ?? 0,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 8),
-                              itemBuilder: (context, index) {
-                                final client =
-                                    value.remainingEmployees?.elementAt(index);
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border:
-                                        Border.all(color: Colors.grey.shade200),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.all(16),
-                                    leading: CircleAvatar(
-                                      backgroundColor: Colors.blue.shade100,
-                                      child: CustomText(
-                                        text: client?.name?[0].toUpperCase() ??
-                                            "",
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue.shade700,
-                                      ),
+                    // Results Count
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline,
+                              size: 16, color: Colors.grey.shade600),
+                          const SizedBox(width: 8),
+                          // CustomText(
+                          //   text: '${0} employees available',
+                          //   color: Colors.grey.shade600,
+                          //   fontSize: 14,
+                          // ),
+                        ],
+                      ),
+                    ),
+
+                    // Client List
+                    Consumer<TeamLeadProvider>(
+                      builder: (context, value, child) => Expanded(
+                        child: value.remainingEmployees?.isEmpty ?? false
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.search_off,
+                                      size: 64,
+                                      color: Colors.grey.shade400,
                                     ),
-                                    title: CustomText(
-                                      text: client?.name ?? "",
-                                      fontWeight: FontWeight.w600,
+                                    const SizedBox(height: 16),
+                                    CustomText(
+                                      text: _searchController.text.isEmpty
+                                          ? 'No employees available'
+                                          : 'No employees found matching "${_searchController.text}"',
                                       fontSize: 16,
-                                    ),
-                                    subtitle: CustomText(
-                                      text: client?.officerId ?? "",
                                       color: Colors.grey.shade600,
-                                      fontSize: 14,
                                     ),
-                                    trailing: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: AppColors.greenGradient,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          valueB.addOfficerToLead(
-                                              leadOfficerId: widget.id,
-                                              officerId: value
-                                                      .remainingEmployees
-                                                      ?.elementAt(index)
-                                                      .officerId ??
-                                                  "");
-                                          Navigator.pop(context);
-                                        },
-                                        icon: const Icon(Icons.add, size: 18),
-                                        label: const CustomText(
-                                          text: 'Add',
-                                          color: Colors.white,
+                                  ],
+                                ),
+                              )
+                            : ListView.separated(
+                                padding: const EdgeInsets.all(16),
+                                itemCount:
+                                    value.remainingEmployees?.length ?? 0,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 8),
+                                itemBuilder: (context, index) {
+                                  final client = value.remainingEmployees
+                                      ?.elementAt(index);
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                          color: Colors.grey.shade200),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
                                         ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          foregroundColor: Colors.white,
-                                          shadowColor: Colors.transparent,
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                      ],
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(16),
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.blue.shade100,
+                                        child: CustomText(
+                                          text:
+                                              client?.name?[0].toUpperCase() ??
+                                                  "",
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue.shade700,
+                                        ),
+                                      ),
+                                      title: CustomText(
+                                        text: client?.name ?? "",
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                      subtitle: CustomText(
+                                        text: client?.officerId ?? "",
+                                        color: Colors.grey.shade600,
+                                        fontSize: 14,
+                                      ),
+                                      trailing: Container(
+                                        decoration: BoxDecoration(
+                                          gradient: AppColors.greenGradient,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            Provider.of<TeamLeadProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .addOfficerToLead(
+                                                    leadOfficerId:
+                                                        widget.officerId,
+                                                    officerId: value
+                                                            .remainingEmployees
+                                                            ?.elementAt(index)
+                                                            .officerId ??
+                                                        "");
+                                            // valueB.addOfficerToLead(
+                                            //     leadOfficerId: widget.officerId,
+                                            //     officerId: value
+                                            //             .remainingEmployees
+                                            //             ?.elementAt(index)
+                                            //             .officerId ??
+                                            //         "");
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(Icons.add, size: 18),
+                                          label: const CustomText(
+                                            text: 'Add',
+                                            color: Colors.white,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            foregroundColor: Colors.white,
+                                            shadowColor: Colors.transparent,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                  );
+                                },
+                              ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            ));
   }
 
   void _showClientDetailsDialog(Map<String, dynamic> client) {

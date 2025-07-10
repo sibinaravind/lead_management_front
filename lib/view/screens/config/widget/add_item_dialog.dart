@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,8 @@ class AddItemDialog extends StatelessWidget {
   final TextEditingController codeController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController provinceController = TextEditingController();
+  final TextEditingController colourController = TextEditingController();
+
   final TextEditingController rangeController = TextEditingController();
 
   @override
@@ -55,7 +58,7 @@ class AddItemDialog extends StatelessWidget {
                 controller: nameController,
                 label: 'Name',
                 isRequired: true,
-                // keyboardType: TextInputType.number,
+                // keyboardType: TextInputType.,
               ),
               if (item.code != null) ...[
                 SizedBox(height: 16),
@@ -83,6 +86,26 @@ class AddItemDialog extends StatelessWidget {
                   isRequired: true,
                   // keyboardType: TextInputType.number,
                 ),
+              ],
+              if (item.colour != null) ...[
+                SizedBox(height: 16),
+                CustomTextFormField(
+                  controller: colourController,
+                  label: 'Colour',
+                  isRequired: true,
+                  readOnly: true,
+                  // keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 16),
+                if (item.colour != null)
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: ColorPicker(
+                        pickerColor: Color(0xff443a49),
+                        onColorChanged: (color) {
+                          colourController.text = "0X" + color.toHexString();
+                        }),
+                  )
               ],
               // if (item.hasFieldName('range')) ...[
               //   SizedBox(height: 16),
@@ -131,7 +154,8 @@ class AddItemDialog extends StatelessWidget {
                         Provider.of<ConfigProvider>(context, listen: false)
                             .addConfig(
                                 field: category,
-                                name: nameController.text.trim());
+                                name: nameController.text.toUpperCase().trim(),
+                                colour: colourController.text.trim());
                         Navigator.of(context).pop();
                         CustomSnackBar.show(
                             context, '${item.name} updated successfully');

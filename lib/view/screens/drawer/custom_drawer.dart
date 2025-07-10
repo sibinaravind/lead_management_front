@@ -221,6 +221,8 @@ class _CustomDrawerState extends State<CustomDrawer>
             label: 'Employee Permission',
             index: 37,
             icon: Icons.person_outline_rounded),
+        DrawerItem(label: 'Team Lead', index: 39, icon: Icons.settings),
+
         // DrawerItem(
         //     label: 'Employee Role',
         //     index: 24,
@@ -231,14 +233,13 @@ class _CustomDrawerState extends State<CustomDrawer>
         //     icon: Icons.chat_bubble_rounded),
       ],
     ),
-    DrawerSection(
-      title: 'Team Lead',
-      icon: Icons.settings,
-      color: AppColors.greenSecondaryColor,
-      items: [
-        DrawerItem(label: 'Team Lead', index: 39, icon: Icons.settings),
-      ],
-    ),
+    // DrawerSection(
+    //   title: 'Team Lead',
+    //   icon: Icons.settings,
+    //   color: AppColors.greenSecondaryColor,
+    //   items: [
+    //   ],
+    // ),
     DrawerSection(
       title: 'Config',
       icon: Icons.settings,

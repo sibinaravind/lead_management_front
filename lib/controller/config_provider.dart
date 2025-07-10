@@ -66,7 +66,8 @@ class ConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addConfig({required String field, required String name}) async {
+  Future<void> addConfig(
+      {required String field, required String name, String colour = ""}) async {
     isLoading = true;
     _error = null;
     // notifyListeners();
@@ -75,7 +76,7 @@ class ConfigProvider extends ChangeNotifier {
       final response = await _api.patch(Constant().editConfigList, {
         "field": field,
         "action": "insert",
-        "value": {"name": name, "status": "ACTIVE"}
+        "value": {"name": name, "status": "ACTIVE", "colour": colour}
       });
       if (response['success'] == true) {
         configModelList?.insertItem(
@@ -98,8 +99,6 @@ class ConfigProvider extends ChangeNotifier {
   }
 
   void toggleStatus(String category, ConfigModel item) {
-    // print("===> ${item.status}");
-
     if (item.status == Status.ACTIVE) {
       updateConfig(
           field: category,
@@ -119,23 +118,17 @@ class ConfigProvider extends ChangeNotifier {
       {required String field,
       required String name,
       required String id,
-      required String status}) async {
+      required String status,
+      String colour = ""}) async {
     isLoading = true;
     _error = null;
-    // notifyListeners();
-
     try {
       final response = await _api.patch(Constant().editConfigList, {
         "field": field,
         "action": "update",
-        "value": {"_id": id, "name": name, "status": status}
+        "value": {"_id": id, "name": name, "status": status, "colour": colour}
       });
-      // print("====> $status");
-      // print("====> $id");
-
-      // _campaignModel = CampaignModel.fromJson(response.data);
       if (response['success'] == true) {
-        // print("===> success");
         configModelList?.updateItem(
             field,
             ConfigModel(

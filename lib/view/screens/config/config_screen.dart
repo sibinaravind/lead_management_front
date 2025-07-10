@@ -41,9 +41,7 @@ class _SystemConfigState extends State<ConfigScreen> {
               itemCount: keys.length,
               itemBuilder: (context, index) {
                 final category = keys.elementAt(index);
-                // print(configList?.toJson());
                 final items = configList?.getItems(category) ?? [];
-                // print(items.length);
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 20.0),
@@ -123,7 +121,6 @@ class _SystemConfigState extends State<ConfigScreen> {
                               icon: Icons.add,
                               gradient: AppColors.buttonGraidentColour,
                               onTap: () {
-                                // print(items);
                                 showDialog(
                                   context: context,
                                   builder: (_) => AddItemDialog(

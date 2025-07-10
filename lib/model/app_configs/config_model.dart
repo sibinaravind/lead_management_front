@@ -30,7 +30,7 @@ class ConfigModel {
                 ? Status.ACTIVE
                 : Status.INACTIVE
             : Status.INACTIVE,
-        colour: json["colour"] ?? "",
+        colour: json["colour"],
       );
 
   Map<String, dynamic> toMap() => {

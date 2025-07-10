@@ -114,8 +114,6 @@ class ConfigListModel {
 
   List<ConfigModel?> getItems(String category) {
     final map = _asMap();
-    // print("object");
-    // print(map);
     return (map[category] ?? []) as List<ConfigModel?>;
   }
 
@@ -153,7 +151,6 @@ class ConfigListModel {
 
     int index = targetList.indexWhere((config) => config.id == item.id);
     if (index != -1) {
-      // print("===> index changed");
       targetList[index] = item;
     }
   }
