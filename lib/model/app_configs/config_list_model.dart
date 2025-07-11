@@ -11,7 +11,7 @@ class ConfigListModel {
 
   List<ConfigModel>? intake;
   List<ConfigModel>? country;
-  List<ConfigModel>? leadCategory;
+  // List<ConfigModel>? leadCategory;
   List<ConfigModel>? leadSource;
   List<ConfigModel>? serviceType;
   List<ConfigModel>? profession;
@@ -20,6 +20,9 @@ class ConfigListModel {
   List<ConfigModel>? callType;
   List<ConfigModel>? clientStatus;
   List<ConfigModel>? designation;
+  List<ConfigModel>? specialized;
+  List<ConfigModel>? qualification;
+
   List<ConfigModel>? test;
 
   ConfigListModel({
@@ -32,7 +35,7 @@ class ConfigListModel {
     this.university,
     this.intake,
     this.country,
-    this.leadCategory,
+    // this.leadCategory,
     this.leadSource,
     this.serviceType,
     this.profession,
@@ -41,6 +44,8 @@ class ConfigListModel {
     this.callType,
     this.clientStatus,
     this.designation,
+    this.specialized,
+    this.qualification,
     this.test,
   });
 
@@ -55,7 +60,7 @@ class ConfigListModel {
         university: _parseConfigList(json["university"]),
         intake: _parseConfigList(json["intake"]),
         country: _parseConfigList(json["country"]),
-        leadCategory: _parseConfigList(json["lead_category"]),
+        // leadCategory: _parseConfigList(json["lead_category"]),
         leadSource: _parseConfigList(json["lead_source"]),
         serviceType: _parseConfigList(json["service_type"]),
         profession: _parseConfigList(json["profession"]),
@@ -63,6 +68,9 @@ class ConfigListModel {
             _parseConfigList(json["medical_profession_category"]),
         nonMedical: _parseConfigList(json["non_medical"]),
         callType: _parseConfigList(json["call_type"]),
+        qualification: _parseConfigList(json["qualification"]),
+        specialized: _parseConfigList(json["specialized"]),
+
         clientStatus: json["client_status"] == null
             ? []
             : List<ConfigModel>.from(
@@ -81,7 +89,7 @@ class ConfigListModel {
         "university": _mapList(university),
         "intake": _mapList(intake),
         "country": _mapList(country),
-        "lead_category": _mapList(leadCategory),
+        // "lead_category": _mapList(leadCategory),
         "lead_source": _mapList(leadSource),
         "service_type": _mapList(serviceType),
         "profession": _mapList(profession),
@@ -91,6 +99,8 @@ class ConfigListModel {
         "client_status":
             clientStatus?.map((x) => x.toMap()).toList() ?? <dynamic>[],
         "designation": _mapList(designation),
+        "specialized": _mapList(specialized),
+        "qualification": _mapList(qualification),
         "test": _mapList(test),
       };
 
@@ -131,7 +141,7 @@ class ConfigListModel {
       "university": university,
       "intake": intake,
       "country": country,
-      "lead_category": leadCategory,
+      // "lead_category": leadCategory,
       "lead_source": leadSource,
       "service_type": serviceType,
       "profession": profession,
@@ -140,6 +150,8 @@ class ConfigListModel {
       "call_type": callType,
       "client_status": clientStatus,
       "designation": designation,
+      "specialized": specialized,
+      "qualification": qualification,
       "test": test,
     };
   }
@@ -190,8 +202,8 @@ class ConfigListModel {
         return intake ??= [];
       case 'country':
         return country ??= [];
-      case 'lead_category':
-        return leadCategory ??= [];
+      // case 'lead_category':
+      //   return leadCategory ??= [];
       case 'lead_source':
         return leadSource ??= [];
       case 'service_type':
