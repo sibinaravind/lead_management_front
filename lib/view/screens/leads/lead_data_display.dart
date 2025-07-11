@@ -7,6 +7,7 @@ import 'dart:math';
 import '../../../res/style/colors/colors.dart';
 import '../../../res/style/colors/dimension.dart';
 import '../../widgets/custom_date_range_field.dart';
+import 'add_lead_screen.dart';
 import 'widgets/lead_user_list_table.dart';
 
 class LeadDataDisplay extends StatefulWidget {
@@ -252,10 +253,10 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(20),
                                 onTap: () {
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) => const AddLeadScreen(),
-                                  // );
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => const AddLeadScreen(),
+                                  );
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(
@@ -428,57 +429,62 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Flexible(
-                        child: SizedBox(
-                          width: 300,
-                          height: 40,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: TextField(
-                              // controller: controller.searchController,
-                              decoration: InputDecoration(
-                                hintText: "Search Leads...",
-                                hintStyle: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 15,
-                                ),
-                                hoverColor: Colors.white,
-                                fillColor: AppColors.whiteMainColor,
-                                filled: true,
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search,
-                                      size: 20, color: Colors.grey),
-                                  onPressed: () {
-                                    //     "Search query: ${_searchController.text}");
-                                  },
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: Colors.black,
-                                    width: 0.3,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.primaryColor,
-                                    width: 1,
-                                  ),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // _buildFilterToggleButton(),
+                      // Flexible(
+                      //   child: SizedBox(
+                      //     width: 300,
+                      //     height: 40,
+                      //     child: ClipRRect(
+                      //       borderRadius: BorderRadius.circular(16),
+                      //       child: Consumer<LeadProvider>(
+                      //         builder: (context, valueLead, child) => TextField(
+                      //           controller: valueLead.searchController,
+                      //           onChanged: (value) {
+                      //             valueLead.filterEmployees(value);
+                      //           },
+                      //           decoration: InputDecoration(
+                      //             hintText: "Search Leads...",
+                      //             hintStyle: TextStyle(
+                      //               color: Colors.grey.shade500,
+                      //               fontSize: 15,
+                      //             ),
+                      //             hoverColor: Colors.white,
+                      //             fillColor: AppColors.whiteMainColor,
+                      //             filled: true,
+                      //             suffixIcon: IconButton(
+                      //               icon: const Icon(Icons.search,
+                      //                   size: 20, color: Colors.grey),
+                      //               onPressed: () {
+                      //                 //     "Search query: ${_searchController.text}");
+                      //               },
+                      //             ),
+                      //             enabledBorder: OutlineInputBorder(
+                      //               borderRadius: BorderRadius.circular(16),
+                      //               borderSide: const BorderSide(
+                      //                 color: Colors.black,
+                      //                 width: 0.3,
+                      //               ),
+                      //             ),
+                      //             focusedBorder: OutlineInputBorder(
+                      //               borderRadius: BorderRadius.circular(16),
+                      //               borderSide: const BorderSide(
+                      //                 color: AppColors.primaryColor,
+                      //                 width: 1,
+                      //               ),
+                      //             ),
+                      //             contentPadding: const EdgeInsets.symmetric(
+                      //               horizontal: 16,
+                      //               vertical: 15,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      _buildFilterToggleButton(),
                     ],
                   ),
-                  // _buildFilterPanel(context),
+                  _buildFilterPanel(context),
                   Consumer<LeadProvider>(builder: (context, value, child) {
                     return Container(
                       width: double.maxFinite,
@@ -501,7 +507,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: LeadUserListTable(
-                                userlist: value.userList ?? []),
+                                userlist: value.leadModel ?? []),
                           ),
 
                           // Footer with Pagination
@@ -659,262 +665,272 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     // controller.fetchLeadsWithFilters(selectedFilters);
   }
 
-  // Widget _buildFilterPanel(BuildContext context) {
-  //   return AnimatedContainer(
-  //     duration: const Duration(milliseconds: 300),
-  //     child: Container(
-  //       margin: const EdgeInsets.only(bottom: 12, top: 12),
-  //       padding: const EdgeInsets.all(15),
-  //       decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(20),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.black.withOpacity(0.05),
-  //             blurRadius: 10,
-  //             offset: const Offset(0, 4),
-  //           ),
-  //         ],
-  //       ),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           // Filter Header
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //             children: [
-  //               Row(
-  //                 children: [
-  //                   Container(
-  //                     padding: const EdgeInsets.all(10),
-  //                     decoration: BoxDecoration(
-  //                       color: AppColors.primaryColor.withOpacity(0.1),
-  //                       borderRadius: BorderRadius.circular(12),
-  //                     ),
-  //                     child: const Icon(
-  //                       Icons.filter_list,
-  //                       color: AppColors.primaryColor,
-  //                       size: 18,
-  //                     ),
-  //                   ),
-  //                   const SizedBox(width: 12),
-  //                   const CustomText(
-  //                     text: "Advanced Filters",
-  //                     fontWeight: FontWeight.w700,
-  //                     fontSize: 16,
-  //                   ),
-  //                 ],
-  //               ),
-  //               // IconButton(
-  //               //   icon: const Icon(Icons.close, size: 20),
-  //               //   onPressed: () => showFilters.value = false,
-  //               // ),
-  //             ],
-  //           ),
-  //           const SizedBox(height: 10),
-  //           Wrap(
-  //             spacing: 5,
-  //             runSpacing: 5,
-  //             children: [
-  //               // ...filterOptions.keys.map((category) {
-  //               //   // print("0000000000000000000000000000000000000000000");
-  //               //   // print(category);
-  //               //   // print("0000000000000000000000000000000000000000000");
+  Widget _buildFilterPanel(BuildContext context) {
+    return Consumer<LeadProvider>(
+      builder: (context, value, child) => AnimatedContainer(
+        height: value.showFilters ? null : 0,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12, top: 12),
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Filter Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.filter_list,
+                          color: AppColors.primaryColor,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const CustomText(
+                        text: "Advanced Filters",
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ],
+                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.close, size: 20),
+                  //   onPressed: () => showFilters.value = false,
+                  // ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: [
+                  // ...filterOptions.keys.map((category) {
+                  //   // print("0000000000000000000000000000000000000000000");
+                  //   // print(category);
+                  //   // print("0000000000000000000000000000000000000000000");
 
-  //               //   return SizedBox(
-  //               //     width: 180,
-  //               //     height: 50,
-  //               //     child: Column(
-  //               //       crossAxisAlignment: CrossAxisAlignment.start,
-  //               //       children: [
-  //               //         Container(
-  //               //           padding: const EdgeInsets.symmetric(horizontal: 5),
-  //               //           decoration: BoxDecoration(
-  //               //             border: Border.all(
-  //               //               color: Colors.grey.shade300,
-  //               //               width: 1,
-  //               //             ),
-  //               //             borderRadius: BorderRadius.circular(12),
-  //               //           ),
-  //               //           child: DropdownButtonHideUnderline(
-  //               //             child: DropdownButton<String>(
-  //               //               hint: CustomText(
-  //               //                 text: category,
-  //               //                 fontWeight: FontWeight.w600,
-  //               //                 color: AppColors.textColor,
-  //               //                 fontSize: 14,
-  //               //               ),
-  //               //               isExpanded: true,
-  //               //               value: selectedFilters[category],
-  //               //               items: filterOptions[category]
-  //               //                   ?.toSet()
-  //               //                   .map((option) => DropdownMenuItem<String>(
-  //               //                         value: option,
-  //               //                         child: CustomText(
-  //               //                             text: option, fontSize: 14),
-  //               //                       ))
-  //               //                   .toList(),
-  //               //               onChanged: (value) {
-  //               //                 if (value != null) {
-  //               //                   // selectedFilters[category] = value;
-  //               //                 }
-  //               //               },
-  //               //             ),
-  //               //           ),
-  //               //         ),
-  //               //       ],
-  //               //     ),
-  //               //   );
-  //               // }).toList(),
-  //               SizedBox(
-  //                 width: 180,
-  //                 child: CustomDateRangeField(
-  //                   label: 'From-To date',
-  //                   controller: dateController,
-  //                   isRequired: true,
-  //                   // onChanged: (range) {
-  //                   //   selectedRange = range;
-  //                   // },
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
+                  //   return SizedBox(
+                  //     width: 180,
+                  //     height: 50,
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Container(
+                  //           padding: const EdgeInsets.symmetric(horizontal: 5),
+                  //           decoration: BoxDecoration(
+                  //             border: Border.all(
+                  //               color: Colors.grey.shade300,
+                  //               width: 1,
+                  //             ),
+                  //             borderRadius: BorderRadius.circular(12),
+                  //           ),
+                  //           child: DropdownButtonHideUnderline(
+                  //             child: DropdownButton<String>(
+                  //               hint: CustomText(
+                  //                 text: category,
+                  //                 fontWeight: FontWeight.w600,
+                  //                 color: AppColors.textColor,
+                  //                 fontSize: 14,
+                  //               ),
+                  //               isExpanded: true,
+                  //               value: selectedFilters[category],
+                  //               items: filterOptions[category]
+                  //                   ?.toSet()
+                  //                   .map((option) => DropdownMenuItem<String>(
+                  //                         value: option,
+                  //                         child: CustomText(
+                  //                             text: option, fontSize: 14),
+                  //                       ))
+                  //                   .toList(),
+                  //               onChanged: (value) {
+                  //                 if (value != null) {
+                  //                   // selectedFilters[category] = value;
+                  //                 }
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   );
+                  // }).toList(),
+                  SizedBox(
+                    width: 180,
+                    child: CustomDateRangeField(
+                      label: 'From-To date',
+                      controller: dateController,
+                      isRequired: true,
+                      // onChanged: (range) {
+                      //   selectedRange = range;
+                      // },
+                    ),
+                  ),
+                ],
+              ),
 
-  //           const SizedBox(height: 5),
-  //           // SizedBox(
-  //           //   width: 250,
-  //           //   height: 50,
-  //           //   child: CustomDateRangeField(
-  //           //     label: 'From-To date',
-  //           //     controller: dateController,
-  //           //     isRequired: true,
-  //           //     onChanged: (range){
-  //           //       selectedRange = range;
-  //           //     },
-  //           //   ),
-  //           // ),
+              const SizedBox(height: 5),
+              // SizedBox(
+              //   width: 250,
+              //   height: 50,
+              //   child: CustomDateRangeField(
+              //     label: 'From-To date',
+              //     controller: dateController,
+              //     isRequired: true,
+              //     onChanged: (range){
+              //       selectedRange = range;
+              //     },
+              //   ),
+              // ),
 
-  //           const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-  //           // Filter Actions
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.end,
-  //             children: [
-  //               OutlinedButton(
-  //                 onPressed: () {
-  //                   // resetFilters;
-  //                 },
-  //                 style: OutlinedButton.styleFrom(
-  //                   side: const BorderSide(color: AppColors.primaryColor),
-  //                   padding: const EdgeInsets.symmetric(
-  //                       horizontal: 16, vertical: 12),
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                   ),
-  //                 ),
-  //                 child: const CustomText(
-  //                   text: "Reset",
-  //                   color: AppColors.primaryColor,
-  //                   fontWeight: FontWeight.w600,
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 12),
-  //               ElevatedButton(
-  //                 onPressed: () {
-  //                   applyFilters();
-  //                   // showFilters.value = false;
-  //                 },
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: AppColors.primaryColor,
-  //                   padding: const EdgeInsets.symmetric(
-  //                       horizontal: 16, vertical: 12),
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                   ),
-  //                 ),
-  //                 child: const CustomText(
-  //                   text: "Apply Filters",
-  //                   color: Colors.white,
-  //                   fontWeight: FontWeight.w600,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+              // Filter Actions
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Consumer<LeadProvider>(
+                    builder: (context, value, child) => OutlinedButton(
+                      onPressed: () {
+                        value.setFilterActive(false);
+                        // resetFilters;
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.primaryColor),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        text: "Reset",
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Consumer<LeadProvider>(
+                    builder: (context, value, child) => ElevatedButton(
+                      onPressed: () {
+                        value.setFilterActive(true);
+                        // applyFilters();
+                        value.setShowFilter(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        text: "Apply Filters",
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-  // Widget _buildFilterToggleButton() {
-  //   return Obx(() => GestureDetector(
-  //         onTap: () => showFilters.value = !showFilters.value,
-  //         child: Align(
-  //           alignment: Alignment.centerRight,
-  //           child: Container(
-  //             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-  //             decoration: BoxDecoration(
-  //               color: isFilterActive.value
-  //                   ? AppColors.primaryColor
-  //                   : Colors.white,
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(
-  //                 color: isFilterActive.value
-  //                     ? AppColors.primaryColor
-  //                     : Colors.grey.shade300,
-  //                 width: 1.5,
-  //               ),
-  //               boxShadow: [
-  //                 if (isFilterActive.value)
-  //                   BoxShadow(
-  //                     color: AppColors.primaryColor.withOpacity(0.3),
-  //                     blurRadius: 8,
-  //                     offset: const Offset(0, 4),
-  //                   ),
-  //               ],
-  //             ),
-  //             child: Row(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Icon(
-  //                   Icons.filter_list,
-  //                   color: isFilterActive.value
-  //                       ? Colors.white
-  //                       : AppColors.primaryColor,
-  //                   size: 18,
-  //                 ),
-  //                 const SizedBox(width: 8),
-  //                 CustomText(
-  //                   text: "Filters",
-  //                   fontWeight: FontWeight.w600,
-  //                   fontSize: 14,
-  //                   color: isFilterActive.value
-  //                       ? Colors.white
-  //                       : AppColors.primaryColor,
-  //                 ),
-  //                 if (isFilterActive.value) ...[
-  //                   const SizedBox(width: 8),
-  //                   Container(
-  //                     padding: const EdgeInsets.symmetric(
-  //                         horizontal: 8, vertical: 2),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.white.withOpacity(0.2),
-  //                       borderRadius: BorderRadius.circular(10),
-  //                     ),
-  //                     child: const CustomText(
-  //                       text: "Active",
-  //                       fontSize: 12,
-  //                       fontWeight: FontWeight.w600,
-  //                       color: Colors.white,
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ));
-  // }
+  Widget _buildFilterToggleButton() {
+    return Consumer<LeadProvider>(
+      builder: (context, value, child) => GestureDetector(
+        onTap: () => value.setShowFilter(!value.showFilters),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color:
+                  value.isFilterActive ? AppColors.primaryColor : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: value.isFilterActive
+                    ? AppColors.primaryColor
+                    : Colors.grey.shade300,
+                width: 1.5,
+              ),
+              boxShadow: [
+                if (value.isFilterActive)
+                  BoxShadow(
+                    color: AppColors.primaryColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.filter_list,
+                  color: value.isFilterActive
+                      ? Colors.white
+                      : AppColors.primaryColor,
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                CustomText(
+                  text: "Filters",
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: value.isFilterActive
+                      ? Colors.white
+                      : AppColors.primaryColor,
+                ),
+                if (value.isFilterActive) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const CustomText(
+                      text: "Active",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   // void resetFilters() {
   //   isFilterActive.value = false;

@@ -5,6 +5,7 @@ import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
+import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
@@ -146,6 +147,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               child: Consumer<AppUserProvider>(
                                   builder: (context, value, child) {
                                 switch (value.selectedIndex) {
+                                  case 1:
+                                    return Expanded(child: LeadDataDisplay());
                                   case 23:
                                     return Expanded(
                                         child: EmployeeDataDisplay());

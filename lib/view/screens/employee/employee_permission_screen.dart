@@ -46,7 +46,8 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
 
   void _buildPermissionsFromAPI(AccessPermissionProvider provider) {
     final data = provider.accessPermission;
-
+    List<String> pros = data?.toJson().keys.toList() ?? [];
+    // data?.toJson().map((key, value) => ,);
     permissions = {
       'admin': data?.admin ?? {},
       'counselor': data?.counselor ?? {},
