@@ -490,7 +490,6 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-        // Right side - Login form
         Expanded(
           flex: 1,
           child: Container(
@@ -677,8 +676,8 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
           _buildTextField(
 
             controller: _officerIdController,
-            label: 'User Name',
-            hintText: 'TechTree',
+            label: 'User Id',
+            hintText: 'User Id',
           ),
           const SizedBox(height: 20),
           _buildTextField(

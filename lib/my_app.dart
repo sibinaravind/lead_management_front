@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ConfigProvider(),
         ),
+
         ChangeNotifierProvider(create: (context) => AccessPermissionProvider()),
         ChangeNotifierProvider(
             create: (context) => OfficersControllerProvider()),
@@ -66,8 +67,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/not-found': (context) =>
               Center(child: Text('404 - Page not found')),
-          '/': (context) => DrawerScreen()
-          // '/': (context) => EmployeeDataDisplay()
+          // '/': (context) => DrawerScreen()
+          '/': (context) => LoginScreen()
         },
         initialRoute: '/',
       ),

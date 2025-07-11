@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/Project/widget/add_client_screen.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/client_user_table_list.dart';
+import 'package:provider/provider.dart';
+import '../../../controller/project/client_provider_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
 
@@ -93,32 +96,16 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
     //   'Assigned To': ['All', 'Me', 'Unassigned']
   };
 
-  // // Track selected filters
-  // final selectedFilters = <String, String>{}.obs;
-  //
-  // final isFilterActive = false.obs;
-  //
-  // final showFilters = false.obs;
-
-  TextEditingController dateController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   DateTimeRange? selectedRange;
 
+  @override
   void initState() {
-    // for (var category in filterCategories) {
-    //   selectedFilters[category] = 'Service Type';
-    // }
-
-    //   for (var category in filterCategories) {
-    //     final options = filterOptions[category];
-    //     if (options != null && options.contains('All')) {
-    //       selectedFilters[category] = 'All';
-    //     } else if (options != null && options.isNotEmpty) {
-    //       selectedFilters[category] = options.first;
-    //     } else {
-    //       selectedFilters[category] = '';
-    //     }
-    //   }
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ClientProvider>().fetchClients();
+    });
   }
 
   @override
@@ -205,7 +192,9 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                             onTap: () {
                               showDialog(
                                 context: context,
-                                builder: (context) => const AddClientScreen(),
+                                builder: (context) =>  AddClientScreen(
+                                  isEdit: false,
+                                ),
                               );
                             },
                             child: const Padding(
@@ -236,157 +225,158 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                   ),
                 ),
 
-                // const SizedBox(height: 12),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Flexible(
-                //       child: SizedBox(
-                //         width: 300,
-                //         height: 40,
-                //         child: ClipRRect(
-                //           borderRadius: BorderRadius.circular(16),
-                //           child: TextField(
-                //             // controller: controller.searchController,
-                //             decoration: InputDecoration(
-                //               hintText: "Search clients...",
-                //               hintStyle: TextStyle(
-                //                 color: Colors.grey.shade500,
-                //                 fontSize: 15,
-                //               ),
-                //               hoverColor: Colors.white,
-                //               fillColor: AppColors.whiteMainColor,
-                //               filled: true,
-                //               suffixIcon: IconButton(
-                //                 icon: const Icon(Icons.search,
-                //                     size: 20, color: Colors.grey),
-                //                 onPressed: () {
-                //                   // print(
-                //                   //     "Search query: ${_searchController.text}");
-                //                 },
-                //               ),
-                //               enabledBorder: OutlineInputBorder(
-                //                 borderRadius: BorderRadius.circular(16),
-                //                 borderSide: const BorderSide(
-                //                   color: Colors.black,
-                //                   width: 0.3,
-                //                 ),
-                //               ),
-                //               focusedBorder: OutlineInputBorder(
-                //                 borderRadius: BorderRadius.circular(16),
-                //                 borderSide: const BorderSide(
-                //                   color: AppColors.primaryColor,
-                //                   width: 1,
-                //                 ),
-                //               ),
-                //               contentPadding: const EdgeInsets.symmetric(
-                //                 horizontal: 16,
-                //                 vertical: 15,
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: SizedBox(
+                        width: 300,
+                        height: 40,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: TextField(
+                            onChanged: (value) {
+                              Provider.of<ClientProvider>(context,
+                                      listen: false)
+                                  .searchClients(value);
+                            },
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: "Search clients...",
+                              hintStyle: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 15,
+                              ),
+                              hoverColor: Colors.white,
+                              fillColor: AppColors.whiteMainColor,
+                              filled: true,
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.search,
+                                    size: 20, color: Colors.grey),
+                                onPressed: () {
+                                  Provider.of<ClientProvider>(context,
+                                          listen: false)
+                                      .searchClients(_searchController.text);
+                                },
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
+                                  width: 0.3,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(
+                                  color: AppColors.primaryColor,
+                                  width: 1,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 // _buildFilterPanel(context),
-                //
-                // Obx(() {
-                //   final userList = controller.userList.value;
-                //   if (userList == null || userList.data.isEmpty) {
-                //     return const SizedBox();
-                //   }
-                //   return Container(
-                //     width: double.maxFinite,
-                //     margin: const EdgeInsets.only(top: 12),
-                //     decoration: BoxDecoration(
-                //       color: Colors.white,
-                //       borderRadius: BorderRadius.circular(20),
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Colors.black.withOpacity(0.2),
-                //           blurRadius: 20,
-                //           offset: const Offset(0, 4),
-                //         ),
-                //       ],
-                //     ),
-                //     child: Column(
-                //       children: [
-                //         // Table Header
-                //         // Table Content
-                //         ClipRRect(
-                //           borderRadius: BorderRadius.circular(16),
-                //           child: ClientUserListTable(userlist: userList.data),
-                //         ),
-                //
-                //         // Footer with Pagination
-                //         Container(
-                //           padding: const EdgeInsets.all(8),
-                //           decoration: BoxDecoration(
-                //             color: const Color(0xFFF8FAFC),
-                //             borderRadius: const BorderRadius.only(
-                //               bottomLeft: Radius.circular(20),
-                //               bottomRight: Radius.circular(20),
-                //             ),
-                //             border: Border(
-                //               top: BorderSide(
-                //                 color:
-                //                 AppColors.textGrayColour.withOpacity(0.1),
-                //                 width: 1,
-                //               ),
-                //             ),
-                //           ),
-                //           child: Row(
-                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //             children: [
-                //               Row(
-                //                 children: [
-                //                   Container(
-                //                     padding: const EdgeInsets.all(12),
-                //                     decoration: BoxDecoration(
-                //                       gradient: AppColors.blackGradient,
-                //                       borderRadius: BorderRadius.circular(12),
-                //                     ),
-                //                     child: const Icon(
-                //                       Icons.analytics_outlined,
-                //                       color: Colors.white,
-                //                       size: 18,
-                //                     ),
-                //                   ),
-                //                   const SizedBox(width: 16),
-                //                   Column(
-                //                     crossAxisAlignment:
-                //                     CrossAxisAlignment.start,
-                //                     children: [
-                //                       CustomText(
-                //                         text: "${userList.totalItems} clients",
-                //                         color: AppColors.primaryColor,
-                //                         fontWeight: FontWeight.w700,
-                //                         fontSize: 15,
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ],
-                //               ),
-                //               CustomPager(
-                //                 currentPage: controller.currentPage.value + 1,
-                //                 totalPages: min(userList.totalItems, 100),
-                //                 onPageSelected: (page) {
-                //                   if (controller.currentPage.value !=
-                //                       page - 1) {
-                //                     controller.currentPage.value = page - 1;
-                //                     controller.onPageSelected(page - 1);
-                //                   }
-                //                 },
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   );
-                // }),
+
+                Consumer<ClientProvider>(builder: (context, controller, _) {
+                  final clientList = controller.clients;
+                  if (controller.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.error != null) {
+                    return Center(child: Text(controller.error!));
+                  }
+                  if (clientList.isEmpty) {
+                    return const Center(child: Text("No clients are found"));
+                  }
+                  return Container(
+                    width: double.maxFinite,
+                    margin: const EdgeInsets.only(top: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 20,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: ClientUserListTable(userlist: clientList),
+                        ),
+
+                        // Footer with Pagination
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            border: Border(
+                              top: BorderSide(
+                                color:
+                                    AppColors.textGrayColour.withOpacity(0.1),
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      gradient: AppColors.blackGradient,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.analytics_outlined,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text:
+                                            "${clientList.length.toString()} clients",
+                                        color: AppColors.primaryColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 15,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                })
               ],
             ),
           ),

@@ -5,6 +5,7 @@ import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 
 class OfficersControllerProvider with ChangeNotifier {
+
   OfficersControllerProvider._privateConstructor();
   static final _instance = OfficersControllerProvider._privateConstructor();
   factory OfficersControllerProvider() {

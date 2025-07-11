@@ -30,7 +30,7 @@ class ClientDataModel {
   String? timestamp;
   String? duration;
   String? leadStatus;
-  String? repeatedEntry; // ✅ Added field
+  String? repeatedEntry; 
 
   ClientDataModel({
     this.id,

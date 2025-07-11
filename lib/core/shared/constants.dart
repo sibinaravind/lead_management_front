@@ -24,6 +24,8 @@ class Constant {
   String officerDelete = 'officer/delete';
 
   String addClient="project/clientCreate";
+  String clientList="project/clientList";
+  String updateClient="project/clientUpdate";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../controller/auth/login_controller.dart';
 import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
@@ -179,7 +181,10 @@ class _AppBarContainerState extends State<AppBarContainer> {
                     ),
                   ),
                   PopupMenuItem<String>(
-                    onTap: () {},
+                    onTap: () {
+                      // Provider.of<LoginProvider>(context, listen: false).logout(context);
+
+                    },
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     value: 'option3',
                     child: const Row(

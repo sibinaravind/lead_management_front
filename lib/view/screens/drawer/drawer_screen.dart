@@ -31,7 +31,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<LoginProvider>(context, listen: false).loadFromPreferences();
+    // Provider.of<LoginProvider>(context, listen: false).loadFromCache();
 
     Future.delayed(Duration.zero, () {
       Provider.of<LeadProvider>(context, listen: false).getLeadList();
@@ -90,7 +90,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           : Consumer<AppUserProvider>(
               builder: (context, value, child) => BottomNavigationBar(
                 backgroundColor: AppColors.textGrayColour,
-                currentIndex: value.selectedIndex!,
+                currentIndex: value.selectedIndex??0,
                 selectedItemColor: AppColors.primaryColor,
                 unselectedItemColor: AppColors.textGrayColour,
                 onTap: (index) {

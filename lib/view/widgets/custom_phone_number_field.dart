@@ -91,16 +91,20 @@ class CustomPhoneField extends StatelessWidget {
               ),
               keyboardType: TextInputType.phone,
               validator: (value) {
-                if (isRequired && (value == null || value.isEmpty)) {
-                  return 'This field is required';
-                }
-                if (value != null && !RegExp(r'^\d+$').hasMatch(value)) {
-                  return 'Only numbers are allowed';
-                }
-                if (value != null && (value.length < 10 || value.length > 13)) {
-                  return 'Phone number must be 10-13 digits';
+                if(isRequired){
+                  if (isRequired && (value == null || value.isEmpty)) {
+                    return 'This field is required';
+                  }
+                  if (value != null && !RegExp(r'^\d+$').hasMatch(value)) {
+                    return 'Only numbers are allowed';
+                  }
+                  if (value != null && (value.length < 10 || value.length > 13)) {
+                    return 'Phone number must be 10-13 digits';
+                  }
+                  return null;
                 }
                 return null;
+
               },
             )),
           ],
