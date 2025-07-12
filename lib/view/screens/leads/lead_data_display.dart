@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+import 'package:overseas_front_end/view/screens/leads/widgets/bulk_lead.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -207,7 +208,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               color: Colors.transparent,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(20),
-                                onTap: () {},
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        const BulkLeadScreen(),
+                                  );
+                                },
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 10),

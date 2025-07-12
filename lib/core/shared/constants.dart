@@ -23,6 +23,8 @@ class Constant {
   String officerUpdateStatus = 'officer/updateStatus/';
   String officerDelete = 'officer/delete';
 
+  String roundRobinList = 'officer/listRoundRobin';
+
   String addClient = "project/clientCreate";
   String clientList = "project/clientList";
   String updateClient = "project/clientUpdate";

@@ -9,6 +9,7 @@ class LeadProvider extends ChangeNotifier {
   LeadProvider._privateConstructor();
   static final _instance = LeadProvider._privateConstructor();
   factory LeadProvider() => _instance;
+
   bool showFilters = false;
   int? selectedIndex;
   bool isFilterActive = false;
