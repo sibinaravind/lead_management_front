@@ -4,16 +4,20 @@ import '../../model/officer/officers_lofin_model.dart';
 
 const String OFFICER_CACHE_KEY = 'officer_cache';
 const String OFFICER_TOKEN_KEY = 'officer_token';
+const String OFFICER_ID = 'officer_id';
 
 class OfficerCacheService {
   Officer? _officer;
   Officer? get officer => _officer;
 
-  Future<SharedPreferences> get _prefs async => await SharedPreferences.getInstance();
+  Future<SharedPreferences> get _prefs async =>
+      await SharedPreferences.getInstance();
 
   Future<bool> saveOfficer(Officer officer) async {
     final prefs = await _prefs;
     _officer = officer;
+    print("===>  ${officer.id}");
+    prefs.setString(OFFICER_ID, officer.id ?? '');
     return prefs.setString(OFFICER_CACHE_KEY, jsonEncode(officer.toJson()));
   }
 

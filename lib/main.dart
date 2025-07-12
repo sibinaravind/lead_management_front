@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/flavour_config.dart';
 import 'core/di/service_locator.dart';
 import 'core/flavor/flavor_config.dart';
+import 'core/services/native_call_handler.dart';
 import 'my_app.dart';
+
+Future<void> requestCallPermissions() async {
+  await [
+    Permission.phone,
+  ].request();
+}
 
 Future<void> main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +31,9 @@ Future<void> main() async {
   // await dotenv.load();
   // setPathUrlStrategy();
   await setupServiceLocator();
+  await requestCallPermissions();
+  await NativeCallHandler.initPhoneCallListener();
   runApp(MyApp(
-    // isLoggedIn: token != null && officerData != null,
-  ));
+      // isLoggedIn: token != null && officerData != null,
+      ));
 }
