@@ -16,6 +16,7 @@ import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
+import 'controller/lead/round_robin_provider.dart';
 import 'controller/permission_controller/access_permission_controller.dart';
 import 'controller/project/client_provider_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => LeadProvider()),
         ChangeNotifierProvider(create: (context) => TeamLeadProvider()),
+        ChangeNotifierProvider(create: (_) => RoundRobinProvider()),
+
       ],
       child: MaterialApp(
         title: ' ${FlavourConfig.partnerName()} ',
