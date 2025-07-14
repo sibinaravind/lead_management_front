@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/add_client_screen.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/client_user_table_list.dart';
+import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
+import 'package:overseas_front_end/view/screens/project/widget/client_user_table_list.dart';
 import 'package:provider/provider.dart';
 import '../../../controller/project/client_provider_controller.dart';
 import '../../../res/style/colors/colors.dart';
@@ -192,7 +192,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                             onTap: () {
                               showDialog(
                                 context: context,
-                                builder: (context) =>  AddClientScreen(
+                                builder: (context) => AddClientScreen(
                                   isEdit: false,
                                 ),
                               );
@@ -369,7 +369,6 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                                   ),
                                 ],
                               ),
-
                             ],
                           ),
                         ),

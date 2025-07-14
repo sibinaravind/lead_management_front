@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/client/client_data_model.dart';
 import 'package:overseas_front_end/model/client/client_model.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/add_client_screen.dart';
+import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../flavour/customer_project_flavour.dart';

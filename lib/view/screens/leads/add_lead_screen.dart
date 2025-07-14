@@ -59,6 +59,10 @@ class _AddLeadScreenState extends State<AddLeadScreen>
 
   final _countryController = TextEditingController();
 
+  List<String> selectedCountries = [];
+
+  String? _selectedSpecialized;
+
   @override
   void initState() {
     super.initState();
@@ -363,14 +367,52 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                                     _selectedMaritalStatus =
                                                                         val),
                                                           ),
+                                                          CustomCheckDropdown(
+                                                            label:
+                                                                "Interested Country",
+                                                            items: configProvider
+                                                                    .configModelList
+                                                                    ?.country
+                                                                    ?.map(
+                                                                      (e) =>
+                                                                          e.name ??
+                                                                          "",
+                                                                    )
+                                                                    .toList() ??
+                                                                [],
+                                                            values: [],
+                                                            onChanged: (value) {
+                                                              selectedCountries =
+                                                                  value.cast<
+                                                                      String>();
+                                                            },
+                                                          ),
+                                                          CustomDropdownField(
+                                                            label:
+                                                                'Specialized',
+                                                            value:
+                                                                _selectedSpecialized,
+                                                            items: configProvider
+                                                                    .configModelList
+                                                                    ?.specialized
+                                                                    ?.map((e) =>
+                                                                        e.name ??
+                                                                        "")
+                                                                    .toList() ??
+                                                                [],
+                                                            onChanged: (val) =>
+                                                                setState(() =>
+                                                                    _selectedGender =
+                                                                        val),
+                                                          ),
                                                           CustomDropdownField(
                                                             label:
                                                                 'Marital Status',
                                                             value:
                                                                 _selectedGender,
                                                             items: const [
-                                                              'single',
-                                                              'married',
+                                                              'Single',
+                                                              'Married',
                                                             ],
                                                             onChanged: (val) =>
                                                                 setState(() =>
@@ -411,11 +453,16 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                                 'Qualification',
                                                             value:
                                                                 _selectedQualification,
-                                                            items: const [
-                                                              'Bachelor',
-                                                              'Master',
-                                                              'PhD',
-                                                            ],
+                                                            items: configProvider
+                                                                    .configModelList
+                                                                    ?.qualification
+                                                                    ?.map(
+                                                                      (e) =>
+                                                                          e.name ??
+                                                                          "",
+                                                                    )
+                                                                    .toList() ??
+                                                                [],
                                                             onChanged:
                                                                 (String? val) {
                                                               setState(() {
@@ -432,14 +479,17 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                           ),
                                                           CustomDropdownField(
                                                             label:
-                                                                'Client Status',
+                                                                'Service Type',
                                                             value:
                                                                 _selectedStatus,
-                                                            items: const [
-                                                              'Hot',
-                                                              'Warm',
-                                                              'Cold'
-                                                            ],
+                                                            items: configProvider
+                                                                    .configModelList
+                                                                    ?.serviceType
+                                                                    ?.map((e) =>
+                                                                        e.name ??
+                                                                        "")
+                                                                    .toList() ??
+                                                                [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
                                                                     _selectedStatus =
@@ -447,14 +497,19 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                           ),
                                                           CustomDropdownField(
                                                             label:
-                                                                'Service Type',
+                                                                'Lead Status',
                                                             value:
-                                                                _selectedServiceType,
-                                                            items: const [
-                                                              'Hot',
-                                                              'Warm',
-                                                              'Cold'
-                                                            ],
+                                                                _selectedStatus,
+                                                            items: configProvider
+                                                                    .configModelList
+                                                                    ?.clientStatus
+                                                                    ?.map(
+                                                                      (e) =>
+                                                                          e.name ??
+                                                                          "",
+                                                                    )
+                                                                    .toList() ??
+                                                                [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
                                                                     _selectedServiceType =
@@ -662,67 +717,59 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                             onPressed: () {
                                               if (_formKey.currentState!
                                                   .validate()) {
-                                                Provider.of<LeadProvider>(context,
-                                                        listen: false)
-                                                    .addLead(
-                                                        name: _nameController.text
-                                                            .trim(),
-                                                        email: _emailController
+                                                Provider.of<LeadProvider>(context, listen: false).addLead(
+                                                    name: _nameController.text
+                                                        .trim(),
+                                                    email: _emailController.text
+                                                        .trim(),
+                                                    phone: _mobileController.text
+                                                        .trim(),
+                                                    alternatePhone:
+                                                        _mobileOptionalController
                                                             .text
                                                             .trim(),
-                                                        phone: _mobileController.text
-                                                            .trim(),
-                                                        alternatePhone:
-                                                            _mobileOptionalController
-                                                                .text
-                                                                .trim(),
-                                                        whatsapp:
-                                                            _mobileController.text
-                                                                .trim(),
-                                                        gender:
-                                                            _selectedGender ??
-                                                                "",
-                                                        dob: "",
-                                                        matrialStatus: "",
-                                                        address:
-                                                            _locationController
-                                                                .text
-                                                                .trim(),
-                                                        city: "",
-                                                        state: "",
-                                                        country: "",
-                                                        jobInterests: [],
-                                                        countryInterested: [],
-                                                        expectedSalary: 0,
-                                                        qualification: "",
-                                                        university: "",
-                                                        passingYear: "",
-                                                        experience: 0,
-                                                        skills: [],
-                                                        profession: "",
-                                                        specializedIn: "",
-                                                        leadSource:
-                                                            _selectedLeadSource ??
-                                                                "",
-                                                        comment:
-                                                            _remarksController
-                                                                .text
-                                                                .trim(),
-                                                        onCallCommunication:
-                                                            true,
-                                                        onWhatsappCommunication:
-                                                            _sendWhatsapp,
-                                                        onEmailCommunication:
-                                                            _sendEmail,
-                                                        status:
-                                                            _selectedLeadCategory ??
-                                                                "",
-                                                        serviceType:
-                                                            _selectedService ??
-                                                                "",
-                                                        branchName:
-                                                            _selectedBranch ??
-                                                                "");
+                                                    whatsapp: _mobileController
+                                                        .text
+                                                        .trim(),
+                                                    gender:
+                                                        _selectedGender ?? "",
+                                                    dob: "",
+                                                    matrialStatus: "",
+                                                    address: _locationController
+                                                        .text
+                                                        .trim(),
+                                                    city: "",
+                                                    state: "",
+                                                    country: "",
+                                                    jobInterests: [],
+                                                    countryInterested:
+                                                        selectedCountries ?? [],
+                                                    expectedSalary: 0,
+                                                    qualification:
+                                                        _selectedQualification ??
+                                                            "",
+                                                    university: "",
+                                                    passingYear: "",
+                                                    experience: 0,
+                                                    skills: [],
+                                                    profession: "",
+                                                    specializedIn:
+                                                        _selectedSpecialized ??
+                                                            "",
+                                                    leadSource: _selectedLeadSource ??
+                                                        "",
+                                                    comment: _remarksController
+                                                        .text
+                                                        .trim(),
+                                                    onCallCommunication: true,
+                                                    onWhatsappCommunication:
+                                                        _sendWhatsapp,
+                                                    onEmailCommunication:
+                                                        _sendEmail,
+                                                    status:
+                                                        _selectedLeadCategory ?? "",
+                                                    serviceType: _selectedService ?? "",
+                                                    branchName: _selectedBranch ?? "");
                                                 // Save lead logic
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(

@@ -410,7 +410,6 @@
 //   }
 // }
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/res/style/colors/dimension.dart';
@@ -428,10 +427,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _ResponsiveLoginScreenState extends State<LoginScreen> {
-    final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _officerIdController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _officerIdController =
+      TextEditingController(text: "64");
+  final TextEditingController _passwordController =
+      TextEditingController(text: "12345");
   bool _obscurePassword = true;
 
   @override
@@ -453,7 +454,8 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               bool isDesktop = constraints.maxWidth > 800;
-              bool isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 800;
+              bool isTablet =
+                  constraints.maxWidth > 600 && constraints.maxWidth <= 800;
 
               if (isDesktop) {
                 return _buildDesktopLayout();
@@ -564,9 +566,8 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
         color: AppColors.whiteMainColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
       ),
-      child:const  Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 10.0,
-        vertical: 5),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
         child: Image(image: AssetImage("assets/images/affiniks_logo.webp")),
       ),
     );
@@ -594,7 +595,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
           ),
         ),
         const SizedBox(height: 24),
-       const Text(
+        const Text(
           'Start your journey to success today. Login and take the first step forward.',
           style: TextStyle(
             color: AppColors.textGrayColour,
@@ -636,7 +637,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginForm() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 50,vertical: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 32),
       decoration: BoxDecoration(
         color: AppColors.whiteMainColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -649,20 +650,18 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-        Visibility(
-          visible:Dimension().isMobile(context) ,
-          child: SizedBox(
-          width: 200,
-          height: 150,
-
-          child:const  Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 10.0,
-                vertical: 5),
-            child: Image(image: AssetImage("assets/images/affiniks_logo.webp")),
+          Visibility(
+            visible: Dimension().isMobile(context),
+            child: SizedBox(
+              width: 200,
+              height: 150,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                child: Image(
+                    image: AssetImage("assets/images/affiniks_logo.webp")),
+              ),
+            ),
           ),
-                ),
-        ),
 
           const Text(
             'Sign in',
@@ -674,7 +673,6 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(height: 32),
           _buildTextField(
-
             controller: _officerIdController,
             label: 'User Id',
             hintText: 'User Id',
@@ -714,10 +712,11 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 8),
         TextFormField(
-          validator: (value){
-            if(value!.isEmpty){
+          validator: (value) {
+            if (value!.isEmpty) {
               return "Required";
-            }return null;
+            }
+            return null;
           },
           controller: controller,
           obscureText: isPassword ? _obscurePassword : false,
@@ -754,16 +753,18 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
             ),
             suffixIcon: isPassword
                 ? IconButton(
-              onPressed: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-              icon: Icon(
-                _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                color: AppColors.textGrayColour,
-              ),
-            )
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: AppColors.textGrayColour,
+                    ),
+                  )
                 : null,
           ),
         ),
@@ -781,21 +782,17 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
       ),
       child: ElevatedButton(
         onPressed: () {
-          print(_officerIdController.text??'.......');
-          print(_passwordController.text??'.......');
-          if(_formKey.currentState?.validate() ?? false){
-
-                  Provider.of<LoginProvider>(context, listen: false)
-                      .loginOfficer(
-                    officerId:_officerIdController .text.trim(),
-                    password: _passwordController.text.trim(),
-                    context: context,
-                  );
-                } else {
-                  return CustomSnackBar.show(
-                      context, "All Fields are required");
-                }
-
+          print(_officerIdController.text ?? '.......');
+          print(_passwordController.text ?? '.......');
+          if (_formKey.currentState?.validate() ?? false) {
+            Provider.of<LoginProvider>(context, listen: false).loginOfficer(
+              officerId: _officerIdController.text.trim(),
+              password: _passwordController.text.trim(),
+              context: context,
+            );
+          } else {
+            return CustomSnackBar.show(context, "All Fields are required");
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
