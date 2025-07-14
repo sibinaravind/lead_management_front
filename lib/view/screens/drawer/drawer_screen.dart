@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
@@ -18,6 +19,7 @@ import '../Project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
 import '../employee/employee_permission_screen.dart';
+import '../employee/round_robin_screen.dart';
 import '../officers/employee_data_display.dart';
 import 'custom_drawer.dart';
 
@@ -36,7 +38,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     Future.delayed(Duration.zero, () {
       Provider.of<LeadProvider>(context, listen: false).getLeadList();
-
+      Provider.of<RoundRobinProvider>(context,listen: false).fetchRoundRobinGroups();
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
       Provider.of<OfficersControllerProvider>(context, listen: false)
           .fetchOfficersList();
@@ -166,6 +168,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     return Expanded(child: ConfigScreen());
                                   case 31:
                                     return Expanded(child: ClientDataDisplay());
+                                    case 40:
+                                    return Expanded(child: RoundRobinScreen());
                                   default:
                                     return Expanded(
                                       child: DashboardScreen(),

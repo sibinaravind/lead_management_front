@@ -36,9 +36,9 @@ class OfficersControllerProvider with ChangeNotifier {
     if (_officersListData == null) return;
 
     _filteredOfficersList = _officersListData!.where((officer) {
-      final employeeName = officer.name.toLowerCase() ?? '';
-      final phone = officer.phone.toLowerCase() ?? '';
-      final employeePhone = officer.companyPhoneNumber.toLowerCase() ?? '';
+      final employeeName = officer.name?.toLowerCase() ?? '';
+      final phone = officer.phone?.toLowerCase() ?? '';
+      final employeePhone = officer.companyPhoneNumber?.toLowerCase() ?? '';
       return employeeName.contains(_searchQuery) ||
           employeePhone.contains(_searchQuery) ||
           phone.contains(_searchQuery);
@@ -60,21 +60,27 @@ class OfficersControllerProvider with ChangeNotifier {
 
     try {
       dynamic json = await _apiService.get(Constant().officerList);
-
+   print(json.runtimeType);
       if (json['success'] == true && json['data'] != null) {
         final List<dynamic> dataList = json['data'];
+        print(dataList.runtimeType);
 
-        _officersListData =
-            dataList.map((e) => OfficersModel.fromJson(e)).toList();
 
-        allOfficersListData =
-            dataList.map((e) => OfficersModel.fromJson(e)).toList();
+        try {
+          _officersListData =
+              dataList.map((e) => OfficersModel.fromJson(e)).toList();
 
-        _officersListData!.sort((a, b) {
-          final aId = int.tryParse(a.officerId ?? '') ?? 0;
-          final bId = int.tryParse(b.officerId ?? '') ?? 0;
-          return aId.compareTo(bId);
-        });
+
+          allOfficersListData =
+              dataList.map((e) => OfficersModel.fromJson(e)).toList();
+        } catch(ex) {
+          throw Exception(ex);
+        }
+        // _officersListData!.sort((a, b) {
+        //   final aId = int.tryParse(a.officerId ?? '') ?? 0;
+        //   final bId = int.tryParse(b.officerId ?? '') ?? 0;
+        //   return aId.compareTo(bId);
+        // });
 
         return _officersListData;
       } else {

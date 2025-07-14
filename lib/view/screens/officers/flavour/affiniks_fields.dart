@@ -23,7 +23,7 @@ class AffiniksFields {
         'name': 'Designation',
         // 'extractor': (OfficersModel user) => user.designation.toString()
         'extractor': (OfficersModel user) =>
-        (user.designation.isNotEmpty )
+        user.designation != null
             ? (user.designation as List).join('\n')
             : user.designation.toString()
       },
@@ -33,7 +33,7 @@ class AffiniksFields {
 
         'name': 'Department',
         'extractor': (OfficersModel user) =>
-        (user.department.isNotEmpty)
+        user.department != null
             ? (user.department as List).join('\n')
             : user.department.toString()
       },

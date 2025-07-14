@@ -24,6 +24,9 @@ class Constant {
   String officerDelete = 'officer/delete';
 
   String roundRobinList = 'officer/listRoundRobin';
+  String insertOfficersInToRoundRobinList = 'officer/insertStaffToRoundRobin';
+  String removeOfficersInToRoundRobinList = 'officer/removeStaffFromRoundRobin';
+  String insertRoundRobin = 'officer/insertRoundRobin';
 
   String addClient = "project/clientCreate";
   String clientList = "project/clientList";

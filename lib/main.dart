@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,9 +10,12 @@ import 'core/services/native_call_handler.dart';
 import 'my_app.dart';
 
 Future<void> requestCallPermissions() async {
-  await [
-    Permission.phone,
-  ].request();
+  if(!kIsWeb){
+    await [
+      Permission.phone,
+    ].request();
+  }
+
 }
 
 Future<void> main() async {
@@ -32,7 +36,7 @@ Future<void> main() async {
   // setPathUrlStrategy();
   await setupServiceLocator();
   await requestCallPermissions();
-  await NativeCallHandler.initPhoneCallListener();
+  !kIsWeb ?await NativeCallHandler.initPhoneCallListener():null;
   runApp(MyApp(
       // isLoggedIn: token != null && officerData != null,
       ));

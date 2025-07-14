@@ -225,6 +225,7 @@ class _CustomDrawerState extends State<CustomDrawer>
             index: 37,
             icon: Icons.person_outline_rounded),
         DrawerItem(label: 'Team Lead', index: 39, icon: Icons.settings),
+        DrawerItem(label: 'Round Robin', index: 40, icon: Icons.settings),
 
         // DrawerItem(
         //     label: 'Employee Role',

@@ -28,20 +28,20 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
-  String? _selectedService = 'Yes';
+  final String _selectedService = 'Yes';
   String? _roundRobinSelection = 'Yes';
   List<Map<String, dynamic>> uploadedData = [];
   String? uploadedFileName;
   String? _branchController = '';
   String? _serviceTypeControlller = '';
-  String _employeeController = '';
-  late List<String> _roundRobin = [];
+  List <String>_employeeController = [];
+  String _roundRobin = '';
 
   @override
   void initState() {
-    final provider = Provider.of<RoundRobinProvider>(context, listen: false);
-    final officeProvider =
-        Provider.of<OfficersControllerProvider>(context, listen: false);
+    // final provider = Provider.of<RoundRobinProvider>(context, listen: false);
+    // final officeProvider =
+    //     Provider.of<OfficersControllerProvider>(context, listen: false);
 
     super.initState();
   }
@@ -266,74 +266,64 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                                               selectedValue:
                                                                   _roundRobinSelection,
                                                               onChanged:
-                                                                  (value) {}),
-                                                          // Consumer<RoundRobinProvider>(builder: (context, roundRobin,
-                                                          //     child){
-                                                          //   return CustomDropdownField(
-                                                          //     label: 'Round Robin',
-                                                          //     value:
-                                                          //     _roundRobin,
-                                                          //     items: roundRobin
-                                                          //         .roundRobinGroups
-                                                          //       .map((e) =>
-                                                          //     e.name ??
-                                                          //         "")
-                                                          //         .toList() ??
-                                                          //         [],
-                                                          //     onChanged: (val) =>
-                                                          //         setState(() =>
-                                                          //         _roundRobin =
-                                                          //             val ??
-                                                          //                 ''),
-                                                          //     isRequired: true,
-                                                          //   );
-                                                          //
-                                                          // }),
-                                                          // CustomDropdownField(
-                                                          //   label: 'Employee',
-                                                          //   value:
-                                                          //   _employeeController,
-                                                          //   items: configProvider
-                                                          //       .configModelList
-                                                          //       ?.serviceType
-                                                          //       ?.map((e) =>
-                                                          //   e.name ??
-                                                          //       "")
-                                                          //       .toList() ??
-                                                          //       [],
-                                                          //   onChanged: (val) =>
-                                                          //       setState(() =>
-                                                          //       _employeeController =
-                                                          //           val ??
-                                                          //               ''),
-                                                          //   isRequired: true,
-                                                          // ),
-                                                          Consumer<
-                                                                  OfficersControllerProvider>(
-                                                              builder: (context,
-                                                                  officers,
-                                                                  child) {
-                                                            return CustomMultiSelectDropdownField(
-                                                              label:
-                                                                  'Select Officers',
-                                                              selectedItems:
-                                                                  _roundRobin,
-                                                              items: officers
-                                                                      .allOfficersListData
-                                                                      ?.map((e) =>
-                                                                          e.name)
-                                                                      .toList() ??
-                                                                  [],
-                                                              onChanged:
-                                                                  (selected) {
+                                                                  (value) {
                                                                 setState(() {
-                                                                  _roundRobin =
-                                                                      selected;
+                                                                  _roundRobinSelection=value;
+
                                                                 });
-                                                              },
-                                                              isRequired: true,
-                                                            );
-                                                          }),
+                                                                  }),
+                                                          Visibility(
+                                                            visible:_roundRobinSelection=='Yes'?true:false,
+                                                            child: Consumer<RoundRobinProvider>(builder: (context, roundRobin,
+                                                                child){
+                                                              return CustomDropdownField(
+                                                                label: 'Round Robin',
+                                                                value:
+                                                                _roundRobin,
+                                                                items: roundRobin
+                                                                    .roundRobinGroups
+                                                                  .map((e) =>
+                                                                e.name ??
+                                                                    "")
+                                                                    .toList() ??
+                                                                    [],
+                                                                onChanged: (val) =>
+                                                                    setState(() =>
+                                                                    _roundRobin =
+                                                                        val ??
+                                                                            ''),
+                                                                isRequired:_roundRobinSelection=='Yes'? true:false,
+                                                              );
+
+                                                            }),
+
+                                                          ),
+                                                          Visibility(
+                                                            visible:_roundRobinSelection=='Yes'?false:true,
+
+                                                            child: Consumer<OfficersControllerProvider>(
+                                                                builder: (context,
+                                                                    officers,
+                                                                    child) {
+                                                              return SizedBox(
+                                                                width: double.infinity,
+                                                                child: CustomMultiSelectDropdownField(
+                                                                  label:
+                                                                      'Select Officers',
+                                                                  selectedItems:_employeeController,
+                                                                  items: officers.officersListModel!.map((e) => "${e.name},${e.officerId}" ??''  ).toList(),
+                                                                  onChanged:
+                                                                      (selected) {
+                                                                    setState(() {
+                                                                      _employeeController =
+                                                                          selected;
+                                                                    });
+                                                                  },
+                                                                  // isRequired: true,
+                                                                ),
+                                                              );
+                                                            }),
+                                                          ),
                                                         ]),
                                                     const SizedBox(height: 20),
                                                   ],
@@ -350,7 +340,7 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                         Expanded(
                                           child: CustomActionButton(
                                             text: 'Download Excel Sheet',
-                                            icon: Icons.close_rounded,
+                                            icon: Icons.pages_outlined,
                                             textColor: Colors.grey,
                                             onPressed: downloadExcelTemplate,
                                             gradient: AppColors.greenGradient,

@@ -1,10 +1,10 @@
 class RoundRobinOfficerModel {
-  final String id;
-  final String name;
-  final String phone;
-  final String companyPhoneNumber;
-  final List<String> branch;
-  final List<String> designation;
+  final String? id;
+  final String? name;
+  final String? phone;
+  final String? companyPhoneNumber;
+  final List<String>? branch;
+  final List<String>? designation;
 
   RoundRobinOfficerModel({
     required this.id,
