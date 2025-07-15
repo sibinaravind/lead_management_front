@@ -29,6 +29,11 @@ class Constant {
   String clientList = "project/clientList";
   String updateClient = "project/clientUpdate";
 
+  String projectList = "project/projectList";
+  String addProject = "project/clientProject";
+
+  String vacancyList = "project/vacancyList";
+
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
 
@@ -43,7 +48,7 @@ class Constant {
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
 
-  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads lead/insertLead
+  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

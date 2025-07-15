@@ -3,7 +3,7 @@ import 'package:overseas_front_end/model/client/client_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import '../../../../controller/project/client_provider_controller.dart';
+import '../../../../controller/project/project_provider_controller.dart';
 
 class AddClientScreen extends StatefulWidget {
   final bool isEdit;
@@ -321,13 +321,13 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                   .validate()) {
                                                 if (widget.isEdit) {
                                                   await Provider.of<
-                                                              ClientProvider>(
+                                                              ProjectProvider>(
                                                           context,
                                                           listen: false)
                                                       .editClient(
-                                                    clientId:
-                                                        widget.clientList?.id ??
-                                                            '',
+                                                    clientId: widget
+                                                            .clientList?.sId ??
+                                                        '',
                                                     name:
                                                         _nameController.text ??
                                                             '',
@@ -357,7 +357,7 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                   );
                                                   Navigator.pop(context);
                                                 } else {
-                                                  Provider.of<ClientProvider>(
+                                                  Provider.of<ProjectProvider>(
                                                           context,
                                                           listen: false)
                                                       .createClient(

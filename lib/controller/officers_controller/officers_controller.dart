@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/model/officer/officer_model.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
+import '../../model/officer/officer_model.dart';
 
 class OfficersControllerProvider with ChangeNotifier {
-
   OfficersControllerProvider._privateConstructor();
   static final _instance = OfficersControllerProvider._privateConstructor();
   factory OfficersControllerProvider() {
@@ -36,9 +35,9 @@ class OfficersControllerProvider with ChangeNotifier {
     if (_officersListData == null) return;
 
     _filteredOfficersList = _officersListData!.where((officer) {
-      final employeeName = officer.name.toLowerCase() ?? '';
-      final phone = officer.phone.toLowerCase() ?? '';
-      final employeePhone = officer.companyPhoneNumber.toLowerCase() ?? '';
+      final employeeName = officer.name?.toLowerCase() ?? '';
+      final phone = officer.phone?.toLowerCase() ?? '';
+      final employeePhone = officer.companyPhoneNumber?.toLowerCase() ?? '';
       return employeeName.contains(_searchQuery) ||
           employeePhone.contains(_searchQuery) ||
           phone.contains(_searchQuery);

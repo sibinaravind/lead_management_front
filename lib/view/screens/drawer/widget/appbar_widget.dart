@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../controller/auth/login_controller.dart';
-import '../../../../model/models.dart';
+import '../../../../model/officer/officers_lofin_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 import '../../officers/widgets/reset_password.dart';
@@ -163,7 +162,7 @@ class _AppBarContainerState extends State<AppBarContainer> {
                       context: context,
                       builder: (context) => EmployeeEditScreen(
                         isResetPassword: true,
-                        officerId: widget.user.id ?? '',
+                        officerId: widget.user.officerId ?? '',
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -183,7 +182,6 @@ class _AppBarContainerState extends State<AppBarContainer> {
                   PopupMenuItem<String>(
                     onTap: () {
                       // Provider.of<LoginProvider>(context, listen: false).logout(context);
-
                     },
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     value: 'option3',

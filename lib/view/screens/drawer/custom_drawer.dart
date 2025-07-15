@@ -126,6 +126,8 @@ class _CustomDrawerState extends State<CustomDrawer>
             icon: Icons.assignment_late_rounded),
         DrawerItem(
             label: 'Client', index: 31, icon: Icons.account_circle_outlined),
+        DrawerItem(
+            label: 'Vacancy', index: 35, icon: Icons.work_history_outlined),
       ],
     ),
     DrawerSection(
@@ -366,7 +368,9 @@ class _CustomDrawerState extends State<CustomDrawer>
                         text: widget.officer.name ?? '',
                         fontSize: 15,
                         color: AppColors.textWhiteColour, // Slate 100
-                      ),  const SizedBox(height: 6), CustomText(
+                      ),
+                      const SizedBox(height: 6),
+                      CustomText(
                         text: widget.officer.officerId ?? '',
                         fontSize: 12,
                         color: AppColors.textWhiteColour, // Slate 100

@@ -1,30 +1,30 @@
 class OfficersModel {
-  String id;
-  String officerId;
-  String name;
-  String status;
-  String phone;
-  String gender;
-  String companyPhoneNumber;
-  List<dynamic> designation;
-  List<String> department;
-  List<String> branch;
-  DateTime createdAt;
-  List<String> officers;
+  String? id;
+  String? officerId;
+  String? name;
+  String? status;
+  String? phone;
+  String? gender;
+  String? companyPhoneNumber;
+  List<dynamic>? designation;
+  List<String>? department;
+  List<String>? branch;
+  DateTime? createdAt;
+  List<String>? officers;
 
   OfficersModel({
-    required this.id,
-    required this.officerId,
-    required this.name,
-    required this.status,
-    required this.phone,
-    required this.gender,
-    required this.companyPhoneNumber,
-    required this.designation,
-    required this.department,
-    required this.branch,
-    required this.createdAt,
-    required this.officers,
+    this.id,
+    this.officerId,
+    this.name,
+    this.status,
+    this.phone,
+    this.gender,
+    this.companyPhoneNumber,
+    this.designation,
+    this.department,
+    this.branch,
+    this.createdAt,
+    this.officers,
   });
 
   factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
@@ -35,11 +35,11 @@ class OfficersModel {
         phone: json["phone"],
         gender: json["gender"],
         companyPhoneNumber: json["company_phone_number"],
-        designation: List<dynamic>.from(json["designation"].map((x) => x)),
-        department: List<String>.from(json["department"].map((x) => x)),
+        // designation: List<dynamic>.from(json["designation"].map((x) => x)),
+        // department: List<String>.from(json["department"].map((x) => x)),
         branch: List<String>.from(json["branch"].map((x) => x)),
         createdAt: DateTime.parse(json["created_at"]),
-        officers: List<String>.from(json["officers"].map((x) => x)),
+        // officers: List<String>.from(json["officers"].map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,11 +50,11 @@ class OfficersModel {
         "phone": phone,
         "gender": gender,
         "company_phone_number": companyPhoneNumber,
-        "designation": List<dynamic>.from(designation.map((x) => x)),
-        "department": List<dynamic>.from(department.map((x) => x)),
-        "branch": List<dynamic>.from(branch.map((x) => x)),
-        "created_at": createdAt.toIso8601String(),
-        "officers": List<dynamic>.from(officers.map((x) => x)),
+        "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
+        "department": List<dynamic>.from(department?.map((x) => x) ?? []),
+        "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
+        "created_at": createdAt?.toIso8601String() ?? '',
+        "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
       };
 }
 

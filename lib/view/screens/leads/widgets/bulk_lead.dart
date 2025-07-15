@@ -321,7 +321,8 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                                               items: officers
                                                                       .allOfficersListData
                                                                       ?.map((e) =>
-                                                                          e.name)
+                                                                          e.name ??
+                                                                          '')
                                                                       .toList() ??
                                                                   [],
                                                               onChanged:

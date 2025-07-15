@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import 'config/flavour_config.dart';
 import 'controller/lead/round_robin_provider.dart';
 import 'controller/permission_controller/access_permission_controller.dart';
-import 'controller/project/client_provider_controller.dart';
+import 'controller/project/project_provider_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
 // import 'view/features/drawer/drawer_screen.dart';
 
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           create: (context) => AppUserProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => ClientProvider(),
+          create: (context) => ProjectProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => CampaignProvider(),
@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ConfigProvider(),
         ),
-
         ChangeNotifierProvider(create: (context) => AccessPermissionProvider()),
         ChangeNotifierProvider(
             create: (context) => OfficersControllerProvider()),
@@ -56,7 +55,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LeadProvider()),
         ChangeNotifierProvider(create: (context) => TeamLeadProvider()),
         ChangeNotifierProvider(create: (_) => RoundRobinProvider()),
-
       ],
       child: MaterialApp(
         title: ' ${FlavourConfig.partnerName()} ',

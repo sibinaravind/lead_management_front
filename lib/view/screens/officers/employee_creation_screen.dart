@@ -71,7 +71,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     // _statusController.text=widget.officer?.status??'';
     _statusController.text = widget.officer?.status ?? 'ACTIVE';
     _designationController.text = widget.officer?.designation.toString() ?? '';
-    _departmentController.text = widget.officer?.department.toString() ?? '';
+    // _departmentController.text = widget.officer?.department.toString() ?? '';
     super.initState();
   }
 

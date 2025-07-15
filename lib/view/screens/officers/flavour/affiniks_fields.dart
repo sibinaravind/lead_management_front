@@ -23,24 +23,21 @@ class AffiniksFields {
         'name': 'Designation',
         // 'extractor': (OfficersModel user) => user.designation.toString()
         'extractor': (OfficersModel user) =>
-        (user.designation.isNotEmpty )
-            ? (user.designation as List).join('\n')
-            : user.designation.toString()
+            (user.designation?.isNotEmpty ?? false)
+                ? (user.designation as List).join('\n')
+                : user.designation.toString()
       },
       {
         // 'name': 'Department',
         // 'extractor': (OfficersModel user) => user.department.toString()
 
-        'name': 'Department',
+        'name': 'Designation',
         'extractor': (OfficersModel user) =>
-        (user.department.isNotEmpty)
-            ? (user.department as List).join('\n')
-            : user.department.toString()
+            (user.designation?.isNotEmpty ?? false)
+                ? (user.designation as List).join('\n')
+                : user.designation.toString()
       },
-      {
-        'name':'Action',
-        'extractor':(OfficersModel user)=>user
-      }
+      {'name': 'Action', 'extractor': (OfficersModel user) => user}
     ];
   }
 }

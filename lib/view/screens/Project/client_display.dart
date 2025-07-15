@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
 import 'package:overseas_front_end/view/screens/project/widget/client_user_table_list.dart';
 import 'package:provider/provider.dart';
-import '../../../controller/project/client_provider_controller.dart';
+import '../../../controller/project/project_provider_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
 
@@ -104,7 +104,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ClientProvider>().fetchClients();
+      context.read<ProjectProvider>().fetchClients();
     });
   }
 
@@ -237,7 +237,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                           borderRadius: BorderRadius.circular(16),
                           child: TextField(
                             onChanged: (value) {
-                              Provider.of<ClientProvider>(context,
+                              Provider.of<ProjectProvider>(context,
                                       listen: false)
                                   .searchClients(value);
                             },
@@ -255,7 +255,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                                 icon: const Icon(Icons.search,
                                     size: 20, color: Colors.grey),
                                 onPressed: () {
-                                  Provider.of<ClientProvider>(context,
+                                  Provider.of<ProjectProvider>(context,
                                           listen: false)
                                       .searchClients(_searchController.text);
                                 },
@@ -287,7 +287,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                 ),
                 // _buildFilterPanel(context),
 
-                Consumer<ClientProvider>(builder: (context, controller, _) {
+                Consumer<ProjectProvider>(builder: (context, controller, _) {
                   final clientList = controller.clients;
                   if (controller.isLoading) {
                     return const Center(child: CircularProgressIndicator());

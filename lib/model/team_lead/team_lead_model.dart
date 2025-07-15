@@ -6,7 +6,7 @@ class TeamLeadModel {
   String? phone;
   String? gender;
   String? companyPhoneNumber;
-  List<int>? designation;
+  List<String>? designation;
   List<String>? department;
   List<String>? branch;
   String? createdAt;
@@ -34,9 +34,9 @@ class TeamLeadModel {
     phone = json['phone'];
     gender = json['gender'];
     companyPhoneNumber = json['company_phone_number'];
-    designation = json['designation'].cast<int>();
-    department = json['department'].cast<String>();
-    branch = json['branch'].cast<String>();
+    designation = json['designation'].cast<String>();
+    // department = json['department'].cast<String>();
+    // branch = json['branch'].cast<String>() ?? '';
     createdAt = json['created_at'];
     if (json['officers'] != null) {
       officers = <Officers>[];
@@ -75,7 +75,7 @@ class Officers {
   Officers({this.id, this.name, this.branch, this.designation});
 
   Officers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['_id'];
     name = json['name'];
     branch = json['branch'];
     designation = json['designation'];
