@@ -4,6 +4,7 @@ import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
@@ -15,7 +16,7 @@ import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../controller/auth/login_controller.dart';
 import '../../../model/officer/officers_lofin_model.dart';
-import '../Project/client_display.dart';
+import '../project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
 import '../employee/employee_permission_screen.dart';
@@ -42,6 +43,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
       Provider.of<OfficersControllerProvider>(context, listen: false)
           .fetchOfficersList();
+
+      Provider.of<AccessPermissionProvider>(context, listen: false)
+          .fetchAccessPermissions();
     });
   }
 
@@ -93,7 +97,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           : Consumer<AppUserProvider>(
               builder: (context, value, child) => BottomNavigationBar(
                 backgroundColor: AppColors.textGrayColour,
-                currentIndex: value.selectedIndex??0,
+                currentIndex: value.selectedIndex ?? 0,
                 selectedItemColor: AppColors.primaryColor,
                 unselectedItemColor: AppColors.textGrayColour,
                 onTap: (index) {

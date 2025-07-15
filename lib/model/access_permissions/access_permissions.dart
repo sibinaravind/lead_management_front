@@ -68,11 +68,9 @@
 //   };
 // }
 
-
-
 class EmployeePermissionModel {
   String? id;
-  String? name;
+  // String? name;
   Map<String, bool>? admin;
   Map<String, bool>? counselor;
   Map<String, bool>? manager;
@@ -82,7 +80,7 @@ class EmployeePermissionModel {
 
   EmployeePermissionModel({
     this.id,
-    this.name,
+    // this.name,
     this.admin,
     this.counselor,
     this.manager,
@@ -94,23 +92,23 @@ class EmployeePermissionModel {
   factory EmployeePermissionModel.fromJson(Map<String, dynamic> json) =>
       EmployeePermissionModel(
         id: json["_id"],
-        name: json["name"],
-        admin: Map<String, bool>.from(json["admin"]),
-        counselor: Map<String, bool>.from(json["counselor"]),
-        manager: Map<String, bool>.from(json["manager"]),
-        frontDesk: Map<String, bool>.from(json["front_desk"]),
-        documentation: Map<String, bool>.from(json["documentation"]),
-        visa: Map<String, bool>.from(json["visa"]),
+        // name: json["name"],
+        admin: Map<String, bool>.from(json["ADMIN"]),
+        counselor: Map<String, bool>.from(json["COUNSILOR"]),
+        manager: Map<String, bool>.from(json["MANAGER"]),
+        frontDesk: Map<String, bool>.from(json["FRONT_DESK"]),
+        documentation: Map<String, bool>.from(json["DOCUMENTATION"]),
+        visa: Map<String, bool>.from(json["VISA"]),
       );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "admin": admin,
-    "counselor": counselor,
-    "manager": manager,
-    "front_desk": frontDesk,
-    "documentation": documentation,
-    "visa": visa,
-  };
+        "_id": id,
+        // "name": name,
+        "ADMIN": admin,
+        "COUNSILOR": counselor,
+        "MANAGER": manager,
+        "FRONT_DESK": frontDesk,
+        "DOCUMENTATION": documentation,
+        "VISA": visa,
+      };
 }
