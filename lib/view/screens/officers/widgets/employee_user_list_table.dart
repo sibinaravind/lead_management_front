@@ -64,8 +64,8 @@ class EmployeeListTable extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 6),
                                     child: CustomText(
-                                      text:
-                                          getTextBasedOnStatus(listUser.status??''),
+                                      text: getTextBasedOnStatus(
+                                          listUser.status ?? ''),
                                       // text: getTextBasedOnStatus(
                                       //     listUser.mobile ?? ''),
                                       fontWeight: FontWeight.w600,
@@ -121,7 +121,7 @@ class EmployeeListTable extends StatelessWidget {
                                                     builder: (context) =>
                                                         EmployeeEditScreen(
                                                           officerId:
-                                                              listUser.id??'',
+                                                              listUser.id ?? '',
                                                           isResetPassword:
                                                               false,
                                                         )),
@@ -173,7 +173,7 @@ class EmployeeListTable extends StatelessWidget {
                                                     bool success =
                                                         await provider
                                                             .deleteOfficer(
-                                                      listUser.id??'',
+                                                      listUser.id ?? '',
                                                     );
 
                                                     if (success) {

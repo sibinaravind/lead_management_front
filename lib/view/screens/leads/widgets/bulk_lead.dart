@@ -34,7 +34,7 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
   String? uploadedFileName;
   String? _branchController = '';
   String? _serviceTypeControlller = '';
-  List <String>_employeeController = [];
+  List<String> _employeeController = [];
   String _roundRobin = '';
 
   @override
@@ -268,53 +268,77 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                                               onChanged:
                                                                   (value) {
                                                                 setState(() {
-                                                                  _roundRobinSelection=value;
-
+                                                                  _roundRobinSelection =
+                                                                      value;
                                                                 });
-                                                                  }),
+                                                              }),
                                                           Visibility(
-                                                            visible:_roundRobinSelection=='Yes'?true:false,
-                                                            child: Consumer<RoundRobinProvider>(builder: (context, roundRobin,
-                                                                child){
+                                                            visible:
+                                                                _roundRobinSelection ==
+                                                                        'Yes'
+                                                                    ? true
+                                                                    : false,
+                                                            child: Consumer<
+                                                                    RoundRobinProvider>(
+                                                                builder: (context,
+                                                                    roundRobin,
+                                                                    child) {
                                                               return CustomDropdownField(
-                                                                label: 'Round Robin',
+                                                                label:
+                                                                    'Round Robin',
                                                                 value:
-                                                                _roundRobin,
+                                                                    _roundRobin,
                                                                 items: roundRobin
-                                                                    .roundRobinGroups
-                                                                  .map((e) =>
-                                                                e.name ??
-                                                                    "")
-                                                                    .toList() ??
+                                                                        .roundRobinGroups
+                                                                        .map((e) =>
+                                                                            e.name ??
+                                                                            "")
+                                                                        .toList() ??
                                                                     [],
                                                                 onChanged: (val) =>
                                                                     setState(() =>
-                                                                    _roundRobin =
-                                                                        val ??
-                                                                            ''),
-                                                                isRequired:_roundRobinSelection=='Yes'? true:false,
+                                                                        _roundRobin =
+                                                                            val ??
+                                                                                ''),
+                                                                isRequired:
+                                                                    _roundRobinSelection ==
+                                                                            'Yes'
+                                                                        ? true
+                                                                        : false,
                                                               );
-
                                                             }),
-
                                                           ),
                                                           Visibility(
-                                                            visible:_roundRobinSelection=='Yes'?false:true,
-
-                                                            child: Consumer<OfficersControllerProvider>(
-                                                                builder: (context,
-                                                                    officers,
-                                                                    child) {
+                                                            visible:
+                                                                _roundRobinSelection ==
+                                                                        'Yes'
+                                                                    ? false
+                                                                    : true,
+                                                            child: Consumer<
+                                                                    OfficersControllerProvider>(
+                                                                builder:
+                                                                    (context,
+                                                                        officers,
+                                                                        child) {
                                                               return SizedBox(
-                                                                width: double.infinity,
-                                                                child: CustomMultiSelectDropdownField(
+                                                                width: double
+                                                                    .infinity,
+                                                                child:
+                                                                    CustomMultiSelectDropdownField(
                                                                   label:
                                                                       'Select Officers',
-                                                                  selectedItems:_employeeController,
-                                                                  items: officers.officersListModel!.map((e) => "${e.name},${e.officerId}" ??''  ).toList(),
+                                                                  selectedItems:
+                                                                      _employeeController,
+                                                                  items: officers
+                                                                      .officersListModel!
+                                                                      .map((e) =>
+                                                                          "${e.name},${e.officerId}" ??
+                                                                          '')
+                                                                      .toList(),
                                                                   onChanged:
                                                                       (selected) {
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       _employeeController =
                                                                           selected;
                                                                     });

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/model/client/client_data_model.dart';
 import 'package:overseas_front_end/model/client/client_model.dart';
+import 'package:overseas_front_end/view/screens/project/flavour/customer_client_flavour.dart';
 import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
-import '../flavour/customer_project_flavour.dart';
 
 class ClientUserListTable extends StatelessWidget {
   final List<ClientModel> userlist;
@@ -14,7 +13,7 @@ class ClientUserListTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final horizontalController = ScrollController();
     final verticalController = ScrollController();
-    final columnsData = CustomerProjectFlavour.userTableList();
+    final columnsData = CustomerClientFlavour.userTableList();
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -3,19 +3,8 @@ import 'maxima_fields.dart';
 import 'affiniks_fields.dart';
 import 'sejeya_fields.dart';
 
-enum TableType {
-  leadTable,
-  registerTable,
-  projectTable,
-  interviewTable,
-  shortlistTable,
-  callTable,
-  repeatLeadTable,
-}
-
 class CustomerLeadFlavour {
-  static List<Map<String, dynamic>> userTableList(
-      {TableType table = TableType.leadTable}) {
+  static List<Map<String, dynamic>> userTableList() {
     switch (FlavourConfig.partner()) {
       case Partner.affiniks:
         return AffiniksFields().userTableList();

@@ -26,8 +26,7 @@ class LeadUserListTable extends StatelessWidget {
     //       CustomerLeadFlavour.userTableList(table: TableType.repeatLeadTable);
     // }
 
-    columnsData =
-        CustomerLeadFlavour.userTableList(table: TableType.repeatLeadTable);
+    columnsData = CustomerLeadFlavour.userTableList();
     return LayoutBuilder(
       builder: (context, constraints) {
         return Consumer2<AppUserProvider, LeadProvider>(

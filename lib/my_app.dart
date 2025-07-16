@@ -7,18 +7,13 @@ import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart'
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/screens/Auth/login_screen.dart';
-import 'package:overseas_front_end/view/screens/employee/employee_permission_screen.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
-import 'package:overseas_front_end/view/screens/officers/employee_creation_screen.dart';
-import 'package:overseas_front_end/view/screens/officers/employee_data_display.dart';
-import 'package:overseas_front_end/view/screens/officers/widgets/employee_user_list_table.dart';
-import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:provider/provider.dart';
 
 import 'config/flavour_config.dart';
 import 'controller/lead/round_robin_provider.dart';
 import 'controller/permission_controller/access_permission_controller.dart';
-import 'controller/project/client_provider_controller.dart';
+import 'controller/project/project_provider_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
 // import 'view/features/drawer/drawer_screen.dart';
 
@@ -40,7 +35,7 @@ class MyApp extends StatelessWidget {
           create: (context) => AppUserProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => ClientProvider(),
+          create: (context) => ProjectProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => CampaignProvider(),
@@ -48,7 +43,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ConfigProvider(),
         ),
-
         ChangeNotifierProvider(create: (context) => AccessPermissionProvider()),
         ChangeNotifierProvider(
             create: (context) => OfficersControllerProvider()),
@@ -56,7 +50,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LeadProvider()),
         ChangeNotifierProvider(create: (context) => TeamLeadProvider()),
         ChangeNotifierProvider(create: (_) => RoundRobinProvider()),
-
       ],
       child: MaterialApp(
         title: ' ${FlavourConfig.partnerName()} ',
@@ -71,7 +64,7 @@ class MyApp extends StatelessWidget {
           '/not-found': (context) =>
               Center(child: Text('404 - Page not found')),
           // '/': (context) => DrawerScreen()
-          '/': (context) => LoginScreen()
+          '/': (context) => DrawerScreen()
         },
         initialRoute: '/',
       ),

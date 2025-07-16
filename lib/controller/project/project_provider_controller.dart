@@ -100,29 +100,32 @@
 //
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
+import 'package:overseas_front_end/model/project/project_model.dart';
+import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import '../../core/services/api_service.dart';
 import '../../model/client/client_model.dart';
 
-class ClientProvider extends ChangeNotifier {
-  ClientProvider._privateConstructor();
-  static final _instance = ClientProvider._privateConstructor();
-  factory ClientProvider() => _instance;
+class ProjectProvider extends ChangeNotifier {
+  ProjectProvider._privateConstructor();
+  static final _instance = ProjectProvider._privateConstructor();
+  factory ProjectProvider() => _instance;
 
   final ApiService _apiService = ApiService();
-
+  String itemsPerPage = "10";
+  int currentPage = 0;
   String? _error;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
   List<ClientModel> _clients = [];
-  List<ClientModel> _filteredClients = [];
+  List<ClientModel> filteredClients = [];
+  List<ProjectModel> projects = [];
+  List<VacancyModel> vacancies = [];
 
-  List<ClientModel> get clients => _filteredClients;
-
+  List<ClientModel> get clients => _clients;
 
   Future<bool> createClient({
     required String name,
@@ -231,6 +234,79 @@ class ClientProvider extends ChangeNotifier {
   //   }
   // }
 
+  Future<void> fetchProjects() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiService.get(Constant().projectList);
+
+      if (response['success']) {
+        projects =
+            List.from(response['data'].map((e) => ProjectModel.fromJson(e)));
+      } else {
+        throw Exception("Failed to load projects");
+      }
+    } catch (e) {
+      throw Exception('Error fetching projects: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchVacancies() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiService.get(Constant().vacancyList);
+
+      if (response['success']) {
+        vacancies =
+            List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
+      } else {
+        throw Exception("Failed to load Vacancies");
+      }
+    } catch (e) {
+      throw Exception('Error fetching Vacancies: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> addProject({
+    required String projectName,
+    required String organizationType,
+    required String organizationCategory,
+    required String organizationName,
+    required String city,
+    required String country,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.post(Constant().addProject, {
+        "project_name": projectName,
+        "organization_type": organizationType,
+        "organization_category": organizationCategory,
+        "organization_name": organizationName,
+        "city": city,
+        "country": country,
+      });
+      // _campaignModel = CampaignModel.fromJson(response.data);
+      return response['success'] == true;
+    } catch (e) {
+      _error = 'Failed to load permissions: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      fetchProjects();
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchClients() async {
     _isLoading = true;
     notifyListeners();
@@ -245,7 +321,7 @@ class ClientProvider extends ChangeNotifier {
         }
 
         _clients = loadedClients;
-        _filteredClients = loadedClients; // Initialize filtered list
+        filteredClients = loadedClients; // Initialize filtered list
       } else {
         throw Exception("Failed to load clients");
       }
@@ -284,7 +360,8 @@ class ClientProvider extends ChangeNotifier {
     };
 
     try {
-      final response = await _apiService.patch("${Constant().updateClient}/$clientId", body);
+      final response =
+          await _apiService.patch("${Constant().updateClient}/$clientId", body);
 
       if (response["success"] == true) {
         fetchClients();
@@ -332,24 +409,23 @@ class ClientProvider extends ChangeNotifier {
     }
   }
 
-
   void searchClients(String query) {
     if (query.isEmpty) {
-      _filteredClients = _clients;
+      filteredClients = _clients;
     } else {
       final q = query.toLowerCase();
 
-      _filteredClients = _clients.where((client) {
-        return client.name.toLowerCase().contains(q) ||
-            client.email.toLowerCase().contains(q) ||
-            client.phone.toLowerCase().contains(q) ||
-            client.alternatePhone.toLowerCase().contains(q) ||
-            client.address.toLowerCase().contains(q) ||
-            client.city.toLowerCase().contains(q) ||
-            client.state.toLowerCase().contains(q) ||
-            client.country.toLowerCase().contains(q) ||
-            client.clientId.toLowerCase().contains(q) ||
-            client.status.toLowerCase().contains(q);
+      filteredClients = _clients.where((client) {
+        return (client.name?.toLowerCase().contains(q) ?? false) ||
+            (client.email?.toLowerCase().contains(q) ?? false) ||
+            (client.phone?.toLowerCase().contains(q) ?? false) ||
+            (client.alternatePhone?.toLowerCase().contains(q) ?? false) ||
+            (client.address?.toLowerCase().contains(q) ?? false) ||
+            (client.city?.toLowerCase().contains(q) ?? false) ||
+            (client.state?.toLowerCase().contains(q) ?? false) ||
+            (client.country?.toLowerCase().contains(q) ?? false) ||
+            // (client.clientId?.toLowerCase().contains(q) ?? false) ||
+            (client.status?.toLowerCase().contains(q) ?? false);
       }).toList();
     }
 

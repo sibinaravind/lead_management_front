@@ -5,17 +5,22 @@ import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
+import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
+import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';
+import 'package:overseas_front_end/model/officer/user_model.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
+import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
+import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../model/models.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../controller/auth/login_controller.dart';
-import '../../../model/officer/officers_lofin_model.dart';
+// import '../../../model/officer/officer_model.dart';
+// import '../../../model/officer/user_model.dart';
 import '../project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
@@ -39,13 +44,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     Future.delayed(Duration.zero, () {
       Provider.of<LeadProvider>(context, listen: false).getLeadList();
-      Provider.of<RoundRobinProvider>(context,listen: false).fetchRoundRobinGroups();
+      Provider.of<RoundRobinProvider>(context, listen: false)
+          .fetchRoundRobinGroups();
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
       Provider.of<OfficersControllerProvider>(context, listen: false)
           .fetchOfficersList();
-
       Provider.of<AccessPermissionProvider>(context, listen: false)
           .fetchAccessPermissions();
+      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
+      Provider.of<ProjectProvider>(context, listen: false).fetchClients();
+      Provider.of<ProjectProvider>(context, listen: false).fetchVacancies();
     });
   }
 
@@ -155,6 +163,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 switch (value.selectedIndex) {
                                   case 1:
                                     return Expanded(child: LeadDataDisplay());
+                                  case 7:
+                                    return Expanded(
+                                        child: ProjectDataDisplay());
                                   case 23:
                                     return Expanded(
                                         child: EmployeeDataDisplay());
@@ -172,8 +183,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     return Expanded(child: ConfigScreen());
                                   case 31:
                                     return Expanded(child: ClientDataDisplay());
-                                    case 40:
+                                  case 40:
                                     return Expanded(child: RoundRobinScreen());
+                                  case 35:
+                                    return Expanded(
+                                        child: VacancyDataDisplay());
                                   default:
                                     return Expanded(
                                       child: DashboardScreen(),
