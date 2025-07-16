@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/view/screens/leads/widgets/bulk_lead.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 import '../../../res/style/colors/colors.dart';
 import '../../../res/style/colors/dimension.dart';
 import '../../widgets/custom_date_range_field.dart';
 import 'add_lead_screen.dart';
 import 'widgets/lead_user_list_table.dart';
+import 'widgets/mobile_lead_view.dart';
 
 class LeadDataDisplay extends StatefulWidget {
   const LeadDataDisplay({super.key});
@@ -123,471 +126,726 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     //     selectedFilters[category] = '';
     //   }
     // }
+    Provider.of<LeadProvider>(context, listen: false).getLeadList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.sizeOf(context).height,
-      decoration: const BoxDecoration(
-        gradient: AppColors.backgroundGraident,
-      ),
-      child: SafeArea(
-        child: Consumer<AppUserProvider>(
-          builder: (context, value, child) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (value.selectedIndex != 4)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 12),
-                      decoration: BoxDecoration(
-                        gradient: AppColors.blackGradient,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.analytics_outlined,
-                              color: AppColors.textWhiteColour,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 24),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomText(
-                                  text: "Lead Management Dashboard",
-                                  color: AppColors.textWhiteColour,
-                                  fontSize:
-                                      Dimension().isMobile(context) ? 13 : 19,
-                                  maxLines: 2,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: AppColors.orangeGradient,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.orangeSecondaryColor
-                                      .withOpacity(0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        const BulkLeadScreen(),
-                                  );
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.add_circle_outline,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 12),
-                                      CustomText(
-                                        text: 'Bulk Lead',
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: AppColors.buttonGraidentColour,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.violetPrimaryColor
-                                      .withOpacity(0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => const AddLeadScreen(),
-                                  );
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.add_circle_outline,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 12),
-                                      CustomText(
-                                        text: 'New Lead',
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  if (value.selectedIndex != 4)
-                    Container(
-                      width: double.maxFinite,
-                      padding: const EdgeInsets.only(
-                          top: 6, bottom: 8, left: 15, right: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 20,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  _buildFilterChip(
-                                    icon: Icons.all_inclusive,
-                                    text: 'All Leads',
-                                    count: 128,
-                                    color: AppColors.primaryColor,
-                                    isSelected: selectedFilter == 'all',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'all';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.fiber_new,
-                                    text: 'New',
-                                    count: 10,
-                                    color: AppColors.blueSecondaryColor,
-                                    isSelected: selectedFilter == 'new',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'new';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.today,
-                                    text: 'Today',
-                                    count: 24,
-                                    color: AppColors.greenSecondaryColor,
-                                    isSelected: selectedFilter == 'today',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'today';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.today,
-                                    text: 'Tommorrow',
-                                    count: 24,
-                                    color: AppColors.orangeSecondaryColor,
-                                    isSelected: selectedFilter == 'tomorrow',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'tomorrow';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.schedule,
-                                    text: 'Pending',
-                                    count: 8,
-                                    color: AppColors.redSecondaryColor,
-                                    isSelected: selectedFilter == 'pending',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'pending';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.history,
-                                    text: 'Upcoming',
-                                    count: 156,
-                                    color: AppColors.skyBlueSecondaryColor,
-                                    isSelected: selectedFilter == 'upcoming',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'upcoming';
-                                      });
-                                    },
-                                  ),
-                                  // _buildFilterChip(
-                                  //   icon: Icons.history,
-                                  //   text: 'Converted',
-                                  //   count: 156,
-                                  //   color: AppColors.viloletSecondaryColor,
-                                  //   isSelected: selectedFilter == 'converted',
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       selectedFilter = 'converted';
-                                  //     });
-                                  //   },
-                                  // ),
-                                  _buildFilterChip(
-                                    icon: Icons.trending_up,
-                                    text: 'UnAssigned',
-                                    count: 15,
-                                    color: AppColors.textGrayColour,
-                                    isSelected: selectedFilter == 'unassigned',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'unassigned';
-                                      });
-                                    },
-                                  ),
-                                  _buildFilterChip(
-                                    icon: Icons.history,
-                                    text: 'History',
-                                    count: 156,
-                                    color: AppColors.skyBlueSecondaryColor,
-                                    isSelected: selectedFilter == 'history',
-                                    onTap: () {
-                                      setState(() {
-                                        selectedFilter = 'history';
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Flexible(
-                      //   child: SizedBox(
-                      //     width: 300,
-                      //     height: 40,
-                      //     child: ClipRRect(
-                      //       borderRadius: BorderRadius.circular(16),
-                      //       child: Consumer<LeadProvider>(
-                      //         builder: (context, valueLead, child) => TextField(
-                      //           controller: valueLead.searchController,
-                      //           onChanged: (value) {
-                      //             valueLead.filterEmployees(value);
-                      //           },
-                      //           decoration: InputDecoration(
-                      //             hintText: "Search Leads...",
-                      //             hintStyle: TextStyle(
-                      //               color: Colors.grey.shade500,
-                      //               fontSize: 15,
-                      //             ),
-                      //             hoverColor: Colors.white,
-                      //             fillColor: AppColors.whiteMainColor,
-                      //             filled: true,
-                      //             suffixIcon: IconButton(
-                      //               icon: const Icon(Icons.search,
-                      //                   size: 20, color: Colors.grey),
-                      //               onPressed: () {
-                      //                 //     "Search query: ${_searchController.text}");
-                      //               },
-                      //             ),
-                      //             enabledBorder: OutlineInputBorder(
-                      //               borderRadius: BorderRadius.circular(16),
-                      //               borderSide: const BorderSide(
-                      //                 color: Colors.black,
-                      //                 width: 0.3,
-                      //               ),
-                      //             ),
-                      //             focusedBorder: OutlineInputBorder(
-                      //               borderRadius: BorderRadius.circular(16),
-                      //               borderSide: const BorderSide(
-                      //                 color: AppColors.primaryColor,
-                      //                 width: 1,
-                      //               ),
-                      //             ),
-                      //             contentPadding: const EdgeInsets.symmetric(
-                      //               horizontal: 16,
-                      //               vertical: 15,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      _buildFilterToggleButton(),
-                    ],
-                  ),
-                  _buildFilterPanel(context),
-                  Consumer<LeadProvider>(builder: (context, value, child) {
-                    return Container(
-                      width: double.maxFinite,
-                      margin: const EdgeInsets.only(top: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Table Header
-                          // Table Content
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: LeadUserListTable(
-                                userlist: value.leadModel ?? []),
-                          ),
+    return Dimension().isMobile(context)
+        ? EnhancedLeadListWidget()
 
-                          // Footer with Pagination
+        // Scaffold(
+        //     body: SingleChildScrollView(
+        //       child: Consumer<LeadProvider>(
+        //         builder: (context, value, child) => Column(
+        //           children: value.allLeadModel
+        //               .map((e) => Card(
+        //                     color: Colors.white,
+        //                     elevation: 4,
+        //                     margin: EdgeInsets.symmetric(
+        //                         horizontal: 8, vertical: 5),
+        //                     shape: RoundedRectangleBorder(
+        //                       borderRadius: BorderRadius.circular(12),
+        //                     ),
+        //                     child: ListTile(
+        //                       minVerticalPadding: 3,
+        //                       dense: true,
+        //                       contentPadding: EdgeInsets.symmetric(
+        //                           horizontal: 8, vertical: 0),
+        //                       title: Column(
+        //                         mainAxisAlignment: MainAxisAlignment.start,
+        //                         crossAxisAlignment: CrossAxisAlignment.start,
+        //                         children: [
+        //                           Row(
+        //                               mainAxisAlignment:
+        //                                   MainAxisAlignment.spaceBetween,
+        //                               crossAxisAlignment:
+        //                                   CrossAxisAlignment.start,
+        //                               children: [
+        //                                 /// Name & Client ID
+        //                                 Row(
+        //                                   children: [
+        //                                     const Icon(Icons.person,
+        //                                         color: Color(0xFF384571),
+        //                                         size: 20),
+        //                                     const SizedBox(width: 10),
+        //                                     Column(
+        //                                       crossAxisAlignment:
+        //                                           CrossAxisAlignment.start,
+        //                                       children: [
+        //                                         Row(
+        //                                           crossAxisAlignment:
+        //                                               CrossAxisAlignment.end,
+        //                                           children: [
+        //                                             Text(
+        //                                               e.name ?? "Unnamed",
+        //                                               style: const TextStyle(
+        //                                                 fontSize: 20,
+        //                                                 fontWeight:
+        //                                                     FontWeight.bold,
+        //                                                 color:
+        //                                                     Color(0xFF384571),
+        //                                               ),
+        //                                             ),
+        //                                             SizedBox(width: 10),
+        //                                             Padding(
+        //                                               padding:
+        //                                                   const EdgeInsets.all(
+        //                                                       5.0),
+        //                                               child: Text(
+        //                                                 "${e.clientId}" ??
+        //                                                     "N/A",
+        //                                                 style: TextStyle(
+        //                                                   fontWeight:
+        //                                                       FontWeight.w600,
+        //                                                   color: Colors
+        //                                                       .amberAccent,
+        //                                                   fontSize: 14,
+        //                                                 ),
+        //                                               ),
+        //                                             ),
+        //                                           ],
+        //                                         ),
+        //                                       ],
+        //                                     ),
+        //                                   ],
+        //                                 ),
+        //                               ]),
+        //                           Row(
+        //                             mainAxisAlignment:
+        //                                 MainAxisAlignment.spaceBetween,
+        //                             children: [
+        //                               Text(
+        //                                 e.phone ?? "",
+        //                                 style: TextStyle(
+        //                                   fontSize: 14,
+        //                                   color: Colors.grey[600],
+        //                                 ),
+        //                               ),
+        //                               // Icon(
+        //                               //   Icons.call,
+        //                               //   color: AppColors.greenSecondaryColor,
+        //                               // )
+        //                               Row(
+        //                                 mainAxisAlignment:
+        //                                     MainAxisAlignment.end,
+        //                                 children: [
+        //                                   InkWell(
+        //                                     onTap: () {
+        //                                       canLaunchUrl(Uri(
+        //                                               scheme: 'tel',
+        //                                               path: e.phone ?? ''))
+        //                                           .then((bool result) {});
+        //                                     },
+        //                                     child: Container(
+        //                                       margin: EdgeInsets.all(9),
+        //                                       child: Icon(
+        //                                         Icons.call,
+        //                                         color: AppColors
+        //                                             .greenSecondaryColor,
+        //                                       ),
+        //                                     ),
+        //                                   )
+        //                                 ],
+        //                               )
+        //                             ],
+        //                           ),
+        //                           // SizedBox(height: 4),
+        //                           Wrap(spacing: 8, runSpacing: 4, children: [
+        //                             _buildStatusChip(
+        //                                 DateFormat("dd/MM/yyyy").format(
+        //                                         DateTime.tryParse(
+        //                                                 e.createdAt ?? '') ??
+        //                                             DateTime.now()) ??
+        //                                     '',
+        //                                 AppColors.skyBlueSecondaryColor),
+        //                             _buildStatusChip(e.status ?? '',
+        //                                 AppColors.orangeSecondaryColor),
+        //                             _buildInfoChip(Icons.email, e.email ?? '',
+        //                                 AppColors.greenSecondaryColor),
+        //                             // _buildInfoChip(
+        //                             //     Icons.perm_identity,
+        //                             //     e.assignedTo ?? '',
+        //                             //     AppColors.orangeSecondaryColor),
+        //                           ]),
+        //                         ],
+        //                       ),
+        //                       // subtitle: Row(
+        //                       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                       //   children: [
+        //                       //     Padding(
+        //                       //       padding: EdgeInsets.only(top: 8),
+        //                       //       child: Container(
+        //                       //         padding: EdgeInsets.symmetric(
+        //                       //             horizontal: 8, vertical: 4),
+        //                       //         decoration: BoxDecoration(
+        //                       //           color: AppColors.greenSecondaryColor
+        //                       //               .withOpacity(0.1),
+        //                       //           borderRadius: BorderRadius.circular(8),
+        //                       //         ),
+        //                       //         child: Text(
+        //                       //           e.leadStatus ?? "",
+        //                       //           style: TextStyle(
+        //                       //             color: getColorBasedOnStatus(
+        //                       //                 e.leadStatus ?? ""),
+        //                       //             fontWeight: FontWeight.w500,
+        //                       //           ),
+        //                       //         ),
+        //                       //       ),
+        //                       //     ),
+        //                       //     SizedBox(
+        //                       //       width: 5,
+        //                       //     ),
+        //                       //     Padding(
+        //                       //       padding: EdgeInsets.only(top: 8),
+        //                       //       child: Container(
+        //                       //         padding: EdgeInsets.symmetric(
+        //                       //             horizontal: 8, vertical: 4),
+        //                       //         decoration: BoxDecoration(
+        //                       //           color: AppColors.greenSecondaryColor
+        //                       //               .withOpacity(0.1),
+        //                       //           borderRadius: BorderRadius.circular(8),
+        //                       //         ),
+        //                       //         child: Text(
+        //                       //           e.status ?? "",
+        //                       //           style: TextStyle(
+        //                       //             color: e.status == "Attended"
+        //                       //                 ? AppColors.greenSecondaryColor
+        //                       //                 : AppColors.redSecondaryColor,
+        //                       //             fontWeight: FontWeight.w500,
+        //                       //           ),
+        //                       //         ),
+        //                       //       ),
+        //                       //     ),
+        //                       //   ],
+        //                       // ),
+        //                       // trailing: FittedBox(
+        //                       //   child: Column(
+        //                       //     children: [
+        //                       //       Icon(
+        //                       //         e.type?.toLowerCase() == "incoming" &&
+        //                       //                 e.status?.toLowerCase() != "missed call"
+        //                       //             ? Icons.call_received
+        //                       //             : e.status?.toLowerCase() == "missed call"
+        //                       //                 ? Icons.call_missed
+        //                       //                 : Icons.call_made,
+        //                       //         color: e.type?.toLowerCase() == "incoming"
+        //                       //             ? AppColors.redSecondaryColor
+        //                       //             : AppColors.greenSecondaryColor,
+        //                       //         size: 28,
+        //                       //       ),
+        //                       //       SizedBox(
+        //                       //         height: 10,
+        //                       //       ),
+        //                       //       Icon(
+        //                       //         Icons.call,
+        //                       //         color: AppColors.greenSecondaryColor,
+        //                       //       )
+        //                       //     ],
+        //                       //   ),
+        //                       // ),
+        //                     ),
+        //                   ))
+        //               .toList(),
+        //         ),
+        //       ),
+        //     ),
+        //   )
+        : Container(
+            height: MediaQuery.sizeOf(context).height,
+            decoration: const BoxDecoration(
+              gradient: AppColors.backgroundGraident,
+            ),
+            child: SafeArea(
+              child: Consumer<AppUserProvider>(
+                builder: (context, value, child) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (value.selectedIndex != 4)
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
+                              gradient: AppColors.blackGradient,
                               borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                              ),
-                              border: Border(
-                                top: BorderSide(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
                                   color:
-                                      AppColors.textGrayColour.withOpacity(0.1),
-                                  width: 1,
+                                      AppColors.primaryColor.withOpacity(0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
                                 ),
-                              ),
+                              ],
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        gradient: AppColors.blackGradient,
-                                        borderRadius: BorderRadius.circular(12),
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.analytics_outlined,
+                                    color: AppColors.textWhiteColour,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: "Lead Management Dashboard",
+                                        color: AppColors.textWhiteColour,
+                                        fontSize: Dimension().isMobile(context)
+                                            ? 13
+                                            : 19,
+                                        maxLines: 2,
+                                        fontWeight: FontWeight.w700,
                                       ),
-                                      child: const Icon(
-                                        Icons.analytics_outlined,
-                                        color: Colors.white,
-                                        size: 18,
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.orangeGradient,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.orangeSecondaryColor
+                                            .withOpacity(0.4),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const BulkLeadScreen(),
+                                        );
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.add_circle_outline,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                            SizedBox(width: 12),
+                                            CustomText(
+                                              text: 'Bulk Lead',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    const SizedBox(width: 16),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.buttonGraidentColour,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.violetPrimaryColor
+                                            .withOpacity(0.4),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const AddLeadScreen(),
+                                        );
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.add_circle_outline,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                            SizedBox(width: 12),
+                                            CustomText(
+                                              text: 'New Lead',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        if (value.selectedIndex != 4)
+                          Container(
+                            width: double.maxFinite,
+                            padding: const EdgeInsets.only(
+                                top: 6, bottom: 8, left: 15, right: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
                                       children: [
-                                        CustomText(
-                                          text: " Leads",
+                                        _buildFilterChip(
+                                          icon: Icons.all_inclusive,
+                                          text: 'All Leads',
+                                          count: 128,
                                           color: AppColors.primaryColor,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 15,
+                                          isSelected: selectedFilter == 'all',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'all';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.fiber_new,
+                                          text: 'New',
+                                          count: 10,
+                                          color: AppColors.blueSecondaryColor,
+                                          isSelected: selectedFilter == 'new',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'new';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.today,
+                                          text: 'Today',
+                                          count: 24,
+                                          color: AppColors.greenSecondaryColor,
+                                          isSelected: selectedFilter == 'today',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'today';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.today,
+                                          text: 'Tommorrow',
+                                          count: 24,
+                                          color: AppColors.orangeSecondaryColor,
+                                          isSelected:
+                                              selectedFilter == 'tomorrow',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'tomorrow';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.schedule,
+                                          text: 'Pending',
+                                          count: 8,
+                                          color: AppColors.redSecondaryColor,
+                                          isSelected:
+                                              selectedFilter == 'pending',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'pending';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.history,
+                                          text: 'Upcoming',
+                                          count: 156,
+                                          color:
+                                              AppColors.skyBlueSecondaryColor,
+                                          isSelected:
+                                              selectedFilter == 'upcoming',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'upcoming';
+                                            });
+                                          },
+                                        ),
+                                        // _buildFilterChip(
+                                        //   icon: Icons.history,
+                                        //   text: 'Converted',
+                                        //   count: 156,
+                                        //   color: AppColors.viloletSecondaryColor,
+                                        //   isSelected: selectedFilter == 'converted',
+                                        //   onTap: () {
+                                        //     setState(() {
+                                        //       selectedFilter = 'converted';
+                                        //     });
+                                        //   },
+                                        // ),
+                                        _buildFilterChip(
+                                          icon: Icons.trending_up,
+                                          text: 'UnAssigned',
+                                          count: 15,
+                                          color: AppColors.textGrayColour,
+                                          isSelected:
+                                              selectedFilter == 'unassigned',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'unassigned';
+                                            });
+                                          },
+                                        ),
+                                        _buildFilterChip(
+                                          icon: Icons.history,
+                                          text: 'History',
+                                          count: 156,
+                                          color:
+                                              AppColors.skyBlueSecondaryColor,
+                                          isSelected:
+                                              selectedFilter == 'history',
+                                          onTap: () {
+                                            setState(() {
+                                              selectedFilter = 'history';
+                                            });
+                                          },
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                                CustomPager(
-                                  currentPage: value.currentPage + 1,
-                                  totalPages: min(1, 100),
-                                  onPageSelected: (page) {
-                                    if (value.currentPage != page - 1) {
-                                      value.currentPage = page - 1;
-                                      value.onPageSelected(page - 1);
-                                    }
-                                  },
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  })
-                ],
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Flexible(
+                            //   child: SizedBox(
+                            //     width: 300,
+                            //     height: 40,
+                            //     child: ClipRRect(
+                            //       borderRadius: BorderRadius.circular(16),
+                            //       child: Consumer<LeadProvider>(
+                            //         builder: (context, valueLead, child) => TextField(
+                            //           controller: valueLead.searchController,
+                            //           onChanged: (value) {
+                            //             valueLead.filterEmployees(value);
+                            //           },
+                            //           decoration: InputDecoration(
+                            //             hintText: "Search Leads...",
+                            //             hintStyle: TextStyle(
+                            //               color: Colors.grey.shade500,
+                            //               fontSize: 15,
+                            //             ),
+                            //             hoverColor: Colors.white,
+                            //             fillColor: AppColors.whiteMainColor,
+                            //             filled: true,
+                            //             suffixIcon: IconButton(
+                            //               icon: const Icon(Icons.search,
+                            //                   size: 20, color: Colors.grey),
+                            //               onPressed: () {
+                            //                 //     "Search query: ${_searchController.text}");
+                            //               },
+                            //             ),
+                            //             enabledBorder: OutlineInputBorder(
+                            //               borderRadius: BorderRadius.circular(16),
+                            //               borderSide: const BorderSide(
+                            //                 color: Colors.black,
+                            //                 width: 0.3,
+                            //               ),
+                            //             ),
+                            //             focusedBorder: OutlineInputBorder(
+                            //               borderRadius: BorderRadius.circular(16),
+                            //               borderSide: const BorderSide(
+                            //                 color: AppColors.primaryColor,
+                            //                 width: 1,
+                            //               ),
+                            //             ),
+                            //             contentPadding: const EdgeInsets.symmetric(
+                            //               horizontal: 16,
+                            //               vertical: 15,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            _buildFilterToggleButton(),
+                          ],
+                        ),
+                        _buildFilterPanel(context),
+                        Consumer<LeadProvider>(
+                            builder: (context, value, child) {
+                          return Container(
+                            width: double.maxFinite,
+                            margin: const EdgeInsets.only(top: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                // Table Header
+                                // Table Content
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: LeadUserListTable(
+                                      userlist: value.leadModel ?? []),
+                                ),
+
+                                // Footer with Pagination
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF8FAFC),
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                    ),
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: AppColors.textGrayColour
+                                            .withOpacity(0.1),
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              gradient: AppColors.blackGradient,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: const Icon(
+                                              Icons.analytics_outlined,
+                                              color: Colors.white,
+                                              size: 18,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text: " Leads",
+                                                color: AppColors.primaryColor,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 15,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      CustomPager(
+                                        currentPage: value.currentPage + 1,
+                                        totalPages: min(1, 100),
+                                        onPageSelected: (page) {
+                                          if (value.currentPage != page - 1) {
+                                            value.currentPage = page - 1;
+                                            value.onPageSelected(page - 1);
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
+          );
+  }
+
+  Widget _buildInfoChip(IconData icon, String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
+          CustomText(text: text, fontSize: 9, color: color),
+        ],
       ),
     );
   }
@@ -864,6 +1122,23 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: CustomText(
+        text: text,
+        fontSize: 9,
+        fontWeight: FontWeight.w600,
+        color: color,
       ),
     );
   }

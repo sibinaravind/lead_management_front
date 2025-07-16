@@ -22,6 +22,13 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
   String selectedFilter = 'all';
 
   @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false).fetchVacancies();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(

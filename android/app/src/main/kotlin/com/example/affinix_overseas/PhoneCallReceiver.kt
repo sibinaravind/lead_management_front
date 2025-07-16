@@ -13,8 +13,37 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import java.util.concurrent.TimeUnit
 import com.google.gson.Gson
+import androidx.core.content.ContextCompat
+import android.database.Cursor
+import android.provider.CallLog
+import android.os.Build
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import android.telephony.SubscriptionManager
+
+
 
 class PhoneCallReceiver : BroadcastReceiver() {
+
+     data class LastCallSimInfo(
+        val calledNumber: String?,
+        val simPhoneNumber: String?,
+        val simSlotIndex: Int,
+        val subscriptionId: Int,
+        val networkOperatorName: String?,
+        val callType: String,
+        val callDate: String,
+        val callDuration: String
+    )
+    
+    private data class SimDetails(
+        val phoneNumber: String?,
+        val slotIndex: Int,
+        val subscriptionId: Int,
+        val networkOperatorName: String?
+    )
+
     private var lastState = TelephonyManager.CALL_STATE_IDLE
     private var callStartTime: Long = 0
     private var isIncoming = false
@@ -107,7 +136,9 @@ class PhoneCallReceiver : BroadcastReceiver() {
             } else {
                 // This is an outgoing call (no ringing state before offhook)
                 isIncoming = false
-                callStartTime = System.currentTimeMillis()
+                // callStartTime = System.currentTimeMillis()
+                callStartTime = prefs.getLong("call_start_time", System.currentTimeMillis())
+
                 // savedNumber = number
                 
                 prefs.edit().apply {
@@ -137,12 +168,14 @@ class PhoneCallReceiver : BroadcastReceiver() {
             Log.d("CallReceiver", "IDLE - prevState: $prevState, isIncoming: $isIncoming, savedNumber: $savedNumber")
             
             if (prevState == TelephonyManager.CALL_STATE_RINGING) {
-                Log.d("CallReceiver", "Missed call: $savedNumber")
+                val phoneNumber = getLastCallSimNumber(context);
+                Log.d("CallReceiver", "Missed call: $savedNumber deviceNumber: $phoneNumber")
                 CallMonitoringService.sendCallDataToFlutter(savedNumber, "MISSED", 0)
                 onCallEnded(context, savedNumber, isIncoming, callStartTime, true)
 
             } else if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
-                Log.d("CallReceiver", "Call ended - calling onCallEnded with isIncoming: $isIncoming")
+                val phoneNumber = getLastCallSimNumber(context);
+                Log.d("CallReceiver", "Call ended - calling onCallEnded with isIncoming: $isIncoming deviceNumber: $phoneNumber")
                 onCallEnded(context, savedNumber, isIncoming, callStartTime)
             }
             
@@ -249,4 +282,180 @@ class PhoneCallReceiver : BroadcastReceiver() {
         }
         return duration
     }
+
+    // private fun handleGetLastCallSimNumber(result: MethodChannel.Result) {
+    //     if (!hasRequiredPermissions()) {
+    //         result.error("PERMISSION_DENIED", "Required permissions not granted", null)
+    //         return
+    //     }
+        
+    //     try {
+    //         val simNumber = getLastCallSimNumber()
+    //         result.success(simNumber)
+    //     } catch (e: Exception) {
+    //         result.error("ERROR", "Failed to get last call SIM number: ${e.message}", null)
+    //     }
+    // }
+
+    // private fun hasRequiredPermissions(): Boolean {
+    //     val phonePermission = ContextCompat.checkSelfPermission(
+    //         this,
+    //         Manifest.permission.READ_PHONE_STATE
+    //     ) == PackageManager.PERMISSION_GRANTED
+        
+    //     val callLogPermission = ContextCompat.checkSelfPermission(
+    //         this,
+    //         Manifest.permission.READ_CALL_LOG
+    //     ) == PackageManager.PERMISSION_GRANTED
+        
+    //     val phoneNumberPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    //         ContextCompat.checkSelfPermission(
+    //             this,
+    //             Manifest.permission.READ_PHONE_NUMBERS
+    //         ) == PackageManager.PERMISSION_GRANTED
+    //     } else {
+    //         true
+    //     }
+        
+    //     return phonePermission && callLogPermission && phoneNumberPermission
+    // }
+    
+    // private fun getRequiredPermissions(): Array<String> {
+    //     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    //         arrayOf(
+    //             Manifest.permission.READ_PHONE_STATE,
+    //             Manifest.permission.READ_CALL_LOG,
+    //             Manifest.permission.READ_PHONE_NUMBERS
+    //         )
+    //     } else {
+    //         arrayOf(
+    //             Manifest.permission.READ_PHONE_STATE,
+    //             Manifest.permission.READ_CALL_LOG
+    //         )
+    //     }
+    // }
+
+     private fun getLastCallSimNumber(context: Context ): String? {
+        val lastCallSimInfo = getLastCallSimInfo(context)
+        return lastCallSimInfo?.simPhoneNumber
+    }
+
+    private fun getSimDetailsForSubscription(context: Context,subscriptionId: Int): SimDetails? {
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        
+        try {
+            val simSpecificTelephonyManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                telephonyManager.createForSubscriptionId(subscriptionId)
+            } else {
+                telephonyManager
+            }
+            
+            val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+            val subscriptionInfo = subscriptionManager.getActiveSubscriptionInfo(subscriptionId)
+            
+            val phoneNumber = simSpecificTelephonyManager.line1Number
+            val networkOperatorName = simSpecificTelephonyManager.networkOperatorName
+            val slotIndex = subscriptionInfo?.simSlotIndex ?: -1
+            
+            return SimDetails(phoneNumber, slotIndex, subscriptionId, networkOperatorName)
+        } catch (e: SecurityException) {
+            return null
+        }
+    }
+    
+    private fun getDefaultSimInfo(context:Context): SimDetails? {
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        
+        try {
+            val phoneNumber = telephonyManager.line1Number
+            val networkOperatorName = telephonyManager.networkOperatorName
+            
+            return SimDetails(phoneNumber, 0, -1, networkOperatorName)
+        } catch (e: SecurityException) {
+            return null
+        }
+    }
+
+        private fun getSimInfoForCall(context: Context,phoneAccountId: String?): SimDetails? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return getDefaultSimInfo(context)
+        }
+        
+        val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+        
+        try {
+            val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+            
+            subscriptionInfoList?.forEach { subscriptionInfo ->
+                if (phoneAccountId != null) {
+                    val subId = subscriptionInfo.subscriptionId.toString()
+                    if (phoneAccountId.contains(subId)) {
+                        return getSimDetailsForSubscription(context,subscriptionInfo.subscriptionId)
+                    }
+                }
+            }
+            
+            return subscriptionInfoList?.firstOrNull()?.let { 
+                getSimDetailsForSubscription(context,it.subscriptionId) 
+            }
+            
+        } catch (e: SecurityException) {
+            return getDefaultSimInfo(context)
+        }
+    }
+    
+    private fun getLastCallSimInfo(context : Context): LastCallSimInfo? {
+        val cursor: Cursor? = context.contentResolver.query(
+            CallLog.Calls.CONTENT_URI,
+            arrayOf(
+                CallLog.Calls.NUMBER,
+                CallLog.Calls.TYPE,
+                CallLog.Calls.DATE,
+                CallLog.Calls.DURATION,
+                CallLog.Calls.PHONE_ACCOUNT_ID
+            ),
+            null,
+            null,
+            "${CallLog.Calls.DATE} DESC"
+        )
+        
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val calledNumber = it.getString(it.getColumnIndexOrThrow(CallLog.Calls.NUMBER))
+                val callType = when (it.getInt(it.getColumnIndexOrThrow(CallLog.Calls.TYPE))) {
+                    CallLog.Calls.INCOMING_TYPE -> "Incoming"
+                    CallLog.Calls.OUTGOING_TYPE -> "Outgoing"
+                    CallLog.Calls.MISSED_TYPE -> "Missed"
+                    else -> "Unknown"
+                }
+                val callDate = it.getLong(it.getColumnIndexOrThrow(CallLog.Calls.DATE))
+                val callDuration = it.getString(it.getColumnIndexOrThrow(CallLog.Calls.DURATION))
+                
+                val phoneAccountId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    it.getString(it.getColumnIndexOrThrow(CallLog.Calls.PHONE_ACCOUNT_ID))
+                } else {
+                    null
+                }
+                
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val formattedDate = dateFormat.format(Date(callDate))
+                
+                val simInfo = getSimInfoForCall(context,phoneAccountId)
+                
+                return LastCallSimInfo(
+                    calledNumber = calledNumber,
+                    simPhoneNumber = simInfo?.phoneNumber,
+                    simSlotIndex = simInfo?.slotIndex ?: -1,
+                    subscriptionId = simInfo?.subscriptionId ?: -1,
+                    networkOperatorName = simInfo?.networkOperatorName,
+                    callType = callType,
+                    callDate = formattedDate,
+                    callDuration = callDuration
+                )
+            }
+        }
+        
+        return null
+    }
+
 }

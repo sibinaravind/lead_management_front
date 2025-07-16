@@ -11,6 +11,7 @@ import 'package:overseas_front_end/model/officer/user_model.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
+import 'package:overseas_front_end/view/screens/leads/lead_mob_display.dart';
 import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
 import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
@@ -47,13 +48,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
       Provider.of<RoundRobinProvider>(context, listen: false)
           .fetchRoundRobinGroups();
       Provider.of<ConfigProvider>(context, listen: false).getConfigList();
-      Provider.of<OfficersControllerProvider>(context, listen: false)
-          .fetchOfficersList();
-      Provider.of<AccessPermissionProvider>(context, listen: false)
-          .fetchAccessPermissions();
-      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
-      Provider.of<ProjectProvider>(context, listen: false).fetchClients();
-      Provider.of<ProjectProvider>(context, listen: false).fetchVacancies();
     });
   }
 
@@ -64,11 +58,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      // key: scaffoldKey,
-      // drawer: CustomDrawer(
-      //   ismobile: true,
-      //   user: user,
-      // ),
+      key: scaffoldKey,
+      drawer: Consumer2<AppUserProvider, LoginProvider>(
+        builder: (context, value, value2, child) => CustomDrawer(
+          ismobile: true,
+          user: value.userModel ?? UserModel(),
+          officer: value2.officer ?? Officer(),
+        ),
+      ),
       floatingActionButton: Consumer<AppUserProvider>(
         builder: (context, value, child) =>
             LayoutBuilder(builder: (context, constraints) {
@@ -88,47 +85,47 @@ class _DrawerScreenState extends State<DrawerScreen> {
         }),
       ),
       backgroundColor: AppColors.backgroundColor,
-      appBar: MediaQuery.of(context).size.width < 1000
-          ? AppBar(
-              centerTitle: true,
-              title: const CustomText(
-                text: "Affiniks",
-                color: AppColors.whiteMainColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-              backgroundColor: AppColors.primaryColor,
-            )
-          : null, // no appBar on desktop
-      bottomNavigationBar: isDesktop
-          ? null
-          : Consumer<AppUserProvider>(
-              builder: (context, value, child) => BottomNavigationBar(
-                backgroundColor: AppColors.textGrayColour,
-                currentIndex: value.selectedIndex ?? 0,
-                selectedItemColor: AppColors.primaryColor,
-                unselectedItemColor: AppColors.textGrayColour,
-                onTap: (index) {
-                  // setState(() {
-                  value.selectedIndex = index;
-                  // });
-                },
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.dashboard),
-                    label: 'Dashboard',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.call),
-                    label: 'Call',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.people),
-                    label: 'Client',
-                  ),
-                ],
-              ),
-            ),
+      // appBar: MediaQuery.of(context).size.width < 1000
+      //     ? AppBar(
+      //         centerTitle: true,
+      //         title: const CustomText(
+      //           text: "Affiniks",
+      //           color: AppColors.whiteMainColor,
+      //           fontWeight: FontWeight.w600,
+      //           fontSize: 20,
+      //         ),
+      //         backgroundColor: AppColors.primaryColor,
+      //       )
+      //     : null, // no appBar on desktop
+      // bottomNavigationBar: isDesktop
+      //     ? null
+      //     : Consumer<AppUserProvider>(
+      //         builder: (context, value, child) => BottomNavigationBar(
+      //           backgroundColor: AppColors.textGrayColour,
+      //           currentIndex: value.selectedIndex ?? 0,
+      //           selectedItemColor: AppColors.primaryColor,
+      //           unselectedItemColor: AppColors.textGrayColour,
+      //           onTap: (index) {
+      //             // setState(() {
+      //             value.selectedIndex = index;
+      //             // });
+      //           },
+      //           items: const [
+      //             BottomNavigationBarItem(
+      //               icon: Icon(Icons.dashboard),
+      //               label: 'Dashboard',
+      //             ),
+      //             BottomNavigationBarItem(
+      //               icon: Icon(Icons.call),
+      //               label: 'Call',
+      //             ),
+      //             BottomNavigationBarItem(
+      //               icon: Icon(Icons.people),
+      //               label: 'Client',
+      //             ),
+      //           ],
+      //         ),
+      //       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final loginProvider = Provider.of<LoginProvider>(context);
@@ -154,8 +151,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             AppBarContainer(
                               user: officer ?? Officer(),
                               isdesktop: isDesktop,
-                              onDrawerButtonPressed: () =>
-                                  scaffoldKey.currentState?.openDrawer(),
+                              onDrawerButtonPressed: () {
+                                print("is desktop $isDesktop");
+                                scaffoldKey.currentState?.openDrawer();
+                              },
                             ),
                             Expanded(
                               child: Consumer<AppUserProvider>(
@@ -201,7 +200,55 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                   ],
                 )
-              : Container();
+              : Container(
+                  decoration: BoxDecoration(
+                    gradient: AppColors.backgroundGraident,
+                  ),
+                  child: Column(
+                    children: [
+                      AppBarContainer(
+                        user: officer ?? Officer(),
+                        isdesktop: isDesktop,
+                        onDrawerButtonPressed: () {
+                          print("is desktop $isDesktop");
+
+                          scaffoldKey.currentState?.openDrawer();
+                        },
+                      ),
+                      Expanded(
+                        child: Consumer<AppUserProvider>(
+                            builder: (context, value, child) {
+                          switch (value.selectedIndex) {
+                            case 1:
+                              return Expanded(child: LeadDataDisplay());
+                            case 7:
+                              return Expanded(child: ProjectDataDisplay());
+                            case 23:
+                              return Expanded(child: EmployeeDataDisplay());
+                            case 37:
+                              return Expanded(child: AccessPermissionScreen());
+
+                            case 39:
+                              return Expanded(child: TeamLeadDataDisplay());
+
+                            case 38:
+                              return Expanded(child: CampaignScreen());
+                            case 36:
+                              return Expanded(child: ConfigScreen());
+                            case 31:
+                              return Expanded(child: ClientDataDisplay());
+                            case 35:
+                              return Expanded(child: VacancyDataDisplay());
+                            default:
+                              return Expanded(
+                                child: DashboardScreen(),
+                              );
+                          }
+                        }),
+                      ),
+                    ],
+                  ),
+                );
         },
       ),
 
