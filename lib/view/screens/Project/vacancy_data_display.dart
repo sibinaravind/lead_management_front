@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/create_edit_vacancy_popup.dart';
 import 'package:overseas_front_end/view/screens/project/widget/vacancy_user_list_table.dart';
 import 'package:provider/provider.dart';
 
@@ -93,11 +94,11 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(20),
                         onTap: () {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (context) =>
-                          //       const ProjectClientManagementScreen(),
-                          // );
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                            const CreateEditVacancyPopup(),
+                          );
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(

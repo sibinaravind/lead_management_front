@@ -85,7 +85,7 @@ class ApiService {
 
   Future<dynamic> delete(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.delete(endpoint);
+      final response = await _dio.delete(endpoint,data: data);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
