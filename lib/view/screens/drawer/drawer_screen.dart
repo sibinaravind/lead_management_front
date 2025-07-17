@@ -3,19 +3,14 @@ import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
-import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
-import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
-import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
 import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';
 import 'package:overseas_front_end/model/officer/user_model.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
 import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
-import 'package:overseas_front_end/view/screens/leads/lead_mob_display.dart';
 import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
 import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
-import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../res/style/colors/colors.dart';
@@ -54,7 +49,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 1000;
-
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(

@@ -132,7 +132,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   @override
   Widget build(BuildContext context) {
     return Dimension().isMobile(context)
-        ? EnhancedLeadListWidget()
+        ? MobileLeadView()
 
         // Scaffold(
         //     body: SingleChildScrollView(

@@ -6,8 +6,8 @@ import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
-class EnhancedLeadListWidget extends StatelessWidget {
-  const EnhancedLeadListWidget({Key? key}) : super(key: key);
+class MobileLeadView extends StatelessWidget {
+  const MobileLeadView({super.key});
 
   Widget _buildStatusChip(String text, Color color) {
     return Container(
