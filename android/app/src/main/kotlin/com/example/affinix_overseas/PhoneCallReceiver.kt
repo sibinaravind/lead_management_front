@@ -171,12 +171,12 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 val phoneNumber = getLastCallSimNumber(context);
                 Log.d("CallReceiver", "Missed call: $savedNumber deviceNumber: $phoneNumber")
                 CallMonitoringService.sendCallDataToFlutter(savedNumber, "MISSED", 0)
-                onCallEnded(context, savedNumber, isIncoming, callStartTime, true)
+                onCallEnded(context, savedNumber, isIncoming, callStartTime, true, phoneNumber)
 
             } else if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
                 val phoneNumber = getLastCallSimNumber(context);
                 Log.d("CallReceiver", "Call ended - calling onCallEnded with isIncoming: $isIncoming deviceNumber: $phoneNumber")
-                onCallEnded(context, savedNumber, isIncoming, callStartTime)
+                onCallEnded(context, savedNumber, isIncoming, callStartTime, false, phoneNumber)
             }
             
             // Clear preferences after call ends
@@ -191,7 +191,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
     Log.d("CallReceiver", "Updated last_state to: $state")
 }
 
-    private fun onCallEnded(context: Context, number: String?, isIncoming: Boolean, startTime: Long, isMissed: Boolean = false) {
+    private fun onCallEnded(context: Context, number: String?, isIncoming: Boolean, startTime: Long, isMissed: Boolean = false, devicePhoneNumber: String? = null) {
         val duration: Int = getLastCallDuration(context)
         var callType = if (isIncoming) "INCOMING" else "OUTGOING"
         callType = if (isMissed) "MISSED" else callType
@@ -202,10 +202,10 @@ class PhoneCallReceiver : BroadcastReceiver() {
         CallMonitoringService.sendCallDataToFlutter(number, callType, duration)
         
         // Always send to API (works even when app is closed)
-        sendToAPI(context, number, callType, duration)
+        sendToAPI(context, number, callType, duration, devicePhoneNumber)
     }
 
-    private fun sendToAPI(context: Context, phone: String?, callType: String, duration: Int) {
+    private fun sendToAPI(context: Context, phone: String?, callType: String, duration: Int, devicePhoneNumber: String? = null) {
         // Use a separate thread for API call
         Thread {
             try {
@@ -217,6 +217,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 val data = mapOf(
                     "officer_id" to officerId,
                     "phone" to phone,
+                    "received_phone" to devicePhoneNumber,
                     "duration" to duration,
                     "call_type" to callType
                 )
@@ -233,7 +234,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                     .build()
                 
                 val request = Request.Builder()
-                    .url("http://52.66.252.146:3000/lead/add_mobile_call_log")
+                    .url("http://52.66.252.146:3000/customer/add_mobile_call_log")
                     .post(reqBody)
                     .addHeader("Content-Type", "application/json")
                     .build()

@@ -1,80 +1,42 @@
-// enum CallType{
-//   imo,
-//   whatsapp,
-//   skype,
-// }
-// enum InterviewStatus{
-//   pass,
-//   fail,
-// }
+enum CallType {
+  imo,
+  whatsapp,
+  skype,
+}
 
-// enum CallStatus{
-//   Attended,
-//   NotAttended,
-//   Busy
-// }
+enum InterviewStatus {
+  pass,
+  fail,
+}
 
-// enum LeadStatus{
-//   Closed,
-//   OnHold,
-//   Interview
-// }
+enum CallStatus { Attended, NotAttended, Busy }
 
-// enum ServiceType{
-//   Migration,
-// }
+enum LeadStatus { Closed, OnHold, Interview }
 
-// enum Branch{
-//   Branch1,
-//   Branch2
-// }
+enum ServiceType {
+  Migration,
+}
 
-// enum Designation{
-//   Nurse,
-// }
+enum Branch { Branch1, Branch2 }
 
-// enum Employee{
-//   Alex,
-//   Mohan
-// }
+enum Designation {
+  Nurse,
+}
 
-// enum Agent{
-//   Agent1,
-//   Agent2
-// }
+enum Employee { Alex, Mohan }
 
-// enum LeadCountry{
-//   Oman,
-//   Qatar,
-//   Kuwait,
-//   UAE
-// }
+enum Agent { Agent1, Agent2 }
 
-// enum Status{
-//   Pending,
-//   Incomplete,
-//   ApplicationVerifiation
-// }
+enum LeadCountry { Oman, Qatar, Kuwait, UAE }
 
-// enum LeadSource{
-//   Facebook,
-//   Instagram
-// }
+enum Status { Pending, Incomplete, ApplicationVerifiation }
 
-// enum SceduledBy{
-//   Anas,
-//   Jiji
-// }
+enum LeadSource { Facebook, Instagram }
 
-// enum Campaign{
-//   dependsonfb,
-//   dependsoninsta
-// }
+enum SceduledBy { Anas, Jiji }
 
-// enum AdSet{
-//   ad1,ad2
-// }
+enum Campaign { dependsonfb, dependsoninsta }
 
-// enum Ad{
-//   ad1,ad2
-// }
+enum AdSet { ad1, ad2 }
+
+enum Ad { ad1, ad2 }
