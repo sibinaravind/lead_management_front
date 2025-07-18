@@ -17,6 +17,7 @@ import '../../../../res/style/colors/colors.dart';
 import '../../../controller/auth/login_controller.dart';
 // import '../../../model/officer/officer_model.dart';
 // import '../../../model/officer/user_model.dart';
+import '../leads/dead_lead_data_display.dart';
 import '../project/client_display.dart';
 import '../campaign/campaign_screen.dart';
 import '../dashboard/dashbaord_screen.dart';
@@ -156,6 +157,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 switch (value.selectedIndex) {
                                   case 1:
                                     return Expanded(child: LeadDataDisplay());
+                                  case 4:
+                                    return Expanded(
+                                        child: DeadLeadDataDisplay());
                                   case 7:
                                     return Expanded(
                                         child: ProjectDataDisplay());
@@ -215,6 +219,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           switch (value.selectedIndex) {
                             case 1:
                               return Expanded(child: LeadDataDisplay());
+                            case 4:
+                              return Expanded(child: DeadLeadDataDisplay());
                             case 7:
                               return Expanded(child: ProjectDataDisplay());
                             case 23:

@@ -53,8 +53,13 @@ class Constant {
 
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
+  String updateLead = 'lead/updateLead';
+  String getLeadDetail = 'lead/getCustomer';
+  String getDeadLeads = 'lead/getAllDeadLeads';
 
-  // String editConfig = 'config/edit_configList';officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads lead/insertLead projectList
+  String addFeedback = 'customer/logCallEvent';
+
+  // String editConfig = lead/getAllDeadLeads 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

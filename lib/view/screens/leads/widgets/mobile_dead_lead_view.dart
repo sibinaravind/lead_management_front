@@ -17,10 +17,10 @@ import '../../../widgets/filter_chip.dart';
 import '../add_lead_screen.dart';
 import 'bulk_lead.dart';
 
-class MobileLeadView extends StatelessWidget {
+class MobileDeadLeadView extends StatelessWidget {
   final dateController = TextEditingController();
 
-  MobileLeadView({super.key});
+  MobileDeadLeadView({super.key});
 
   Widget _buildStatusChip(String text, Color color) {
     return Container(
@@ -324,9 +324,9 @@ class MobileLeadView extends StatelessWidget {
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: value.allLeadModel.length,
+                    itemCount: value.allDeadLeadModel.length,
                     itemBuilder: (context, index) {
-                      final lead = value.allLeadModel[index];
+                      final lead = value.allDeadLeadModel[index];
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),

@@ -13,9 +13,9 @@ import '../flavour/customer_lead_flavour.dart';
 import 'call_record_popup.dart';
 import 'customer_profile.dart';
 
-class LeadUserListTable extends StatelessWidget {
+class DeadLeadUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;
-  LeadUserListTable({super.key, required this.userlist});
+  DeadLeadUserListTable({super.key, required this.userlist});
   // final drawerController = Get.find<AppUserController>();
 
   @override
@@ -60,7 +60,7 @@ class LeadUserListTable extends StatelessWidget {
                           ),
                         );
                       }).toList(),
-                      rows: valueB.leadModel.map((listUser) {
+                      rows: valueB.deadLeadModel.map((listUser) {
                         return DataRow(
                           color: WidgetStateProperty.resolveWith<Color?>(
                               (_) => Colors.white),

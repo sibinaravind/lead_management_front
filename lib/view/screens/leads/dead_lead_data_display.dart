@@ -12,17 +12,19 @@ import '../../../res/style/colors/dimension.dart';
 import '../../widgets/custom_date_range_field.dart';
 import '../../widgets/filter_chip.dart';
 import 'add_lead_screen.dart';
+import 'widgets/dead_lead_user_list_table.dart';
 import 'widgets/lead_user_list_table.dart';
+import 'widgets/mobile_dead_lead_view.dart';
 import 'widgets/mobile_lead_view.dart';
 
-class LeadDataDisplay extends StatefulWidget {
-  const LeadDataDisplay({super.key});
+class DeadLeadDataDisplay extends StatefulWidget {
+  const DeadLeadDataDisplay({super.key});
 
   @override
-  State<LeadDataDisplay> createState() => _LeadDataDisplayState();
+  State<DeadLeadDataDisplay> createState() => _DeadLeadDataDisplayState();
 }
 
-class _LeadDataDisplayState extends State<LeadDataDisplay> {
+class _DeadLeadDataDisplayState extends State<DeadLeadDataDisplay> {
   String selectedFilter = 'all';
 
   // final filterCategories = [
@@ -127,13 +129,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     //     selectedFilters[category] = '';
     //   }
     // }
-    Provider.of<LeadProvider>(context, listen: false).getLeadList();
+    Provider.of<LeadProvider>(context, listen: false).getDeadLeadList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dimension().isMobile(context)
-        ? MobileLeadView()
+        ? MobileDeadLeadView()
 
         // Scaffold(
         //     body: SingleChildScrollView(
@@ -751,8 +753,8 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                                 // Table Content
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
-                                  child: LeadUserListTable(
-                                      userlist: value.leadModel ?? []),
+                                  child: DeadLeadUserListTable(
+                                      userlist: value.deadLeadModel ?? []),
                                 ),
 
                                 // Footer with Pagination
