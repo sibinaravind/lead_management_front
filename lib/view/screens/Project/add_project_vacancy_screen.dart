@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
@@ -7,7 +8,8 @@ import 'widget/project_management_tab.dart';
 
 class ProjectClientManagementScreen extends StatefulWidget {
   final bool isEditMode;
-  const ProjectClientManagementScreen({super.key, this.isEditMode = false});
+  final List<ProjectModel>? projectList;
+  const ProjectClientManagementScreen({super.key, required this.isEditMode , this.projectList});
 
   @override
   State<ProjectClientManagementScreen> createState() =>
@@ -42,20 +44,31 @@ class _ProjectClientManagementScreenState
           final maxWidth = constraints.maxWidth;
           final maxHeight = constraints.maxHeight;
 
-          double dialogWidth = maxWidth > 1400
-              ? maxWidth * 0.8
-              : maxWidth > 1000
-                  ? maxWidth * 0.9
-                  : maxWidth;
+          // double dialogWidth = maxWidth > 900
+          //     ? maxWidth * 0.8
+          //     : maxWidth > 900
+          //         ? maxWidth * 0.8
+          //         : maxWidth;
+          double dialogWidth = maxWidth;
+          if (maxWidth > 1400) {
+            dialogWidth = maxWidth * 0.6;
+          } else if (maxWidth > 1000) {
+            dialogWidth = maxWidth * 0.7;
+          } else if (maxWidth > 600) {
+            dialogWidth = maxWidth * 0.8;
+          }
 
           return Center(
             child: Container(
               width: dialogWidth,
-              height: maxHeight * 0.9,
+              height: maxHeight * 0.95,
               constraints: const BoxConstraints(
+                // minWidth: 320,
+                // maxWidth: 900,
+                // minHeight: 600,
                 minWidth: 320,
-                maxWidth: 1600,
-                minHeight: 600,
+                maxWidth: 800,
+                minHeight: 500,
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -107,14 +120,14 @@ class _ProjectClientManagementScreenState
                             children: [
                               CustomText(
                                 text: widget.isEditMode
-                                    ? 'Edit Project & Clients'
-                                    : 'Project & Client Management',
+                                    ? 'Edit Project '
+                                    : 'Add Project',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
-                              const CustomText(
-                                text: 'Manage projects and client assignments',
+                              CustomText(
+                                text:widget.isEditMode?'Manage projects Edit':'Manage projects  Creation' ,
                                 fontSize: 13,
                                 color: Colors.white70,
                               ),
@@ -134,268 +147,127 @@ class _ProjectClientManagementScreenState
                     child: Row(
                       children: [
                         Expanded(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                child: SizedBox(
-                                  height: 44,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              gradient: _tabController.index ==
-                                                      0
-                                                  ? LinearGradient(
-                                                      colors: [
-                                                        AppColors.primaryColor,
-                                                        AppColors.primaryColor
-                                                            .withOpacity(0.7),
-                                                      ],
-                                                    )
-                                                  : null,
-                                              color: _tabController.index == 0
-                                                  ? null
-                                                  : Colors.grey.shade100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            child: TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                shadowColor: Colors.transparent,
-                                              ),
-                                              icon: Icon(
-                                                Icons.work_outline,
-                                                size: 20,
-                                                color: _tabController.index == 0
-                                                    ? AppColors.textWhiteColour
-                                                    : AppColors.primaryColor,
-                                              ),
-                                              label: Text(
-                                                'Project',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                  color: _tabController.index ==
-                                                          0
-                                                      ? AppColors
-                                                          .textWhiteColour
-                                                      : AppColors.primaryColor,
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _tabController.index = 0;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              gradient: _tabController.index ==
-                                                      1
-                                                  ? LinearGradient(
-                                                      colors: [
-                                                        AppColors.primaryColor,
-                                                        AppColors.primaryColor
-                                                            .withOpacity(0.7),
-                                                      ],
-                                                    )
-                                                  : null,
-                                              color: _tabController.index == 1
-                                                  ? null
-                                                  : Colors.grey.shade100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            child: TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                shadowColor: Colors.transparent,
-                                              ),
-                                              icon: Icon(
-                                                Icons.work_outline,
-                                                size: 20,
-                                                color: _tabController.index == 1
-                                                    ? AppColors.textWhiteColour
-                                                    : AppColors.primaryColor,
-                                              ),
-                                              label: Text(
-                                                'Client',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                  color: _tabController.index ==
-                                                          1
-                                                      ? AppColors
-                                                          .textWhiteColour
-                                                      : AppColors.primaryColor,
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _tabController.index = 1;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: TabBarView(
-                                  controller: _tabController,
-                                  children: [
-                                    ProjectManagementTab(
-                                        isEditMode: widget.isEditMode),
-                                    ClientManagementTab(),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          child: Expanded(
+                            child:ProjectManagementTab(
+                                isEditMode: widget.isEditMode,)
                           ),
                         ),
                         // Side Panel
-                        if (maxWidth > 800)
-                          Container(
-                            width: 280,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.violetPrimaryColor
-                                      .withOpacity(0.08),
-                                  AppColors.blueSecondaryColor
-                                      .withOpacity(0.04),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                  color: AppColors.violetPrimaryColor
-                                      .withOpacity(0.15)),
-                            ),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 24),
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 5,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: AppColors
-                                                  .violetPrimaryColor
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Icon(
-                                                Icons.toggle_on_outlined,
-                                                size: 20,
-                                                color: AppColors
-                                                    .violetPrimaryColor),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          const CustomText(
-                                            text: 'Project Status',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                            color: AppColors.primaryColor,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 16),
-                                      EnhancedSwitchTile(
-                                        label:
-                                            _isActive ? 'Active' : 'Inactive',
-                                        icon: Icons.power_settings_new_rounded,
-                                        value: _isActive,
-                                        onChanged: (val) =>
-                                            setState(() => _isActive = val),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      const Divider(),
-                                      const SizedBox(height: 16),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: AppColors
-                                                  .violetPrimaryColor
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Icon(
-                                                Icons.calendar_today_outlined,
-                                                size: 20,
-                                                color: AppColors
-                                                    .violetPrimaryColor),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          const CustomText(
-                                            text: 'Created Date',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                            color: AppColors.primaryColor,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        DateTime.now()
-                                            .toString()
-                                            .substring(0, 10),
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        // if (maxWidth > 800)
+                        //   Container(
+                        //     width: 280,
+                        //     decoration: BoxDecoration(
+                        //       gradient: LinearGradient(
+                        //         begin: Alignment.topCenter,
+                        //         end: Alignment.bottomCenter,
+                        //         colors: [
+                        //           AppColors.violetPrimaryColor
+                        //               .withOpacity(0.08),
+                        //           AppColors.blueSecondaryColor
+                        //               .withOpacity(0.04),
+                        //         ],
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(16),
+                        //       border: Border.all(
+                        //           color: AppColors.violetPrimaryColor
+                        //               .withOpacity(0.15)),
+                        //     ),
+                        //     child: Column(
+                        //       children: [
+                        //         const SizedBox(height: 24),
+                        //         Container(
+                        //           padding: const EdgeInsets.all(16),
+                        //           decoration: BoxDecoration(
+                        //             color: Colors.white,
+                        //             borderRadius: BorderRadius.circular(12),
+                        //             boxShadow: [
+                        //               BoxShadow(
+                        //                 color: Colors.grey.withOpacity(0.1),
+                        //                 spreadRadius: 1,
+                        //                 blurRadius: 5,
+                        //                 offset: const Offset(0, 2),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           child: Column(
+                        //             children: [
+                        //               Row(
+                        //                 children: [
+                        //                   Container(
+                        //                     padding: const EdgeInsets.all(8),
+                        //                     decoration: BoxDecoration(
+                        //                       color: AppColors
+                        //                           .violetPrimaryColor
+                        //                           .withOpacity(0.1),
+                        //                       borderRadius:
+                        //                           BorderRadius.circular(10),
+                        //                     ),
+                        //                     child: Icon(
+                        //                         Icons.toggle_on_outlined,
+                        //                         size: 20,
+                        //                         color: AppColors
+                        //                             .violetPrimaryColor),
+                        //                   ),
+                        //                   const SizedBox(width: 12),
+                        //                   const CustomText(
+                        //                     text: 'Project Status',
+                        //                     fontWeight: FontWeight.bold,
+                        //                     fontSize: 17,
+                        //                     color: AppColors.primaryColor,
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //               const SizedBox(height: 16),
+                        //               EnhancedSwitchTile(
+                        //                 label:
+                        //                     _isActive ? 'Active' : 'Inactive',
+                        //                 icon: Icons.power_settings_new_rounded,
+                        //                 value: _isActive,
+                        //                 onChanged: (val) =>
+                        //                     setState(() => _isActive = val),
+                        //               ),
+                        //               const SizedBox(height: 16),
+                        //               const Divider(),
+                        //               const SizedBox(height: 16),
+                        //               Row(
+                        //                 children: [
+                        //                   Container(
+                        //                     padding: const EdgeInsets.all(8),
+                        //                     decoration: BoxDecoration(
+                        //                       color: AppColors
+                        //                           .violetPrimaryColor
+                        //                           .withOpacity(0.1),
+                        //                       borderRadius:
+                        //                           BorderRadius.circular(10),
+                        //                     ),
+                        //                     child: Icon(
+                        //                         Icons.calendar_today_outlined,
+                        //                         size: 20,
+                        //                         color: AppColors
+                        //                             .violetPrimaryColor),
+                        //                   ),
+                        //                   const SizedBox(width: 12),
+                        //                   const CustomText(
+                        //                     text: 'Created Date',
+                        //                     fontWeight: FontWeight.bold,
+                        //                     fontSize: 17,
+                        //                     color: AppColors.primaryColor,
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //               const SizedBox(height: 16),
+                        //               Text(
+                        //                 DateTime.now()
+                        //                     .toString()
+                        //                     .substring(0, 10),
+                        //                 style: const TextStyle(fontSize: 14),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
                       ],
                     ),
                   ),

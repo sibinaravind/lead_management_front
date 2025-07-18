@@ -7,6 +7,7 @@ import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart'
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
+import 'package:overseas_front_end/view/screens/Auth/login_screen.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
 import 'package:provider/provider.dart';
 import 'config/flavour_config.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AppUserProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => VacancyProvider()),
+        // ChangeNotifierProvider(create: (_) => VacancyProvider()),
         ChangeNotifierProvider(
           create: (context) => ProjectProvider(),
         ),
@@ -66,7 +67,7 @@ class MyApp extends StatelessWidget {
               Center(child: Text('404 - Page not found')),
           // '/': (context) => DrawerScreen()
 
-          '/': (context) => LeadDataDisplay()
+          '/': (context) => LoginScreen()
         },
         initialRoute: '/',
       ),

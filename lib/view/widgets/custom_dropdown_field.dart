@@ -7,6 +7,7 @@ class CustomDropdownField extends StatelessWidget {
   final List<String> items;
   final Function(String?) onChanged;
   final bool isRequired;
+  final bool isSplit;
 
   const CustomDropdownField({
     super.key,
@@ -14,7 +15,7 @@ class CustomDropdownField extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
-    this.isRequired = false,
+    this.isRequired = false, this.isSplit = false,
   });
 
   @override
@@ -67,7 +68,7 @@ class CustomDropdownField extends StatelessWidget {
                 items: dropdownItems.map((String item) {
                   return DropdownMenuItem<String>(
                     value: item,
-                    child: CustomText(text: item),
+                    child: CustomText(text: isSplit ? item.split(',')[0] : item),
                   );
                 }).toList(),
                 onChanged: onChanged,
