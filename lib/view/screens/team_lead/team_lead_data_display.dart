@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
 import 'package:overseas_front_end/view/screens/team_lead/widgets/team_lead_user_list_table.dart';
 import 'package:provider/provider.dart';
+import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
 
@@ -16,6 +17,8 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
   @override
   void initState() {
     super.initState();
+    Provider.of<OfficersControllerProvider>(context, listen: false)
+        .fetchOfficersList();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TeamLeadProvider>().fetchTeamLeadList();
     });

@@ -258,6 +258,7 @@ class DeadLeadUserListTable extends StatelessWidget {
                                       context: context,
                                       builder: (context) =>
                                           CustomerProfileScreen(
+                                              clientId: "",
                                               leadId: listUser.sId ?? ""));
                                 }
                               },

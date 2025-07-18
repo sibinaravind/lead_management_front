@@ -368,32 +368,48 @@ class _CampaignScreenState extends State<CampaignScreen> {
             ),
             Consumer<CampaignProvider>(
               builder: (context, value, child) => SingleChildScrollView(
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.65,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final screenWidth = constraints.maxWidth;
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height * 0.65,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final screenWidth = constraints.maxWidth;
 
-                        // Define how many cards per row based on screen width
-                        int crossAxisCount = 2;
-                        if (screenWidth > 1200) {
-                          crossAxisCount = 4;
-                        } else if (screenWidth > 800) {
-                          crossAxisCount = 3;
-                        } else {
-                          crossAxisCount = 2;
-                        }
+                      // Enhanced responsive breakpoints
+                      int crossAxisCount = 2;
+                      double childAspectRatio = 0.85;
 
-                        // Control card height by adjusting childAspectRatio (width / height)
-                        double childAspectRatio = 1.3;
+                      if (screenWidth > 1400) {
+                        crossAxisCount = 5;
+                        childAspectRatio = 0.9;
+                      } else if (screenWidth > 1200) {
+                        crossAxisCount = 4;
+                        childAspectRatio = 0.85;
+                      } else if (screenWidth > 900) {
+                        crossAxisCount = 3;
+                        childAspectRatio = 0.8;
+                      } else if (screenWidth > 600) {
+                        crossAxisCount = 2;
+                        childAspectRatio = 0.85;
+                      } else {
+                        crossAxisCount = 1;
+                        childAspectRatio = 1.2;
+                      }
 
-                        return GridView.builder(
-                          padding: const EdgeInsets.all(16),
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth > 600 ? 24 : 16,
+                          vertical: 16,
+                        ),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: crossAxisCount,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
+                            crossAxisSpacing: screenWidth > 600 ? 20 : 16,
+                            mainAxisSpacing: screenWidth > 600 ? 24 : 16,
                             childAspectRatio: childAspectRatio,
                           ),
                           itemCount: value.campaignModelList?.length ?? 0,
@@ -402,105 +418,325 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                 value.campaignModelList?.elementAt(index)
                                     as CampaignModel;
 
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 4,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(16),
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                elevation: 0,
+                                shadowColor: Colors.black.withOpacity(0.1),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.grey.shade50,
+                                      ],
                                     ),
-                                    child: Image.network(
-                                      "${Constant().featureBaseUrl}${campaign.image}",
-                                      height:
-                                          140, // Can adjust based on screen size if needed
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error,
-                                              stackTrace) =>
-                                          const Center(
-                                              child: Icon(Icons.broken_image)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.08),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.04),
+                                        blurRadius: 40,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.grey.shade200,
+                                      width: 1,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.0,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              fontSize: 16,
-                                              text: campaign.title ?? "",
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              "Start Date: ${DateFormat("dd-MM-yyyy").format(DateTime.parse(campaign.startDate ?? ""))}",
-                                              style: const TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey),
-                                            ),
-                                            const Spacer(),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(Icons.edit,
-                                                      size: 20),
-                                                  onPressed: () {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: CustomText(
-                                                          text:
-                                                              "Edit ${campaign.title}",
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () {
+                                        // Handle card tap
+                                      },
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Enhanced Image Container
+                                          Expanded(
+                                            flex: 3,
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                  top: Radius.circular(20),
+                                                ),
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .vertical(
+                                                      top: Radius.circular(20),
+                                                    ),
+                                                    child: Image.network(
+                                                      "${Constant().featureBaseUrl}${campaign.image}",
+                                                      width: double.infinity,
+                                                      height: double.infinity,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                            colors: [
+                                                              Colors.grey
+                                                                  .shade300,
+                                                              Colors.grey
+                                                                  .shade100,
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                            Icons
+                                                                .image_not_supported_outlined,
+                                                            size: 40,
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.delete,
-                                                      size: 20),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          DeleteDialogue(
-                                                        id: campaign.sId ?? "",
-                                                        name: campaign.title ??
-                                                            "",
+                                                    ),
+                                                  ),
+                                                  // Status Badge
+                                                  Positioned(
+                                                    top: 12,
+                                                    right: 12,
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 4,
                                                       ),
-                                                    );
-                                                  },
-                                                ),
-                                              ],
+                                                      decoration: BoxDecoration(
+                                                        color: Colors
+                                                            .green.shade400,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.green
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            blurRadius: 8,
+                                                            offset:
+                                                                const Offset(
+                                                                    0, 2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Text(
+                                                        "Active",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+
+                                          // Enhanced Content Section
+                                          Expanded(
+                                            flex: 2,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  // Title
+                                                  Expanded(
+                                                    child: CustomText(
+                                                      fontSize:
+                                                          screenWidth > 600
+                                                              ? 16
+                                                              : 14,
+                                                      text:
+                                                          campaign.title ?? "",
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color:
+                                                          Colors.grey.shade800,
+                                                    ),
+                                                  ),
+
+                                                  const SizedBox(height: 8),
+
+                                                  // Date with Icon
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .blue.shade50,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.calendar_today,
+                                                          size: 12,
+                                                          color: Colors
+                                                              .blue.shade600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          DateFormat(
+                                                                  "dd MMM yyyy")
+                                                              .format(
+                                                            DateTime.parse(campaign
+                                                                    .startDate ??
+                                                                ""),
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Colors
+                                                                .grey.shade600,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  const SizedBox(height: 12),
+
+                                                  // Action Buttons
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .blue.shade50,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: IconButton(
+                                                          icon: Icon(
+                                                            Icons.edit_outlined,
+                                                            size: 18,
+                                                            color: Colors
+                                                                .blue.shade600,
+                                                          ),
+                                                          onPressed: () {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content:
+                                                                    CustomText(
+                                                                  text:
+                                                                      "Edit ${campaign.title}",
+                                                                ),
+                                                                backgroundColor:
+                                                                    Colors.blue
+                                                                        .shade600,
+                                                                behavior:
+                                                                    SnackBarBehavior
+                                                                        .floating,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .red.shade50,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: IconButton(
+                                                          icon: Icon(
+                                                            Icons
+                                                                .delete_outline,
+                                                            size: 18,
+                                                            color: Colors
+                                                                .red.shade600,
+                                                          ),
+                                                          onPressed: () {
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (context) =>
+                                                                  DeleteDialogue(
+                                                                id: campaign
+                                                                        .sId ??
+                                                                    "",
+                                                                name: campaign
+                                                                        .title ??
+                                                                    "",
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
                             );
                           },
-                        );
-                      },
-                    )),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ],

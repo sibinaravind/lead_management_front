@@ -35,6 +35,8 @@ class Constant {
   String projectList = "project/projectList";
   String addProject = "project/clientProject";
 
+  String callEventList = "customer/customercall";
+
   String vacancyList = "project/vacancyList";
   String createVacancy = "project/createVacancy";
   String editVacancy = "project/editVacancy";
@@ -54,15 +56,16 @@ class Constant {
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
   String updateLead = 'lead/updateLead';
-  String getLeadDetail = 'lead/getCustomer';
+  String getLeadDetail = 'customer/getCustomer';
   String getDeadLeads = 'lead/getAllDeadLeads';
 
   String addFeedback = 'customer/logCallEvent';
+  String getIncompleteList = 'customer/register/incompleteList';
 
-  // String editConfig = lead/getAllDeadLeads 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
+  // String editConfig = customer/register/incompleteList lead/getAllDeadLeads 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';
   String accessPermissionsDelete = 'config/delete_accesspermission';
-  String accessPermissionsAdd= 'config/insert_accesspermission';
+  String accessPermissionsAdd = 'config/insert_accesspermission';
 }

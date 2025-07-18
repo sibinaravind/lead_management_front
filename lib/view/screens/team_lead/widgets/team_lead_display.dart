@@ -8,9 +8,11 @@ import '../../../../controller/officers_controller/officers_controller.dart';
 import '../../../widgets/widgets.dart';
 
 class TeamLeadDisplay extends StatefulWidget {
-  const TeamLeadDisplay({super.key, required this.officerId});
+  const TeamLeadDisplay(
+      {super.key, required this.officerId, required this.officerSId});
 
   final String officerId;
+  final String officerSId;
 
   @override
   State<TeamLeadDisplay> createState() => _TeamLeadDisplayState();
@@ -61,7 +63,6 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
 
   @override
   void initState() {
-    // Provider.of<TeamLeadProvider>(context).getAllEmpoyees(widget.id);
     super.initState();
     // _filteredClients = List.from(_allClients);
   }
@@ -493,13 +494,15 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                                     context,
                                                     listen: false)
                                                 .addOfficerToLead(
-                                                    leadOfficerId:
-                                                        widget.officerId,
-                                                    officerId: value
-                                                            .remainingEmployees
-                                                            ?.elementAt(index)
-                                                            .officerId ??
-                                                        "");
+                                              leadOfficerId:
+                                                  widget.officerSId ?? '',
+                                              officerId: value
+                                                      .remainingEmployees
+                                                      ?.elementAt(index)
+                                                      .officerId ??
+                                                  "",
+                                              staffId: widget.officerId,
+                                            );
                                             // valueB.addOfficerToLead(
                                             //     leadOfficerId: widget.officerId,
                                             //     officerId: value

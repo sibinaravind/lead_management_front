@@ -101,7 +101,9 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/core/services/login_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
+import 'package:overseas_front_end/model/lead/call_event_model.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import '../../core/services/api_service.dart';
@@ -123,6 +125,8 @@ class ProjectProvider extends ChangeNotifier {
   List<ClientModel> _clients = [];
   List<ClientModel> filteredClients = [];
   List<ProjectModel> projects = [];
+  List<ProjectModel> callEvents = [];
+
   List<VacancyModel> vacancies = [];
 
   List<ClientModel> get clients => _clients;

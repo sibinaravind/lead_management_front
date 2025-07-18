@@ -258,6 +258,7 @@ class LeadUserListTable extends StatelessWidget {
                                       context: context,
                                       builder: (context) =>
                                           CustomerProfileScreen(
+                                              clientId: listUser.clientId ?? '',
                                               leadId: listUser.sId ?? ""));
                                 }
                               },

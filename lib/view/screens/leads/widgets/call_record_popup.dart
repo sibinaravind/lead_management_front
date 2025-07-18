@@ -291,6 +291,7 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                         ),
 
                                                         CustomDateField(
+                                                          isTimeRequired: true,
                                                           label:
                                                               "Next Schedule",
                                                           controller:
