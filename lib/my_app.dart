@@ -13,6 +13,8 @@ import 'config/flavour_config.dart';
 import 'controller/lead/round_robin_provider.dart';
 import 'controller/permission_controller/access_permission_controller.dart';
 import 'controller/project/project_provider_controller.dart';
+import 'controller/project/vacancy_controller.dart';
+import 'view/screens/drawer/drawer_screen.dart';
 // import 'view/features/drawer/drawer_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AppUserProvider(),
         ),
+        ChangeNotifierProvider(create: (_) => VacancyProvider()),
         ChangeNotifierProvider(
           create: (context) => ProjectProvider(),
         ),
