@@ -36,6 +36,9 @@ class Constant {
   String addProject = "project/clientProject";
 
   String vacancyList = "project/vacancyList";
+  String createVacancy = "project/createVacancy";
+  String editVacancy = "project/editVacancy";
+  String deleteVacancy = "project/deleteVacancy";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
@@ -60,4 +63,6 @@ class Constant {
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';
+  String accessPermissionsDelete = 'config/delete_accesspermission';
+  String accessPermissionsAdd= 'config/insert_accesspermission';
 }

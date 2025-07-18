@@ -340,48 +340,48 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                         label: "Status",
                                                         controller:
                                                             _statusController),
-                                                    Consumer2<ConfigProvider,
-                                                        AccessPermissionProvider>(
-                                                      builder:
-                                                          (BuildContext context,
-                                                              value,
-                                                              value2,
-                                                              Widget? child) {
-                                                        return CustomCheckDropdown<
-                                                            String>(
-                                                          label: "Designation",
-                                                          items: value2
-                                                                  .accessPermission
-                                                                  ?.toJson()
-                                                                  .keys
-                                                                  .where(
-                                                                    (element) =>
-                                                                        !element
-                                                                            .contains("_id"),
-                                                                  )
-                                                                  .toList() ??
-                                                              [],
-                                                          onChanged: (values) {
-                                                            var code = value
-                                                                .configModelList
-                                                                ?.designation
-                                                                ?.where((e) =>
-                                                                    values.contains(
-                                                                        e.name))
-                                                                .map((e) =>
-                                                                    int.parse(
-                                                                        e.code ??
-                                                                            '0'))
-                                                                .toList();
-                                                            designation =
-                                                                code ?? [];
-                                                            //     value ??
-                                                            //         '';
-                                                          },
-                                                          values: [],
-                                                        );
-                                                      },
-                                                    ),
+                                                    // Consumer2<ConfigProvider,
+                                                    //     AccessPermissionProvider>(
+                                                    //   builder:
+                                                    //       (BuildContext context,
+                                                    //           value,
+                                                    //           value2,
+                                                    //           Widget? child) {
+                                                    //     return CustomCheckDropdown<
+                                                    //         String>(
+                                                    //       label: "Designation",
+                                                    //       items: value2
+                                                    //               .accessPermission
+                                                    //               ?.toJson()
+                                                    //               .keys
+                                                    //               .where(
+                                                    //                 (element) =>
+                                                    //                     !element
+                                                    //                         .contains("_id"),
+                                                    //               )
+                                                    //               .toList() ??
+                                                    //           [],
+                                                    //       onChanged: (values) {
+                                                    //         var code = value
+                                                    //             .configModelList
+                                                    //             ?.designation
+                                                    //             ?.where((e) =>
+                                                    //                 values.contains(
+                                                    //                     e.name))
+                                                    //             .map((e) =>
+                                                    //                 int.parse(
+                                                    //                     e.code ??
+                                                    //                         '0'))
+                                                    //             .toList();
+                                                    //         designation =
+                                                    //             code ?? [];
+                                                    //         //     value ??
+                                                    //         //         '';
+                                                    //       },
+                                                    //       values: [],
+                                                    //     );
+                                                    //   },
+                                                    // ),
                                                     Consumer<ConfigProvider>(
                                                       builder:
                                                           (BuildContext context,
