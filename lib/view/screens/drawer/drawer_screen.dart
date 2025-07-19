@@ -10,6 +10,7 @@ import 'package:overseas_front_end/view/screens/drawer/widget/appbar_widget.dart
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
 import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
 import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
+import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import 'package:provider/provider.dart';
 
@@ -160,6 +161,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                   case 4:
                                     return Expanded(
                                         child: DeadLeadDataDisplay());
+                                  case 5:
+                                    return Expanded(
+                                        child: RegisterDataDisplay());
                                   case 7:
                                     return Expanded(
                                         child: ProjectDataDisplay());
@@ -221,6 +225,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               return Expanded(child: LeadDataDisplay());
                             case 4:
                               return Expanded(child: DeadLeadDataDisplay());
+                            case 5:
+                              return Expanded(child: RegisterDataDisplay());
                             case 7:
                               return Expanded(child: ProjectDataDisplay());
                             case 23:

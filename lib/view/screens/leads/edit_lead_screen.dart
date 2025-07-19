@@ -128,7 +128,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
 
   List<String> selectedCountries = [];
 
-  String? _selectedSpecialized;
+  List<String>? _selectedSpecialized;
 
   @override
   void initState() {
@@ -161,7 +161,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
     _sendGreetings = widget.sendGreetings;
     _sendEmail = widget.sendEmail;
     _sendWhatsapp = widget.sendWhatsapp;
-    _selectedSpecialized = widget.selectedSpecialized;
+    _selectedSpecialized = [];
     selectedCountries = widget.selectedCountries;
     super.initState();
     _leadDateController.text = DateTime.now().toString().substring(0, 10);
@@ -485,11 +485,9 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                       String>();
                                                             },
                                                           ),
-                                                          CustomDropdownField(
+                                                          CustomCheckDropdown(
                                                             label:
                                                                 'Specialized',
-                                                            value:
-                                                                _selectedSpecialized,
                                                             items: configProvider
                                                                     .configModelList
                                                                     ?.specialized
@@ -500,8 +498,10 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                 [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedGender =
-                                                                        val),
+                                                                    _selectedSpecialized =
+                                                                        val.cast<
+                                                                            String>()),
+                                                            values: [],
                                                           ),
                                                           CustomDropdownField(
                                                             label:
@@ -853,7 +853,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                     profession: "",
                                                     specializedIn:
                                                         _selectedSpecialized ??
-                                                            "",
+                                                            [],
                                                     leadSource: _selectedLeadSource ??
                                                         "",
                                                     comment: _remarksController

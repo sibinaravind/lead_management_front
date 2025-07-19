@@ -91,14 +91,20 @@ class TeamLeadProvider with ChangeNotifier {
   void clearEmployees() {}
 
   void addOfficerToLead(
-      {required String leadOfficerId, required String officerId}) async {
+      {required String leadOfficerId,
+      required String officerId,
+      required String staffId}) async {
     _isLoading = true;
     _error = null;
 
     try {
       final response = await _apiService.patch(Constant().addOfficerToLead, {
         "lead_officer_id": leadOfficerId,
-        "officer_id": officerId,
+        "officer": {
+          "officer_id": officerId,
+          "staff_id": staffId,
+          "edit_permission": false
+        }
       });
       if (response['success'] == true) {
         notifyListeners();

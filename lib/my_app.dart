@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
 import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LeadProvider()),
         ChangeNotifierProvider(create: (context) => TeamLeadProvider()),
         ChangeNotifierProvider(create: (_) => RoundRobinProvider()),
+        ChangeNotifierProvider(create: (_) => RegistrationController()),
       ],
       child: MaterialApp(
         title: ' ${FlavourConfig.partnerName()} ',

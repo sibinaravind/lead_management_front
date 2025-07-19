@@ -61,7 +61,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
 
   List<String> selectedCountries = [];
 
-  String? _selectedSpecialized;
+  List<String>? _selectedSpecialized;
 
   @override
   void initState() {
@@ -387,11 +387,9 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                                       String>();
                                                             },
                                                           ),
-                                                          CustomDropdownField(
+                                                          CustomCheckDropdown(
                                                             label:
                                                                 'Specialized',
-                                                            value:
-                                                                _selectedSpecialized,
                                                             items: configProvider
                                                                     .configModelList
                                                                     ?.specialized
@@ -402,8 +400,10 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                                 [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedGender =
-                                                                        val),
+                                                                    _selectedSpecialized =
+                                                                        val.cast<
+                                                                            String>()),
+                                                            values: [],
                                                           ),
                                                           CustomDropdownField(
                                                             label:
@@ -755,7 +755,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                     profession: "",
                                                     specializedIn:
                                                         _selectedSpecialized ??
-                                                            "",
+                                                            [],
                                                     leadSource: _selectedLeadSource ??
                                                         "",
                                                     comment: _remarksController

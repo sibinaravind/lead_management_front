@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/core/services/login_cache_service.dart';
+import 'package:overseas_front_end/model/lead/call_event_model.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
@@ -47,6 +48,8 @@ class LeadProvider extends ChangeNotifier {
   bool isLoading = false;
 
   bool _isLoading = false;
+
+  List<CallEventModel> callEvents = [];
 
   setSelectedFilter(String filter) {
     selectedFilter = filter;
@@ -145,7 +148,7 @@ class LeadProvider extends ChangeNotifier {
     required int experience,
     required List<String> skills,
     required String profession,
-    required String specializedIn,
+    required List<String> specializedIn,
     required String leadSource,
     required String comment,
     required bool onCallCommunication,
@@ -158,7 +161,7 @@ class LeadProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
+    String officerId = (await OfficerCacheService().getOfficer())?.id ?? "";
     try {
       final response = await _api.post(Constant().addLead, {
         "name": name,
@@ -177,20 +180,21 @@ class LeadProvider extends ChangeNotifier {
         "country_interested": countryInterested,
         "expected_salary": expectedSalary,
         "qualification": qualification,
-        "university": university,
-        "passing_year": passingYear,
+        // "university": university,
+        // "passing_year": passingYear,
         "experience": experience,
         "skills": skills,
         "profession": profession,
         "specialized_in": specializedIn,
         "lead_source": leadSource,
-        "comment": comment,
+        "note": comment,
         "on_call_communication": onCallCommunication,
         "on_whatsapp_communication": onWhatsappCommunication,
         "on_email_communication": onEmailCommunication,
         "status": status,
         "service_type": serviceType,
-        "branch_name": branchName,
+        // "branch_name": branchName,
+        "officer_id": officerId
       });
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
@@ -198,6 +202,7 @@ class LeadProvider extends ChangeNotifier {
       _error = 'Failed to load permissions: $e';
       return false;
     } finally {
+      getLeadList();
       _isLoading = false;
       notifyListeners();
     }
@@ -226,7 +231,7 @@ class LeadProvider extends ChangeNotifier {
     required int experience,
     required List<String> skills,
     required String profession,
-    required String specializedIn,
+    required List<String> specializedIn,
     required String leadSource,
     required String comment,
     required bool onCallCommunication,
@@ -258,20 +263,20 @@ class LeadProvider extends ChangeNotifier {
         "country_interested": countryInterested,
         "expected_salary": expectedSalary,
         "qualification": qualification,
-        "university": university,
-        "passing_year": passingYear,
+        // "university": university,
+        // "passing_year": passingYear,
         "experience": experience,
         "skills": skills,
         "profession": profession,
         "specialized_in": specializedIn,
         "lead_source": leadSource,
-        "comment": comment,
+        "note": comment,
         "on_call_communication": onCallCommunication,
         "on_whatsapp_communication": onWhatsappCommunication,
         "on_email_communication": onEmailCommunication,
         "status": status,
         "service_type": serviceType,
-        "branch_name": branchName,
+        // "branch_name": branchName,
       });
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
@@ -314,6 +319,27 @@ class LeadProvider extends ChangeNotifier {
     } catch (e) {
       _error = 'Failed to load permissions: $e';
       return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchCallEvents({required String clietnId}) async {
+    _isLoading = true;
+    notifyListeners();
+    // var officerId = (await OfficerCacheService().officer)?.id ?? "";
+    try {
+      final response = await _api.get("${Constant().callEventList}/$clietnId");
+
+      if (response['success']) {
+        callEvents =
+            List.from(response['data'].map((e) => CallEventModel.fromJson(e)));
+      } else {
+        throw Exception("Failed to load projects");
+      }
+    } catch (e) {
+      throw Exception('Error fetching projects: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
