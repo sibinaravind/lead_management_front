@@ -5,6 +5,7 @@ class CustomDateField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String formattedDate)? onChanged;
   final bool isRequired;
+  final DateTime? initialDate;
   final bool isTimeRequired;
   const CustomDateField({
     super.key,
@@ -13,6 +14,7 @@ class CustomDateField extends StatelessWidget {
     this.onChanged,
     this.isRequired = false,
     this.isTimeRequired = false,
+    this.initialDate,
   });
 
   @override
@@ -57,15 +59,20 @@ class CustomDateField extends StatelessWidget {
           final date = await showDatePicker(
             context: context,
             initialDate: DateTime.now(),
-            firstDate: DateTime(1950),
+            firstDate: initialDate ?? DateTime(1950),
             lastDate: DateTime(2050),
           );
-          final time = await showTimePicker(
-              context: context, initialTime: TimeOfDay.now());
+          final time;
+          if (isTimeRequired) {
+            time = await showTimePicker(
+                context: context, initialTime: TimeOfDay.now());
+          } else {
+            time = "";
+          }
 
           if (date != null) {
             final formattedDate =
-                "${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')} ${time?.format(context)}";
+                "${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')} ${isTimeRequired ? time?.format(context) : ""}";
             controller.text = formattedDate;
             onChanged?.call(formattedDate);
           }

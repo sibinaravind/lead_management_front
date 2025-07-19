@@ -67,26 +67,46 @@ class TeamLeadModel {
 }
 
 class Officers {
-  String? id;
+  String? officerId;
+  bool? editPermission;
+  String? staffId;
   String? name;
+  String? phone;
+  String? companyPhoneNumber;
+  String? sId;
   String? branch;
-  String? designation;
 
-  Officers({this.id, this.name, this.branch, this.designation});
+  Officers(
+      {this.officerId,
+      this.editPermission,
+      this.staffId,
+      this.name,
+      this.phone,
+      this.companyPhoneNumber,
+      this.sId,
+      this.branch});
 
   Officers.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
+    officerId = json['officer_id'];
+    editPermission = json['edit_permission'];
+    staffId = json['staff_id'];
     name = json['name'];
+    phone = json['phone'];
+    companyPhoneNumber = json['company_phone_number'];
+    sId = json['_id'];
     branch = json['branch'];
-    designation = json['designation'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+    data['officer_id'] = this.officerId;
+    data['edit_permission'] = this.editPermission;
+    data['staff_id'] = this.staffId;
     data['name'] = this.name;
+    data['phone'] = this.phone;
+    data['company_phone_number'] = this.companyPhoneNumber;
+    data['_id'] = this.sId;
     data['branch'] = this.branch;
-    data['designation'] = this.designation;
     return data;
   }
 }

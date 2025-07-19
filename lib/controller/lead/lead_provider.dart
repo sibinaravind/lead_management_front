@@ -15,6 +15,7 @@ class LeadProvider extends ChangeNotifier {
   bool showFilters = false;
   int? selectedIndex;
   bool isFilterActive = false;
+  String currentClientId = "";
 
   TextEditingController searchController = TextEditingController();
   var itemsPerPage = "10";
@@ -118,6 +119,8 @@ class LeadProvider extends ChangeNotifier {
     try {
       final response = await _api.get("${Constant().getLeadDetail}/$leadId");
       leadDetails = LeadModel.fromJson(response['data']);
+      currentClientId = leadDetails?.sId ?? '';
+      fetchCallEvents();
     } catch (e) {
       _error = 'Failed to load permissions: $e';
     } finally {
@@ -325,12 +328,13 @@ class LeadProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchCallEvents({required String clietnId}) async {
+  Future<void> fetchCallEvents() async {
     _isLoading = true;
     notifyListeners();
     // var officerId = (await OfficerCacheService().officer)?.id ?? "";
     try {
-      final response = await _api.get("${Constant().callEventList}/$clietnId");
+      final response =
+          await _api.get("${Constant().callEventList}/$currentClientId");
 
       if (response['success']) {
         callEvents =

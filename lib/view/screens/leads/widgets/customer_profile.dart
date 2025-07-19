@@ -89,9 +89,6 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     // Initialize the first tab as selected
     Provider.of<LeadProvider>(context, listen: false)
         .getLeadDetails(widget.leadId);
-
-    Provider.of<LeadProvider>(context, listen: false)
-        .fetchCallEvents(clietnId: widget.leadId);
   }
 
   @override
@@ -104,7 +101,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.9,
           maxWidth:
-              MediaQuery.of(context).size.width > 600 ? 800 : double.infinity,
+              MediaQuery.of(context).size.width > 600 ? 1200 : double.infinity,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -521,106 +518,115 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final isDesktop = constraints.maxWidth > 1000;
+                  final isDesktop = MediaQuery.of(context).size.width > 1000;
                   return isDesktop
-                      ? Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(12),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
+                      ? Expanded(
+                          child: Container(
+                            height: 420,
+                            // margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(12),
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              // Left Tab List
-                              Container(
-                                width: 280,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                // Left Tab List
+                                Container(
+                                  width: 280,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                      // topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.all(8),
+                                    itemCount: _tabs.length,
+                                    itemBuilder: (context, index) {
+                                      final tab = _tabs[index];
+                                      final isSelected =
+                                          _selectedTabIndex == index;
+                                      return Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 4),
+                                        decoration: BoxDecoration(
+                                          gradient: isSelected
+                                              ? AppColors.buttonGraidentColour
+                                              : null,
+                                          color: isSelected
+                                              ? null
+                                              : Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: ListTile(
+                                          dense: true,
+                                          leading: Icon(
+                                            tab['icon'] as IconData,
+                                            color: isSelected
+                                                ? Colors.white
+                                                : AppColors.textGrayColour,
+                                            size: 22,
+                                          ),
+                                          title: CustomText(
+                                            text: tab['label'] as String,
+                                            fontSize: 14,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.w100,
+                                            color: isSelected
+                                                ? Colors.white
+                                                : Colors.white.withOpacity(0.5),
+                                          ),
+                                          trailing: tab['completed'] as bool
+                                              ? Icon(
+                                                  Icons.check_circle,
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : AppColors
+                                                          .greenSecondaryColor,
+                                                  size: 18,
+                                                )
+                                              : Icon(
+                                                  Icons.radio_button_unchecked,
+                                                  color: isSelected
+                                                      ? Colors.white70
+                                                      : AppColors
+                                                          .textGrayColour,
+                                                  size: 18,
+                                                ),
+                                          onTap: () {
+                                            setState(() {
+                                              _selectedTabIndex = index;
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.all(8),
-                                  itemCount: _tabs.length,
-                                  itemBuilder: (context, index) {
-                                    final tab = _tabs[index];
-                                    final isSelected =
-                                        _selectedTabIndex == index;
-                                    return Container(
-                                      margin: const EdgeInsets.only(bottom: 4),
-                                      decoration: BoxDecoration(
-                                        gradient: isSelected
-                                            ? AppColors.buttonGraidentColour
-                                            : null,
-                                        color: isSelected
-                                            ? null
-                                            : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: ListTile(
-                                        dense: true,
-                                        leading: Icon(
-                                          tab['icon'] as IconData,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : AppColors.textGrayColour,
-                                          size: 22,
-                                        ),
-                                        title: CustomText(
-                                          text: tab['label'] as String,
-                                          fontSize: 14,
-                                          fontWeight: isSelected
-                                              ? FontWeight.w600
-                                              : FontWeight.w100,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.white.withOpacity(0.5),
-                                        ),
-                                        trailing: tab['completed'] as bool
-                                            ? Icon(
-                                                Icons.check_circle,
-                                                color: isSelected
-                                                    ? Colors.white
-                                                    : AppColors
-                                                        .greenSecondaryColor,
-                                                size: 18,
-                                              )
-                                            : Icon(
-                                                Icons.radio_button_unchecked,
-                                                color: isSelected
-                                                    ? Colors.white70
-                                                    : AppColors.textGrayColour,
-                                                size: 18,
-                                              ),
-                                        onTap: () {
-                                          setState(() {
-                                            _selectedTabIndex = index;
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  },
+
+                                // Right content
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(24),
+                                    child: _tabs[_selectedTabIndex]['widget']
+                                        as Widget,
+                                  ),
                                 ),
-                              ),
-                              // Right content
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(24),
-                                  child: _tabs[_selectedTabIndex]['widget']
-                                      as Widget,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         )
                       : // Mobile layout with tabs

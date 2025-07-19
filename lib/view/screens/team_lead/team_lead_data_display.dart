@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
+import 'widgets/team_lead_display.dart';
 
 class TeamLeadDataDisplay extends StatefulWidget {
   const TeamLeadDataDisplay({super.key});
@@ -14,6 +15,7 @@ class TeamLeadDataDisplay extends StatefulWidget {
 }
 
 class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
+  String selectedNewTeamLead = '';
   @override
   void initState() {
     super.initState();
@@ -84,6 +86,155 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                           ],
                         ),
                       ),
+
+                      Consumer2<TeamLeadProvider, OfficersControllerProvider>(
+                        builder: (context, valueA, valueB, child) => Container(
+                          decoration: BoxDecoration(
+                            gradient: AppColors.buttonGraidentColour,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.violetPrimaryColor
+                                    .withOpacity(0.4),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () async {
+                                valueA.getAllRemainingEmpoyees(
+                                    '', valueB.allOfficersListData ?? [], true);
+
+                                await showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          content: Container(
+                                            height: 200,
+                                            width: 500,
+                                            child: CustomDropdownField(
+                                              label: "Select Officer",
+                                              value: selectedNewTeamLead,
+                                              isSplit: true,
+                                              items: valueB.allOfficersListData
+                                                      ?.map(
+                                                        (e) =>
+                                                            "${e.name},${e.id}",
+                                                      )
+                                                      .toList() ??
+                                                  [],
+                                              onChanged: (p0) {
+                                                selectedNewTeamLead =
+                                                    p0?.split(",").last ?? "";
+                                              },
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              style: TextButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 12,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              child: CustomText(
+                                                text: 'Cancel',
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      TeamLeadDisplay(
+                                                    officerId: "",
+                                                    officerSId:
+                                                        selectedNewTeamLead,
+                                                  ),
+                                                );
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.primaryColor,
+                                                foregroundColor: Colors.white,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 24,
+                                                  vertical: 12,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                elevation: 2,
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.add,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  CustomText(
+                                                    text: 'Add Lead',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ));
+
+                                ///--------------- Employee Creation------
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) => const EmployeeCreationScreen(
+                                //     isEdit: false,
+                                //   ),
+                                // );
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.add_circle_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 12),
+                                    CustomText(
+                                      text: 'Add Team Lead',
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                       // Container(
                       //   decoration: BoxDecoration(
                       //     gradient: AppColors.buttonGraidentColour,

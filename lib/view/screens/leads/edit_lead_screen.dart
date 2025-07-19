@@ -429,7 +429,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             controller:
                                                                 _emailController,
                                                           ),
-                                                          CustomTextFormField(
+                                                          CustomDateField(
                                                             label: 'DOB',
                                                             controller:
                                                                 _dobController,

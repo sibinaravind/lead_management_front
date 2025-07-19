@@ -331,7 +331,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             controller:
                                                                 _emailController,
                                                           ),
-                                                          CustomTextFormField(
+                                                          CustomDateField(
                                                             label: 'DOB',
                                                             controller:
                                                                 _dobController,

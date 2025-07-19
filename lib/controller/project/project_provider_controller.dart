@@ -104,6 +104,7 @@ import 'package:flutter/material.dart';
 import 'package:overseas_front_end/core/services/login_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import 'package:overseas_front_end/model/lead/call_event_model.dart';
+import 'package:overseas_front_end/model/project/project_manager.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import '../../core/services/api_service.dart';
@@ -374,7 +375,17 @@ class ProjectProvider extends ChangeNotifier {
         "city": city,
         "country": country,
       });
-      fetchProjects();
+      projects.add(ProjectModel(
+          city: city,
+          country: country,
+          organizationType: organizationType,
+          organizationCategory: organizationCategory,
+          projectName: projectName,
+          organizationName: organizationName,
+          createdAt: DateTime.now().toString(),
+          status: "ACTIVE"));
+
+      // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
 
       return response['success'] == true;
@@ -383,7 +394,7 @@ class ProjectProvider extends ChangeNotifier {
       return false;
     } finally {
       _isLoading = false;
-      fetchProjects();
+      // fetchProjects();
       notifyListeners();
     }
   }
@@ -411,7 +422,15 @@ class ProjectProvider extends ChangeNotifier {
         "city": city,
         "country": country,
       });
-      fetchProjects();
+      projects.removeWhere((element) => element.sId == projectId);
+      projects.add(ProjectModel(
+          city: city,
+          country: country,
+          organizationCategory: organizationCategory,
+          organizationName: organizationName,
+          organizationType: organizationType,
+          projectName: projectName));
+      // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
 
       return response['success'] == true;
@@ -420,7 +439,7 @@ class ProjectProvider extends ChangeNotifier {
       return false;
     } finally {
       _isLoading = false;
-      fetchProjects();
+      // fetchProjects();
       notifyListeners();
     }
   }
@@ -458,7 +477,9 @@ class ProjectProvider extends ChangeNotifier {
       final response = await _apiService
           .delete("${Constant().deleteProject}/$projectId", {});
       if (response["success"] == true) {
-        fetchProjects();
+        projects.removeWhere((element) => element.sId == projectId);
+        // fetchProjects();
+        notifyListeners();
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("deleted successfully")),

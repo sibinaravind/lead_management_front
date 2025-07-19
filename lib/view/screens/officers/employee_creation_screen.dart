@@ -505,7 +505,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       "gender": _selectedGender.toString(),
       "phone": _phoneNumberController.text,
       "company_phone_number": _companyPhoneNumberController.text,
-      "status": status.toString(),
+      "status": _statusController.text,
       "designation": designation,
       "department": department,
 

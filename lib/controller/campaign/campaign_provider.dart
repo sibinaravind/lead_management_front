@@ -98,4 +98,31 @@ class CampaignProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> editCampaign(
+      {required String title,
+      required String startDate,
+      required String docName,
+      required String image64}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _api.post(Constant().addCampaign, {
+        "title": title,
+        "startDate": startDate,
+        "doc_file": {"name": docName, "base64": image64}
+      });
+      // _campaignModel = CampaignModel.fromJson(response.data);
+      return response['success'] == true;
+    } catch (e) {
+      _error = 'Failed to load permissions: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      getCampaignList();
+      notifyListeners();
+    }
+  }
 }

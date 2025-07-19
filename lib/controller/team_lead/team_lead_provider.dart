@@ -90,7 +90,7 @@ class TeamLeadProvider with ChangeNotifier {
 
   void clearEmployees() {}
 
-  void addOfficerToLead(
+  Future<void> addOfficerToLead(
       {required String leadOfficerId,
       required String officerId,
       required String staffId}) async {
@@ -108,13 +108,12 @@ class TeamLeadProvider with ChangeNotifier {
       });
       if (response['success'] == true) {
         notifyListeners();
+        fetchTeamLeadList();
       }
     } catch (e) {
       _error = 'Failed to load permissions: $e';
     } finally {
       _isLoading = false;
-      fetchTeamLeadList();
-      notifyListeners();
     }
   }
 
@@ -141,31 +140,24 @@ class TeamLeadProvider with ChangeNotifier {
     }
   }
 
-  void getAllRemainingEmpoyees(String id, List<OfficersModel> officersList) {
-    List listId = _teamLeadListData
-            ?.where((element) => element.officerId == id)
-            .expand((e) => e.officers?.map((e) => e.id) ?? [])
-            .toList() ??
-        [];
+  void getAllRemainingEmpoyees(
+      String id, List<OfficersModel> officersList, bool isNewLead) {
+    List listId = [];
+    if (!isNewLead) {
+      listId = _teamLeadListData
+              ?.where((element) => element.officerId == id)
+              .expand((e) => e.officers?.map((e) => e.sId) ?? [])
+              .toList() ??
+          [];
+    }
+
     List<OfficersModel> li = officersList
         .where(
-          (element) => !listId.contains(element.officerId),
+          (element) => !listId.contains(element.id),
         )
         .toList();
-    // assignedEmployees = officersList;
-    // var idList = assignedEmployees?.map(
-    // (e) => e.id,
-    // ) ??
-    // [];
     remainingEmployees = li;
     allRemainingEmployees = li;
-    /* .where(
-              (element) => !idList.any(
-                (e) => e == element.id,
-              ),
-            )
-            .toList() ??
-        []; */
     notifyListeners();
   }
 
@@ -181,21 +173,11 @@ class TeamLeadProvider with ChangeNotifier {
         final List<dynamic> dataList = json['data'];
         _teamLeadListData =
             dataList.map((e) => TeamLeadModel.fromJson(e)).toList();
-
-        // _teamLeadListData!.sort((a, b) {
-        //   final aId = int.tryParse(a.officerId ?? '') ?? 0;
-        //   final bId = int.tryParse(b.officerId ?? '') ?? 0;
-        //   return aId.compareTo(bId);
-        // });
-
-        // return _teamLeadListData;
       } else {
         _error = 'Invalid response structure';
-        // return [];
       }
     } catch (e) {
       _error = "Failed to load lead officers: $e";
-      // return [];
     } finally {
       _isLoading = false;
       notifyListeners();

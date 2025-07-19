@@ -9,16 +9,17 @@ class ProjectModel {
   String? status;
   String? createdAt;
 
-  ProjectModel(
-      {this.sId,
-      this.projectName,
-      this.organizationType,
-      this.organizationCategory,
-      this.organizationName,
-      this.country,
-      this.city,
-      this.status,
-      this.createdAt});
+  ProjectModel({
+    this.sId,
+    this.projectName,
+    this.organizationType,
+    this.organizationCategory,
+    this.organizationName,
+    this.country,
+    this.city,
+    this.status,
+    this.createdAt,
+  });
 
   ProjectModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -33,16 +34,84 @@ class ProjectModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['project_name'] = this.projectName;
-    data['organization_type'] = this.organizationType;
-    data['organization_category'] = this.organizationCategory;
-    data['organization_name'] = this.organizationName;
-    data['country'] = this.country;
-    data['city'] = this.city;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['project_name'] = projectName;
+    data['organization_type'] = organizationType;
+    data['organization_category'] = organizationCategory;
+    data['organization_name'] = organizationName;
+    data['country'] = country;
+    data['city'] = city;
+    data['status'] = status;
+    data['created_at'] = createdAt;
     return data;
   }
+
+  // Helper method to add a project to a list
+  static void addProject(List<ProjectModel> projects, ProjectModel project) {
+    projects.add(project);
+  }
+
+  // Helper method to add a project at specific index
+  static void insertProject(
+      List<ProjectModel> projects, int index, ProjectModel project) {
+    if (index >= 0 && index <= projects.length) {
+      projects.insert(index, project);
+    }
+  }
+
+  // Helper method to remove a project by object reference
+  static bool removeProject(List<ProjectModel> projects, ProjectModel project) {
+    return projects.remove(project);
+  }
+
+  // Helper method to remove a project by ID
+  static bool removeProjectById(List<ProjectModel> projects, String id) {
+    int initialLength = projects.length;
+    projects.removeWhere((project) => project.sId == id);
+    return projects.length < initialLength;
+  }
+
+  // Helper method to remove a project at specific index
+  static ProjectModel? removeProjectAt(List<ProjectModel> projects, int index) {
+    if (index >= 0 && index < projects.length) {
+      return projects.removeAt(index);
+    }
+    return null;
+  }
+
+  // Helper method to update a project in the list
+  static bool updateProject(
+      List<ProjectModel> projects, String id, ProjectModel updatedProject) {
+    int index = projects.indexWhere((project) => project.sId == id);
+    if (index != -1) {
+      projects[index] = updatedProject;
+      return true;
+    }
+    return false;
+  }
+
+  // Helper method to find a project by ID
+  static ProjectModel? findProjectById(List<ProjectModel> projects, String id) {
+    try {
+      return projects.firstWhere((project) => project.sId == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Helper method to clear all projects
+  static void clearProjects(List<ProjectModel> projects) {
+    projects.clear();
+  }
+
+  // Override equality operator for better comparison
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ProjectModel && other.sId == sId;
+  }
+
+  @override
+  int get hashCode => sId.hashCode;
 }
