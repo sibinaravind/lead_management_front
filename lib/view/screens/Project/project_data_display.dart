@@ -19,6 +19,7 @@ class ProjectDataDisplay extends StatefulWidget {
 
 class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
   String selectedFilter = 'all';
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -103,7 +104,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                           showDialog(
                             context: context,
                             builder: (context) =>
-                                const ProjectClientManagementScreen(),
+                                 ProjectClientManagementScreen(isEditMode: false,),
                           );
                         },
                         child: const Padding(
@@ -167,6 +168,8 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'all';
                               });
+                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('') ;
+
                             },
                           ),
                           _buildFilterChip(
@@ -179,6 +182,8 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'government';
                               });
+                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('GOV');
+
                             },
                           ),
                           _buildFilterChip(
@@ -191,6 +196,8 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'private';
                               });
+                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('PVT');
+
                             },
                           ),
                           // _buildFilterChip(
@@ -283,7 +290,10 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: TextField(
-                        // controller: controller.searchController,
+                        onChanged: (value){
+                         Provider.of<ProjectProvider>(context, listen: false).searchProjects(value) ;
+                        },
+                        controller:searchController,
                         decoration: InputDecoration(
                           hintText: "Search Projects...",
                           hintStyle: TextStyle(
@@ -293,14 +303,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                           hoverColor: Colors.white,
                           fillColor: AppColors.whiteMainColor,
                           filled: true,
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.search,
+                          suffixIcon: const Icon(Icons.search,
                                 size: 20, color: Colors.grey),
-                            onPressed: () {
-                              // print(
-                              //     "Search query: ${_searchController.text}");
-                            },
-                          ),
+
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                             borderSide: const BorderSide(
@@ -401,16 +406,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               ),
                             ],
                           ),
-                          CustomPager(
-                            currentPage: value.currentPage + 1,
-                            totalPages: min(value.clients.length, 100),
-                            onPageSelected: (page) {
-                              if (value.currentPage != page - 1) {
-                                value.currentPage = page - 1;
-                                // value.onPageSelected(page - 1);
-                              }
-                            },
-                          ),
+
                         ],
                       ),
                     ),

@@ -319,7 +319,6 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                           child: ClientUserListTable(userlist: clientList),
                         ),
 
-                        // Footer with Pagination
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(

@@ -9,6 +9,7 @@ import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../controller/project/vacancy_controller.dart';
 import '../../../../model/app_configs/config_list_model.dart';
 import '../../../widgets/custom_multi_selection_dropdown_field.dart';
+import '../../../widgets/custom_toast.dart';
 
 class CreateEditVacancyPopup extends StatefulWidget {
   final bool isEditMode;
@@ -36,6 +37,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   List<String> qualification = [];
   String clients = '';
   String projectList = '';
+  String projectId = '';
   late final   dropdownItems;
   late final countryDropdownItems;
   late TabController _tabController;
@@ -362,22 +364,46 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
 
                                                           Consumer<ProjectProvider>(
                                                             builder: (context, provider, child) {
-                                                              return CustomDropdownField(
+
+                                                              return CustomDropdownField(isSplit: true,
                                                                 label: "Project",
                                                                 value: projectList,
-                                                                items: provider.projects
+                                                                items: (provider.projects
                                                                     .where((project) => project.projectName != null && project.projectName!.isNotEmpty)
-                                                                    .map((project) => project.projectName!)
-                                                                    .toList(),
+                                                                    .map((project) => '${project.projectName},${project.sId}'??'')
+                                                                    .toList()),
 
                                                                 onChanged: (value) {
                                                                   setState(() {
+
                                                                     projectList = value??'';
+                                                                    projectId = value?.split(',').last??'';
+
                                                                   });
                                                                 },
                                                               );
                                                             },
                                                           ),
+                                                          // Consumer<ProjectProvider>(
+                                                          //   builder: (context, provider, child) {
+                                                          //     return DropdownButtonFormField<String>(
+                                                          //       decoration: const InputDecoration(labelText: 'Project'),
+                                                          //       value: projectId.isNotEmpty ? projectId : null,
+                                                          //       items: provider.projects
+                                                          //           .where((project) => project.projectName != null && project.projectName!.isNotEmpty)
+                                                          //           .map((project) => DropdownMenuItem(
+                                                          //         value: project.sId,
+                                                          //         child: Text(project.projectName!),
+                                                          //       ))
+                                                          //           .toList(),
+                                                          //       onChanged: (value) {
+                                                          //         setState(() {
+                                                          //           projectId = value ?? '';
+                                                          //         });
+                                                          //       },
+                                                          //     );
+                                                          //   },
+                                                          // ),
 
                                                           CustomTextFormField(
                                                             label: 'Job Title',
@@ -620,54 +646,11 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                         ),
                                         onPressed: () async{
                                           final vacancyProvider =
-                                              Provider.of<VacancyProvider>(
+                                              Provider.of<ProjectProvider>(
                                                   context,listen: false);
-                                              // final Map<String, dynamic>
-                                              //     vacancyData = {
-                                              //   "project_id":
-                                              //       projectList,
-                                              //   "job_title":
-                                              //       _jobTitleController.text,
-                                              //   "job_category":
-                                              //       _jobVacancyController.text,
-                                              //   "qualifications": qualification,
-                                              //   "experience":
-                                              //       _experienceController.text,
-                                              //   "skills":
-                                              //       _skillsController.text,
-                                              //   "salary_from":
-                                              //       _salaryFromController.text,
-                                              //   "salary_to":
-                                              //       _salaryToController.text,
-                                              //   "lastdatetoapply":
-                                              //       _lastDateToApplyController
-                                              //           .text,
-                                              //   "description":
-                                              //       _descriptionController.text,
-                                              //   "country":
-                                              //       _countryController,
-                                              //   "city": _cityController.text,
-                                              //   "clients": _selectedClients
-                                              //   // [
-                                              //   //   {
-                                              //   //     "client_id":
-                                              //   //         "6845792ba58675d87ef3ef82",
-                                              //   //     "commission": 100,
-                                              //   //     "vacancies": {
-                                              //   //       "OT": {
-                                              //   //         "count": 10,
-                                              //   //         "target_cv": 20
-                                              //   //       },
-                                              //   //       "GENERAL": {
-                                              //   //         "count": 100,
-                                              //   //         "target_cv": 250
-                                              //   //       }
-                                              //   //     }
-                                              //   //   }
-                                              //   // ]
-                                              // };
+
                                           final vacancyData = {
-                                            "project_id": projectList,
+                                            "project_id": projectId.trim(),
                                             "job_title": _jobTitleController.text,
                                             "job_category": _jobVacancyController.text,
                                             "qualifications": qualification,
@@ -1136,7 +1119,6 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
 
                   ),
                   const SizedBox(height: 16),
-                  // Add Specialization Button
                   CustomActionButton(
                     text: 'Add Specialization',
                     icon: Icons.add,
@@ -1158,9 +1140,12 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                             _targetCvController.clear();
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Specialization already added!')),
+                          CustomToast.showToast(
+                            context: context,
+                            message: "Already Added",
+                            backgroundColor: AppColors.greenSecondaryColor,  // Example using your color
                           );
+
                         }
                       }
                     },

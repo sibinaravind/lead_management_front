@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AppUserProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => VacancyProvider()),
+        // ChangeNotifierProvider(create: (_) => VacancyProvider()),
         ChangeNotifierProvider(
           create: (context) => ProjectProvider(),
         ),

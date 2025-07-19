@@ -2,117 +2,120 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/project_management_tab.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_gradient_button.dart';
 import '../../../widgets/custom_pager.dart';
 import '../../../widgets/custom_text.dart';
 
 class ProjectDetailsTab extends StatefulWidget {
-  const ProjectDetailsTab({super.key, this.project});
+  final ProjectModel project;
+  const ProjectDetailsTab({super.key, required this.project, });
 
   @override
   State<ProjectDetailsTab> createState() => _ProjectDetailsTabState();
-  final ProjectModel? project;
+  // final ProjectModel? project;
 }
 
 class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
   int _selectedTabIndex = 0;
 
-  final List<Map<String, dynamic>> _tabs = [
-    {
-      'icon': Icons.assessment,
-      'label': 'Project',
-      'widget': const ProjectTab(),
-      'completed': true,
-    },
-    {
-      'icon': Icons.account_tree,
-      'label': 'Client',
-      'widget': const ClientTab(),
-      'completed': true,
-    },
-    {
-      'icon': Icons.account_box,
-      'label': 'Matching',
-      'widget': MatchingTab(),
-      'completed': false,
-    },
-    {
-      'icon': Icons.list,
-      'label': 'Shortlist',
-      'widget': ShortlistTab(),
-      'completed': false,
-    },
-    {
-      'icon': Icons.account_circle_rounded,
-      'label': 'Interview',
-      'widget': InterviewTab(),
-      'completed': false,
-    },
-    // {
-    //   'icon': Icons.person_outline,
-    //   'label': 'Registration Personal',
-    //   'widget': const RegistrationPersonalTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.school_outlined,
-    //   'label': 'Academic',
-    //   'widget': const AcademicTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.language_outlined,
-    //   'label': 'Language Test',
-    //   'widget': const LanguageTestTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.work_outline,
-    //   'label': 'My Job Details',
-    //   'widget': const JobDetailsTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.flight_takeoff_outlined,
-    //   'label': 'Migration',
-    //   'widget': const MigrationTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.question_answer_outlined,
-    //   'label': 'Interview',
-    //   'widget': const InterviewTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.history_outlined,
-    //   'label': 'Travel History',
-    //   'widget': const TravelHistoryTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.description_outlined,
-    //   'label': 'Documents',
-    //   'widget': const DocumentsTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.verified_outlined,
-    //   'label': 'Verification Status',
-    //   'widget': const VerificationStatusTab(),
-    //   'completed': false,
-    // },
-    // {
-    //   'icon': Icons.app_registration_outlined,
-    //   'label': 'Application Status',
-    //   'widget': const ApplicationStatusTab(),
-    //   'completed': false,
-    // },
-  ];
+  late List<Map<String, dynamic>> _tabs=[];
 
   @override
   void initState() {
+    _tabs = [
+      {
+        'icon': Icons.assessment,
+        'label': 'Project',
+        'widget': ProjectTab(project: widget.project,),
+        'completed': true,
+      },
+      {
+        'icon': Icons.account_tree,
+        'label': 'Client',
+        'widget': const ClientTab(),
+        'completed': true,
+      },
+      {
+        'icon': Icons.account_box,
+        'label': 'Matching',
+        'widget': MatchingTab(),
+        'completed': false,
+      },
+      {
+        'icon': Icons.list,
+        'label': 'Shortlist',
+        'widget': ShortlistTab(),
+        'completed': false,
+      },
+      {
+        'icon': Icons.account_circle_rounded,
+        'label': 'Interview',
+        'widget': InterviewTab(),
+        'completed': false,
+      },
+      // {
+      //   'icon': Icons.person_outline,
+      //   'label': 'Registration Personal',
+      //   'widget': const RegistrationPersonalTab(),
+      //   'completed': true,
+      // },
+      // {
+      //   'icon': Icons.school_outlined,
+      //   'label': 'Academic',
+      //   'widget': const AcademicTab(),
+      //   'completed': true,
+      // },
+      // {
+      //   'icon': Icons.language_outlined,
+      //   'label': 'Language Test',
+      //   'widget': const LanguageTestTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.work_outline,
+      //   'label': 'My Job Details',
+      //   'widget': const JobDetailsTab(),
+      //   'completed': true,
+      // },
+      // {
+      //   'icon': Icons.flight_takeoff_outlined,
+      //   'label': 'Migration',
+      //   'widget': const MigrationTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.question_answer_outlined,
+      //   'label': 'Interview',
+      //   'widget': const InterviewTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.history_outlined,
+      //   'label': 'Travel History',
+      //   'widget': const TravelHistoryTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.description_outlined,
+      //   'label': 'Documents',
+      //   'widget': const DocumentsTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.verified_outlined,
+      //   'label': 'Verification Status',
+      //   'widget': const VerificationStatusTab(),
+      //   'completed': false,
+      // },
+      // {
+      //   'icon': Icons.app_registration_outlined,
+      //   'label': 'Application Status',
+      //   'widget': const ApplicationStatusTab(),
+      //   'completed': false,
+      // },
+    ];
     // TODO: implement initState
     super.initState();
   }
@@ -199,8 +202,8 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const CustomText(
-                                  text: 'Saudi MOH',
+                                CustomText(
+                                  text: widget.project.projectName ?? '',
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textWhiteColour,
@@ -209,7 +212,12 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
                                   text: 'Edit Project',
                                   gradientColors: AppColors.redGradient,
                                   onPressed: () {
-                                    // Handle view profile action
+
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) =>Dialog(child: ProjectManagementTab( isEditMode: true, project: widget.project,) ,)
+
+                                   );
                                   },
                                 ),
                               ],
@@ -222,12 +230,12 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
                                 children: [
                                   _buildInfoChip(
                                       Icons.date_range,
-                                      'Deadline: 29 July 25',
+                                      'Deadline: ${widget.project.createdAt}',
                                       AppColors.blueSecondaryColor),
-                                  _buildInfoChip(
-                                      Icons.numbers,
-                                      'No of vacancies: 20',
-                                      AppColors.greenSecondaryColor),
+                                  // _buildInfoChip(
+                                  //     Icons.numbers,
+                                  //     'No of vacancies:${widget.project}',
+                                  //     AppColors.greenSecondaryColor),
                                 ],
                               ),
                             ),
@@ -384,10 +392,11 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
   }
 }
 
-// Enhanced Tab Widgets with detailed content
 
 class ProjectTab extends StatelessWidget {
-  const ProjectTab({super.key});
+  final ProjectModel project;
+
+  const ProjectTab({super.key, required this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -397,15 +406,15 @@ class ProjectTab extends StatelessWidget {
         _buildSectionHeader('Project Information', Icons.assignment_outlined),
         const SizedBox(height: 16),
         _buildDetailCard([
-          _buildDetailRow('Organization', 'Saudi MOH'),
-          _buildDetailRow('Job Posititon', 'Doctor'),
-          _buildDetailRow('Job Field', 'Medical',
+          _buildDetailRow('Organization', project.projectName??''),
+          _buildDetailRow('Organization Type', project.organizationType??''),
+          _buildDetailRow('Organization Category', project.organizationCategory??'',
               color: AppColors.redSecondaryColor),
-          _buildDetailRow('Qualification', 'Degree'),
-          _buildDetailRow('No of vacancies', '10'),
-          _buildDetailRow('CV Target', '10'),
-          _buildDetailRow('Deadline', '28 July 2025',
-              color: AppColors.greenSecondaryColor),
+          _buildDetailRow('Organization Name', project.organizationName??''),
+          _buildDetailRow('Country', project.country??'',color: AppColors.greenSecondaryColor),
+          _buildDetailRow('City', project.city??''),
+          // _buildDetailRow('Deadline', '28 July 2025',
+          //     color: AppColors.greenSecondaryColor),
           // _buildDetailRow('Priority', 'High',
           //     color: AppColors.orangeSecondaryColor),
         ]),

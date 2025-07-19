@@ -33,7 +33,9 @@ class Constant {
   String updateClient = "project/clientUpdate";
 
   String projectList = "project/projectList";
-  String addProject = "project/clientProject";
+  String addProject = "project/createProject";
+  String deleteProject = "project/deleteProject";
+  String editProject = "project/projectUpdate";
 
   String callEventList = "customer/customercall";
 

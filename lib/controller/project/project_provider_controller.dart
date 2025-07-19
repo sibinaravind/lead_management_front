@@ -121,12 +121,12 @@ class ProjectProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String? responseId;
 
   List<ClientModel> _clients = [];
   List<ClientModel> filteredClients = [];
   List<ProjectModel> projects = [];
-  List<ProjectModel> callEvents = [];
-
+  List<ProjectModel> filterProjects = [];
   List<VacancyModel> vacancies = [];
 
   List<ClientModel> get clients => _clients;
@@ -238,6 +238,80 @@ class ProjectProvider extends ChangeNotifier {
   //   }
   // }
 
+  Future<void> createVacancy(Map<String, dynamic> vacancyData) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.post(
+        Constant().createVacancy,
+        vacancyData,
+      );
+
+      if (response.data['data'] != null && response.data['success'] == true) {
+        fetchVacancies();
+        print('Vacancy created successfully');
+        responseId = response.data['data']['_id'];
+      } else {
+        responseId = null;
+      }
+    } catch (e) {
+      print('Error creating vacancy: $e');
+      responseId = null;
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> editVacancy(
+      String vacancyId, Map<String, dynamic> updatedData) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.patch(
+        '${Constant().editVacancy}/$vacancyId',
+        updatedData,
+      );
+
+      if (response.data['success'] == true) {
+        fetchVacancies();
+        print('Vacancy updated successfully');
+      } else {
+        print('Failed to update vacancy');
+      }
+    } catch (e) {
+      print('Error editing vacancy: $e');
+    }
+
+    _isLoading = false;
+
+    notifyListeners();
+  }
+
+  Future<void> deleteVacancy(String vacancyId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _apiService
+          .delete('${Constant().deleteVacancy}/$vacancyId', {});
+
+      if (response.data['success'] == true) {
+        print('Vacancy deleted successfully');
+        vacancies.removeWhere((vacancy) => vacancy.sId == vacancyId);
+      } else {
+        print('Failed to delete vacancy');
+      }
+    } catch (e) {
+      print('Error deleting vacancy: $e');
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> fetchProjects() async {
     _isLoading = true;
     notifyListeners();
@@ -247,6 +321,7 @@ class ProjectProvider extends ChangeNotifier {
       if (response['success']) {
         projects =
             List.from(response['data'].map((e) => ProjectModel.fromJson(e)));
+        filterProjects = projects;
       } else {
         throw Exception("Failed to load projects");
       }
@@ -299,7 +374,46 @@ class ProjectProvider extends ChangeNotifier {
         "city": city,
         "country": country,
       });
+      fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
+
+      return response['success'] == true;
+    } catch (e) {
+      _error = 'Failed to load permissions: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      fetchProjects();
+      notifyListeners();
+    }
+  }
+
+  Future<bool> editProject({
+    required String projectId,
+    required String projectName,
+    required String organizationType,
+    required String organizationCategory,
+    required String organizationName,
+    required String city,
+    required String country,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response =
+          await _apiService.patch('${Constant().editProject}/$projectId', {
+        "project_name": projectName,
+        "organization_type": organizationType,
+        "organization_category": organizationCategory,
+        "organization_name": organizationName,
+        "city": city,
+        "country": country,
+      });
+      fetchProjects();
+      // _campaignModel = CampaignModel.fromJson(response.data);
+
       return response['success'] == true;
     } catch (e) {
       _error = 'Failed to load permissions: $e';
@@ -334,6 +448,30 @@ class ProjectProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future deleteProject(String projectId, BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiService
+          .delete("${Constant().deleteProject}/$projectId", {});
+      if (response["success"] == true) {
+        fetchProjects();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("deleted successfully")),
+        );
+        return true;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Deletion failed')),
+        );
+        return false;
+      }
+    } catch (ex) {
+      throw Exception(ex);
     }
   }
 
@@ -411,6 +549,25 @@ class ProjectProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void searchProjects(String query) {
+    if (query.isEmpty) {
+      filterProjects = projects;
+    } else {
+      final q = query.toLowerCase();
+
+      filterProjects = projects.where((project) {
+        return (project.projectName?.toLowerCase().contains(q) ?? false) ||
+            (project.organizationName?.toLowerCase().contains(q) ?? false) ||
+            (project.organizationType?.toLowerCase().contains(q) ?? false) ||
+            (project.organizationCategory?.toLowerCase().contains(q) ??
+                false) ||
+            (project.city?.toLowerCase().contains(q) ?? false) ||
+            (project.country?.toLowerCase().contains(q) ?? false);
+      }).toList();
+    }
+    notifyListeners();
   }
 
   void searchClients(String query) {

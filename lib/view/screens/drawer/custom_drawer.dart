@@ -81,7 +81,7 @@ class _CustomDrawerState extends State<CustomDrawer>
       items: [
         DrawerItem(
             label: 'Lead', index: 1, icon: Icons.follow_the_signs_rounded),
-        DrawerItem(label: 'Repeat Lead', index: 2, icon: Icons.repeat_rounded),
+        // DrawerItem(label: 'Repeat Lead', index: 2, icon: Icons.repeat_rounded),
         // DrawerItem(label: 'Deadline', index: 35, icon: Icons.call),
         DrawerItem(
             label: 'CRE Followup',
@@ -116,14 +116,14 @@ class _CustomDrawerState extends State<CustomDrawer>
       color: AppColors.viloletSecondaryColor, // Violet 500
       items: [
         DrawerItem(label: 'Projects', index: 7, icon: Icons.folder_outlined),
-        DrawerItem(
-            label: 'Interview',
-            index: 8,
-            icon: Icons.record_voice_over_rounded),
-        DrawerItem(
-            label: 'Closed Projects',
-            index: 34,
-            icon: Icons.assignment_late_rounded),
+        // DrawerItem(
+        //     label: 'Interview',
+        //     index: 8,
+        //     icon: Icons.record_voice_over_rounded),
+        // DrawerItem(
+        //     label: 'Closed Projects',
+        //     index: 34,
+        //     icon: Icons.assignment_late_rounded),
         DrawerItem(
             label: 'Client', index: 31, icon: Icons.account_circle_outlined),
         DrawerItem(

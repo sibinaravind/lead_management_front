@@ -6,7 +6,7 @@ import 'package:overseas_front_end/model/project/vacancy_model.dart';
 class AffiniksFields {
   List<Map<String, dynamic>> clientTableList() {
     return [
-      {'name': 'ID', 'extractor': (ClientModel user) => user.sId.toString()},
+      // {'name': 'ID', 'extractor': (ClientModel user) => user..toString()},
       {
         'name': 'Client Name',
         'extractor': (ClientModel user) => user.name.toString()
@@ -46,7 +46,7 @@ class AffiniksFields {
 
   List<Map<String, dynamic>> projectTableList() {
     return [
-      {'name': 'ID', 'extractor': (ProjectModel user) => user.sId.toString()},
+      // {'name': 'ID', 'extractor': (ProjectModel user) => user.sId.toString()},
       {
         'name': 'Project Name',
         'extractor': (ProjectModel user) => user.projectName.toString()
@@ -63,6 +63,9 @@ class AffiniksFields {
       {
         'name': 'Organization Name',
         'extractor': (ProjectModel user) => user.organizationName.toString()
+      },{
+        'name': 'Organization Type',
+        'extractor': (ProjectModel user) => user.organizationType.toString()
       },
       {
         'name': 'Created At',
@@ -80,13 +83,13 @@ class AffiniksFields {
         'name': 'Country',
         'extractor': (ProjectModel user) => user.country.toString()
       },
-      // {'name': 'Action', 'extractor': (ProjectModel user) => user},
+      {'name': 'Action', 'extractor': (ProjectModel user) => user},
     ];
   }
 
   List<Map<String, dynamic>> vacancyTableList() {
     return [
-      {'name': 'ID', 'extractor': (VacancyModel user) => user.sId.toString()},
+      // {'name': 'ID', 'extractor': (VacancyModel user) => user.sId.toString()},
       {
         'name': 'Job Title',
         'extractor': (VacancyModel user) => user.jobTitle.toString()

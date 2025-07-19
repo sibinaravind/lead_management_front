@@ -25,6 +25,7 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
   @override
   void initState() {
     Provider.of<ProjectProvider>(context, listen: false).fetchVacancies();
+    Provider.of<ProjectProvider>(context,listen: false).fetchClients();
     // TODO: implement initState
     super.initState();
   }
