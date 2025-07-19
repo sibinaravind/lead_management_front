@@ -77,8 +77,8 @@ class ProjectUserListTable extends StatelessWidget {
                                           return CustomText(
                                             text: value,
                                             fontSize: 14,
-                                            fontWeight: FontWeight.normal,
-                                            color: AppColors.textColor,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.orangeSecondaryColor,
                                           );
                                         case 'ID':
                                           return CustomText(

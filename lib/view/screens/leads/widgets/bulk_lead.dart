@@ -325,6 +325,7 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                                                     .infinity,
                                                                 child:
                                                                     CustomMultiSelectDropdownField(
+                                                                      isSplit: true,
                                                                   label:
                                                                       'Select Officers',
                                                                   selectedItems:

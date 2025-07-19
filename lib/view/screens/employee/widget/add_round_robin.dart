@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
 import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +20,15 @@ class AddRoundRobinDialog extends StatefulWidget {
 }
 
 class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
+  @override
+  void initState() {
+    Provider.of<ConfigProvider>(context, listen: false).fetchConfigData();
+    Provider.of<OfficersControllerProvider>(context, listen: false)
+        .fetchOfficersList();
+    // TODO: implement initState
+    super.initState();
+  }
+
   final TextEditingController _nameController = TextEditingController();
   String _selectedCountry = 'GCC';
   List<String> _selectedOfficerIds = [];
@@ -36,7 +47,10 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CustomText(text: 'Add Round Robin', fontWeight: FontWeight.bold, fontSize: 18),
+            const CustomText(
+                text: 'Add Round Robin',
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
             const SizedBox(height: 16),
             CustomTextFormField(
               controller: _nameController,
@@ -44,37 +58,29 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
               isRequired: true,
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Country',
-                border: OutlineInputBorder(),
-              ),
-              value: _selectedCountry,
-
-              /// static ------------------------------
-              items: ['GCC', 'INDIA', 'EUROPE']
-                  .map((country) => DropdownMenuItem(
-                value: country,
-                child: Text(country),
-              ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedCountry = value;
+            Consumer<ConfigProvider>(builder: (context, country, child) {
+              return CustomDropdownField(
+                  label: "Country",
+                  value: _selectedCountry,
+                  items: country.configModelList?.country
+                          ?.map((e) => e.name ?? '')
+                          .toList() ??
+                      [],
+                  onChanged: (value) {
+                    _selectedCountry = value ?? '';
                   });
-                }
-              },
-            ),
+            }),
             const SizedBox(height: 16),
             Consumer<OfficersControllerProvider>(
               builder: (context, officers, child) {
                 return CustomMultiSelectDropdownField(
+                  isSplit: true,
                   label: 'Add Officers',
                   selectedItems: _selectedOfficerIds,
-                  items: officers.officersListModel!
-                      .map((e) => "${e.name},${e.id}")
-                      .toList(),
+                  items: officers.officersListModel
+                          ?.map((e) => "${e.name},${e.id}")
+                          .toList() ??
+                      [],
                   onChanged: (selectedIds) {
                     setState(() {
                       _selectedOfficerIds = selectedIds;
@@ -106,7 +112,8 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                         onPressed: () async {
                           final name = _nameController.text.trim();
                           if (name.isEmpty) {
-                            SnackBar(content: Text( 'Please enter round robin name'));
+                            SnackBar(
+                                content: Text('Please enter round robin name'));
 
                             return;
                           }
@@ -116,12 +123,13 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                             officerIds: _selectedOfficerIds,
                           );
                           if (result) {
-                            SnackBar(content: Text( 'Round Robin Created Successfully'));
+                            SnackBar(
+                                content:
+                                    Text('Round Robin Created Successfully'));
 
                             if (context.mounted) Navigator.pop(context);
                           } else {
-                            SnackBar(content: Text( 'Failed to create'));
-
+                            SnackBar(content: Text('Failed to create'));
                           }
                         },
                         isFilled: true,

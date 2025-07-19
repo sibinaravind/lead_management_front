@@ -139,9 +139,6 @@
 // }
 
 
-
-
-
 import 'package:flutter/cupertino.dart';
 
 import '../../core/services/api_service.dart';
@@ -255,6 +252,44 @@ class AccessPermissionProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  // Future<bool> addAccessPermission({
+  //   required String category,
+  //   required Map<String, bool> value,
+  // }) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     final data = {
+  //       "category": category,
+  //       "value": value,
+  //     };
+  //
+  //
+  //     print(data);
+  //     final response = await apiService.post(
+  //       Constant().accessPermissionsAdd,
+  //       data,
+  //     );
+  //
+  //     if (response['success'] == true) {
+  //       // Refresh the permissions list after successful insertion
+  //       await fetchAccessPermissions();
+  //       return true;
+  //     } else {
+  //
+  //       _error = response['message'] ?? 'Failed to add permission.';
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     _error = 'Failed to add permission: $e';
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+
   Future<bool> addAccessPermission({
     required String category,
     required Map<String, bool> value,
@@ -268,19 +303,19 @@ class AccessPermissionProvider with ChangeNotifier {
         "value": value,
       };
 
-
-      print(data);
       final response = await apiService.post(
         Constant().accessPermissionsAdd,
         data,
       );
 
       if (response['success'] == true) {
-        // Refresh the permissions list after successful insertion
-        await fetchAccessPermissions();
+        _permissions.add(EmployeePermissionModel(
+          category: category,
+          value: value,
+        ));
+        notifyListeners();
         return true;
       } else {
-
         _error = response['message'] ?? 'Failed to add permission.';
         return false;
       }
@@ -292,6 +327,7 @@ class AccessPermissionProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
 
 
   EmployeePermissionModel? getPermissionByCategory(String category) {

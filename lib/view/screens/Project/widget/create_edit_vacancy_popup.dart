@@ -38,7 +38,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   String clients = '';
   String projectList = '';
   String projectId = '';
-  late final   dropdownItems;
+  late final dropdownItems;
   late final countryDropdownItems;
   late TabController _tabController;
   bool _isActive = true;
@@ -52,28 +52,27 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   String specializedSelection = '';
   @override
   void initState() {
-
-
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    Provider.of<ProjectProvider>(context, listen: false).fetchClients();
   }
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
       final configListModel = Provider.of<ConfigProvider?>(context);
-      final qualificationList = configListModel?.configModelList?.qualification ?? [];
-      dropdownItems = qualificationList
-          .map((item) => "${item.name},${item.id}")
-          .toList();
+      final qualificationList =
+          configListModel?.configModelList?.qualification ?? [];
+      dropdownItems =
+          qualificationList.map((item) => "${item.name},${item.id}").toList();
 
       final countryList = configListModel?.configModelList?.country ?? [];
-      countryDropdownItems = countryList
-          .map((item) => item.name ?? '')
-          .toList();
-      final specializationList = configListModel?.configModelList?.specialized ?? [];
-      specializationDropdownItems = specializationList.map((item) => item.name ?? '').toList();
-
-
+      countryDropdownItems =
+          countryList.map((item) => item.name ?? '').toList();
+      final specializationList =
+          configListModel?.configModelList?.specialized ?? [];
+      specializationDropdownItems =
+          specializationList.map((item) => item.name ?? '').toList();
     }
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
@@ -350,40 +349,71 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                   availableWidth > 1000 ? 3 : 2;
                                               return SingleChildScrollView(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Column(
                                                     children: [
                                                       const SectionTitle(
                                                         title: 'Job Details',
-                                                        icon: Icons.info_outline_rounded,
+                                                        icon: Icons
+                                                            .info_outline_rounded,
                                                       ),
-                                                      const SizedBox(height: 16),
+                                                      const SizedBox(
+                                                          height: 16),
+                                                      ResponsiveGrid(
+                                                          columns: columnsCount,
+                                                          children: [
+                                                            Consumer<
+                                                                ProjectProvider>(
+                                                              builder: (context,
+                                                                  provider,
+                                                                  child) {
+                                                                return CustomDropdownField(
+                                                                  isSplit: true,
+                                                                  label:
+                                                                      "Project",
+                                                                  value:
+                                                                      projectList,
+                                                                  items: (provider
+                                                                      .projects
+                                                                      .where((project) =>
+                                                                          project.projectName !=
+                                                                              null &&
+                                                                          project
+                                                                              .projectName!
+                                                                              .isNotEmpty)
+                                                                      .map((project) =>
+                                                                          '${project.projectName},${project.sId}' ??
+                                                                          '')
+                                                                      .toList()),
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      projectList =
+                                                                          value ??
+                                                                              '';
+                                                                      projectId =
+                                                                          value?.split(',').last ??
+                                                                              '';
+                                                                    });
+                                                                  },
+                                                                );
+                                                              },
+                                                            ),
+                                                          ]),
+                                                      const SizedBox(
+                                                          height: 16),
+                                                      const SectionTitle(
+                                                        title: 'Job Details',
+                                                        icon: Icons
+                                                            .info_outline_rounded,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 16),
                                                       ResponsiveGrid(
                                                         columns: columnsCount,
                                                         children: [
-
-                                                          Consumer<ProjectProvider>(
-                                                            builder: (context, provider, child) {
-
-                                                              return CustomDropdownField(isSplit: true,
-                                                                label: "Project",
-                                                                value: projectList,
-                                                                items: (provider.projects
-                                                                    .where((project) => project.projectName != null && project.projectName!.isNotEmpty)
-                                                                    .map((project) => '${project.projectName},${project.sId}'??'')
-                                                                    .toList()),
-
-                                                                onChanged: (value) {
-                                                                  setState(() {
-
-                                                                    projectList = value??'';
-                                                                    projectId = value?.split(',').last??'';
-
-                                                                  });
-                                                                },
-                                                              );
-                                                            },
-                                                          ),
                                                           // Consumer<ProjectProvider>(
                                                           //   builder: (context, provider, child) {
                                                           //     return DropdownButtonFormField<String>(
@@ -407,14 +437,17 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
 
                                                           CustomTextFormField(
                                                             label: 'Job Title',
-                                                            controller: _jobTitleController,
+                                                            controller:
+                                                                _jobTitleController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: true,
                                                           ),
                                                           CustomTextFormField(
-                                                            label: 'Job category',
-                                                            controller: _jobVacancyController,
+                                                            label:
+                                                                'Job category',
+                                                            controller:
+                                                                _jobVacancyController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: true,
@@ -422,41 +455,52 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                           // CustomMultiSelectDropdownField(label: "Qualification", selectedItems: qualification, items: dropdownItems, onChanged: (value){}),
 
                                                           CustomMultiSelectDropdownField(
-                                                            label: "Qualification",
-                                                            selectedItems: qualification,
-                                                            items: dropdownItems,                   // From mapped items
-                                                            onChanged: (selectedIds) {
+                                                            label:
+                                                                "Qualification",
+                                                            selectedItems:
+                                                                qualification,
+                                                            items:
+                                                                dropdownItems, // From mapped items
+                                                            onChanged:
+                                                                (selectedIds) {
                                                               setState(() {
                                                                 qualification = dropdownItems
-                                                                    .where((item) => selectedIds.contains(item.split(",")[1]))
+                                                                    .where((item) =>
+                                                                        selectedIds
+                                                                            .contains(item.split(",")[1]))
                                                                     .toList();
                                                               });
                                                             },
                                                           ),
                                                           CustomTextFormField(
                                                             label: 'Experience',
-                                                            controller:_experienceController,
+                                                            controller:
+                                                                _experienceController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: false,
                                                           ),
                                                           CustomTextFormField(
                                                             label: 'Skills',
-                                                            controller: _skillsController,
+                                                            controller:
+                                                                _skillsController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: false,
                                                           ),
                                                           CustomTextFormField(
-                                                            label: 'Salary From',
-                                                            controller:_salaryFromController,
+                                                            label:
+                                                                'Salary From',
+                                                            controller:
+                                                                _salaryFromController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: false,
                                                           ),
                                                           CustomTextFormField(
                                                             label: 'Salary To',
-                                                            controller: _salaryToController,
+                                                            controller:
+                                                                _salaryToController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: false,
@@ -469,37 +513,53 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                           //   isRequired: false,
                                                           // ),
                                                           CustomDateField(
-                                                              label: "Last Date To Apply",
-                                                              controller: _lastDateToApplyController),
+                                                              label:
+                                                                  "Last Date To Apply",
+                                                              controller:
+                                                                  _lastDateToApplyController),
                                                           CustomTextFormField(
-                                                            label: 'Description',
-                                                            controller: _descriptionController,
+                                                            label:
+                                                                'Description',
+                                                            controller:
+                                                                _descriptionController,
                                                             isdate: false,
                                                             readOnly: false,
                                                             isRequired: false,
                                                           ),
                                                         ],
                                                       ),
-                                                      const SizedBox(height: 16),
+                                                      const SizedBox(
+                                                          height: 16),
                                                       const SectionTitle(
-                                                        title: 'Country Details',
-                                                        icon: Icons.info_outline_rounded,
+                                                        title:
+                                                            'Country Details',
+                                                        icon: Icons
+                                                            .info_outline_rounded,
                                                       ),
-                                                      ResponsiveGrid(columns: columnsCount, children: [
-                                                        CustomDropdownField(
-                                                          label: "Country",
-                                                          value: _countryController,  // Example: "123"
-                                                          items: countryDropdownItems,
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              _countryController = value!;
-                                                            });
-                                                          },
-                                                        ),
-
-                                                        CustomTextFormField(label: "City", controller: _cityController),
-                                                        const SizedBox(height: 16),
-                                                      ]),
+                                                      ResponsiveGrid(
+                                                          columns: columnsCount,
+                                                          children: [
+                                                            CustomDropdownField(
+                                                              label: "Country",
+                                                              value:
+                                                                  _countryController, // Example: "123"
+                                                              items:
+                                                                  countryDropdownItems,
+                                                              onChanged:
+                                                                  (value) {
+                                                                setState(() {
+                                                                  _countryController =
+                                                                      value!;
+                                                                });
+                                                              },
+                                                            ),
+                                                            CustomTextFormField(
+                                                                label: "City",
+                                                                controller:
+                                                                    _cityController),
+                                                            const SizedBox(
+                                                                height: 16),
+                                                          ]),
                                                     ],
                                                   ),
                                                 ),
@@ -516,11 +576,13 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                         Container(
                                           padding: const EdgeInsets.all(16),
                                           decoration: const BoxDecoration(
-                                            gradient: AppColors.buttonGraidentColour,
+                                            gradient:
+                                                AppColors.buttonGraidentColour,
                                           ),
                                           child: Row(
                                             children: [
-                                              const Icon(Icons.people, color: Colors.white),
+                                              const Icon(Icons.people,
+                                                  color: Colors.white),
                                               const SizedBox(width: 8),
                                               const CustomText(
                                                 text: 'Client Management',
@@ -532,10 +594,12 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                               ElevatedButton.icon(
                                                 onPressed: _showAddClientDialog,
                                                 icon: const Icon(Icons.add),
-                                                label: const CustomText(text: 'Add Client'),
+                                                label: const CustomText(
+                                                    text: 'Add Client'),
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.white,
-                                                  foregroundColor: Colors.blue.shade600,
+                                                  foregroundColor:
+                                                      Colors.blue.shade600,
                                                 ),
                                               ),
                                             ],
@@ -546,47 +610,77 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                           Padding(
                                             padding: const EdgeInsets.all(16.0),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   'Selected Clients',
-                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18),
                                                 ),
                                                 const SizedBox(height: 8),
                                                 ListView.builder(
                                                   shrinkWrap: true,
-                                                  physics: const NeverScrollableScrollPhysics(),
-                                                  itemCount: _selectedClients.length,
-                                                  itemBuilder: (context, index) {
-                                                    final client = _selectedClients[index];
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemCount:
+                                                      _selectedClients.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    final client =
+                                                        _selectedClients[index];
                                                     return Card(
-                                                      margin: const EdgeInsets.only(bottom: 8),
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 8),
                                                       child: ListTile(
-                                                        title: Consumer<ProjectProvider>(
-                                                          builder: (context, projectProvider, child) {
-                                                            final clientData = projectProvider.clients.firstWhere(
-                                                                  (c) => c.sId == client['client_id'],
-
+                                                        title: Consumer<
+                                                            ProjectProvider>(
+                                                          builder: (context,
+                                                              projectProvider,
+                                                              child) {
+                                                            final clientData =
+                                                                projectProvider
+                                                                    .clients
+                                                                    .firstWhere(
+                                                              (c) =>
+                                                                  c.sId ==
+                                                                  client[
+                                                                      'client_id'],
                                                             );
 
-                                                            return Text('Client Name: ${clientData.name ?? ""}');
+                                                            return Text(
+                                                                'Client Name: ${clientData.name ?? ""}');
                                                           },
                                                         ),
-
                                                         subtitle: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Text('Commission: ${client['commission']?.toString() ?? ""}'),
-                                                            const SizedBox(height: 4),
-                                                            ...client['vacancies'].entries.map((e) => Text(
-                                                                '${e.key} - Vacancies: ${e.value['count'] ?? ""}, Target CV: ${e.value['target_cv'] ?? ""}')),
+                                                            Text(
+                                                                'Commission: ${client['commission']?.toString() ?? ""}'),
+                                                            const SizedBox(
+                                                                height: 4),
+                                                            ...client[
+                                                                    'vacancies']
+                                                                .entries
+                                                                .map((e) => Text(
+                                                                    '${e.key} - Vacancies: ${e.value['count'] ?? ""}, Target CV: ${e.value['target_cv'] ?? ""}')),
                                                           ],
                                                         ),
                                                         trailing: IconButton(
-                                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                                          icon: const Icon(
+                                                              Icons.delete,
+                                                              color:
+                                                                  Colors.red),
                                                           onPressed: () {
                                                             setState(() {
-                                                              _selectedClients.removeAt(index);
+                                                              _selectedClients
+                                                                  .removeAt(
+                                                                      index);
                                                             });
                                                           },
                                                         ),
@@ -600,11 +694,16 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                         if (_selectedClients.isEmpty)
                                           const Center(
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                                                Icon(Icons.people_outline,
+                                                    size: 64,
+                                                    color: Colors.grey),
                                                 SizedBox(height: 16),
-                                                CustomText(text: 'No clients assigned'),
+                                                CustomText(
+                                                    text:
+                                                        'No clients assigned'),
                                               ],
                                             ),
                                           ),
@@ -644,47 +743,60 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                             Color(0xFFE100FF)
                                           ],
                                         ),
-                                        onPressed: () async{
+                                        onPressed: () async {
+                                        if(_selectedClients.isEmpty){
+                                          return CustomSnackBar.show(context, "No Client Selected");
+                                        }else{
                                           final vacancyProvider =
-                                              Provider.of<ProjectProvider>(
-                                                  context,listen: false);
+                                          Provider.of<ProjectProvider>(
+                                              context,
+                                              listen: false);
 
                                           final vacancyData = {
                                             "project_id": projectId.trim(),
-                                            "job_title": _jobTitleController.text,
-                                            "job_category": _jobVacancyController.text,
+                                            "job_title":
+                                            _jobTitleController.text,
+                                            "job_category":
+                                            _jobVacancyController.text,
                                             "qualifications": qualification,
-                                            "experience": _experienceController.text,
+                                            "experience":
+                                            _experienceController.text,
                                             "skills": _skillsController.text,
-                                            "salary_from": _salaryFromController.text,
-                                            "salary_to": _salaryToController.text,
-                                            "lastdatetoapply": _lastDateToApplyController.text,
-                                            "description": _descriptionController.text,
+                                            "salary_from":
+                                            _salaryFromController.text,
+                                            "salary_to":
+                                            _salaryToController.text,
+                                            "lastdatetoapply":
+                                            _lastDateToApplyController.text,
+                                            "description":
+                                            _descriptionController.text,
                                             "country": _countryController,
                                             "city": _cityController.text,
-                                            "clients": _selectedClients.map((client) {
+                                            "clients":
+                                            _selectedClients.map((client) {
                                               return {
-                                                "client_id": client['client_id'] ?? '',
-                                                "commission": client['commission'] ?? 0,
-                                                "vacancies": client['vacancies'] ?? {},
+                                                "client_id":
+                                                client['client_id'] ?? '',
+                                                "commission":
+                                                client['commission'] ?? 0,
+                                                "vacancies":
+                                                client['vacancies'] ?? {},
                                               };
                                             }).toList(),
                                           };
 
-
                                           await vacancyProvider
-                                                  .createVacancy(vacancyData);
+                                              .createVacancy(vacancyData);
 
-                                              if (vacancyProvider.responseId !=
-                                                  null) {
-                                                Navigator.pop(context);
-                                                print(
-                                                    'Vacancy Created Successfully: ${vacancyProvider.responseId}');
-                                              } else {
-                                                print(
-                                                    'Failed to create vacancy');
-                                              }
-
+                                          if (vacancyProvider.responseId !=
+                                              null) {
+                                            Navigator.pop(context);
+                                            print(
+                                                'Vacancy Created Successfully: ${vacancyProvider.responseId}');
+                                          } else {
+                                            print('Failed to create vacancy');
+                                          }
+                                        }
                                         },
                                       ),
                                     ),
@@ -821,6 +933,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
       ),
     );
   }
+
   void _showAddClientDialog() {
     _searchController.clear();
 
@@ -830,11 +943,12 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
         builder: (context, value, child) {
           value.filteredClients = value.clients
               .where((client) => !_selectedClients
-              .any((selected) => selected['client_id'] == client.sId))
+                  .any((selected) => selected['client_id'] == client.sId))
               .toList();
           return StatefulBuilder(
             builder: (context, setDialogState) => Dialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.7,
                 height: MediaQuery.of(context).size.height * 0.8,
@@ -855,7 +969,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.person_add, color: Colors.white, size: 24),
+                          const Icon(Icons.person_add,
+                              color: Colors.white, size: 24),
                           const SizedBox(width: 12),
                           const CustomText(
                             text: 'Add Clients to Project',
@@ -879,17 +994,18 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                         controller: _searchController,
                         decoration: InputDecoration(
                           hintText: 'Search clients by name or email...',
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
                           suffixIcon: _searchController.text.isNotEmpty
                               ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              setDialogState(() {
-                                value.filteredClients = value.clients;
-                              });
-                            },
-                          )
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setDialogState(() {
+                                      value.filteredClients = value.clients;
+                                    });
+                                  },
+                                )
                               : null,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -897,7 +1013,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         onChanged: (query) {
                           setDialogState(() {
@@ -906,8 +1023,14 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                             }
                             value.filteredClients = value.clients
                                 .where((client) =>
-                            (client.name?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
-                                (client.email?.toLowerCase().contains(query.toLowerCase()) ?? false))
+                                    (client.name
+                                            ?.toLowerCase()
+                                            .contains(query.toLowerCase()) ??
+                                        false) ||
+                                    (client.email
+                                            ?.toLowerCase()
+                                            .contains(query.toLowerCase()) ??
+                                        false))
                                 .toList();
                           });
                         },
@@ -915,13 +1038,16 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                     ),
                     // Results Count
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
+                          Icon(Icons.info_outline,
+                              size: 16, color: Colors.grey.shade600),
                           const SizedBox(width: 8),
                           CustomText(
-                            text: '${value.filteredClients.length} clients available',
+                            text:
+                                '${value.filteredClients.length} clients available',
                             color: Colors.grey.shade600,
                             fontSize: 14,
                           ),
@@ -932,92 +1058,98 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                     Expanded(
                       child: value.filteredClients.isEmpty
                           ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 16),
-                            CustomText(
-                              text: _searchController.text.isEmpty
-                                  ? 'No clients available'
-                                  : 'No clients found matching "${_searchController.text}"',
-                              fontSize: 16,
-                              color: Colors.grey.shade600,
-                            ),
-                          ],
-                        ),
-                      )
-                          : ListView.separated(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: value.filteredClients.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final client = value.filteredClients[index];
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade200),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(16),
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.blue.shade100,
-                                child: CustomText(
-                                  text: client.name?[0].toUpperCase() ?? '',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue.shade700,
-                                ),
-                              ),
-                              title: CustomText(
-                                text: client.name ?? '',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              subtitle: CustomText(
-                                text: client.email ?? '',
-                                color: Colors.grey.shade600,
-                                fontSize: 14,
-                              ),
-                              trailing: Container(
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.greenGradient,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: ElevatedButton.icon(
-                                  onPressed: () => _showClientDetailsDialog(client.toJson()),
-                                  icon: const Icon(Icons.add, size: 18),
-                                  label: const CustomText(
-                                    text: 'Add',
-                                    color: Colors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 64,
+                                    color: Colors.grey.shade400,
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundColor: Colors.white,
-                                    shadowColor: Colors.transparent,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                  const SizedBox(height: 16),
+                                  CustomText(
+                                    text: _searchController.text.isEmpty
+                                        ? 'No clients available'
+                                        : 'No clients found matching "${_searchController.text}"',
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: value.filteredClients.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (context, index) {
+                                final client = value.filteredClients[index];
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border:
+                                        Border.all(color: Colors.grey.shade200),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.all(16),
+                                    leading: CircleAvatar(
+                                      backgroundColor: Colors.blue.shade100,
+                                      child: CustomText(
+                                        text:
+                                            client.name?[0].toUpperCase() ?? '',
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700,
+                                      ),
+                                    ),
+                                    title: CustomText(
+                                      text: client.name ?? '',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                    subtitle: CustomText(
+                                      text: client.email ?? '',
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                    trailing: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: AppColors.greenGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: ElevatedButton.icon(
+                                        onPressed: () =>
+                                            _showClientDetailsDialog(
+                                                client.toJson()),
+                                        icon: const Icon(Icons.add, size: 18),
+                                        label: const CustomText(
+                                          text: 'Add',
+                                          color: Colors.white,
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundColor: Colors.white,
+                                          shadowColor: Colors.transparent,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),
@@ -1040,7 +1172,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: 450,
             padding: const EdgeInsets.all(24),
@@ -1087,8 +1220,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                     controller: _commissionController,
                     label: 'Commission',
                     isRequired: false,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                   ),
                   const SizedBox(height: 16),
                   // Specialization Inputs
@@ -1108,7 +1241,6 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                     label: 'Number of Vacancies',
                     isRequired: false,
                     keyboardType: TextInputType.number,
-
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
@@ -1116,7 +1248,6 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                     label: 'Target CV',
                     isRequired: false,
                     keyboardType: TextInputType.number,
-
                   ),
                   const SizedBox(height: 16),
                   CustomActionButton(
@@ -1126,8 +1257,9 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                       if (specializedSelection.isNotEmpty &&
                           _vacancyController.text.isNotEmpty &&
                           _targetCvController.text.isNotEmpty) {
-                        bool alreadyAdded = addedSpecializations.any(
-                                (spec) => spec['name'].toString().toLowerCase() == specializedSelection.toLowerCase());
+                        bool alreadyAdded = addedSpecializations.any((spec) =>
+                            spec['name'].toString().toLowerCase() ==
+                            specializedSelection.toLowerCase());
                         if (!alreadyAdded) {
                           setDialogState(() {
                             addedSpecializations.add({
@@ -1143,9 +1275,9 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                           CustomToast.showToast(
                             context: context,
                             message: "Already Added",
-                            backgroundColor: AppColors.greenSecondaryColor,  // Example using your color
+                            backgroundColor: AppColors
+                                .greenSecondaryColor, // Example using your color
                           );
-
                         }
                       }
                     },
@@ -1159,17 +1291,19 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                       children: [
                         const Divider(),
                         ...addedSpecializations.map((spec) => ListTile(
-                          title: Text(spec['name']),
-                          subtitle: Text('Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              setDialogState(() {
-                                addedSpecializations.remove(spec);
-                              });
-                            },
-                          ),
-                        )),
+                              title: Text(spec['name']),
+                              subtitle: Text(
+                                  'Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
+                              trailing: IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  setDialogState(() {
+                                    addedSpecializations.remove(spec);
+                                  });
+                                },
+                              ),
+                            )),
                         const Divider(),
                       ],
                     ),
@@ -1193,28 +1327,28 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                           text: 'Add Client',
                           icon: Icons.check,
                           onPressed: () {
-
-                              if (addedSpecializations.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Please add at least one specialization')),
-                                );
-                                return;
-                              }
-                              final Map<String, dynamic> vacanciesMap = {
-                                for (var spec in addedSpecializations)
-                                  spec['name']: {
-                                    'count': spec['count'],
-                                    'target_cv': spec['target_cv'],
-                                  }
-                              };
-                              _addClientWithVacancies(
-                                client['sId'] ?? client['_id'] ?? '',
-                                double.parse(_commissionController.text),
-                                vacanciesMap,
+                            if (addedSpecializations.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Please add at least one specialization')),
                               );
-                              Navigator.pop(context);
-                              Navigator.pop(context); // Close both dialogs
-
+                              return;
+                            }
+                            final Map<String, dynamic> vacanciesMap = {
+                              for (var spec in addedSpecializations)
+                                spec['name']: {
+                                  'count': spec['count'],
+                                  'target_cv': spec['target_cv'],
+                                }
+                            };
+                            _addClientWithVacancies(
+                              client['sId'] ?? client['_id'] ?? '',
+                              double.parse(_commissionController.text),
+                              vacanciesMap,
+                            );
+                            Navigator.pop(context);
+                            Navigator.pop(context); // Close both dialogs
                           },
                           isFilled: true,
                           gradient: AppColors.orangeGradient,
@@ -1231,7 +1365,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
     );
   }
 
-  void _addClientWithVacancies(String clientId, double commission, Map<String, dynamic> vacancies) {
+  void _addClientWithVacancies(
+      String clientId, double commission, Map<String, dynamic> vacancies) {
     setState(() {
       _selectedClients.add({
         'client_id': clientId,
@@ -1250,9 +1385,12 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
       };
     }).toList();
   }
-  void _editClient(String clientId, double commission, Map<String, dynamic> vacancies) {
+
+  void _editClient(
+      String clientId, double commission, Map<String, dynamic> vacancies) {
     setState(() {
-      final index = _selectedClients.indexWhere((c) => c['client_id'] == clientId);
+      final index =
+          _selectedClients.indexWhere((c) => c['client_id'] == clientId);
       if (index != -1) {
         _selectedClients[index] = {
           'client_id': clientId,

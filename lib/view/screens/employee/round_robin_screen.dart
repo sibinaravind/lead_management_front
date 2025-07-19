@@ -9,6 +9,7 @@ import 'package:overseas_front_end/view/screens/employee/widget/add_officers.dar
 import 'package:overseas_front_end/view/screens/employee/widget/add_round_robin.dart';
 import 'package:overseas_front_end/view/screens/employee/widget/round_robin_officer_list.dart';
 import 'package:overseas_front_end/view/widgets/custom_button.dart';
+import 'package:overseas_front_end/view/widgets/custom_popup.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 
@@ -292,19 +293,49 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                       ],
                                     ),
                                   ),
-                                  ActionButton(
-                                    icon: Icons.add,
-                                    gradient: AppColors.buttonGraidentColour,
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => AddOfficerDialog(
-                                          roundRobinId: group.id,
+                                  Row(
+                                    spacing: 10,
+                                    children: [
+                                      ActionButton(
+                                        icon: Icons.delete,
+                                        gradient: AppColors.redGradient,
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) =>DeleteConfirmationDialog(title: "Delete", message: 'You want to delete', onConfirm: ()async{
 
-                                        ),
-                                      );
-                                    },
-                                    tooltip: 'Add New Item',
+                                              final success = await Provider.of<RoundRobinProvider>(context, listen: false).deleteRoundRobin(group.id??'');
+                                              if ( success) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Round robin deleted successfully')),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text( 'Delete failed')),
+                                                );
+                                              }
+
+
+                                            })
+                                          );
+                                        },
+                                        tooltip: 'Add New Item',
+                                      ),
+                                      ActionButton(
+                                        icon: Icons.add,
+                                        gradient: AppColors.buttonGraidentColour,
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AddOfficerDialog(
+                                              roundRobinId: group.id,
+
+                                            ),
+                                          );
+                                        },
+                                        tooltip: 'Add New Item',
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
