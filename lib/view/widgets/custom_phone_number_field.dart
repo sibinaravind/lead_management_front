@@ -90,22 +90,53 @@ class CustomPhoneField extends StatelessWidget {
                 fontSize: 14,
               ),
               keyboardType: TextInputType.phone,
-              validator: (value) {
-                if(isRequired){
-                  if (isRequired && (value == null || value.isEmpty)) {
-                    return 'This field is required';
-                  }
-                  if (value != null && !RegExp(r'^\d+$').hasMatch(value)) {
-                    return 'Only numbers are allowed';
-                  }
-                  if (value != null && (value.length < 10 || value.length > 13)) {
-                    return 'Phone number must be 10-13 digits';
-                  }
-                  return null;
-                }
-                return null;
+                  validator: (value) {
+                    if (isRequired) {
+                      if (value == null || value.isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (!RegExp(r'^\d+$').hasMatch(value)) {
+                        return 'Only numbers are allowed';
+                      }
+                      if (value.length < 10 || value.length > 13) {
+                        return 'Phone number must be 10-13 digits';
+                      }
+                      return null;
+                    } else {
+                      if (value != null && value.isNotEmpty) {
+                        if (!RegExp(r'^\d+$').hasMatch(value)) {
+                          return 'Only numbers are allowed';
+                        }
+                        if (value.length < 10 || value.length > 13) {
+                          return 'Phone number must be 10-13 digits';
+                        }
+                      }
+                      return null;
+                    }
+                  },
 
-              },
+                  // validator: (value) {
+              //   if (isRequired) {
+              //     if (isRequired && (value == null || value.isEmpty)) {
+              //       return 'This field is required';
+              //     }
+              //     if (value != null && !RegExp(r'^\d+$').hasMatch(value)) {
+              //       return 'Only numbers are allowed';
+              //     }
+              //     if (value != null &&
+              //         (value.length < 10 || value.length > 13)) {
+              //       return 'Phone number must be 10-13 digits';
+              //     }
+              //     return null;
+              //   } else {
+              //     if (value != null && value.isNotEmpty) {
+              //       if (value.length < 10 || value.length > 13) {
+              //         return 'Phone number must be 10-13 digits';
+              //       }
+              //     }
+              //   }
+              //   return null;
+              // },
             )),
           ],
         ),

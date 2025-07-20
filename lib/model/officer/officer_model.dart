@@ -1,3 +1,88 @@
+// class OfficersModel {
+//   String? id;
+//   String? officerId;
+//   String? name;
+//   String? status;
+//   String? phone;
+//   String? gender;
+//   String? companyPhoneNumber;
+//   List<dynamic>? designation;
+//   List<String>? department;
+//   List<String>? branch;
+//   DateTime? createdAt;
+//   List<String>? officers;
+//
+//   OfficersModel({
+//     this.id,
+//     this.officerId,
+//     this.name,
+//     this.status,
+//     this.phone,
+//     this.gender,
+//     this.companyPhoneNumber,
+//     this.designation,
+//     this.department,
+//     this.branch,
+//     this.createdAt,
+//     this.officers,
+//   });
+//
+//   factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
+//         id: json["_id"],
+//         officerId: json["officer_id"],
+//         name: json["name"],
+//         status: json["status"],
+//         phone: json["phone"],
+//         gender: json["gender"],
+//         companyPhoneNumber: json["company_phone_number"],
+//         // designation: List<dynamic>.from(json["designation"].map((x) => x)),
+//         // department: List<String>.from(json["department"].map((x) => x)),
+//         branch: List<String>.from(json["branch"].map((x) => x)),
+//         createdAt: DateTime.parse(json["created_at"]),
+//         // officers: List<String>.from(json["officers"].map((x) => x)),
+//       );
+//
+//   Map<String, dynamic> toJson() => {
+//         "_id": id,
+//         "officer_id": officerId,
+//         "name": name,
+//         "status": status,
+//         "phone": phone,
+//         "gender": gender,
+//         "company_phone_number": companyPhoneNumber,
+//         "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
+//         "department": List<dynamic>.from(department?.map((x) => x) ?? []),
+//         "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
+//         "created_at": createdAt?.toIso8601String() ?? '',
+//         "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
+//       };
+// }
+//
+// class SubOfficerModel {
+//   String? id;
+//   String? name;
+//   String? branch;
+//   int? designation;
+//
+//   SubOfficerModel({this.id, this.name, this.branch, this.designation});
+//
+//   SubOfficerModel.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     name = json['name'];
+//     branch = json['branch'];
+//     designation = json['designation'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['name'] = this.name;
+//     data['branch'] = this.branch;
+//     data['designation'] = this.designation;
+//     return data;
+//   }
+// }
+
 class OfficersModel {
   String? id;
   String? officerId;
@@ -28,61 +113,45 @@ class OfficersModel {
   });
 
   factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
-        id: json["_id"],
-        officerId: json["officer_id"],
-        name: json["name"],
-        status: json["status"],
-        phone: json["phone"],
-        gender: json["gender"],
-        companyPhoneNumber: json["company_phone_number"],
-        // designation: List<dynamic>.from(json["designation"].map((x) => x)),
-        // department: List<String>.from(json["department"].map((x) => x)),
-        branch: List<String>.from(json["branch"].map((x) => x)),
-        createdAt: DateTime.parse(json["created_at"]),
-        // officers: List<String>.from(json["officers"].map((x) => x)),
-      );
+    id: json["_id"],
+    officerId: json["officer_id"],
+    name: json["name"],
+    status: json["status"],
+    phone: json["phone"],
+    gender: json["gender"],
+    companyPhoneNumber: json["company_phone_number"],
+    branch: List<String>.from(json["branch"].map((x) => x)),
+    createdAt: DateTime.parse(json["created_at"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "officer_id": officerId,
-        "name": name,
-        "status": status,
-        "phone": phone,
-        "gender": gender,
-        "company_phone_number": companyPhoneNumber,
-        "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
-        "department": List<dynamic>.from(department?.map((x) => x) ?? []),
-        "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
-        "created_at": createdAt?.toIso8601String() ?? '',
-        "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
-      };
-}
+    "_id": id,
+    "officer_id": officerId,
+    "name": name,
+    "status": status,
+    "phone": phone,
+    "gender": gender,
+    "company_phone_number": companyPhoneNumber,
+    "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
+    "department": List<dynamic>.from(department?.map((x) => x) ?? []),
+    "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
+    "created_at": createdAt?.toIso8601String() ?? '',
+    "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
+  };
 
-class SubOfficerModel {
-  String? id;
-  String? name;
-  String? branch;
-  int? designation;
-
-  SubOfficerModel({this.id, this.name, this.branch, this.designation});
-
-  SubOfficerModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    branch = json['branch'];
-    designation = json['designation'];
+  /// Update in list
+  static void updateOfficerInList(List<OfficersModel> list, OfficersModel updatedOfficer) {
+    int index = list.indexWhere((officer) => officer.id == updatedOfficer.id);
+    if (index != -1) {
+      list[index] = updatedOfficer;
+    }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['branch'] = this.branch;
-    data['designation'] = this.designation;
-    return data;
+  /// Delete from list
+  static void deleteOfficerFromList(List<OfficersModel> list, String id) {
+    list.removeWhere((officer) => officer.id == id);
   }
 }
-
 
 // import 'dart:convert';
 // import 'dart:typed_data';

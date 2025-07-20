@@ -135,145 +135,145 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                 ],
               ),
             ),
-            Container(
-              width: double.maxFinite,
-              padding:
-                  const EdgeInsets.only(top: 6, bottom: 8, left: 15, right: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _buildFilterChip(
-                            icon: Icons.all_inclusive,
-                            text: 'All',
-                            count: 128,
-                            color: AppColors.primaryColor,
-                            isSelected: selectedFilter == 'all',
-                            onTap: () {
-                              setState(() {
-                                selectedFilter = 'all';
-                              });
-                            },
-                          ),
-                          _buildFilterChip(
-                            icon: Icons.fiber_new,
-                            text: 'Government',
-                            count: 10,
-                            color: AppColors.blueSecondaryColor,
-                            isSelected: selectedFilter == 'government',
-                            onTap: () {
-                              setState(() {
-                                selectedFilter = 'government';
-                              });
-                            },
-                          ),
-                          _buildFilterChip(
-                            icon: Icons.today,
-                            text: 'Private',
-                            count: 24,
-                            color: AppColors.greenSecondaryColor,
-                            isSelected: selectedFilter == 'private',
-                            onTap: () {
-                              setState(() {
-                                selectedFilter = 'private';
-                              });
-                            },
-                          ),
-                          // _buildFilterChip(
-                          //   icon: Icons.today,
-                          //   text: 'Upcoming',
-                          //   count: 24,
-                          //   color: AppColors.orangeSecondaryColor,
-                          //   isSelected: selectedFilter == 'upcoming',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'upcoming';
-                          //     });
-                          //   },
-                          // ),
-                          // _buildFilterChip(
-                          //   icon: Icons.schedule,
-                          //   text: 'Pending',
-                          //   count: 8,
-                          //   color: AppColors.redSecondaryColor,
-                          //   isSelected: selectedFilter == 'pending',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'pending';
-                          //     });
-                          //   },
-                          // ),
-                          // _buildFilterChip(
-                          //   icon: Icons.history,
-                          //   text: 'Upcoming',
-                          //   count: 156,
-                          //   color: AppColors.skyBlueSecondaryColor,
-                          //   isSelected: selectedFilter == 'upcoming',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'upcoming';
-                          //     });
-                          //   },
-                          // ),
-                          // _buildFilterChip(
-                          //   icon: Icons.history,
-                          //   text: 'Converted',
-                          //   count: 156,
-                          //   color: AppColors.viloletSecondaryColor,
-                          //   isSelected: selectedFilter == 'converted',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'converted';
-                          //     });
-                          //   },
-                          // ),
-                          // _buildFilterChip(
-                          //   icon: Icons.trending_up,
-                          //   text: 'UnAssigned',
-                          //   count: 15,
-                          //   color: AppColors.textGrayColour,
-                          //   isSelected: selectedFilter == 'unassigned',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'unassigned';
-                          //     });
-                          //   },
-                          // ),
-                          // _buildFilterChip(
-                          //   icon: Icons.history,
-                          //   text: 'History',
-                          //   count: 156,
-                          //   color: AppColors.skyBlueSecondaryColor,
-                          //   isSelected: selectedFilter == 'history',
-                          //   onTap: () {
-                          //     setState(() {
-                          //       selectedFilter = 'history';
-                          //     });
-                          //   },
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   width: double.maxFinite,
+            //   padding:
+            //       const EdgeInsets.only(top: 6, bottom: 8, left: 15, right: 15),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: const BorderRadius.only(
+            //         bottomLeft: Radius.circular(20),
+            //         bottomRight: Radius.circular(20)),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.black.withOpacity(0.05),
+            //         blurRadius: 20,
+            //         offset: const Offset(0, 4),
+            //       ),
+            //     ],
+            //   ),
+            //   child: Row(
+            //     children: [
+            //       Expanded(
+            //         child: SingleChildScrollView(
+            //           scrollDirection: Axis.horizontal,
+            //           child: Row(
+            //             children: [
+            //               _buildFilterChip(
+            //                 icon: Icons.all_inclusive,
+            //                 text: 'All',
+            //                 count: 128,
+            //                 color: AppColors.primaryColor,
+            //                 isSelected: selectedFilter == 'all',
+            //                 onTap: () {
+            //                   setState(() {
+            //                     selectedFilter = 'all';
+            //                   });
+            //                 },
+            //               ),
+            //               _buildFilterChip(
+            //                 icon: Icons.fiber_new,
+            //                 text: 'Government',
+            //                 count: 10,
+            //                 color: AppColors.blueSecondaryColor,
+            //                 isSelected: selectedFilter == 'government',
+            //                 onTap: () {
+            //                   setState(() {
+            //                     selectedFilter = 'government';
+            //                   });
+            //                 },
+            //               ),
+            //               _buildFilterChip(
+            //                 icon: Icons.today,
+            //                 text: 'Private',
+            //                 count: 24,
+            //                 color: AppColors.greenSecondaryColor,
+            //                 isSelected: selectedFilter == 'private',
+            //                 onTap: () {
+            //                   setState(() {
+            //                     selectedFilter = 'private';
+            //                   });
+            //                 },
+            //               ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.today,
+            //               //   text: 'Upcoming',
+            //               //   count: 24,
+            //               //   color: AppColors.orangeSecondaryColor,
+            //               //   isSelected: selectedFilter == 'upcoming',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'upcoming';
+            //               //     });
+            //               //   },
+            //               // ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.schedule,
+            //               //   text: 'Pending',
+            //               //   count: 8,
+            //               //   color: AppColors.redSecondaryColor,
+            //               //   isSelected: selectedFilter == 'pending',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'pending';
+            //               //     });
+            //               //   },
+            //               // ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.history,
+            //               //   text: 'Upcoming',
+            //               //   count: 156,
+            //               //   color: AppColors.skyBlueSecondaryColor,
+            //               //   isSelected: selectedFilter == 'upcoming',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'upcoming';
+            //               //     });
+            //               //   },
+            //               // ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.history,
+            //               //   text: 'Converted',
+            //               //   count: 156,
+            //               //   color: AppColors.viloletSecondaryColor,
+            //               //   isSelected: selectedFilter == 'converted',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'converted';
+            //               //     });
+            //               //   },
+            //               // ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.trending_up,
+            //               //   text: 'UnAssigned',
+            //               //   count: 15,
+            //               //   color: AppColors.textGrayColour,
+            //               //   isSelected: selectedFilter == 'unassigned',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'unassigned';
+            //               //     });
+            //               //   },
+            //               // ),
+            //               // _buildFilterChip(
+            //               //   icon: Icons.history,
+            //               //   text: 'History',
+            //               //   count: 156,
+            //               //   color: AppColors.skyBlueSecondaryColor,
+            //               //   isSelected: selectedFilter == 'history',
+            //               //   onTap: () {
+            //               //     setState(() {
+            //               //       selectedFilter = 'history';
+            //               //     });
+            //               //   },
+            //               // ),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

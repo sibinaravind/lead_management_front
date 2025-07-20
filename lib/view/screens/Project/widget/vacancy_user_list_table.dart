@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import 'package:overseas_front_end/view/screens/project/flavour/customer_vacancy_flavour.dart';
-
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
-import '../flavour/customer_project_flavour.dart';
-import 'project_details_tab.dart';
 
 class VacancyUserListTable extends StatelessWidget {
   final List<VacancyModel> userlist;

@@ -55,10 +55,10 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
             child: Container(
               width: dialogWidth,
               height: maxHeight * 0.35,
-              constraints: const BoxConstraints(
+              constraints: BoxConstraints(
                 minWidth: 320,
                 maxWidth: 500,
-                minHeight: 500,
+                minHeight: widget.isResetPassword? 500:300,
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -212,6 +212,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                                           .isResetPassword,
                                                       child:
                                                           CustomPasswordTextFormField(
+
                                                         label:
                                                             'Confirm Password',
                                                         controller:

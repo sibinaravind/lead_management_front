@@ -4,6 +4,7 @@ import 'package:overseas_front_end/res/style/colors/colors.dart';
 
 class CustomMultiSelectDropdownField extends StatefulWidget {
   final String label;
+  final bool isSplit;
   final List<String> selectedItems;
   final List<String> items;
   final Function(List<String>) onChanged;
@@ -15,7 +16,7 @@ class CustomMultiSelectDropdownField extends StatefulWidget {
     required this.selectedItems,
     required this.items,
     required this.onChanged,
-    this.isRequired = false,
+    this.isRequired = false,  this.isSplit=false,
   });
 
   @override
@@ -49,9 +50,10 @@ class _CustomMultiSelectDropdownFieldState
               backgroundColor: AppColors.whiteMainColor,
               title: Text(widget.label),
               content: SizedBox(
-                width: double.maxFinite,
+                width: 300,
                 height: 350,
                 child: Column(
+
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
@@ -84,9 +86,9 @@ class _CustomMultiSelectDropdownFieldState
                               setStateDialog(() {
                                 if (checked == true) {
                                   tempSelected.add(item);
-                                  selecIds.add(item.split(",")[1]);
+                                  widget.isSplit ? selecIds.add(item.split(",")[1]) : selecIds.add(item);
                                 } else {
-                                  selecIds.remove(item.split(",")[1]);
+                                  widget.isSplit ? selecIds.remove(item.split(",")[1]) : selecIds.remove(item);
                                   tempSelected.remove(item);
                                 }
                               });

@@ -6,7 +6,7 @@ class VacancyModel {
   String? jobCategory;
   List<String>? qualifications;
   List<ProjectModel>? projectModels;
-  SpecializedModel? specializedModels;
+  // SpecializedModel? specializedModels;
   String? experience;
   int? salaryFrom;
   int? salaryTo;
@@ -59,7 +59,7 @@ class VacancyModel {
     data['experience'] = this.experience;
     data['salary_from'] = this.salaryFrom;
     data['project'] = this.projectModels;
-    data['specialization_totals'] = this.specializedModels;
+    // data['specialization_totals'] = this.specializedModels;
     data['salary_to'] = this.salaryTo;
     data['lastdatetoapply'] = this.lastdatetoapply;
     data['description'] = this.description;

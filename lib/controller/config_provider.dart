@@ -52,7 +52,6 @@ class ConfigProvider extends ChangeNotifier {
   Future<void> getConfigList() async {
     isLoading = true;
     _error = null;
-    // notifyListeners();
 
     try {
       final response = await _api.get(Constant().configList);
@@ -61,7 +60,6 @@ class ConfigProvider extends ChangeNotifier {
       _error = 'Failed to load permissions: $e';
     } finally {
       isLoading = false;
-      // notifyListeners();
     }
     notifyListeners();
   }
@@ -70,7 +68,6 @@ class ConfigProvider extends ChangeNotifier {
       {required String field, required String name, String colour = ""}) async {
     isLoading = true;
     _error = null;
-    // notifyListeners();
 
     try {
       final response = await _api.patch(Constant().editConfigList, {

@@ -138,5 +138,25 @@ class RoundRobinProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteRoundRobin(String roundRobinId) async {
+    try {
+      final response = await _apiService.delete(
+        "${Constant().deleteRoundRobin}/$roundRobinId",{}
+      );
+
+      if (response['success'] == true) {
+        await fetchRoundRobinGroups();
+        return true;
+      } else {
+        _error = response['message'] ?? 'Failed to delete round robin';
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _error = 'Error deleting round robin: $e';
+      notifyListeners();
+      return false;
+    }
+  }
 
 }

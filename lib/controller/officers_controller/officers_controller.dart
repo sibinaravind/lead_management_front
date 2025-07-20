@@ -59,20 +59,18 @@ class OfficersControllerProvider with ChangeNotifier {
 
     try {
       dynamic json = await _apiService.get(Constant().officerList);
-   print(json.runtimeType);
+      print(json.runtimeType);
       if (json['success'] == true && json['data'] != null) {
         final List<dynamic> dataList = json['data'];
         print(dataList.runtimeType);
-
 
         try {
           _officersListData =
               dataList.map((e) => OfficersModel.fromJson(e)).toList();
 
-
           allOfficersListData =
               dataList.map((e) => OfficersModel.fromJson(e)).toList();
-        } catch(ex) {
+        } catch (ex) {
           throw Exception(ex);
         }
         // _officersListData!.sort((a, b) {
@@ -104,7 +102,6 @@ class OfficersControllerProvider with ChangeNotifier {
           await _apiService.post(Constant().officerInsert, officer);
 
       if (response['success'] == true) {
-        await fetchOfficersList();
         return true;
       } else {
         _error = response['message'] ?? 'Creation failed';
@@ -124,14 +121,31 @@ class OfficersControllerProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+     Map<String, dynamic>? updatedData1 = Map.from(updatedData);
+    updatedData1.remove('_id');
+    updatedData1.remove('officer_id');
+
     try {
       final response = await _apiService.patch(
-        "${Constant().officerUpdate}/$officerId",
-        updatedData,
+        "${Constant().officerUpdate}/$officerId",updatedData1
       );
 
       if (response['success'] == true) {
-        await fetchOfficersList();
+        OfficersModel.updateOfficerInList(
+            _officersListData ?? [],
+            OfficersModel(
+                branch: updatedData['branch'],
+                department:updatedData['department'] ,
+                designation:updatedData['designation'] ,
+                createdAt:updatedData['created_at'] ,
+                gender:updatedData['gender'] ,
+                id:updatedData['_id'] ,
+                officerId:updatedData['officer_id'] ,
+                officers: updatedData['officers'],
+                status: updatedData['status'],
+                name: updatedData['name'],
+                phone: updatedData['phone'],
+                companyPhoneNumber: updatedData['companyPhoneNumber']));
         return true;
       } else {
         _error = response['message'] ?? 'Update failed';

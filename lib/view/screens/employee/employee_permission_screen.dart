@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 import 'package:overseas_front_end/view/widgets/custom_textfield.dart';
+import 'package:overseas_front_end/view/widgets/popup_text_form_filed.dart';
 import 'package:provider/provider.dart';
 import '../../../controller/permission_controller/access_permission_controller.dart';
 import 'package:overseas_front_end/view/widgets/custom_shimmer_widget.dart';
 import '../../../res/style/colors/colors.dart';
+import '../../widgets/custom_text.dart';
 
 class AccessPermissionScreen extends StatefulWidget {
   const AccessPermissionScreen({super.key});
@@ -21,25 +23,8 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
   final TextEditingController searchController = TextEditingController();
   final TextEditingController permissionRole = TextEditingController();
   String searchQuery = '';
-
   @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () {
-  //     final provider =
-  //         Provider.of<AccessPermissionProvider>(context, listen: false);
-  //     provider.fetchAccessPermissions().then((_) {
-  //       if (provider.accessPermission != null) {
-  //         _buildPermissionsFromAPI(provider);
-  //       }
-  //     });
-  //   });
-  //   searchController.addListener(() {
-  //     setState(() {
-  //       searchQuery = searchController.text;
-  //     });
-  //   });
-  // }
+
   @override
   void initState() {
     super.initState();
@@ -131,40 +116,6 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
     return Icons.shield;
   }
 
-  // void _togglePermission(String role, String permission) async {
-  //   setState(() {
-  //     permissions[role]![permission] = !permissions[role]![permission]!;
-  //     int index = permissionsList.indexWhere((p) => p.name == permission);
-  //     if (index != -1) {
-  //       permissionsList[index].rolePermissions[role] =
-  //           permissions[role]![permission]!;
-  //     }
-  //   });
-  //
-  //   final provider =
-  //       Provider.of<AccessPermissionProvider>(context, listen: false);
-  //   final success = await provider.patchAccessPermissions(
-  //     category: role,
-  //     updatedFields: [
-  //       {"field": permission, "value": permissions[role]![permission]}
-  //     ],
-  //   );
-  //
-  //   if (!success) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text(provider.error ?? "Update failed")));
-  //     // Revert the toggle
-  //     setState(() {
-  //       permissions[role]![permission] = !permissions[role]![permission]!;
-  //       int index = permissionsList.indexWhere((p) => p.name == permission);
-  //       if (index != -1) {
-  //         permissionsList[index].rolePermissions[role] =
-  //             permissions[role]![permission]!;
-  //       }
-  //     });
-  //   }
-  // }
-
   void _togglePermission(String role, String permission) async {
     setState(() {
       permissions[role]![permission] = !permissions[role]![permission]!;
@@ -230,15 +181,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
             child: SafeArea(
               child: Column(
                 children: [
-                  // BuildHeader(
-                  //   searchController: searchController,
-                  //   showOnlyEnabled: showOnlyEnabled,
-                  //   onToggleFilter: () {
-                  //     setState(() {
-                  //       showOnlyEnabled = !showOnlyEnabled;
-                  //     });
-                  //   },
-                  // ),
+
                   _buildRoleSummaryCards(),
                   Expanded(child: _buildPermissionsTable()),
                 ],
@@ -371,7 +314,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
                   top: 4,
                   right: 4,
                   child: IconButton(
-                    icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                    icon: const Icon(Icons.delete, size: 18, color: Colors.red),
                     onPressed: () {
                       _onDeleteRole(role);
                     },
@@ -386,175 +329,329 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
   void _onAddNewRole() {
     showDialog(
         context: context,
-        builder: (_) =>
-    AlertDialog(
-           title: Text("Insert Role"),
-      content: CustomTextField(controller: permissionRole, labelText: "Role", validator: (value){
-        if(value!.isEmpty||value==''){
-         return "Enter Role";
-        }
-        return null;
-      }),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () async {
-            Navigator.pop(context); // close confirmation dialog
+        builder: (_) {
+      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+      return   AlertDialog(
+              title: Text("Insert Role"),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  spacing: 10,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PopupTextField(controller: permissionRole,
+                      label: 'Role',
+                      icon: Icons.person_outline_outlined,
+                      hint: 'Role',
+                      requiredField: true,),
+                    Row(
+                      spacing: 10,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: CustomText(
+                            text: 'Cancel',
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ), ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              if(permissionRole.text==''){
+                                CustomSnackBar.show(context, 'Role cannot be empty');
+                              }else{
+                                Navigator.pop(context);
 
 
-        Map<String,bool>   data= {
-                "view_all_leads": false,
-                "edit_lead": false,
-                "delete_lead": false,
-                "manage_users": false,
-                "manage_constants": false,
-                "view_reports": false,
-                "assign_leads": false,
-                "update_visa_status": false,
-                "manage_documents": false,
-                "handle_walkins": false,
-                "update_counseling_status": false
-              };
+                                Map<String, bool> data = {
+                                  "view_all_leads": false,
+                                  "edit_lead": false,
+                                  "delete_lead": false,
+                                  "manage_users": false,
+                                  "manage_constants": false,
+                                  "view_reports": false,
+                                  "assign_leads": false,
+                                  "update_visa_status": false,
+                                  "manage_documents": false,
+                                  "handle_walkins": false,
+                                  "update_counseling_status": false
+                                };
 
-            final provider = Provider.of<AccessPermissionProvider>(context, listen: false);
-            final success = await provider.addAccessPermission(category: permissionRole.text.toUpperCase(),value: data);
+                                final provider = Provider.of<
+                                    AccessPermissionProvider>(
+                                    context, listen: false);
+                                final success = await provider
+                                    .addAccessPermission(category: permissionRole
+                                    .text.toUpperCase(), value: data);
+                                if (success) {
+                                  setState(() {
+                                    permissions[permissionRole.text
+                                        .toLowerCase()] = {
+                                      "view_all_leads": false,
+                                      "edit_lead": false,
+                                      "delete_lead": false,
+                                      "manage_users": false,
+                                      "manage_constants": false,
+                                      "view_reports": false,
+                                      "assign_leads": false,
+                                      "update_visa_status": false,
+                                      "manage_documents": false,
+                                      "handle_walkins": false,
+                                      "update_counseling_status": false
+                                    };
+                                    roles.add(permissionRole.text.toLowerCase());
+                                    _buildPermissionsFromAPI(provider);
+                                  });
 
-            if (success) {
-              provider.fetchAccessPermissions();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Inserted role')),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
-              );
-            }
-          },
-          child: const Text('Insert'),
-        ),
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Inserted role')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(provider.error ??
+                                        'Failed to insert role')),
+                                  );
+                                }
+                              }
 
-        // {
-        //   "category": "VISA",
-        //   "value": {
-        //     "view_all_leads": false,
-        //     "edit_lead": false,
-        //     "delete_lead": true,
-        //     "manage_users": false,
-        //     "manage_constants": false,
-        //     "view_reports": false,
-        //     "assign_leads": false,
-        //     "update_visa_status": true,
-        //     "manage_documents": false,
-        //     "handle_walkins": true,
-        //     "update_counseling_status": true
-        //   }
-        // }
-        // TextButton(
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //     setState(() {
-        //       permissions.remove(role);
-        //       roles.remove(role);
-        //     });
-        //   },
-        //   child: const Text('Delete'),
-        // ),
-      ],
-    ));
+                            }
+
+
+                            // if (success) {
+                            //   provider.fetchAccessPermissions();
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(content: Text('Inserted role')),
+                            //   );
+                            // } else {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
+                            //   );
+                            // }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              CustomText(
+                                text: 'Insert Role',
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              // actions: [
+              //   TextButton(
+              //     onPressed: () => Navigator.pop(context),
+              //     style: TextButton.styleFrom(
+              //       padding: const EdgeInsets.symmetric(
+              //         horizontal: 20,
+              //         vertical: 12,
+              //       ),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //       ),
+              //     ),
+              //     child: CustomText(
+              //       text: 'Cancel',
+              //       color: Colors.grey[600],
+              //       fontWeight: FontWeight.w500,
+              //     ),
+              //   ),
+              //   // TextButton(
+              //   //   onPressed: () => Navigator.pop(context),
+              //   //   child: const Text('Cancel'),
+              //   // ),
+              //   // TextButton(
+              //   //   onPressed: () async {
+              //   //     Navigator.pop(context); // close confirmation dialog
+              //   //
+              //   //
+              //   // Map<String,bool>   data= {
+              //   //         "view_all_leads": false,
+              //   //         "edit_lead": false,
+              //   //         "delete_lead": false,
+              //   //         "manage_users": false,
+              //   //         "manage_constants": false,
+              //   //         "view_reports": false,
+              //   //         "assign_leads": false,
+              //   //         "update_visa_status": false,
+              //   //         "manage_documents": false,
+              //   //         "handle_walkins": false,
+              //   //         "update_counseling_status": false
+              //   //       };
+              //   //
+              //   //     final provider = Provider.of<AccessPermissionProvider>(context, listen: false);
+              //   //     final success = await provider.addAccessPermission(category: permissionRole.text.toUpperCase(),value: data);
+              //   //     if (success) {
+              //   //       setState(() {
+              //   //         permissions[permissionRole.text.toLowerCase()] = {
+              //   //           "view_all_leads": false,
+              //   //           "edit_lead": false,
+              //   //           "delete_lead": false,
+              //   //           "manage_users": false,
+              //   //           "manage_constants": false,
+              //   //           "view_reports": false,
+              //   //           "assign_leads": false,
+              //   //           "update_visa_status": false,
+              //   //           "manage_documents": false,
+              //   //           "handle_walkins": false,
+              //   //           "update_counseling_status": false
+              //   //         };
+              //   //         roles.add(permissionRole.text.toLowerCase());
+              //   //         _buildPermissionsFromAPI(provider);
+              //   //       });
+              //   //
+              //   //       ScaffoldMessenger.of(context).showSnackBar(
+              //   //         const SnackBar(content: Text('Inserted role')),
+              //   //       );
+              //   //     } else {
+              //   //       ScaffoldMessenger.of(context).showSnackBar(
+              //   //         SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
+              //   //       );
+              //   //     }
+              //   //
+              //   //     // if (success) {
+              //   //     //   provider.fetchAccessPermissions();
+              //   //     //   ScaffoldMessenger.of(context).showSnackBar(
+              //   //     //     SnackBar(content: Text('Inserted role')),
+              //   //     //   );
+              //   //     // } else {
+              //   //     //   ScaffoldMessenger.of(context).showSnackBar(
+              //   //     //     SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
+              //   //     //   );
+              //   //     // }
+              //   //   },
+              //   //   child: const Text('Insert'),
+              //   // ),
+              //   ElevatedButton(
+              //     onPressed: () async{
+              //       if (_formKey.currentState!.validate()) {
+              //         Navigator.pop(context);
+              //
+              //
+              //         Map<String,bool>   data= {
+              //           "view_all_leads": false,
+              //           "edit_lead": false,
+              //           "delete_lead": false,
+              //           "manage_users": false,
+              //           "manage_constants": false,
+              //           "view_reports": false,
+              //           "assign_leads": false,
+              //           "update_visa_status": false,
+              //           "manage_documents": false,
+              //           "handle_walkins": false,
+              //           "update_counseling_status": false
+              //         };
+              //
+              //         final provider = Provider.of<AccessPermissionProvider>(context, listen: false);
+              //         final success = await provider.addAccessPermission(category: permissionRole.text.toUpperCase(),value: data);
+              //         if (success) {
+              //           setState(() {
+              //             permissions[permissionRole.text.toLowerCase()] = {
+              //               "view_all_leads": false,
+              //               "edit_lead": false,
+              //               "delete_lead": false,
+              //               "manage_users": false,
+              //               "manage_constants": false,
+              //               "view_reports": false,
+              //               "assign_leads": false,
+              //               "update_visa_status": false,
+              //               "manage_documents": false,
+              //               "handle_walkins": false,
+              //               "update_counseling_status": false
+              //             };
+              //             roles.add(permissionRole.text.toLowerCase());
+              //             _buildPermissionsFromAPI(provider);
+              //           });
+              //
+              //           ScaffoldMessenger.of(context).showSnackBar(
+              //             const SnackBar(content: Text('Inserted role')),
+              //           );
+              //         } else {
+              //           ScaffoldMessenger.of(context).showSnackBar(
+              //             SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
+              //           );
+              //         }
+              //       }
+              //
+              //
+              //       // if (success) {
+              //       //   provider.fetchAccessPermissions();
+              //       //   ScaffoldMessenger.of(context).showSnackBar(
+              //       //     SnackBar(content: Text('Inserted role')),
+              //       //   );
+              //       // } else {
+              //       //   ScaffoldMessenger.of(context).showSnackBar(
+              //       //     SnackBar(content: Text(provider.error ?? 'Failed to insert role')),
+              //       //   );
+              //       // }
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: AppColors.primaryColor,
+              //       foregroundColor: Colors.white,
+              //       padding: const EdgeInsets.symmetric(
+              //         horizontal: 24,
+              //         vertical: 12,
+              //       ),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //       ),
+              //       elevation: 2,
+              //     ),
+              //     child: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         Icon(
+              //           Icons.add,
+              //           size: 18,
+              //         ),
+              //         const SizedBox(width: 8),
+              //         CustomText(
+              //           text: 'Insert Role',
+              //           fontWeight: FontWeight.w600,
+              //           color: Colors.white,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ],
+            );
+  });
   }
 
-  // Widget _buildRoleSummaryCards() {
-  //   return Container(
-  //     height: 120,
-  //     margin: const EdgeInsets.all(20),
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: roles.length,
-  //       itemBuilder: (context, index) {
-  //         String role = roles[index];
-  //         int enabledCount =
-  //             permissions[role]!.values.where((enabled) => enabled).length;
-  //         int totalCount = permissions[role]!.length;
-  //
-  //         return Stack(
-  //           children: [
-  //             Container(
-  //               width: 140,
-  //               margin: const EdgeInsets.only(right: 12),
-  //               decoration: BoxDecoration(
-  //                 color: Colors.white,
-  //                 borderRadius: BorderRadius.circular(16),
-  //                 boxShadow: [
-  //                   BoxShadow(
-  //                     color: Colors.black.withOpacity(0.05),
-  //                     blurRadius: 10,
-  //                     offset: const Offset(0, 5),
-  //                   ),
-  //                 ],
-  //               ),
-  //               child: InkWell(
-  //                 onDoubleTap: () {
-  //                   _onDeleteRole(role);
-  //                 },
-  //                 borderRadius: BorderRadius.circular(16),
-  //                 child: Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: [
-  //                     Container(
-  //                       padding: const EdgeInsets.all(8),
-  //                       decoration: BoxDecoration(
-  //                         color: _getRoleColor(index).withOpacity(0.1),
-  //                         borderRadius: BorderRadius.circular(8),
-  //                       ),
-  //                       child: Icon(
-  //                         _getRoleIcon(role),
-  //                         color: _getRoleColor(index),
-  //                         size: 20,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(height: 8),
-  //                     Text(
-  //                       _formatRoleName(role),
-  //                       style: const TextStyle(
-  //                         fontSize: 12,
-  //                         fontWeight: FontWeight.w600,
-  //                         color: AppColors.primaryColor,
-  //                       ),
-  //                       textAlign: TextAlign.center,
-  //                     ),
-  //                     const SizedBox(height: 4),
-  //                     Text(
-  //                       '$enabledCount/$totalCount',
-  //                       style: TextStyle(
-  //                         fontSize: 14,
-  //                         fontWeight: FontWeight.bold,
-  //                         color: _getRoleColor(index),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             if (role.toLowerCase() != 'admin')
-  //               Positioned(
-  //                 top: 4,
-  //                 right: 4,
-  //                 child: IconButton(
-  //                   icon: const Icon(Icons.close, size: 18, color: Colors.red),
-  //                   onPressed: () {
-  //                     _onDeleteRole(role);
-  //                   },
-  //                 ),
-  //               ),
-  //           ],
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
   void _onDeleteRole(String role) {
     showDialog(
       context: context,
@@ -573,47 +670,38 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
               final provider = Provider.of<AccessPermissionProvider>(context, listen: false);
               final success = await provider.deleteAccessPermission(role.toUpperCase());
 
+              // if (success) {
+              //   provider.fetchAccessPermissions();
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(content: Text('Deleted role$role')),
+              //   );
+              // } else {
+              //
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(content: Text(provider.error ?? 'Failed to delete role')),
+              //   );
+              // }
+
               if (success) {
-                provider.fetchAccessPermissions();
+                setState(() {
+                  permissions.remove(role.toLowerCase());
+                  roles.remove(role.toLowerCase());
+                  _buildPermissionsFromAPI(provider);
+                });
+
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Deleted role$role')),
+                  SnackBar(content: Text('Deleted role $role')),
                 );
               } else {
-
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(provider.error ?? 'Failed to delete role')),
                 );
               }
+
             },
             child: const Text('Delete'),
           ),
 
-          // {
-          //   "category": "VISA",
-          //   "value": {
-          //     "view_all_leads": false,
-          //     "edit_lead": false,
-          //     "delete_lead": true,
-          //     "manage_users": false,
-          //     "manage_constants": false,
-          //     "view_reports": false,
-          //     "assign_leads": false,
-          //     "update_visa_status": true,
-          //     "manage_documents": false,
-          //     "handle_walkins": true,
-          //     "update_counseling_status": true
-          //   }
-          // }
-          // TextButton(
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //     setState(() {
-          //       permissions.remove(role);
-          //       roles.remove(role);
-          //     });
-          //   },
-          //   child: const Text('Delete'),
-          // ),
         ],
       ),
     );
@@ -789,3 +877,168 @@ class PermissionData {
     required this.rolePermissions,
   });
 }
+
+
+// void initState() {
+//   super.initState();
+//   Future.delayed(Duration.zero, () {
+//     final provider =
+//         Provider.of<AccessPermissionProvider>(context, listen: false);
+//     provider.fetchAccessPermissions().then((_) {
+//       if (provider.accessPermission != null) {
+//         _buildPermissionsFromAPI(provider);
+//       }
+//     });
+//   });
+//   searchController.addListener(() {
+//     setState(() {
+//       searchQuery = searchController.text;
+//     });
+//   });
+// }
+
+// {
+//   "category": "VISA",
+//   "value": {
+//     "view_all_leads": false,
+//     "edit_lead": false,
+//     "delete_lead": true,
+//     "manage_users": false,
+//     "manage_constants": false,
+//     "view_reports": false,
+//     "assign_leads": false,
+//     "update_visa_status": true,
+//     "manage_documents": false,
+//     "handle_walkins": true,
+//     "update_counseling_status": true
+//   }
+// }
+// TextButton(
+//   onPressed: () {
+//     Navigator.pop(context);
+//     setState(() {
+//       permissions.remove(role);
+//       roles.remove(role);
+//     });
+//   },
+//   child: const Text('Delete'),
+// ),
+
+
+// Widget _buildRoleSummaryCards() {
+//   return Container(
+//     height: 120,
+//     margin: const EdgeInsets.all(20),
+//     child: ListView.builder(
+//       scrollDirection: Axis.horizontal,
+//       itemCount: roles.length,
+//       itemBuilder: (context, index) {
+//         String role = roles[index];
+//         int enabledCount =
+//             permissions[role]!.values.where((enabled) => enabled).length;
+//         int totalCount = permissions[role]!.length;
+//
+//         return Stack(
+//           children: [
+//             Container(
+//               width: 140,
+//               margin: const EdgeInsets.only(right: 12),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(16),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.05),
+//                     blurRadius: 10,
+//                     offset: const Offset(0, 5),
+//                   ),
+//                 ],
+//               ),
+//               child: InkWell(
+//                 onDoubleTap: () {
+//                   _onDeleteRole(role);
+//                 },
+//                 borderRadius: BorderRadius.circular(16),
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     Container(
+//                       padding: const EdgeInsets.all(8),
+//                       decoration: BoxDecoration(
+//                         color: _getRoleColor(index).withOpacity(0.1),
+//                         borderRadius: BorderRadius.circular(8),
+//                       ),
+//                       child: Icon(
+//                         _getRoleIcon(role),
+//                         color: _getRoleColor(index),
+//                         size: 20,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 8),
+//                     Text(
+//                       _formatRoleName(role),
+//                       style: const TextStyle(
+//                         fontSize: 12,
+//                         fontWeight: FontWeight.w600,
+//                         color: AppColors.primaryColor,
+//                       ),
+//                       textAlign: TextAlign.center,
+//                     ),
+//                     const SizedBox(height: 4),
+//                     Text(
+//                       '$enabledCount/$totalCount',
+//                       style: TextStyle(
+//                         fontSize: 14,
+//                         fontWeight: FontWeight.bold,
+//                         color: _getRoleColor(index),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             if (role.toLowerCase() != 'admin')
+//               Positioned(
+//                 top: 4,
+//                 right: 4,
+//                 child: IconButton(
+//                   icon: const Icon(Icons.close, size: 18, color: Colors.red),
+//                   onPressed: () {
+//                     _onDeleteRole(role);
+//                   },
+//                 ),
+//               ),
+//           ],
+//         );
+//       },
+//     ),
+//   );
+// }
+
+
+// {
+//   "category": "VISA",
+//   "value": {
+//     "view_all_leads": false,
+//     "edit_lead": false,
+//     "delete_lead": true,
+//     "manage_users": false,
+//     "manage_constants": false,
+//     "view_reports": false,
+//     "assign_leads": false,
+//     "update_visa_status": true,
+//     "manage_documents": false,
+//     "handle_walkins": true,
+//     "update_counseling_status": true
+//   }
+// }
+// TextButton(
+//   onPressed: () {
+//     Navigator.pop(context);
+//     setState(() {
+//       permissions.remove(role);
+//       roles.remove(role);
+//     });
+//   },
+//   child: const Text('Delete'),
+// ),

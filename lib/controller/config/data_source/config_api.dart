@@ -49,7 +49,7 @@ class ConfigApi {
       );
       if (response.statusCode == 200) {
         return Right(
-            ConfigListModel.fromJson(response.data["data"])); //for list
+            ConfigListModel.fromJson(response.data["data"]));
       } else {
         return Left(Exception(response.data['msg'] ?? 'Unknown error'));
       }
@@ -59,4 +59,3 @@ class ConfigApi {
   }
 }
 
-// dummay data

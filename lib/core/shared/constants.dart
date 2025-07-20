@@ -16,7 +16,7 @@ class Constant {
   String officerLogin = 'officer/login';
   String officerPasswordReset = 'officer/resetPassword';
   String officerInsert = 'officer/insert';
-  String officerUpdate = 'officer/updateOfficer/';
+  String officerUpdate = 'officer/updateOfficer';
   String officerList = 'officer/list';
   String officerDetails = 'officer/details/';
   String officerResetPassword = 'officer/updatePassword';
@@ -27,6 +27,7 @@ class Constant {
   String insertOfficersInToRoundRobinList = 'officer/insertStaffToRoundRobin';
   String removeOfficersInToRoundRobinList = 'officer/removeStaffFromRoundRobin';
   String insertRoundRobin = 'officer/insertRoundRobin';
+  String deleteRoundRobin = 'officer/deleteRoundRobin';
 
   String addClient = "project/clientCreate";
   String clientList = "project/clientList";

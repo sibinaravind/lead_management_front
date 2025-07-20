@@ -113,6 +113,7 @@
 //       };
 // }
 
+
 class EmployeePermissionModel {
   final String category;
   final Map<String, bool> value;
@@ -128,4 +129,42 @@ class EmployeePermissionModel {
       value: Map<String, bool>.from(json['value']),
     );
   }
+
+  static void addOrUpdatePermission(
+      List<EmployeePermissionModel> list,
+      EmployeePermissionModel newPermission,
+      ) {
+    int index = list.indexWhere((item) => item.category == newPermission.category);
+    if (index != -1) {
+      list[index] = newPermission; // Update existing
+    } else {
+      list.add(newPermission); // Add new
+    }
+  }
+
+  /// ✅ Delete by category
+  static void deletePermission(
+      List<EmployeePermissionModel> list,
+      String category,
+      ) {
+    list.removeWhere((item) => item.category == category);
+  }
 }
+
+
+// class EmployeePermissionModel {
+//   final String category;
+//   final Map<String, bool> value;
+//
+//   EmployeePermissionModel({
+//     required this.category,
+//     required this.value,
+//   });
+//
+//   factory EmployeePermissionModel.fromJson(Map<String, dynamic> json) {
+//     return EmployeePermissionModel(
+//       category: json['category'],
+//       value: Map<String, bool>.from(json['value']),
+//     );
+//   }
+// }

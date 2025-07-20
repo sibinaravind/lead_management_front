@@ -53,19 +53,11 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
                   return Expanded(
                     child: CustomMultiSelectDropdownField(
                       label: 'Add Officers',
-                      // selectedItems: _employeeController,
-                      // items: officers.officersListModel!
-                      //     .map((e) => "${e.name},${e.officerId}" ?? '')
-                      //     .toList(),
-                      // onChanged: (selected) {
-                      //   setState(() {
-                      //     _employeeController = selected;
-                      //   });
-                      // },
+
                       selectedItems: _employeeController,
-                      items: officers.officersListModel!
-                          .map((e) => "${e.name},${e.id}")
-                          .toList(),
+                      items: officers?.officersListModel
+                          ?.map((e) => "${e.name},${e.id}")
+                          .toList()??[],
                       onChanged: (selectedIds) {
                         setState(() {
                           _employeeController = selectedIds;

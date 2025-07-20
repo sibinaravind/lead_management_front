@@ -22,6 +22,7 @@ class AddItemDialog extends StatelessWidget {
   final TextEditingController colourController = TextEditingController();
 
   final TextEditingController rangeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class AddItemDialog extends StatelessWidget {
           color: Colors.white,
         ),
         child: Form(
-          // key: _formKey,
+          key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -137,6 +138,16 @@ class AddItemDialog extends StatelessWidget {
                       text: 'ADD',
                       icon: Icons.check,
                       onPressed: () {
+                        if(_formKey.currentState?.validate()??false){
+                          Provider.of<ConfigProvider>(context, listen: false)
+                              .addConfig(
+                              field: category,
+                              name: nameController.text.toUpperCase().trim(),
+                              colour: colourController.text.trim());
+                          Navigator.of(context).pop();
+                          CustomSnackBar.show(
+                              context, 'Added successfully');
+                        }
                         ///-- setstate
                         // item.name = nameController.text;
                         // if (item.hasField('code')) {
@@ -151,14 +162,7 @@ class AddItemDialog extends StatelessWidget {
                         // if (item.hasField('range')) {
                         //   item['range'] = rangeController.text;
                         // }
-                        Provider.of<ConfigProvider>(context, listen: false)
-                            .addConfig(
-                                field: category,
-                                name: nameController.text.toUpperCase().trim(),
-                                colour: colourController.text.trim());
-                        Navigator.of(context).pop();
-                        CustomSnackBar.show(
-                            context, '${item.name} updated successfully');
+
                       },
                       isFilled: true,
                       gradient: AppColors.orangeGradient,

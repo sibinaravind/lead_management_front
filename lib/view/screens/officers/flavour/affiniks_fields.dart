@@ -25,18 +25,18 @@ class AffiniksFields {
         'extractor': (OfficersModel user) =>
             (user.designation?.isNotEmpty ?? false)
                 ? (user.designation as List).join('\n')
-                : user.designation.toString()
+                : 'NIL'/*user.designation.toString()*/
       },
-      {
-        // 'name': 'Department',
-        // 'extractor': (OfficersModel user) => user.department.toString()
-
-        'name': 'Designation',
-        'extractor': (OfficersModel user) =>
-            (user.designation?.isNotEmpty ?? false)
-                ? (user.designation as List).join('\n')
-                : user.designation.toString()
-      },
+      // {
+      //   // 'name': 'Department',
+      //   // 'extractor': (OfficersModel user) => user.department.toString()
+      //
+      //   'name': 'Designation',
+      //   'extractor': (OfficersModel user) =>
+      //       (user.designation?.isNotEmpty ?? false)
+      //           ? (user.designation as List).join('\n')
+      //           : user.designation.toString()
+      // },
       {'name': 'Action', 'extractor': (OfficersModel user) => user}
     ];
   }
