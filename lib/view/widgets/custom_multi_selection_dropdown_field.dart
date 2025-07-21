@@ -108,6 +108,7 @@ class _CustomMultiSelectDropdownFieldState
                   child: const Text('Cancel'),
                 ),
                 ElevatedButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.orangeSecondaryColor)),
                   onPressed: () {
                    if(context.mounted) {
                      setState(() {

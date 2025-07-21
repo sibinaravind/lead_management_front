@@ -432,7 +432,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
   final TextEditingController _officerIdController =
       TextEditingController(text: "64");
   final TextEditingController _passwordController =
-      TextEditingController(text: "12345");
+      TextEditingController(text: "Aswin123@");
   bool _obscurePassword = true;
 
   @override

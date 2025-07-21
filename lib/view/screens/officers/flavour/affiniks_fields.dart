@@ -23,9 +23,11 @@ class AffiniksFields {
         'name': 'Designation',
         // 'extractor': (OfficersModel user) => user.designation.toString()
         'extractor': (OfficersModel user) =>
+        // (user.designation?.isEmpty??false)?'No Designation'
+        //     :user.designation.toString()
             (user.designation?.isNotEmpty ?? false)
-                ? (user.designation as List).join('\n')
-                : 'NIL'/*user.designation.toString()*/
+                ? (user.designation as List).join('\n').toLowerCase()
+                : " "
       },
       // {
       //   // 'name': 'Department',

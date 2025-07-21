@@ -98,10 +98,23 @@ class OfficersControllerProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      print(".............1..................");
       final response =
           await _apiService.post(Constant().officerInsert, officer);
 
       if (response['success'] == true) {
+        try {
+          officer['_id']=response['data'];
+        }catch (e){
+          print(e);
+        }
+
+        if (_officersListData != null) {
+          try {
+            OfficersModel.addOfficerToList(
+                _officersListData!, OfficersModel.fromJson(officer));
+          }catch(ex){print(ex);}
+        }
         return true;
       } else {
         _error = response['message'] ?? 'Creation failed';
@@ -135,7 +148,7 @@ class OfficersControllerProvider with ChangeNotifier {
             _officersListData ?? [],
             OfficersModel(
                 branch: updatedData['branch'],
-                department:updatedData['department'] ,
+                // department:updatedData['department'] ,
                 designation:updatedData['designation'] ,
                 createdAt:updatedData['created_at'] ,
                 gender:updatedData['gender'] ,

@@ -101,7 +101,6 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
                           onTap: () {
-                            ///--------------- Employee Creation------
                             showDialog(
                               context: context,
                               builder: (context) =>
@@ -203,9 +202,9 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (controller.error != null) {
-                    return Center(child: Text(controller.error!));
-                  }
+                  // if (controller.error != null) {
+                  //   return Center(child: Text("controller.error!///////////////////"));
+                  // }
 
                   if (userList == null || userList.isEmpty) {
                     return Center(child: Text("No employees found."));

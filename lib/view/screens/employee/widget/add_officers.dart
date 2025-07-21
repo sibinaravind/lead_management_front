@@ -27,7 +27,14 @@ class AddOfficerDialog extends StatefulWidget {
 }
 
 class _AddOfficerDialogState extends State<AddOfficerDialog> {
+  @override
+  void initState() {
+    Provider.of<OfficersControllerProvider>(context, listen: false).fetchOfficersList();
+    // TODO: implement initState
+    super.initState();
+  }
   List<String> _employeeController = [];
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,7 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
             color: Colors.white,
           ),
           child: Form(
-              // key: _formKey,
+              key: _formKey,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
             // Header with client info
             Row(
@@ -52,7 +59,8 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
                     builder: (context, officers, child) {
                   return Expanded(
                     child: CustomMultiSelectDropdownField(
-                      label: 'Add Officers',
+                      isRequired: true,
+                      label: 'Add Group',
 
                       selectedItems: _employeeController,
                       items: officers?.officersListModel
@@ -91,25 +99,28 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
                         text: 'ADD',
                         icon: Icons.check,
                         onPressed: ()async {
-                          print("===============>$_employeeController");
-                          print(_employeeController.toList());
-                          final provider = Provider.of<RoundRobinProvider>(context, listen: false);
+                          if((_formKey.currentState?.validate()??false) && _employeeController.isNotEmpty){
+                            print("===============>$_employeeController");
+                            print(_employeeController.toList());
+                            final provider = Provider.of<RoundRobinProvider>(context, listen: false);
 
-                          bool result = await provider.addOfficersToRoundRobin(
-                            roundRobinId: widget.roundRobinId,
-                            officerIds: _employeeController,
-                          );
+                            bool result = await provider.addOfficersToRoundRobin(
+                              roundRobinId: widget.roundRobinId,
+                              officerIds: _employeeController,
+                            );
 
-                          if (result) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Officers added successfully!')),
-                            );
-                            Navigator.pop(context);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(provider.error ?? 'Failed to add officers')),
-                            );
+                            if (result) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text(' added successfully!')),
+                              );
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(provider.error ?? 'Failed to add officers')),
+                              );
+                            }
                           }
+
 
                         },
                         isFilled: true,

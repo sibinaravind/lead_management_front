@@ -92,7 +92,7 @@ class OfficersModel {
   String? gender;
   String? companyPhoneNumber;
   List<dynamic>? designation;
-  List<String>? department;
+  // List<String>? department;
   List<String>? branch;
   DateTime? createdAt;
   List<String>? officers;
@@ -106,22 +106,33 @@ class OfficersModel {
     this.gender,
     this.companyPhoneNumber,
     this.designation,
-    this.department,
+    // this.department,
     this.branch,
     this.createdAt,
     this.officers,
   });
 
   factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
-    id: json["_id"],
-    officerId: json["officer_id"],
-    name: json["name"],
-    status: json["status"],
-    phone: json["phone"],
-    gender: json["gender"],
-    companyPhoneNumber: json["company_phone_number"],
-    branch: List<String>.from(json["branch"].map((x) => x)),
-    createdAt: DateTime.parse(json["created_at"]),
+    id: json["_id"] ?? '',
+    officerId: json["officer_id"] ?? '',
+    name: json["name"] ?? '',
+    status: json["status"] ?? '',
+    phone: json["phone"] ?? '',
+    gender: json["gender"] ?? '',
+    companyPhoneNumber: json["company_phone_number"] ?? '',
+    branch: json["branch"] != null
+        ? List<String>.from(json["branch"].map((x) => x))
+        : [],
+    designation: json["designation"] != null
+        ? List<String>.from(json["designation"].map((x) => x))
+        : [],
+    createdAt: json["created_at"] != null
+        ? DateTime.parse(json["created_at"])
+        : null,
+
+    // branch: List<String>.from(json["branch"].map((x) => x))??[],
+    // createdAt: DateTime.parse(json["created_at"]),
+    // designation: List<String>.from(json["designation"].map((x) => x))??[],
   );
 
   Map<String, dynamic> toJson() => {
@@ -133,11 +144,19 @@ class OfficersModel {
     "gender": gender,
     "company_phone_number": companyPhoneNumber,
     "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
-    "department": List<dynamic>.from(department?.map((x) => x) ?? []),
+    // "department": List<dynamic>.from(department?.map((x) => x) ?? []),
     "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
     "created_at": createdAt?.toIso8601String() ?? '',
     "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
   };
+
+  static void addOfficerToList(List<OfficersModel> list, OfficersModel newOfficer) {
+    final exists = list.any((element) => element.id == newOfficer.id);
+    if (!exists) {
+      list.add(newOfficer);
+    }
+  }
+
 
   /// Update in list
   static void updateOfficerInList(List<OfficersModel> list, OfficersModel updatedOfficer) {

@@ -40,10 +40,27 @@ class ApiService {
       _handleError(e);
     }
   }
+  //
+  // Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
+  //   try {
+  //     final response = await _dio.post(endpoint, data: data);
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       return response.data;
+  //     } else {
+  //       _handleError(response.data['message']);
+  //     }
+  //   } on DioException catch (e) {
+  //     _handleError(e);
+  //   }
+  // }
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.post(endpoint, data: data);
+      final cleanedData = Map.fromEntries(
+        data.entries.where((entry) => entry.value != null && entry.value != ""),
+      );
+
+      final response = await _dio.post(endpoint, data: cleanedData);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
@@ -54,9 +71,14 @@ class ApiService {
     }
   }
 
+
   Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.put(endpoint, data: data);
+      final cleanedData = Map.fromEntries(
+        data.entries.where((entry) => entry.value != null && entry.value != ""),
+      );
+
+      final response = await _dio.put(endpoint, data: cleanedData);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
@@ -72,7 +94,11 @@ class ApiService {
     Map<String, dynamic> data,
   ) async {
     try {
-      final response = await _dio.patch(endpoint, data: data);
+      final cleanedData = Map.fromEntries(
+        data.entries.where((entry) => entry.value != null && entry.value != ""),
+      );
+
+      final response = await _dio.patch(endpoint, data: cleanedData);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
