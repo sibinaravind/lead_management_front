@@ -4,6 +4,7 @@ import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
+import '../../../widgets/custom_toast.dart';
 
 class AddClientScreen extends StatefulWidget {
   final bool isEdit;
@@ -394,12 +395,16 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                         '',
                                                     context: context,
                                                   );
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                        content: Text(
-                                                            'Client saved successfully')),
-                                                  );
+                                                  CustomToast.showToast(
+                                                      context: context,
+                                                      message:
+                                                          'Client saved successfully');
+                                                  // ScaffoldMessenger.of(context)
+                                                  //     .showSnackBar(
+                                                  //   const SnackBar(
+                                                  //       content: Text(
+                                                  //           'Client saved successfully')),
+                                                  // );
                                                   Navigator.pop(context);
                                                 }
                                               } else {

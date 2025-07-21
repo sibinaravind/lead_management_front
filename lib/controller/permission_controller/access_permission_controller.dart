@@ -138,13 +138,11 @@
 //
 // }
 
-
 import 'package:flutter/cupertino.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/access_permissions/access_permissions.dart';
-
 
 class AccessPermissionProvider with ChangeNotifier {
   AccessPermissionProvider._privateConstructor();
@@ -163,12 +161,15 @@ class AccessPermissionProvider with ChangeNotifier {
   bool get isPatching => _isPatching;
   String? get error => _error;
 
-  Future<void> fetchAccessPermissions() async {
+  Future<void> fetchAccessPermissions(
+    context,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response = await apiService.get(Constant().accessPermissions);
+      final response =
+          await apiService.get(context: context, Constant().accessPermissions);
 
       if (response['success'] == true && response['data'] != null) {
         _permissions = (response['data'] as List)
@@ -186,7 +187,8 @@ class AccessPermissionProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> patchAccessPermissions({
+  Future<bool> patchAccessPermissions(
+    context, {
     required String category,
     required List<Map<String, dynamic>> updatedFields,
   }) async {
@@ -198,6 +200,7 @@ class AccessPermissionProvider with ChangeNotifier {
         "value": updatedFields,
       };
       final response = await apiService.patch(
+        context: context,
         Constant().accessPermissionsEdit,
         data,
       );
@@ -221,22 +224,20 @@ class AccessPermissionProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-  Future<bool> deleteAccessPermission(String category) async {
+
+  Future<bool> deleteAccessPermission(context, String category) async {
     _isLoading = true;
     notifyListeners();
-    Map<String, dynamic> data={
+    Map<String, dynamic> data = {
       "category": category,
     };
     try {
       final response = await apiService.delete(
-        Constant().accessPermissionsDelete,
-       data
-      );
+          context: context, Constant().accessPermissionsDelete, data);
 
       if (response['success'] == true) {
-
         _permissions.removeWhere(
-              (perm) => perm.category.toLowerCase() == category.toLowerCase(),
+          (perm) => perm.category.toLowerCase() == category.toLowerCase(),
         );
 
         return true;
@@ -290,7 +291,8 @@ class AccessPermissionProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<bool> addAccessPermission({
+  Future<bool> addAccessPermission(
+    context, {
     required String category,
     required Map<String, bool> value,
   }) async {
@@ -304,6 +306,7 @@ class AccessPermissionProvider with ChangeNotifier {
       };
 
       final response = await apiService.post(
+        context: context,
         Constant().accessPermissionsAdd,
         data,
       );
@@ -328,12 +331,10 @@ class AccessPermissionProvider with ChangeNotifier {
     }
   }
 
-
-
   EmployeePermissionModel? getPermissionByCategory(String category) {
     try {
-      return _permissions.firstWhere(
-              (element) => element.category.toLowerCase() == category.toLowerCase());
+      return _permissions.firstWhere((element) =>
+          element.category.toLowerCase() == category.toLowerCase());
     } catch (e) {
       return null;
     }

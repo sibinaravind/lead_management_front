@@ -10,7 +10,8 @@ class ProjectManagementTab extends StatefulWidget {
   final ProjectModel? project;
 
   final bool isEditMode;
-  const ProjectManagementTab({super.key, required this.isEditMode,  this.project});
+  const ProjectManagementTab(
+      {super.key, required this.isEditMode, this.project});
 
   @override
   State<ProjectManagementTab> createState() => _ProjectManagementTabState();
@@ -19,11 +20,9 @@ class ProjectManagementTab extends StatefulWidget {
 class _ProjectManagementTabState extends State<ProjectManagementTab> {
   final _formKey = GlobalKey<FormState>();
 
-
   String? _selectedOrganizationType;
   String? _selectedOrganizationCategory;
   String? _selectedCountry;
-
 
   List<String> remarks = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   List<String> selectedRemarks = [];
@@ -36,13 +35,14 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
 
   @override
   void initState() {
-    _selectedOrganizationType = widget.project?.organizationType == 'GOV' ? "Government" : "Private"??'';
-    _selectedOrganizationCategory= widget.project?.organizationCategory??'';
-    _selectedCountry= widget.project?.country??'';
-    _organizationNameController.text=widget.project?.organizationName??'';
-    _locationController.text=widget.project?.city??'';
-    _projectNameController.text=widget.project?.projectName??'';
-
+    _selectedOrganizationType = widget.project?.organizationType == 'GOV'
+        ? "Government"
+        : "Private" ?? '';
+    _selectedOrganizationCategory = widget.project?.organizationCategory ?? '';
+    _selectedCountry = widget.project?.country ?? '';
+    _organizationNameController.text = widget.project?.organizationName ?? '';
+    _locationController.text = widget.project?.city ?? '';
+    _projectNameController.text = widget.project?.projectName ?? '';
 
     super.initState();
   }
@@ -121,16 +121,20 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                   isdate: false,
                                   readOnly: false,
                                 ),
-                                Consumer<ConfigProvider>(builder: (context, configProvider, child){
-                                  return   CustomDropdownField(
+                                Consumer<ConfigProvider>(
+                                    builder: (context, configProvider, child) {
+                                  return CustomDropdownField(
                                     label: 'Country',
                                     value: _selectedCountry,
-                                    items:configProvider.configModelList?.country?.map((e) => e.name??'').toList()??[],
+                                    items: configProvider
+                                            .configModelList?.country
+                                            ?.map((e) => e.name ?? '')
+                                            .toList() ??
+                                        [],
                                     onChanged: (val) =>
                                         setState(() => _selectedCountry = val),
                                     isRequired: true,
                                   );
-
                                 }),
                                 CustomTextFormField(
                                   label: 'City',
@@ -138,11 +142,9 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                   isdate: false,
                                   readOnly: false,
                                 ),
-
                               ],
                             ),
                             const SizedBox(height: 20),
-
 
                             const SizedBox(height: 32),
 
@@ -178,56 +180,82 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                               Color(0xFFE100FF)
                                             ],
                                           ),
-                                          onPressed: () async{
+                                          onPressed: () async {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              String organizationTypeShort=_selectedOrganizationType=='Government'?'GOV':'PVT';
+                                              String organizationTypeShort =
+                                                  _selectedOrganizationType ==
+                                                          'Government'
+                                                      ? 'GOV'
+                                                      : 'PVT';
                                               if (widget.isEditMode) {
-                                                final editProject=await value.editProject(
-                                                  projectId: widget.project?.sId??'',
-                                                    projectName: _projectNameController.text.trim()??'',
-                                                  organizationType: organizationTypeShort??'',
-                                                  organizationCategory: _selectedOrganizationCategory??'',
-                                                  organizationName: _organizationNameController.text.trim()??'',
-                                                  city: _locationController.text.trim()??'',
-                                                  country: _selectedCountry?.trim()??''
-                                                );
-                                                if(editProject){
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                  CustomSnackBar.show(context, 'Project Updated Successfully');
-                                                }else{
-                                                  CustomSnackBar.show(context, "Project Update Failed");
-                                                }
-                                                  }else {
-                                               final addProject=await value.addProject(
+                                                final editProject = await value.editProject(
+                                                    context,
+                                                    projectId:
+                                                        widget.project?.sId ??
+                                                            '',
                                                     projectName:
-                                                    _projectNameController
-                                                        .text
-                                                        .trim(),
+                                                        _projectNameController.text
+                                                                .trim() ??
+                                                            '',
                                                     organizationType:
-                                                    organizationTypeShort ??
-                                                        '',
+                                                        organizationTypeShort ??
+                                                            '',
                                                     organizationCategory:
-                                                    _selectedOrganizationCategory ??
-                                                        '',
+                                                        _selectedOrganizationCategory ??
+                                                            '',
                                                     organizationName:
-                                                    _organizationNameController
-                                                        .text
-                                                        .trim(),
+                                                        _organizationNameController
+                                                                .text
+                                                                .trim() ??
+                                                            '',
+                                                    city: _locationController
+                                                            .text
+                                                            .trim() ??
+                                                        '',
+                                                    country: _selectedCountry
+                                                            ?.trim() ??
+                                                        '');
+                                                if (editProject) {
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  CustomSnackBar.show(context,
+                                                      'Project Updated Successfully');
+                                                } else {
+                                                  CustomSnackBar.show(context,
+                                                      "Project Update Failed");
+                                                }
+                                              } else {
+                                                final addProject = await value.addProject(
+                                                    context,
+                                                    projectName:
+                                                        _projectNameController
+                                                            .text
+                                                            .trim(),
+                                                    organizationType:
+                                                        organizationTypeShort ??
+                                                            '',
+                                                    organizationCategory:
+                                                        _selectedOrganizationCategory ??
+                                                            '',
+                                                    organizationName:
+                                                        _organizationNameController
+                                                            .text
+                                                            .trim(),
                                                     city: _locationController
                                                         .text
                                                         .trim(),
                                                     country:
-                                                    _selectedCountry ?? '');
-                                               if(addProject){
-                                                 Navigator.pop(context);
-                                                 CustomSnackBar.show(context, 'Project Created Successfully');
-                                               }else{
-                                                 CustomSnackBar.show(context, "Project Creation Failed");
-                                               }
+                                                        _selectedCountry ?? '');
+                                                if (addProject) {
+                                                  Navigator.pop(context);
+                                                  CustomSnackBar.show(context,
+                                                      'Project Created Successfully');
+                                                } else {
+                                                  CustomSnackBar.show(context,
+                                                      "Project Creation Failed");
+                                                }
                                               }
-
                                             }
                                           },
                                         ),

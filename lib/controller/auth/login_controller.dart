@@ -130,13 +130,13 @@
 //   }
 // }
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/login_cache_service.dart';
 import '../../model/officer/officers_lofin_model.dart';
 import '../../view/screens/drawer/drawer_screen.dart';
+import '../../view/widgets/custom_toast.dart';
 
 class LoginProvider extends ChangeNotifier {
   LoginProvider._privateConstructor();
@@ -154,7 +154,8 @@ class LoginProvider extends ChangeNotifier {
   String? get token => _token;
   bool get isLoading => _isLoading;
 
-  Future<void> loginOfficer({
+  Future<void> loginOfficer(
+    conext, {
     required String officerId,
     required String password,
     required BuildContext context,
@@ -163,7 +164,8 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _apiService.post(Constant().officerLogin, {
+      final response =
+          await _apiService.post(context: context, Constant().officerLogin, {
         "officer_id": officerId,
         "password": password,
       });
@@ -175,23 +177,28 @@ class LoginProvider extends ChangeNotifier {
         await _cacheService.saveOfficer(_officer!);
         await _cacheService.saveToken(_token!);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login successful")),
-        );
+        CustomToast.showToast(context: context, message: 'Login successful');
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Login successful")),
+        // );
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const DrawerScreen()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login failed: Invalid credentials")),
-        );
+        CustomToast.showToast(
+            context: context, message: 'Login failed: Invalid credentials');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Login failed: Invalid credentials")),
+        // );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      CustomToast.showToast(context: context, message: 'Error: $e');
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Error: $e")),
+      // );
     }
 
     _isLoading = false;
@@ -212,6 +219,7 @@ class LoginProvider extends ChangeNotifier {
   }) async {
     try {
       final response = await _apiService.patch(
+        context: context,
         '${Constant().officerPasswordReset}/$officerId',
         {
           "current_password": currentPassword,
@@ -220,20 +228,25 @@ class LoginProvider extends ChangeNotifier {
       );
 
       if (response["success"] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Password updated successfully")),
-        );
+        CustomToast.showToast(
+            context: context, message: 'Password updated successfully');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Password updated successfully")),
+        // );
         return true;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed: ${response["data"]}")),
-        );
+        CustomToast.showToast(
+            context: context, message: '"Failed: ${response["data"]}"');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text("Failed: ${response["data"]}")),
+        // );
         return false;
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      CustomToast.showToast(context: context, message: 'Error: $e');
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Error: $e")),
+      // );
       return false;
     }
   }

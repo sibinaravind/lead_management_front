@@ -16,6 +16,7 @@ import 'package:excel/excel.dart' as exl;
 import 'dart:io';
 
 import '../../../widgets/custom_multi_selection_dropdown_field.dart';
+import '../../../widgets/custom_toast.dart';
 
 class BulkLeadScreen extends StatefulWidget {
   const BulkLeadScreen({super.key});
@@ -325,7 +326,7 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
                                                                     .infinity,
                                                                 child:
                                                                     CustomMultiSelectDropdownField(
-                                                                      isSplit: true,
+                                                                  isSplit: true,
                                                                   label:
                                                                       'Select Officers',
                                                                   selectedItems:
@@ -571,13 +572,14 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
           ..setAttribute('download', 'template.xlsx')
           ..click();
         html.Url.revokeObjectUrl(url);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Template downloaded successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        CustomToast.showToast(
+            context: context, message: 'Template downloaded successfully!');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Template downloaded successfully!'),
+        //     backgroundColor: Colors.green,
+        //   ),
+        // );
       } else {
         final directory = await getApplicationDocumentsDirectory();
         final filePath = '${directory.path}/template.xlsx';
@@ -585,25 +587,30 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
 
         await file.create(recursive: true);
         await file.writeAsBytes(bytes);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Template downloaded successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        CustomToast.showToast(
+            context: context, message: 'Template downloaded successfully!');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Template downloaded successfully!'),
+        //     backgroundColor: Colors.green,
+        //   ),
+        // );
       }
 
       // setState(() {
       //   isTemplateDownloaded = true;
       // });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error downloading template: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      CustomToast.showToast(
+          context: context,
+          message: 'Error downloading template: $e',
+          backgroundColor: AppColors.redSecondaryColor);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Error downloading template: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
     }
   }
 
@@ -686,35 +693,43 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
             }
           }
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                  'File uploaded successfully! ${uploadedData.length} rows loaded.'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text(
+          //         'File uploaded successfully! ${uploadedData.length} rows loaded.'),
+          //     backgroundColor: Colors.green,
+          //   ),
+          // );
           _showExcelPreviewAndProcess();
           // _convertToJson();
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error uploading file: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      CustomToast.showToast(
+          context: context,
+          message: 'Error uploading file: $e',
+          backgroundColor: AppColors.redSecondaryColor);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Error uploading file: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
     }
   }
 
   void _showExcelPreviewAndProcess() {
     if (uploadedData.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No data to show!'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      CustomToast.showToast(
+          context: context,
+          message: 'No data to show!',
+          backgroundColor: AppColors.orangeSecondaryColor);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text('No data to show!'),
+      //     backgroundColor: Colors.orange,
+      //   ),
+      // );
       return;
     }
 
@@ -764,12 +779,16 @@ class _AddLeadScreenState extends State<BulkLeadScreen>
 
   void _convertToJson() {
     if (uploadedData.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No data to convert!'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      CustomToast.showToast(
+          context: context,
+          message: 'No data to convert!',
+          backgroundColor: AppColors.orangeSecondaryColor);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text('No data to convert!'),
+      //     backgroundColor: Colors.orange,
+      //   ),
+      // );
       return;
     }
 

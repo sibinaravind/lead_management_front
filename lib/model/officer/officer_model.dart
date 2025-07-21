@@ -83,75 +83,75 @@
 //   }
 // }
 
-class OfficersModel {
-  String? id;
-  String? officerId;
-  String? name;
-  String? status;
-  String? phone;
-  String? gender;
-  String? companyPhoneNumber;
-  List<dynamic>? designation;
-  List<String>? department;
-  List<String>? branch;
-  DateTime? createdAt;
-  List<String>? officers;
+// class OfficersModel {
+//   String? id;
+//   String? officerId;
+//   String? name;
+//   String? status;
+//   String? phone;
+//   String? gender;
+//   String? companyPhoneNumber;
+//   List<dynamic>? designation;
+//   List<String>? department;
+//   List<String>? branch;
+//   DateTime? createdAt;
+//   List<String>? officers;
 
-  OfficersModel({
-    this.id,
-    this.officerId,
-    this.name,
-    this.status,
-    this.phone,
-    this.gender,
-    this.companyPhoneNumber,
-    this.designation,
-    this.department,
-    this.branch,
-    this.createdAt,
-    this.officers,
-  });
+//   OfficersModel({
+//     this.id,
+//     this.officerId,
+//     this.name,
+//     this.status,
+//     this.phone,
+//     this.gender,
+//     this.companyPhoneNumber,
+//     this.designation,
+//     this.department,
+//     this.branch,
+//     this.createdAt,
+//     this.officers,
+//   });
 
-  factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
-    id: json["_id"],
-    officerId: json["officer_id"],
-    name: json["name"],
-    status: json["status"],
-    phone: json["phone"],
-    gender: json["gender"],
-    companyPhoneNumber: json["company_phone_number"],
-    branch: List<String>.from(json["branch"].map((x) => x)),
-    createdAt: DateTime.parse(json["created_at"]),
-  );
+//   factory OfficersModel.fromJson(Map<String, dynamic> json) => OfficersModel(
+//     id: json["_id"],
+//     officerId: json["officer_id"],
+//     name: json["name"],
+//     status: json["status"],
+//     phone: json["phone"],
+//     gender: json["gender"],
+//     companyPhoneNumber: json["company_phone_number"],
+//     branch: List<String>.from(json["branch"].map((x) => x)),
+//     createdAt: DateTime.parse(json["created_at"]),
+//   );
 
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "officer_id": officerId,
-    "name": name,
-    "status": status,
-    "phone": phone,
-    "gender": gender,
-    "company_phone_number": companyPhoneNumber,
-    "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
-    "department": List<dynamic>.from(department?.map((x) => x) ?? []),
-    "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
-    "created_at": createdAt?.toIso8601String() ?? '',
-    "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
-  };
+//   Map<String, dynamic> toJson() => {
+//     "_id": id,
+//     "officer_id": officerId,
+//     "name": name,
+//     "status": status,
+//     "phone": phone,
+//     "gender": gender,
+//     "company_phone_number": companyPhoneNumber,
+//     "designation": List<dynamic>.from(designation?.map((x) => x) ?? []),
+//     "department": List<dynamic>.from(department?.map((x) => x) ?? []),
+//     "branch": List<dynamic>.from(branch?.map((x) => x) ?? []),
+//     "created_at": createdAt?.toIso8601String() ?? '',
+//     "officers": List<dynamic>.from(officers?.map((x) => x) ?? []),
+//   };
 
-  /// Update in list
-  static void updateOfficerInList(List<OfficersModel> list, OfficersModel updatedOfficer) {
-    int index = list.indexWhere((officer) => officer.id == updatedOfficer.id);
-    if (index != -1) {
-      list[index] = updatedOfficer;
-    }
-  }
+//   /// Update in list
+//   static void updateOfficerInList(List<OfficersModel> list, OfficersModel updatedOfficer) {
+//     int index = list.indexWhere((officer) => officer.id == updatedOfficer.id);
+//     if (index != -1) {
+//       list[index] = updatedOfficer;
+//     }
+//   }
 
-  /// Delete from list
-  static void deleteOfficerFromList(List<OfficersModel> list, String id) {
-    list.removeWhere((officer) => officer.id == id);
-  }
-}
+//   /// Delete from list
+//   static void deleteOfficerFromList(List<OfficersModel> list, String id) {
+//     list.removeWhere((officer) => officer.id == id);
+//   }
+// }
 
 // import 'dart:convert';
 // import 'dart:typed_data';

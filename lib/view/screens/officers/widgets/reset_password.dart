@@ -58,7 +58,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
               constraints: BoxConstraints(
                 minWidth: 320,
                 maxWidth: 500,
-                minHeight: widget.isResetPassword? 500:300,
+                minHeight: widget.isResetPassword ? 500 : 300,
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -212,7 +212,6 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                                           .isResetPassword,
                                                       child:
                                                           CustomPasswordTextFormField(
-
                                                         label:
                                                             'Confirm Password',
                                                         controller:
@@ -312,8 +311,8 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
     final officerId = widget.officerId; // or officerIdController.text
 
     if (officerId.isEmpty) {
-      bool success =
-          await OfficersControllerProvider().updateOfficer(officerId, officer);
+      bool success = await OfficersControllerProvider()
+          .updateOfficer(context, officerId, officer);
 
       if (success) {
         CustomSnackBar.show(context, "Password updated successfully");
@@ -326,38 +325,38 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
 
   void resetPassword() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-         return AlertDialog(
-            title: const Text("Reset Password"),
-            content: const Text("Are you sure?"),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text("Cancel")),
-              TextButton(
-                  onPressed: () async {
-                    final officerId = widget.officerId;
-                    if (officerId.isEmpty) {
-                      bool success = await LoginProvider().resetPassword(
-                          officerId: officerId,
-                          currentPassword: _passwordController.text,
-                          newPassword: _resetPasswordController.text,
-                          context: context);
-                      Navigator.pop(context);
-                      if (success) {
-                        CustomSnackBar.show(context, "Password Rest successfully");
-                      } else {
-                        CustomSnackBar.show(context, "Failed to Update",
-                            backgroundColor: AppColors.redSecondaryColor);
-                      }
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Reset Password"),
+          content: const Text("Are you sure?"),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () async {
+                  final officerId = widget.officerId;
+                  if (officerId.isEmpty) {
+                    bool success = await LoginProvider().resetPassword(
+                        officerId: officerId,
+                        currentPassword: _passwordController.text,
+                        newPassword: _resetPasswordController.text,
+                        context: context);
+                    Navigator.pop(context);
+                    if (success) {
+                      CustomSnackBar.show(
+                          context, "Password Rest successfully");
+                    } else {
+                      CustomSnackBar.show(context, "Failed to Update",
+                          backgroundColor: AppColors.redSecondaryColor);
                     }
-                  },
-                  child: const Text("Reset")),
-            ],
-          );
-
-        },
+                  }
+                },
+                child: const Text("Reset")),
+          ],
+        );
+      },
     );
   }
 }

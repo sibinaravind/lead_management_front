@@ -124,7 +124,9 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     //     selectedFilters[category] = '';
     //   }
     // }
-    Provider.of<LeadProvider>(context, listen: false).getLeadList();
+    Provider.of<LeadProvider>(context, listen: false).getLeadList(
+      context,
+    );
   }
 
   @override

@@ -6,14 +6,14 @@ class CustomToast {
   static void showToast({
     required BuildContext context,
     required String message,
-    Color backgroundColor =AppColors.primaryColor,
+    Color backgroundColor = AppColors.primaryColor,
     Color textColor = AppColors.textWhiteColour,
     Duration duration = const Duration(seconds: 2),
   }) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: 100,
+        bottom: 50,
         left: MediaQuery.of(context).size.width * 0.1,
         right: MediaQuery.of(context).size.width * 0.1,
         child: Material(

@@ -946,8 +946,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
@@ -955,13 +953,15 @@ import 'package:provider/provider.dart';
 
 import '../../../../controller/config_provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
+import '../../../widgets/custom_toast.dart';
 import '../../../widgets/widgets.dart';
 
 class ClientManagementTabVacancy extends StatefulWidget {
   const ClientManagementTabVacancy({super.key});
 
   @override
-  State<ClientManagementTabVacancy> createState() => _ClientManagementTabState();
+  State<ClientManagementTabVacancy> createState() =>
+      _ClientManagementTabState();
 }
 
 class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
@@ -981,8 +981,10 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
   void didChangeDependencies() {
     if (_isInit) {
       final configListModel = Provider.of<ConfigProvider?>(context);
-      final specializationList = configListModel?.configModelList?.specialized ?? [];
-      specializationDropdownItems = specializationList.map((item) => item.name ?? '').toList();
+      final specializationList =
+          configListModel?.configModelList?.specialized ?? [];
+      specializationDropdownItems =
+          specializationList.map((item) => item.name ?? '').toList();
       _isInit = false;
     }
     super.didChangeDependencies();
@@ -1049,19 +1051,20 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       child: ListTile(
                         title: Consumer<ProjectProvider>(
                           builder: (context, projectProvider, child) {
-                            final clientData = projectProvider.clients.firstWhere(
-                                  (c) => c.sId == client['client_id'],
-
+                            final clientData =
+                                projectProvider.clients.firstWhere(
+                              (c) => c.sId == client['client_id'],
                             );
 
-                            return Text('Client Name: ${clientData.name ?? ""}');
+                            return Text(
+                                'Client Name: ${clientData.name ?? ""}');
                           },
                         ),
-
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Commission: ${client['commission']?.toString() ?? ""}'),
+                            Text(
+                                'Commission: ${client['commission']?.toString() ?? ""}'),
                             const SizedBox(height: 4),
                             ...client['vacancies'].entries.map((e) => Text(
                                 '${e.key} - Vacancies: ${e.value['count'] ?? ""}, Target CV: ${e.value['target_cv'] ?? ""}')),
@@ -1106,11 +1109,12 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
         builder: (context, value, child) {
           value.filteredClients = value.clients
               .where((client) => !_selectedClients
-              .any((selected) => selected['client_id'] == client.sId))
+                  .any((selected) => selected['client_id'] == client.sId))
               .toList();
           return StatefulBuilder(
             builder: (context, setDialogState) => Dialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.7,
                 height: MediaQuery.of(context).size.height * 0.8,
@@ -1131,7 +1135,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.person_add, color: Colors.white, size: 24),
+                          const Icon(Icons.person_add,
+                              color: Colors.white, size: 24),
                           const SizedBox(width: 12),
                           const CustomText(
                             text: 'Add Clients to Project',
@@ -1155,17 +1160,18 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                         controller: _searchController,
                         decoration: InputDecoration(
                           hintText: 'Search clients by name or email...',
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
                           suffixIcon: _searchController.text.isNotEmpty
                               ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              setDialogState(() {
-                                value.filteredClients = value.clients;
-                              });
-                            },
-                          )
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setDialogState(() {
+                                      value.filteredClients = value.clients;
+                                    });
+                                  },
+                                )
                               : null,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -1173,7 +1179,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         onChanged: (query) {
                           setDialogState(() {
@@ -1182,8 +1189,14 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                             }
                             value.filteredClients = value.clients
                                 .where((client) =>
-                            (client.name?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
-                                (client.email?.toLowerCase().contains(query.toLowerCase()) ?? false))
+                                    (client.name
+                                            ?.toLowerCase()
+                                            .contains(query.toLowerCase()) ??
+                                        false) ||
+                                    (client.email
+                                            ?.toLowerCase()
+                                            .contains(query.toLowerCase()) ??
+                                        false))
                                 .toList();
                           });
                         },
@@ -1191,13 +1204,16 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                     ),
                     // Results Count
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
+                          Icon(Icons.info_outline,
+                              size: 16, color: Colors.grey.shade600),
                           const SizedBox(width: 8),
                           CustomText(
-                            text: '${value.filteredClients.length} clients available',
+                            text:
+                                '${value.filteredClients.length} clients available',
                             color: Colors.grey.shade600,
                             fontSize: 14,
                           ),
@@ -1208,92 +1224,98 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                     Expanded(
                       child: value.filteredClients.isEmpty
                           ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 16),
-                            CustomText(
-                              text: _searchController.text.isEmpty
-                                  ? 'No clients available'
-                                  : 'No clients found matching "${_searchController.text}"',
-                              fontSize: 16,
-                              color: Colors.grey.shade600,
-                            ),
-                          ],
-                        ),
-                      )
-                          : ListView.separated(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: value.filteredClients.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final client = value.filteredClients[index];
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade200),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(16),
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.blue.shade100,
-                                child: CustomText(
-                                  text: client.name?[0].toUpperCase() ?? '',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue.shade700,
-                                ),
-                              ),
-                              title: CustomText(
-                                text: client.name ?? '',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              subtitle: CustomText(
-                                text: client.email ?? '',
-                                color: Colors.grey.shade600,
-                                fontSize: 14,
-                              ),
-                              trailing: Container(
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.greenGradient,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: ElevatedButton.icon(
-                                  onPressed: () => _showClientDetailsDialog(client.toJson()),
-                                  icon: const Icon(Icons.add, size: 18),
-                                  label: const CustomText(
-                                    text: 'Add',
-                                    color: Colors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 64,
+                                    color: Colors.grey.shade400,
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundColor: Colors.white,
-                                    shadowColor: Colors.transparent,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                  const SizedBox(height: 16),
+                                  CustomText(
+                                    text: _searchController.text.isEmpty
+                                        ? 'No clients available'
+                                        : 'No clients found matching "${_searchController.text}"',
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: value.filteredClients.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (context, index) {
+                                final client = value.filteredClients[index];
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border:
+                                        Border.all(color: Colors.grey.shade200),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.all(16),
+                                    leading: CircleAvatar(
+                                      backgroundColor: Colors.blue.shade100,
+                                      child: CustomText(
+                                        text:
+                                            client.name?[0].toUpperCase() ?? '',
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700,
+                                      ),
+                                    ),
+                                    title: CustomText(
+                                      text: client.name ?? '',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                    subtitle: CustomText(
+                                      text: client.email ?? '',
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                    trailing: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: AppColors.greenGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: ElevatedButton.icon(
+                                        onPressed: () =>
+                                            _showClientDetailsDialog(
+                                                client.toJson()),
+                                        icon: const Icon(Icons.add, size: 18),
+                                        label: const CustomText(
+                                          text: 'Add',
+                                          color: Colors.white,
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundColor: Colors.white,
+                                          shadowColor: Colors.transparent,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),
@@ -1316,7 +1338,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: 450,
             padding: const EdgeInsets.all(24),
@@ -1365,7 +1388,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       controller: _commissionController,
                       label: 'Commission',
                       isRequired: true,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                       // validator: (value) {
                       //   if (value?.isEmpty == true) return 'Commission is required';
                       //   final commission = double.tryParse(value!);
@@ -1421,23 +1445,28 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                         if (specializedSelection.isNotEmpty &&
                             _vacancyController.text.isNotEmpty &&
                             _targetCvController.text.isNotEmpty) {
-                          bool alreadyAdded = addedSpecializations.any(
-                                  (spec) => spec['name'].toString().toLowerCase() == specializedSelection.toLowerCase());
+                          bool alreadyAdded = addedSpecializations.any((spec) =>
+                              spec['name'].toString().toLowerCase() ==
+                              specializedSelection.toLowerCase());
                           if (!alreadyAdded) {
                             setDialogState(() {
                               addedSpecializations.add({
                                 'name': specializedSelection,
                                 'count': int.parse(_vacancyController.text),
-                                'target_cv': int.parse(_targetCvController.text),
+                                'target_cv':
+                                    int.parse(_targetCvController.text),
                               });
                               specializedSelection = '';
                               _vacancyController.clear();
                               _targetCvController.clear();
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Specialization already added!')),
-                            );
+                            CustomToast.showToast(
+                                context: context,
+                                message: 'Specialization already added!');
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   const SnackBar(content: Text('Specialization already added!')),
+                            // );
                           }
                         }
                       },
@@ -1451,17 +1480,19 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                         children: [
                           const Divider(),
                           ...addedSpecializations.map((spec) => ListTile(
-                            title: Text(spec['name']),
-                            subtitle: Text('Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                setDialogState(() {
-                                  addedSpecializations.remove(spec);
-                                });
-                              },
-                            ),
-                          )),
+                                title: Text(spec['name']),
+                                subtitle: Text(
+                                    'Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    setDialogState(() {
+                                      addedSpecializations.remove(spec);
+                                    });
+                                  },
+                                ),
+                              )),
                           const Divider(),
                         ],
                       ),
@@ -1487,9 +1518,15 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 if (addedSpecializations.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Please add at least one specialization')),
-                                  );
+                                  CustomToast.showToast(
+                                      context: context,
+                                      message:
+                                          'Please add at least one specialization');
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   const SnackBar(
+                                  //       content: Text(
+                                  //           'Please add at least one specialization')),
+                                  // );
                                   return;
                                 }
                                 final Map<String, dynamic> vacanciesMap = {
@@ -1524,7 +1561,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
     );
   }
 
-  void _addClientWithVacancies(String clientId, double commission, Map<String, dynamic> vacancies) {
+  void _addClientWithVacancies(
+      String clientId, double commission, Map<String, dynamic> vacancies) {
     setState(() {
       _selectedClients.add({
         'client_id': clientId,
@@ -1546,22 +1584,25 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
   }
 
   void _showEditClientDialog(Map<String, dynamic> client) {
-    _vacancyController.text = client['vacancies']?.values.first['count']?.toString() ?? '';
+    _vacancyController.text =
+        client['vacancies']?.values.first['count']?.toString() ?? '';
     _commissionController.text = client['commission']?.toString() ?? '';
     specializedSelection = client['vacancies']?.keys.first ?? '';
-    List<Map<String, dynamic>> addedSpecializations = client['vacancies'].entries
+    List<Map<String, dynamic>> addedSpecializations = client['vacancies']
+        .entries
         .map<Map<String, dynamic>>((entry) => {
-      'name': entry.key,
-      'count': entry.value['count'],
-      'target_cv': entry.value['target_cv'],
-    })
+              'name': entry.key,
+              'count': entry.value['count'],
+              'target_cv': entry.value['target_cv'],
+            })
         .toList();
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: 450,
             padding: const EdgeInsets.all(24),
@@ -1591,7 +1632,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.edit, size: 18, color: Colors.orange),
+                                  const Icon(Icons.edit,
+                                      size: 18, color: Colors.orange),
                                   const SizedBox(width: 8),
                                   CustomText(
                                     text: 'Edit ${client['name'] ?? ''}',
@@ -1616,7 +1658,8 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       controller: _commissionController,
                       label: 'Commission',
                       isRequired: true,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                       // validator: (value) {
                       //   if (value?.isEmpty == true) return 'Commission is required';
                       //   final commission = double.tryParse(value!);
@@ -1672,23 +1715,30 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                         if (specializedSelection.isNotEmpty &&
                             _vacancyController.text.isNotEmpty &&
                             _targetCvController.text.isNotEmpty) {
-                          bool alreadyAdded = addedSpecializations.any(
-                                  (spec) => spec['name'].toString().toLowerCase() == specializedSelection.toLowerCase());
+                          bool alreadyAdded = addedSpecializations.any((spec) =>
+                              spec['name'].toString().toLowerCase() ==
+                              specializedSelection.toLowerCase());
                           if (!alreadyAdded) {
                             setDialogState(() {
                               addedSpecializations.add({
                                 'name': specializedSelection,
                                 'count': int.parse(_vacancyController.text),
-                                'target_cv': int.parse(_targetCvController.text),
+                                'target_cv':
+                                    int.parse(_targetCvController.text),
                               });
                               specializedSelection = '';
                               _vacancyController.clear();
                               _targetCvController.clear();
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Specialization already added!')),
-                            );
+                            CustomToast.showToast(
+                                context: context,
+                                message: 'Specialization already added!');
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   const SnackBar(
+                            //       content:
+                            //           Text('Specialization already added!')),
+                            // );
                           }
                         }
                       },
@@ -1702,17 +1752,19 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                         children: [
                           const Divider(),
                           ...addedSpecializations.map((spec) => ListTile(
-                            title: Text(spec['name']),
-                            subtitle: Text('Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                setDialogState(() {
-                                  addedSpecializations.remove(spec);
-                                });
-                              },
-                            ),
-                          )),
+                                title: Text(spec['name']),
+                                subtitle: Text(
+                                    'Vacancies: ${spec['count']}, Target CV: ${spec['target_cv']}'),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    setDialogState(() {
+                                      addedSpecializations.remove(spec);
+                                    });
+                                  },
+                                ),
+                              )),
                           const Divider(),
                         ],
                       ),
@@ -1738,9 +1790,15 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 if (addedSpecializations.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Please add at least one specialization')),
-                                  );
+                                  CustomToast.showToast(
+                                      context: context,
+                                      message:
+                                          'Please add at least one specialization');
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   const SnackBar(
+                                  //       content: Text(
+                                  //           'Please add at least one specialization')),
+                                  // );
                                   return;
                                 }
                                 final Map<String, dynamic> vacanciesMap = {
@@ -1750,7 +1808,10 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                                       'target_cv': spec['target_cv'],
                                     }
                                 };
-                                _editClient(client['client_id'], double.parse(_commissionController.text), vacanciesMap);
+                                _editClient(
+                                    client['client_id'],
+                                    double.parse(_commissionController.text),
+                                    vacanciesMap);
                                 Navigator.pop(context);
                               }
                             },
@@ -1777,9 +1838,11 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
     );
   }
 
-  void _editClient(String clientId, double commission, Map<String, dynamic> vacancies) {
+  void _editClient(
+      String clientId, double commission, Map<String, dynamic> vacancies) {
     setState(() {
-      final index = _selectedClients.indexWhere((c) => c['client_id'] == clientId);
+      final index =
+          _selectedClients.indexWhere((c) => c['client_id'] == clientId);
       if (index != -1) {
         _selectedClients[index] = {
           'client_id': clientId,

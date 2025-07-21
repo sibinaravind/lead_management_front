@@ -109,11 +109,12 @@ class CustomTextFormField extends StatelessWidget {
           obscureText: obscureText,
           inputFormatters: inputFormatters ?? defaultFormatters,
           validator: (value) {
-            if (isRequired && (value == null || value.isEmpty)) {
+            // print("===> ${value?.length}");
+            if (isRequired && (value == null || value.trim().isEmpty)) {
               return 'This field is required';
             }
 
-            if (isEmail && value != null && value.isNotEmpty) {
+            if (isEmail && value != null && value.trim().isNotEmpty) {
               final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
               if (!emailRegex.hasMatch(value)) {
                 return 'Enter a valid email address';

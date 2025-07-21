@@ -55,9 +55,14 @@ import 'package:provider/provider.dart';
 
 import '../../../../controller/config_provider.dart';
 import '../../../widgets/custom_text.dart';
+import '../../../widgets/custom_toast.dart';
 
 class OfficersDeleteDialogue extends StatelessWidget {
-  const OfficersDeleteDialogue({super.key, required this.officerIds, required this.item, required this.roundrobinId});
+  const OfficersDeleteDialogue(
+      {super.key,
+      required this.officerIds,
+      required this.item,
+      required this.roundrobinId});
   final List<String> officerIds;
   final String item;
   final String roundrobinId;
@@ -66,9 +71,7 @@ class OfficersDeleteDialogue extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: CustomText(text: 'Are you sure ?'),
-      content: CustomText(
-          text:
-          'you want to delete this officer $item? '),
+      content: CustomText(text: 'you want to delete this officer $item? '),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -76,26 +79,27 @@ class OfficersDeleteDialogue extends StatelessWidget {
         ),
         Consumer<ConfigProvider>(
           builder: (context, value, child) => ElevatedButton(
-            onPressed: ()async {
+            onPressed: () async {
+              final provider =
+                  Provider.of<RoundRobinProvider>(context, listen: false);
 
-              final provider = Provider.of<RoundRobinProvider>(context, listen: false);
-
-
-
-              bool result = await provider.removeOfficersFromRoundRobin(roundRobinId: roundrobinId, officerIds: officerIds);
-
+              bool result = await provider.removeOfficersFromRoundRobin(context,
+                  roundRobinId: roundrobinId, officerIds: officerIds);
 
               if (result) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Deleted successfully!')),
-                );
+                CustomToast.showToast(
+                    context: context, message: 'Deleted successfully!');
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(content: Text('Deleted successfully!')),
+                // );
                 Navigator.pop(context);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(provider.error ?? 'Failed to delete officers')),
-                );
+                CustomToast.showToast(
+                    context: context, message: 'Failed to delete officers');
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(content: Text(provider.error ?? 'Failed to delete officers')),
+                // );
               }
-
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: CustomText(text: 'Delete', color: Colors.white),

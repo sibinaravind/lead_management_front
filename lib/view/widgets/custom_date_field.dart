@@ -72,7 +72,7 @@ class CustomDateField extends StatelessWidget {
 
           if (date != null) {
             final formattedDate =
-                "${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')} ${isTimeRequired ? time?.format(context) : ""}";
+                "${date.day}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().padLeft(2, '0')} ${isTimeRequired ? time?.format(context) : ""}";
             controller.text = formattedDate;
             onChanged?.call(formattedDate);
           }

@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../../model/app_configs/config_model.dart';
 import '../../../model/lead/round_robin.dart';
 import '../../../res/style/colors/colors.dart';
+import '../../widgets/custom_toast.dart';
 
 class RoundRobinScreen extends StatefulWidget {
   const RoundRobinScreen({super.key});
@@ -184,29 +185,27 @@ class _SystemConfigState extends State<RoundRobinScreen> {
           return Column(
             spacing: 5,
             children: [
-              SizedBox(height: 5,),
+              SizedBox(
+                height: 5,
+              ),
               Align(
-              alignment: Alignment.topRight,
+                alignment: Alignment.topRight,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: SizedBox(
                     width: 200,
-                    child: CustomButton(text: "Add RoundRobin",
-                      onTap: (){
+                    child: CustomButton(
+                      text: "Add RoundRobin",
+                      onTap: () {
                         showDialog(
                           context: context,
-                          builder: (_) => AddRoundRobinDialog(
-
-                          ),
+                          builder: (_) => AddRoundRobinDialog(),
                         );
                       },
                     ),
                   ),
                 ),
               ),
-
-
-
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
@@ -217,7 +216,7 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                     itemCount: roundRobinGroups.length,
                     itemBuilder: (context, index) {
                       final group = roundRobinGroups[index];
-                      List officersList=group.officerDetails;
+                      List officersList = group.officerDetails;
                       return Card(
                         margin: const EdgeInsets.only(bottom: 20.0),
                         elevation: 8,
@@ -264,7 +263,6 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                     ),
                                     child: Icon(
                                       Icons.group_add,
-
                                       color: AppColors.whiteMainColor,
                                       size: 24,
                                     ),
@@ -272,10 +270,11 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          group.name.toUpperCase()??'',
+                                          group.name.toUpperCase() ?? '',
                                           style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -284,8 +283,7 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         CustomText(
-                                          text:
-                                          group.country??'',
+                                          text: group.country ?? '',
                                           color: AppColors.textGrayColour,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
@@ -301,35 +299,55 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                         gradient: AppColors.redGradient,
                                         onTap: () {
                                           showDialog(
-                                            context: context,
-                                            builder: (_) =>DeleteConfirmationDialog(title: "Delete", message: 'You want to delete', onConfirm: ()async{
-
-                                              final success = await Provider.of<RoundRobinProvider>(context, listen: false).deleteRoundRobin(group.id??'');
-                                              if ( success) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Round robin deleted successfully')),
-                                                );
-                                              } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(content: Text( 'Delete failed')),
-                                                );
-                                              }
-
-
-                                            })
-                                          );
+                                              context: context,
+                                              builder: (_) =>
+                                                  DeleteConfirmationDialog(
+                                                      title: "Delete",
+                                                      message:
+                                                          'You want to delete',
+                                                      onConfirm: () async {
+                                                        final success = await Provider
+                                                                .of<RoundRobinProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                            .deleteRoundRobin(
+                                                                context,
+                                                                group.id ?? '');
+                                                        if (success) {
+                                                          CustomToast.showToast(
+                                                              context: context,
+                                                              message:
+                                                                  'Round robin deleted successfully');
+                                                          // ScaffoldMessenger.of(context).showSnackBar(
+                                                          //   const SnackBar(content: Text('Round robin deleted successfully')),
+                                                          // );
+                                                        } else {
+                                                          CustomToast.showToast(
+                                                              context: context,
+                                                              message:
+                                                                  'Delete failed');
+                                                          // ScaffoldMessenger.of(
+                                                          //         context)
+                                                          //     .showSnackBar(
+                                                          //   SnackBar(
+                                                          //       content: Text(
+                                                          //           'Delete failed')),
+                                                          // );
+                                                        }
+                                                      }));
                                         },
                                         tooltip: 'Add New Item',
                                       ),
                                       ActionButton(
                                         icon: Icons.add,
-                                        gradient: AppColors.buttonGraidentColour,
+                                        gradient:
+                                            AppColors.buttonGraidentColour,
                                         onTap: () {
                                           showDialog(
                                             context: context,
                                             builder: (_) => AddOfficerDialog(
                                               roundRobinId: group.id,
-
                                             ),
                                           );
                                         },
@@ -340,11 +358,10 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                 ],
                               ),
                               children: [
-
                                 ...officersList.map((item) {
                                   print(item);
                                   return RoundRobinOfficerList(
-                                    roundrobinId: group.id??'',
+                                    roundrobinId: group.id ?? '',
                                     // category: item['name']??'',
                                     item: item ?? [],
                                   );
@@ -369,7 +386,8 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                               // Group Title Section
                               Row(
                                 children: [
-                                  Icon(Icons.group, color: AppColors.primaryColor),
+                                  Icon(Icons.group,
+                                      color: AppColors.primaryColor),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -383,7 +401,8 @@ class _SystemConfigState extends State<RoundRobinScreen> {
                                   ),
                                   Chip(
                                     label: Text(group.country ?? ''),
-                                    backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+                                    backgroundColor:
+                                        AppColors.primaryColor.withOpacity(0.1),
                                   ),
                                 ],
                               ),
@@ -391,23 +410,29 @@ class _SystemConfigState extends State<RoundRobinScreen> {
 
                               // Officers List
                               ...group.officerDetails.map((officer) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: AppColors.primaryColor,
-                                    child: Icon(Icons.person, color: Colors.white),
-                                  ),
-                                  title: Text(officer.name ?? ''),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Phone: ${officer.phone}'),
-                                      Text('Company Phone: ${officer.companyPhoneNumber}'),
-                                      Text('Branch: ${officer.branch?.join(', ') ?? ''}'),
-                                      Text('Designation: ${officer.designation?.join(', ') ?? ''}'),
-                                    ],
-                                  ),
-                                );
-                              }).toList() ?? [],
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: AppColors.primaryColor,
+                                        child: Icon(Icons.person,
+                                            color: Colors.white),
+                                      ),
+                                      title: Text(officer.name ?? ''),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Phone: ${officer.phone}'),
+                                          Text(
+                                              'Company Phone: ${officer.companyPhoneNumber}'),
+                                          Text(
+                                              'Branch: ${officer.branch?.join(', ') ?? ''}'),
+                                          Text(
+                                              'Designation: ${officer.designation?.join(', ') ?? ''}'),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList() ??
+                                  [],
                             ],
                           ),
                         ),
@@ -1383,4 +1408,3 @@ class _SystemConfigState extends State<RoundRobinScreen> {
 //     ),
 //   );
 // }
-

@@ -130,7 +130,7 @@ class PermissionItem extends StatelessWidget {
                       : AppColors.redGradient,
                   onTap: () {
                     Provider.of<ConfigProvider>(context, listen: false)
-                        .toggleStatus(category, item);
+                        .toggleStatus(context, category, item);
                   },
                   tooltip: isActive ? 'Deactivate' : 'Activate',
                 ),

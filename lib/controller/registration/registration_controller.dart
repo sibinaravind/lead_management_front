@@ -35,11 +35,14 @@ class RegistrationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchRegistration() async {
+  Future<void> fetchRegistration(
+    context,
+  ) async {
     // _isLoading = true;
     notifyListeners();
     try {
-      final response = await _apiService.get(Constant().getIncompleteList);
+      final response =
+          await _apiService.get(context: context, Constant().getIncompleteList);
 
       if (response['success']) {
         final List<LeadModel> loadedLeads = [];

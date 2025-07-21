@@ -15,18 +15,16 @@ class TeamLeadProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   List<TeamLeadModel>? _teamLeadListData;
-  List<OfficersModel>? _filteredTeamLeadList;
 
   List<TeamLeadModel>? assignedEmployees = [];
 
-  List<OfficersModel>? remainingEmployees = [];
-  List<OfficersModel>? allRemainingEmployees = [];
+  List<TeamLeadModel>? remainingEmployees = [];
+  List<TeamLeadModel>? allRemainingEmployees = [];
 
   // List<SubOfficerModel> selectedClients = [];
 
   bool _isLoading = false;
   String? _error;
-  String _searchQuery = '';
 
   // List<OfficersModel>? get officersListModel => _officersListData;
   List<TeamLeadModel>? get teamListListModel => _teamLeadListData;
@@ -90,7 +88,7 @@ class TeamLeadProvider with ChangeNotifier {
 
   void clearEmployees() {}
 
-  Future<void> addOfficerToLead(
+  Future<void> addOfficerToLead(context,
       {required String leadOfficerId,
       required String officerId,
       required String staffId}) async {
@@ -98,7 +96,8 @@ class TeamLeadProvider with ChangeNotifier {
     _error = null;
 
     try {
-      final response = await _apiService.patch(Constant().addOfficerToLead, {
+      final response = await _apiService
+          .patch(context: context, Constant().addOfficerToLead, {
         "lead_officer_id": leadOfficerId,
         "officer": {
           "officer_id": officerId,
@@ -107,24 +106,27 @@ class TeamLeadProvider with ChangeNotifier {
         }
       });
       if (response['success'] == true) {
+        fetchTeamLeadList(
+          context,
+        );
         notifyListeners();
-        fetchTeamLeadList();
       }
     } catch (e) {
       _error = 'Failed to load permissions: $e';
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 
-  void deleteOfficerFromLead(
+  void deleteOfficerFromLead(context,
       {required String leadOfficerId, required String officerId}) async {
     _isLoading = true;
     _error = null;
 
     try {
-      final response =
-          await _apiService.patch(Constant().deleteOfficerFromLead, {
+      final response = await _apiService
+          .patch(context: context, Constant().deleteOfficerFromLead, {
         "lead_officer_id": leadOfficerId,
         "officer_id": officerId,
       });
@@ -135,44 +137,51 @@ class TeamLeadProvider with ChangeNotifier {
       _error = 'Failed to load permissions: $e';
     } finally {
       _isLoading = false;
-      fetchTeamLeadList();
+      fetchTeamLeadList(
+        context,
+      );
       notifyListeners();
     }
   }
 
   void getAllRemainingEmpoyees(
-      String id, List<OfficersModel> officersList, bool isNewLead) {
-    List listId = [];
-    if (!isNewLead) {
-      listId = _teamLeadListData
-              ?.where((element) => element.officerId == id)
-              .expand((e) => e.officers?.map((e) => e.sId) ?? [])
-              .toList() ??
-          [];
-    }
-
-    List<OfficersModel> li = officersList
+      context, String id, List<TeamLeadModel> officersList) {
+    List listIds = [];
+    listIds = _teamLeadListData
+            ?.where((element) => element.officerId == id)
+            .expand((e) => e.officers?.map((e) => e.sId) ?? [])
+            .toList() ??
+        [];
+    // _teamLeadListData.add(officersList.where((element) => element.id == id,));
+    List<TeamLeadModel> li = officersList
         .where(
-          (element) => !listId.contains(element.id),
+          (element) => !listIds.contains(element.sId),
         )
         .toList();
+    _teamLeadListData?.addAll(officersList.where(
+      (element) => listIds.contains(element.sId),
+    ));
     remainingEmployees = li;
     allRemainingEmployees = li;
     notifyListeners();
   }
 
-  Future<void> fetchTeamLeadList() async {
+  Future<void> fetchTeamLeadList(
+    context,
+  ) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      dynamic json = await _apiService.get(Constant().teamLeadList);
+      dynamic json =
+          await _apiService.get(context: context, Constant().teamLeadList);
 
       if (json['success'] == true && json['data'] != null) {
         final List<dynamic> dataList = json['data'];
         _teamLeadListData =
             dataList.map((e) => TeamLeadModel.fromJson(e)).toList();
+        notifyListeners();
       } else {
         _error = 'Invalid response structure';
       }
@@ -184,16 +193,18 @@ class TeamLeadProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> createOfficer(Map<String, dynamic> officer) async {
+  Future<bool> createOfficer(context, Map<String, dynamic> officer) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response =
-          await _apiService.post(Constant().officerInsert, officer);
+      final response = await _apiService.post(
+          context: context, Constant().officerInsert, officer);
 
       if (response['success'] == true) {
-        await fetchTeamLeadList();
+        await fetchTeamLeadList(
+          context,
+        );
         return true;
       } else {
         _error = response['message'] ?? 'Creation failed';

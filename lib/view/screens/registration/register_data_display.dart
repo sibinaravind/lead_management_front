@@ -96,7 +96,7 @@ class _RegisterDataDisplayState extends State<RegisterDataDisplay> {
   void initState() {
     // TODO: implement initState
     Provider.of<RegistrationController>(context, listen: false)
-        .fetchRegistration();
+        .fetchRegistration(context,);
     super.initState();
   }
 

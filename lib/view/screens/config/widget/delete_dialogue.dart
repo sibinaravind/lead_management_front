@@ -54,6 +54,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../controller/config_provider.dart';
 import '../../../widgets/custom_text.dart';
+import '../../../widgets/custom_toast.dart';
 
 class DeleteDialogue extends StatelessWidget {
   const DeleteDialogue({super.key, required this.category, required this.item});
@@ -76,18 +77,22 @@ class DeleteDialogue extends StatelessWidget {
           builder: (context, value, child) => ElevatedButton(
             onPressed: () {
               Provider.of<ConfigProvider>(context, listen: false)
-                  .deleteConfig(field: category, id: item.id ?? "");
+                  .deleteConfig(context, field: category, id: item.id ?? "");
               // value.removeItem(category, item);
               // setState(() {
               //   value.permissionsData[category]!.remove(item);
               // });
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${item.name} deleted successfully'),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              CustomToast.showToast(
+                  context: context,
+                  message: '${item.name} deleted successfully',
+                  backgroundColor: Colors.red);
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text('${item.name} deleted successfully'),
+              //     backgroundColor: Colors.red,
+              //   ),
+              // );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: CustomText(text: 'Delete', color: Colors.white),

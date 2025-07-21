@@ -17,8 +17,6 @@ class ConfigProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
 
   bool isLoading = false;
-  bool _isPatching = false;
-  String? _error;
 
   ConfigListModel? configModelList;
   Future<void> _init() async {
@@ -49,44 +47,46 @@ class ConfigProvider extends ChangeNotifier {
     } catch (e) {}
   }
 
-  Future<void> getConfigList() async {
+  Future<void> getConfigList(
+    context,
+  ) async {
     isLoading = true;
-    _error = null;
 
     try {
-      final response = await _api.get(Constant().configList);
+      final response = await _api.get(context: context, Constant().configList);
       configModelList = ConfigListModel.fromJson(response['data']);
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
     } finally {
       isLoading = false;
     }
     notifyListeners();
   }
 
-  Future<void> addConfig(
+  Future<void> addConfig(context,
       {required String field, required String name, String colour = ""}) async {
     isLoading = true;
-    _error = null;
+
+    Map colorMap = colour.isNotEmpty ? {"colour": colour} : {};
 
     try {
-      final response = await _api.patch(Constant().editConfigList, {
+      final response =
+          await _api.patch(context: context, Constant().editConfigList, {
         "field": field,
         "action": "insert",
-        "value": {"name": name, "status": "ACTIVE", "colour": colour}
+        "value": {"name": name, "status": "ACTIVE", ...colorMap}
       });
       if (response['success'] == true) {
         configModelList?.insertItem(
             field,
             ConfigModel(
                 name: name,
+                colour: response['value']['colour'],
                 id: response['data']['insertedId'],
                 status: Status.ACTIVE));
         notifyListeners();
       }
       // return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       // return false;
     } finally {
       isLoading = false;
@@ -95,15 +95,15 @@ class ConfigProvider extends ChangeNotifier {
     }
   }
 
-  void toggleStatus(String category, ConfigModel item) {
+  void toggleStatus(context, String category, ConfigModel item) {
     if (item.status == Status.ACTIVE) {
-      updateConfig(
+      updateConfig(context,
           field: category,
           name: item.name ?? "",
           id: item.id ?? "",
           status: "INACTIVE");
     } else {
-      updateConfig(
+      updateConfig(context,
           field: category,
           name: item.name ?? "",
           id: item.id ?? "",
@@ -111,25 +111,28 @@ class ConfigProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateConfig(
+  Future<bool> updateConfig(context,
       {required String field,
       required String name,
       required String id,
       required String status,
       String colour = ""}) async {
     isLoading = true;
-    _error = null;
+    Map colorMap = colour.isNotEmpty ? {"colour": colour} : {};
+
     try {
-      final response = await _api.patch(Constant().editConfigList, {
+      final response =
+          await _api.patch(context: context, Constant().editConfigList, {
         "field": field,
         "action": "update",
-        "value": {"_id": id, "name": name, "status": status, "colour": colour}
+        "value": {"_id": id, "name": name, "status": status, ...colorMap}
       });
       if (response['success'] == true) {
         configModelList?.updateItem(
             field,
             ConfigModel(
               id: id,
+              colour: colour,
               name: name,
               status: status == "ACTIVE" ? Status.ACTIVE : Status.INACTIVE,
             ));
@@ -137,7 +140,6 @@ class ConfigProvider extends ChangeNotifier {
       }
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       return false;
     } finally {
       isLoading = false;
@@ -146,16 +148,17 @@ class ConfigProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteConfig({
+  Future<bool> deleteConfig(
+    context, {
     required String field,
     required String id,
   }) async {
     isLoading = true;
-    _error = null;
     // notifyListeners();
 
     try {
-      final response = await _api.patch(Constant().editConfigList, {
+      final response =
+          await _api.patch(context: context, Constant().editConfigList, {
         "field": field,
         "action": "delete",
         "value": {
@@ -173,7 +176,6 @@ class ConfigProvider extends ChangeNotifier {
       }
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       return false;
     } finally {
       isLoading = false;
@@ -183,7 +185,7 @@ class ConfigProvider extends ChangeNotifier {
   }
 
   /// Removes an item from a category
-  void removeItem(String category, ConfigModel item) {
+  void removeItem(context, String category, ConfigModel item) {
     configModelList?.deleteItem(category, item);
     notifyListeners();
   }

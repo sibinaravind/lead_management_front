@@ -104,7 +104,9 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProjectProvider>().fetchClients();
+      context.read<ProjectProvider>().fetchClients(
+            context,
+          );
     });
   }
 
@@ -318,7 +320,6 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
                           borderRadius: BorderRadius.circular(16),
                           child: ClientUserListTable(userlist: clientList),
                         ),
-
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(

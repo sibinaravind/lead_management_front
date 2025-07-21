@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../../core/services/api_service.dart';
 import '../../model/lead/round_robin_group.dart';
@@ -21,20 +20,23 @@ class RoundRobinProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> fetchRoundRobinGroups() async {
+  Future<void> fetchRoundRobinGroups(
+    context,
+  ) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      dynamic response = await _apiService.get(Constant().roundRobinList
-          // options: Options(
-          //   headers: {
-          //     'Authorization': 'Bearer $token',
-          //   },
-          );
+      dynamic response =
+          await _apiService.get(context: context, Constant().roundRobinList
+              // options: Options(
+              //   headers: {
+              //     'Authorization': 'Bearer $token',
+              //   },
+              );
 
-      if (response['success']&& response['data'] != null) {
+      if (response['success'] && response['data'] != null) {
         final List<dynamic> jsonList = response['data'];
         _roundRobinGroups =
             jsonList.map((e) => RoundRobinGroup.fromJson(e)).toList();
@@ -48,7 +50,9 @@ class RoundRobinProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-  Future<bool> addOfficersToRoundRobin({
+
+  Future<bool> addOfficersToRoundRobin(
+    context, {
     required String roundRobinId,
     required List<String> officerIds,
   }) async {
@@ -59,12 +63,15 @@ class RoundRobinProvider extends ChangeNotifier {
       };
 
       final response = await _apiService.patch(
+        context: context,
         Constant().insertOfficersInToRoundRobinList,
         data,
       );
 
       if (response['success'] == true) {
-        await fetchRoundRobinGroups();
+        await fetchRoundRobinGroups(
+          context,
+        );
         return true;
       } else {
         _error = 'Failed to add officers';
@@ -77,7 +84,9 @@ class RoundRobinProvider extends ChangeNotifier {
       return false;
     }
   }
-  Future<bool> removeOfficersFromRoundRobin({
+
+  Future<bool> removeOfficersFromRoundRobin(
+    context, {
     required String roundRobinId,
     required List<String> officerIds,
   }) async {
@@ -88,12 +97,15 @@ class RoundRobinProvider extends ChangeNotifier {
       };
 
       final response = await _apiService.patch(
+        context: context,
         Constant().removeOfficersInToRoundRobinList,
         data,
       );
 
       if (response['success'] == true) {
-        await fetchRoundRobinGroups();
+        await fetchRoundRobinGroups(
+          context,
+        );
         return true;
       } else {
         _error = response['message'] ?? 'Failed to remove officers';
@@ -106,7 +118,9 @@ class RoundRobinProvider extends ChangeNotifier {
       return false;
     }
   }
-  Future<bool> createRoundRobin({
+
+  Future<bool> createRoundRobin(
+    context, {
     required String name,
     required String country,
     List<String> officerIds = const [],
@@ -119,12 +133,15 @@ class RoundRobinProvider extends ChangeNotifier {
       };
 
       final response = await _apiService.post(
+        context: context,
         Constant().insertRoundRobin,
         data,
       );
 
       if (response['success'] == true) {
-        await fetchRoundRobinGroups();
+        await fetchRoundRobinGroups(
+          context,
+        );
         return true;
       } else {
         _error = response['message'] ?? 'Failed to create round robin';
@@ -138,14 +155,15 @@ class RoundRobinProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteRoundRobin(String roundRobinId) async {
+  Future<bool> deleteRoundRobin(context, String roundRobinId) async {
     try {
       final response = await _apiService.delete(
-        "${Constant().deleteRoundRobin}/$roundRobinId",{}
-      );
+          context: context, "${Constant().deleteRoundRobin}/$roundRobinId", {});
 
       if (response['success'] == true) {
-        await fetchRoundRobinGroups();
+        await fetchRoundRobinGroups(
+          context,
+        );
         return true;
       } else {
         _error = response['message'] ?? 'Failed to delete round robin';
@@ -158,5 +176,4 @@ class RoundRobinProvider extends ChangeNotifier {
       return false;
     }
   }
-
 }

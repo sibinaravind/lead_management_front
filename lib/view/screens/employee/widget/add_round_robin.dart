@@ -24,7 +24,9 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
   void initState() {
     Provider.of<ConfigProvider>(context, listen: false).fetchConfigData();
     Provider.of<OfficersControllerProvider>(context, listen: false)
-        .fetchOfficersList();
+        .fetchOfficersList(
+      context,
+    );
     // TODO: implement initState
     super.initState();
   }
@@ -78,7 +80,7 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                   label: 'Add Officers',
                   selectedItems: _selectedOfficerIds,
                   items: officers.officersListModel
-                          ?.map((e) => "${e.name},${e.id}")
+                          ?.map((e) => "${e.name},${e.sId}")
                           .toList() ??
                       [],
                   onChanged: (selectedIds) {
@@ -118,6 +120,7 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                             return;
                           }
                           bool result = await provider.createRoundRobin(
+                            context,
                             name: name,
                             country: _selectedCountry,
                             officerIds: _selectedOfficerIds,

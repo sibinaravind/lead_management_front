@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../model/campaign/campaign_model.dart';
 import '../../../res/style/colors/colors.dart';
+import '../../widgets/custom_toast.dart';
 import 'widget/delete_dialogue.dart';
 
 class CampaignScreen extends StatefulWidget {
@@ -23,7 +24,9 @@ class _CampaignScreenState extends State<CampaignScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CampaignProvider>(context, listen: false).getCampaignList();
+    Provider.of<CampaignProvider>(context, listen: false).getCampaignList(
+      context,
+    );
   }
 
   @override
@@ -165,14 +168,24 @@ class _CampaignScreenState extends State<CampaignScreen> {
                             const SizedBox(width: 12),
                             ElevatedButton(
                               onPressed: () {
-                                value.addCampaign(
-                                  docName: value.titleController.text.trim(),
-                                  title: value.titleController.text.trim(),
-                                  image64: value.file64 ?? "",
-                                  startDate:
-                                      value.startDateController.text.trim(),
-                                );
-                                Navigator.pop(context);
+                                if (value.titleController.text.isEmpty ||
+                                    value.startDateController.text.isEmpty ||
+                                    (value.file64?.isEmpty ?? true)) {
+                                  CustomToast.showToast(
+                                      context: context,
+                                      message:
+                                          'All fields and image are required');
+                                } else {
+                                  value.addCampaign(
+                                    context,
+                                    docName: value.titleController.text.trim(),
+                                    title: value.titleController.text.trim(),
+                                    image64: value.file64 ?? "",
+                                    startDate:
+                                        value.startDateController.text.trim(),
+                                  );
+                                  Navigator.pop(context);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primaryColor,
@@ -380,10 +393,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
                     if (screenWidth > 1400) {
                       crossAxisCount = 5;
-                      childAspectRatio = 0.9;
+                      childAspectRatio = 0.6;
                     } else if (screenWidth > 1200) {
                       crossAxisCount = 4;
-                      childAspectRatio = 0.85;
+                      childAspectRatio = 0.6;
                     } else if (screenWidth > 900) {
                       crossAxisCount = 3;
                       childAspectRatio = 0.8;
@@ -424,6 +437,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                               elevation: 0,
                               shadowColor: Colors.black.withOpacity(0.1),
                               child: Container(
+                                padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   gradient: LinearGradient(
@@ -555,10 +569,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
                                         // Enhanced Content Section
                                         Expanded(
-                                          flex: 2,
+                                          flex: 1,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 16),
+                                                horizontal: 16, vertical: 5),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -577,8 +591,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                                     color: Colors.grey.shade800,
                                                   ),
                                                 ),
-
-                                                const SizedBox(height: 8),
 
                                                 // Date with Icon
                                                 Row(
@@ -620,93 +632,54 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                                         ),
                                                       ),
                                                     ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors
+                                                                .red.shade50,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: IconButton(
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .delete_outline,
+                                                              size: 18,
+                                                              color: Colors
+                                                                  .red.shade600,
+                                                            ),
+                                                            onPressed: () {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) =>
+                                                                        DeleteDialogue(
+                                                                  id: campaign
+                                                                          .sId ??
+                                                                      "",
+                                                                  name: campaign
+                                                                          .title ??
+                                                                      "",
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
 
                                                 const SizedBox(height: 12),
 
                                                 // Action Buttons
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    // Container(
-                                                    //   decoration: BoxDecoration(
-                                                    //     color:
-                                                    //         Colors.blue.shade50,
-                                                    //     borderRadius:
-                                                    //         BorderRadius
-                                                    //             .circular(10),
-                                                    //   ),
-                                                    //   child: IconButton(
-                                                    //     icon: Icon(
-                                                    //       Icons.edit_outlined,
-                                                    //       size: 18,
-                                                    //       color: Colors
-                                                    //           .blue.shade600,
-                                                    //     ),
-                                                    //     onPressed: () {
-                                                    //       ScaffoldMessenger.of(
-                                                    //               context)
-                                                    //           .showSnackBar(
-                                                    //         SnackBar(
-                                                    //           content:
-                                                    //               CustomText(
-                                                    //             text:
-                                                    //                 "Edit ${campaign.title}",
-                                                    //           ),
-                                                    //           backgroundColor:
-                                                    //               Colors.blue
-                                                    //                   .shade600,
-                                                    //           behavior:
-                                                    //               SnackBarBehavior
-                                                    //                   .floating,
-                                                    //           shape:
-                                                    //               RoundedRectangleBorder(
-                                                    //             borderRadius:
-                                                    //                 BorderRadius
-                                                    //                     .circular(
-                                                    //                         10),
-                                                    //           ),
-                                                    //         ),
-                                                    //       );
-                                                    //     },
-                                                    //   ),
-                                                    // ),
-                                                    // const SizedBox(width: 8),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            Colors.red.shade50,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: IconButton(
-                                                        icon: Icon(
-                                                          Icons.delete_outline,
-                                                          size: 18,
-                                                          color: Colors
-                                                              .red.shade600,
-                                                        ),
-                                                        onPressed: () {
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (context) =>
-                                                                DeleteDialogue(
-                                                              id: campaign
-                                                                      .sId ??
-                                                                  "",
-                                                              name: campaign
-                                                                      .title ??
-                                                                  "",
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),

@@ -114,9 +114,10 @@ class TeamLeadListTable extends StatelessWidget {
                                 onTap: () {
                                   if (column['name'] == 'ID') {
                                     valueA.getAllRemainingEmpoyees(
-                                        listUser.officerId ?? '',
-                                        valueB.allOfficersListData ?? [],
-                                        false);
+                                      context,
+                                      listUser.officerId ?? '',
+                                      valueB.allOfficersListData ?? [],
+                                    );
                                     showDialog(
                                       context: context,
                                       builder: (context) => TeamLeadDisplay(

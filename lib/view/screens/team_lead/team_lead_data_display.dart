@@ -20,9 +20,13 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
   void initState() {
     super.initState();
     Provider.of<OfficersControllerProvider>(context, listen: false)
-        .fetchOfficersList();
+        .fetchOfficersList(
+      context,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TeamLeadProvider>().fetchTeamLeadList();
+      context.read<TeamLeadProvider>().fetchTeamLeadList(
+            context,
+          );
     });
   }
 
@@ -107,7 +111,10 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                               borderRadius: BorderRadius.circular(20),
                               onTap: () async {
                                 valueA.getAllRemainingEmpoyees(
-                                    '', valueB.allOfficersListData ?? [], true);
+                                  context,
+                                  '',
+                                  valueB.allOfficersListData ?? [],
+                                );
 
                                 await showDialog(
                                     context: context,
@@ -116,13 +123,13 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                             height: 200,
                                             width: 500,
                                             child: CustomDropdownField(
-                                              label: "Select Officer",
+                                              label: "Select Team Lead",
                                               value: selectedNewTeamLead,
                                               isSplit: true,
                                               items: valueB.allOfficersListData
                                                       ?.map(
                                                         (e) =>
-                                                            "${e.name},${e.id}",
+                                                            "${e.name},${e.sId}",
                                                       )
                                                       .toList() ??
                                                   [],

@@ -4,7 +4,6 @@ import 'package:overseas_front_end/model/lead/call_event_model.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
-import '../../model/client/client_data_list_model.dart';
 import '../../model/lead/lead_model.dart';
 
 class LeadProvider extends ChangeNotifier {
@@ -40,15 +39,10 @@ class LeadProvider extends ChangeNotifier {
 
   LeadModel? leadDetails;
 
-  bool _isPatching = false;
-  String? _error;
-
   final ApiService _api = ApiService();
 
   List<LeadModel>? userList = [];
   bool isLoading = false;
-
-  bool _isLoading = false;
 
   List<CallEventModel> callEvents = [];
 
@@ -77,59 +71,58 @@ class LeadProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> getLeadList() async {
-    _error = null;
+  Future<void> getLeadList(context) async {
     // notifyListeners();
 
     try {
-      final response = await _api.get(Constant().allLeads);
+      final response = await _api.get(context: context, Constant().allLeads);
       leadModel = List.from(response['data'].map((e) => LeadModel.fromJson(e)));
       allLeadModel =
           List.from(response['data'].map((e) => LeadModel.fromJson(e)));
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
     } finally {
       // notifyListeners();
     }
     notifyListeners();
   }
 
-  Future<void> getDeadLeadList() async {
-    _error = null;
+  Future<void> getDeadLeadList(context) async {
     // notifyListeners();
 
     try {
-      final response = await _api.get(Constant().getDeadLeads);
+      final response =
+          await _api.get(context: context, Constant().getDeadLeads);
       deadLeadModel =
           List.from(response['data'].map((e) => LeadModel.fromJson(e)));
       allDeadLeadModel =
           List.from(response['data'].map((e) => LeadModel.fromJson(e)));
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
     } finally {
       // notifyListeners();
     }
     notifyListeners();
   }
 
-  Future<void> getLeadDetails(String leadId) async {
-    _error = null;
+  Future<void> getLeadDetails(context, String leadId) async {
     // notifyListeners();
 
     try {
-      final response = await _api.get("${Constant().getLeadDetail}/$leadId");
+      final response = await _api.get(
+          context: context, "${Constant().getLeadDetail}/$leadId");
       leadDetails = LeadModel.fromJson(response['data']);
       currentClientId = leadDetails?.sId ?? '';
-      fetchCallEvents();
+      fetchCallEvents(
+        context,
+      );
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
     } finally {
       // notifyListeners();
     }
     notifyListeners();
   }
 
-  Future<bool> addLead({
+  Future<bool> addLead(
+    context, {
     required String name,
     required String email,
     required String phone,
@@ -161,12 +154,10 @@ class LeadProvider extends ChangeNotifier {
     required String serviceType,
     required String branchName,
   }) async {
-    _isLoading = true;
-    _error = null;
     notifyListeners();
     String officerId = (await OfficerCacheService().getOfficer())?.id ?? "";
     try {
-      final response = await _api.post(Constant().addLead, {
+      final response = await _api.post(context: context, Constant().addLead, {
         "name": name,
         "email": email,
         "phone": phone,
@@ -202,16 +193,17 @@ class LeadProvider extends ChangeNotifier {
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       return false;
     } finally {
-      getLeadList();
-      _isLoading = false;
+      getLeadList(
+        context,
+      );
       notifyListeners();
     }
   }
 
-  Future<bool> updateLead({
+  Future<bool> updateLead(
+    context, {
     required String leadId,
     required String name,
     required String email,
@@ -244,12 +236,11 @@ class LeadProvider extends ChangeNotifier {
     required String serviceType,
     required String branchName,
   }) async {
-    _isLoading = true;
-    _error = null;
     notifyListeners();
 
     try {
-      final response = await _api.patch("${Constant().updateLead}/$leadId", {
+      final response = await _api
+          .patch(context: context, "${Constant().updateLead}/$leadId", {
         "name": name,
         "email": email,
         "phone": phone,
@@ -284,15 +275,14 @@ class LeadProvider extends ChangeNotifier {
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       return false;
     } finally {
-      _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> addFeedback({
+  Future<bool> addFeedback(
+    context, {
     required String clientId,
     required String duration,
     required String nextSchedule,
@@ -302,12 +292,11 @@ class LeadProvider extends ChangeNotifier {
     required String callStatus,
   }) async {
     String officerId = (await OfficerCacheService().getOfficer())?.id ?? '';
-    _isLoading = true;
-    _error = null;
     notifyListeners();
 
     try {
-      final response = await _api.post(Constant().addFeedback, {
+      final response =
+          await _api.post(context: context, Constant().addFeedback, {
         "officer_id": officerId,
         "client_id": clientId,
         "duration": duration,
@@ -320,21 +309,20 @@ class LeadProvider extends ChangeNotifier {
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
       return false;
     } finally {
-      _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> fetchCallEvents() async {
-    _isLoading = true;
+  Future<void> fetchCallEvents(
+    context,
+  ) async {
     notifyListeners();
     // var officerId = (await OfficerCacheService().officer)?.id ?? "";
     try {
-      final response =
-          await _api.get("${Constant().callEventList}/$currentClientId");
+      final response = await _api.get(
+          context: context, "${Constant().callEventList}/$currentClientId");
 
       if (response['success']) {
         callEvents =
@@ -345,7 +333,6 @@ class LeadProvider extends ChangeNotifier {
     } catch (e) {
       throw Exception('Error fetching projects: $e');
     } finally {
-      _isLoading = false;
       notifyListeners();
     }
   }

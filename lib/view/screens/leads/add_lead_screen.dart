@@ -5,6 +5,8 @@ import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/custom_toast.dart';
+
 class AddLeadScreen extends StatefulWidget {
   const AddLeadScreen({super.key});
 
@@ -718,6 +720,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                               if (_formKey.currentState!
                                                   .validate()) {
                                                 Provider.of<LeadProvider>(context, listen: false).addLead(
+                                                    context,
                                                     name: _nameController.text
                                                         .trim(),
                                                     email: _emailController.text
@@ -728,8 +731,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                         _mobileOptionalController
                                                             .text
                                                             .trim(),
-                                                    whatsapp: _mobileController
-                                                        .text
+                                                    whatsapp: _mobileController.text
                                                         .trim(),
                                                     gender:
                                                         _selectedGender ?? "",
@@ -756,27 +758,31 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                     specializedIn:
                                                         _selectedSpecialized ??
                                                             [],
-                                                    leadSource: _selectedLeadSource ??
-                                                        "",
+                                                    leadSource:
+                                                        _selectedLeadSource ??
+                                                            "",
                                                     comment: _remarksController
                                                         .text
                                                         .trim(),
                                                     onCallCommunication: true,
                                                     onWhatsappCommunication:
                                                         _sendWhatsapp,
-                                                    onEmailCommunication:
-                                                        _sendEmail,
-                                                    status:
-                                                        _selectedLeadCategory ?? "",
+                                                    onEmailCommunication: _sendEmail,
+                                                    status: _selectedLeadCategory ?? "",
                                                     serviceType: _selectedService ?? "",
                                                     branchName: _selectedBranch ?? "");
+
+                                                CustomToast.showToast(
+                                                    context: context,
+                                                    message:
+                                                        'Lead saved successfully');
                                                 // Save lead logic
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                      content: Text(
-                                                          'Lead saved successfully')),
-                                                );
+                                                // ScaffoldMessenger.of(context)
+                                                //     .showSnackBar(
+                                                //   const SnackBar(
+                                                //       content: Text(
+                                                //           'Lead saved successfully')),
+                                                // );
                                                 Navigator.pop(context);
                                               }
                                             },

@@ -1,31 +1,32 @@
 import '../../../../model/officer/officer_model.dart';
+import '../../../../model/team_lead/team_lead_model.dart';
 
 class AffiniksFields {
   List<Map<String, dynamic>> userTableList() {
     return [
       {
         'name': 'ID',
-        'extractor': (OfficersModel user) => user.officerId.toString()
+        'extractor': (TeamLeadModel user) => user.officerId.toString()
       },
       {
         'name': 'Officer Name',
-        'extractor': (OfficersModel user) => user.name.toString()
+        'extractor': (TeamLeadModel user) => user.name.toString()
       },
       {
         'name': 'Phone',
-        'extractor': (OfficersModel user) => user.phone.toString()
+        'extractor': (TeamLeadModel user) => user.phone.toString()
       },
       {
         'name': 'Company Phone',
-        'extractor': (OfficersModel user) => user.companyPhoneNumber.toString()
+        'extractor': (TeamLeadModel user) => user.companyPhoneNumber.toString()
       },
       {
         'name': 'Designation',
         // 'extractor': (OfficersModel user) => user.designation.toString()
-        'extractor': (OfficersModel user) =>
+        'extractor': (TeamLeadModel user) =>
             (user.designation?.isNotEmpty ?? false)
                 ? (user.designation as List).join('\n')
-                : 'NIL'/*user.designation.toString()*/
+                : 'NIL' /*user.designation.toString()*/
       },
       // {
       //   // 'name': 'Department',
@@ -37,7 +38,7 @@ class AffiniksFields {
       //           ? (user.designation as List).join('\n')
       //           : user.designation.toString()
       // },
-      {'name': 'Action', 'extractor': (OfficersModel user) => user}
+      {'name': 'Action', 'extractor': (TeamLeadModel user) => user}
     ];
   }
 }

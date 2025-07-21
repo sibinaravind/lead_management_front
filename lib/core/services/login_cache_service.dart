@@ -16,7 +16,7 @@ class OfficerCacheService {
   Future<bool> saveOfficer(Officer officer) async {
     final prefs = await _prefs;
     _officer = officer;
-    print("===>  ${officer.id}");
+    // print("===>  ${officer.id}");
     prefs.setString(OFFICER_ID, officer.id ?? '');
     return prefs.setString(OFFICER_CACHE_KEY, jsonEncode(officer.toJson()));
   }

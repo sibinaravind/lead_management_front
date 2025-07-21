@@ -54,7 +54,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    Provider.of<ProjectProvider>(context, listen: false).fetchClients();
+    Provider.of<ProjectProvider>(context, listen: false).fetchClients(context,);
   }
 
   @override
@@ -744,59 +744,61 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                           ],
                                         ),
                                         onPressed: () async {
-                                        if(_selectedClients.isEmpty){
-                                          return CustomSnackBar.show(context, "No Client Selected");
-                                        }else{
-                                          final vacancyProvider =
-                                          Provider.of<ProjectProvider>(
-                                              context,
-                                              listen: false);
-
-                                          final vacancyData = {
-                                            "project_id": projectId.trim(),
-                                            "job_title":
-                                            _jobTitleController.text,
-                                            "job_category":
-                                            _jobVacancyController.text,
-                                            "qualifications": qualification,
-                                            "experience":
-                                            _experienceController.text,
-                                            "skills": _skillsController.text,
-                                            "salary_from":
-                                            _salaryFromController.text,
-                                            "salary_to":
-                                            _salaryToController.text,
-                                            "lastdatetoapply":
-                                            _lastDateToApplyController.text,
-                                            "description":
-                                            _descriptionController.text,
-                                            "country": _countryController,
-                                            "city": _cityController.text,
-                                            "clients":
-                                            _selectedClients.map((client) {
-                                              return {
-                                                "client_id":
-                                                client['client_id'] ?? '',
-                                                "commission":
-                                                client['commission'] ?? 0,
-                                                "vacancies":
-                                                client['vacancies'] ?? {},
-                                              };
-                                            }).toList(),
-                                          };
-
-                                          await vacancyProvider
-                                              .createVacancy(vacancyData);
-
-                                          if (vacancyProvider.responseId !=
-                                              null) {
-                                            Navigator.pop(context);
-                                            print(
-                                                'Vacancy Created Successfully: ${vacancyProvider.responseId}');
+                                          if (_selectedClients.isEmpty) {
+                                            return CustomSnackBar.show(
+                                                context, "No Client Selected");
                                           } else {
-                                            print('Failed to create vacancy');
+                                            final vacancyProvider =
+                                                Provider.of<ProjectProvider>(
+                                                    context,
+                                                    listen: false);
+
+                                            final vacancyData = {
+                                              "project_id": projectId.trim(),
+                                              "job_title":
+                                                  _jobTitleController.text,
+                                              "job_category":
+                                                  _jobVacancyController.text,
+                                              "qualifications": qualification,
+                                              "experience":
+                                                  _experienceController.text,
+                                              "skills": _skillsController.text,
+                                              "salary_from":
+                                                  _salaryFromController.text,
+                                              "salary_to":
+                                                  _salaryToController.text,
+                                              "lastdatetoapply":
+                                                  _lastDateToApplyController
+                                                      .text,
+                                              "description":
+                                                  _descriptionController.text,
+                                              "country": _countryController,
+                                              "city": _cityController.text,
+                                              "clients": _selectedClients
+                                                  .map((client) {
+                                                return {
+                                                  "client_id":
+                                                      client['client_id'] ?? '',
+                                                  "commission":
+                                                      client['commission'] ?? 0,
+                                                  "vacancies":
+                                                      client['vacancies'] ?? {},
+                                                };
+                                              }).toList(),
+                                            };
+
+                                            await vacancyProvider
+                                                .createVacancy(context,vacancyData);
+
+                                            if (vacancyProvider.responseId !=
+                                                null) {
+                                              Navigator.pop(context);
+                                              print(
+                                                  'Vacancy Created Successfully: ${vacancyProvider.responseId}');
+                                            } else {
+                                              print('Failed to create vacancy');
+                                            }
                                           }
-                                        }
                                         },
                                       ),
                                     ),
@@ -1328,11 +1330,15 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                           icon: Icons.check,
                           onPressed: () {
                             if (addedSpecializations.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Please add at least one specialization')),
-                              );
+                              CustomToast.showToast(
+                                  context: context,
+                                  message:
+                                      'Please add at least one specialization');
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //       content: Text(
+                              //           'Please add at least one specialization')),
+                              // );
                               return;
                             }
                             final Map<String, dynamic> vacanciesMap = {

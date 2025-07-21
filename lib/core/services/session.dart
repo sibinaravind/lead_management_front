@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:jwt_decode_full/jwt_decode_full.dart';
 import 'login_cache_service.dart';
 import '../../core/services/api_service.dart';

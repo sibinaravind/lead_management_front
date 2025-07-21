@@ -9,11 +9,12 @@ import 'package:provider/provider.dart';
 
 import '../../../controller/config_provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
+import '../../../model/team_lead/team_lead_model.dart';
 import '../employee/employee_permission_screen.dart';
 
 class EmployeeCreationScreen extends StatefulWidget {
   final bool isEdit;
-  final OfficersModel? officer;
+  final TeamLeadModel? officer;
   const EmployeeCreationScreen({super.key, required this.isEdit, this.officer});
 
   @override
@@ -53,14 +54,14 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
 
   String status = 'ACTIVE';
 
-
-
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      final provider = Provider.of<AccessPermissionProvider>(context, listen: false);
-      await provider.fetchAccessPermissions();
-
+      final provider =
+          Provider.of<AccessPermissionProvider>(context, listen: false);
+      await provider.fetchAccessPermissions(
+        context,
+      );
     });
     String name = widget.officer?.name ?? '';
     List<String> parts = name.trim().split(' ');
@@ -81,7 +82,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     _statusController.text = widget.officer?.status ?? 'ACTIVE';
     _designationController.text = widget.officer?.designation.toString() ?? '';
     // _departmentController.text = widget.officer?.department.toString() ?? '';
-    branch=widget.officer?.branch??[];
+    branch = widget.officer?.branch ?? [];
     super.initState();
   }
 
@@ -113,7 +114,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
-      builder:(context, setStateDlg) => Dialog(
+      builder: (context, setStateDlg) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.all(8),
         child: LayoutBuilder(
@@ -290,7 +291,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                 const SizedBox(height: 24),
                                                 CustomGenderWidget(
                                                   isRequired: true,
-                                                  selectedGender: _selectedGender,
+                                                  selectedGender:
+                                                      _selectedGender,
                                                   onGenderChanged: (value) =>
                                                       setState(() =>
                                                           _selectedGender =
@@ -298,7 +300,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                 ),
                                                 const SizedBox(height: 32),
                                                 const SectionTitle(
-                                                    title: 'Contact Information',
+                                                    title:
+                                                        'Contact Information',
                                                     icon: Icons
                                                         .contact_phone_rounded),
                                                 const SizedBox(height: 16),
@@ -352,21 +355,29 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                           controller:
                                                               _statusController),
 
-                                                      Consumer<AccessPermissionProvider>(builder: (context,value,child){
+                                                      Consumer<
+                                                              AccessPermissionProvider>(
+                                                          builder: (context,
+                                                              value, child) {
                                                         return CustomMultiSelectDropdownField(
-
-                                                            label: "designation",
-                                                            selectedItems: designation,
-                                                            items: value.permissions.map((e)=>e.category??'').toList(),
-                                                            onChanged: (values){
+                                                            label:
+                                                                "designation",
+                                                            selectedItems:
+                                                                designation,
+                                                            items: value
+                                                                .permissions
+                                                                .map((e) =>
+                                                                    e.category ??
+                                                                    '')
+                                                                .toList(),
+                                                            onChanged:
+                                                                (values) {
                                                               setStateDlg(() {
-                                                                designation=values;
+                                                                designation =
+                                                                    values;
                                                               });
-
-                                                      });}),
-
-
-
+                                                            });
+                                                      }),
 
                                                       // Consumer2<ConfigProvider,
                                                       //     AccessPermissionProvider>(
@@ -411,10 +422,10 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                       //   },
                                                       // ),
                                                       Consumer<ConfigProvider>(
-                                                        builder:
-                                                            (BuildContext context,
-                                                                value,
-                                                                Widget? child) {
+                                                        builder: (BuildContext
+                                                                context,
+                                                            value,
+                                                            Widget? child) {
                                                           return CustomCheckDropdown<
                                                               String>(
                                                             label: "Branch",
@@ -441,7 +452,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                       ? false
                                                       : true,
                                                   child: const SectionTitle(
-                                                      title: 'Additional Details',
+                                                      title:
+                                                          'Additional Details',
                                                       icon: Icons
                                                           .more_horiz_rounded),
                                                 ),
@@ -477,7 +489,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                           text: 'Cancel',
                                           icon: Icons.close_rounded,
                                           textColor: Colors.grey,
-                                          onPressed: () => Navigator.pop(context),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
                                           borderColor: Colors.grey.shade300,
                                         ),
                                       ),
@@ -536,7 +549,9 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       "company_phone_number": _companyPhoneNumberController.text,
       "status": _statusController.text,
       "designation": designation,
-      "department": department,///not required
+      "department": department,
+
+      ///not required
 
       ///-------------not added - static ----------
       "branch": branch,
@@ -545,7 +560,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
 
     final provider =
         Provider.of<OfficersControllerProvider>(context, listen: false);
-    final success = await provider.createOfficer(officer);
+    final success = await provider.createOfficer(context, officer);
 
     if (success) {
       Navigator.pop(context);
@@ -564,18 +579,20 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       "company_phone_number": _companyPhoneNumberController.text,
       "status": _statusController.text,
       "designation": designation,
-      "department": department,/// not required
+      "department": department,
+
+      /// not required
       "branch": branch,
-      "_id": widget.officer?.id,
+      "_id": widget.officer?.sId,
       "officer_id": officerIdController.text,
       // "password": _passwordController.text,
     };
 
-    final officerId = widget.officer?.id; // or officerIdController.text
+    final officerId = widget.officer?.sId; // or officerIdController.text
 
     if (officerId != null) {
       bool success = await OfficersControllerProvider()
-          .updateOfficer(officerId, updatedData);
+          .updateOfficer(context, officerId, updatedData);
 
       if (success) {
         Navigator.pop(context);

@@ -23,7 +23,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
 
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
+    Provider.of<ProjectProvider>(context, listen: false).fetchProjects(
+      context,
+    );
 
     // TODO: implement initState
     super.initState();
@@ -103,8 +105,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) =>
-                                 ProjectClientManagementScreen(isEditMode: false,),
+                            builder: (context) => ProjectClientManagementScreen(
+                              isEditMode: false,
+                            ),
                           );
                         },
                         child: const Padding(
@@ -168,8 +171,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'all';
                               });
-                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('') ;
-
+                              Provider.of<ProjectProvider>(context,
+                                      listen: false)
+                                  .searchProjects('');
                             },
                           ),
                           _buildFilterChip(
@@ -182,8 +186,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'government';
                               });
-                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('GOV');
-
+                              Provider.of<ProjectProvider>(context,
+                                      listen: false)
+                                  .searchProjects('GOV');
                             },
                           ),
                           _buildFilterChip(
@@ -196,8 +201,9 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               setState(() {
                                 selectedFilter = 'private';
                               });
-                              Provider.of<ProjectProvider>(context, listen: false).searchProjects('PVT');
-
+                              Provider.of<ProjectProvider>(context,
+                                      listen: false)
+                                  .searchProjects('PVT');
                             },
                           ),
                           // _buildFilterChip(
@@ -290,10 +296,11 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: TextField(
-                        onChanged: (value){
-                         Provider.of<ProjectProvider>(context, listen: false).searchProjects(value) ;
+                        onChanged: (value) {
+                          Provider.of<ProjectProvider>(context, listen: false)
+                              .searchProjects(value);
                         },
-                        controller:searchController,
+                        controller: searchController,
                         decoration: InputDecoration(
                           hintText: "Search Projects...",
                           hintStyle: TextStyle(
@@ -304,8 +311,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                           fillColor: AppColors.whiteMainColor,
                           filled: true,
                           suffixIcon: const Icon(Icons.search,
-                                size: 20, color: Colors.grey),
-
+                              size: 20, color: Colors.grey),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                             borderSide: const BorderSide(
@@ -406,7 +412,6 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               ),
                             ],
                           ),
-
                         ],
                       ),
                     ),

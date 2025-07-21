@@ -432,7 +432,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
   final TextEditingController _officerIdController =
       TextEditingController(text: "64");
   final TextEditingController _passwordController =
-      TextEditingController(text: "12345");
+      TextEditingController(text: "Aswin123@");
   bool _obscurePassword = true;
 
   @override
@@ -487,7 +487,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 60),
                 _buildWelcomeText(),
                 const SizedBox(height: 40),
-                _buildLearnMoreButton(),
+                // _buildLearnMoreButton(),
               ],
             ),
           ),
@@ -526,7 +526,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
                     children: [
                       _buildWelcomeText(),
                       const SizedBox(height: 30),
-                      _buildLearnMoreButton(),
+                      // _buildLearnMoreButton(),
                     ],
                   ),
                 ),
@@ -786,6 +786,7 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
           print(_passwordController.text ?? '.......');
           if (_formKey.currentState?.validate() ?? false) {
             Provider.of<LoginProvider>(context, listen: false).loginOfficer(
+              context,
               officerId: _officerIdController.text.trim(),
               password: _passwordController.text.trim(),
               context: context,

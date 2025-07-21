@@ -125,7 +125,9 @@ class _DeadLeadDataDisplayState extends State<DeadLeadDataDisplay> {
     //     selectedFilters[category] = '';
     //   }
     // }
-    Provider.of<LeadProvider>(context, listen: false).getDeadLeadList();
+    Provider.of<LeadProvider>(context, listen: false).getDeadLeadList(
+      context,
+    );
   }
 
   @override

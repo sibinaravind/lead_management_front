@@ -6,17 +6,18 @@ import 'package:overseas_front_end/view/screens/officers/widgets/reset_password.
 import 'package:provider/provider.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
 import '../../../../model/officer/officer_model.dart';
+import '../../../../model/team_lead/team_lead_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
+import '../../../widgets/custom_toast.dart';
 import '../flavour/employee_flavour.dart';
 
 class EmployeeListTable extends StatelessWidget {
-  final List<OfficersModel> userList;
+  final List<TeamLeadModel> userList;
   const EmployeeListTable({super.key, required this.userList});
 
   @override
   Widget build(BuildContext context) {
-
     final List<Map<String, dynamic>> columnsData =
         EmployeeFlavour.userTableList();
     final horizontalController = ScrollController();
@@ -39,8 +40,8 @@ class EmployeeListTable extends StatelessWidget {
                   controller: verticalController,
                   scrollDirection: Axis.vertical,
                   child: DataTable(
-                    headingRowColor:
-                    WidgetStateColor.resolveWith((states) => AppColors.primaryColor),
+                    headingRowColor: WidgetStateColor.resolveWith(
+                        (states) => AppColors.primaryColor),
                     columns: columnsData.map((column) {
                       return DataColumn(
                         label: Flexible(
@@ -55,193 +56,219 @@ class EmployeeListTable extends StatelessWidget {
                     }).toList(),
                     rows: userList.isNotEmpty
                         ? userList.expand((listUser) {
-                      return [
-                        DataRow(
-                          cells: columnsData.map((column) {
-                            final extractor = column['extractor'] as Function;
-                            final value = extractor(listUser);
-                            return DataCell(
-                              Builder(
-                                builder: (context) {
-                                  switch (column['name']) {
-                                    case 'Status':
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                            return [
+                              DataRow(
+                                cells: columnsData.map((column) {
+                                  final extractor =
+                                      column['extractor'] as Function;
+                                  final value = extractor(listUser);
+                                  return DataCell(
+                                    Builder(
+                                      builder: (context) {
+                                        switch (column['name']) {
+                                          case 'Status':
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
 
-                                          ///---- status---------
-                                          // color: getColorBasedOnStatus(
-                                          //     Dimension.mobile ?? ''),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6),
-                                        child: CustomText(
-                                          text: getTextBasedOnStatus(
-                                              listUser.status ?? ''),
-                                          // text: getTextBasedOnStatus(
-                                          //     listUser.mobile ?? ''),
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12,
-                                          // color: getColorBasedOnStatus(
-                                          //         listUser.mobile ?? '')
-                                          //     .withOpacity(1.0),
-                                        ),
-                                      );
-                                    case 'Phone Number':
-                                      return SelectionArea(
-                                          child: CustomText(
-                                            text: value,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal,
-                                            color: AppColors.textColor,
-                                          ));
-                                    case 'ID':
-                                      return CustomText(
-                                        text: value,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primaryColor,
-                                      );
-                                    case 'Action':
-                                      return PopupMenuButton<int>(
-                                          color: Colors.white,
-                                          itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                                onTap: () => showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        EmployeeCreationScreen(
-                                                          isEdit: true,
-                                                          officer: value,
-                                                        )),
-                                                value: 1,
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: AppColors
-                                                          .greenSecondaryColor,
-                                                    ),
-                                                    Text("Edit"),
-                                                  ],
-                                                )),
-                                            PopupMenuItem(
-                                                value: 1,
-                                                onTap: () => showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        EmployeeEditScreen(
-                                                          officerId:
-                                                          listUser.id ?? '',
-                                                          isResetPassword:
-                                                          false,
-                                                        )),
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.password,
-                                                      color: AppColors
-                                                          .redSecondaryColor,
-                                                    ),
-                                                    Text("Edit Password"),
-                                                  ],
-                                                )),
-                                            PopupMenuItem(
-                                                onTap: () async {
-                                                  bool confirmed =
-                                                  await showDialog(
-                                                    context: context,
-                                                    builder: (_) => AlertDialog(
-                                                      title: const Text(
-                                                          "Confirm Delete"),
-                                                      content: const Text(
-                                                          "Are you sure you want to delete this officer?"),
-                                                      actions: [
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    false),
-                                                            child: const Text(
-                                                                "Cancel")),
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    true),
-                                                            child: const Text(
-                                                                "Delete")),
-                                                      ],
-                                                    ),
-                                                  );
+                                                ///---- status---------
+                                                // color: getColorBasedOnStatus(
+                                                //     Dimension.mobile ?? ''),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 6),
+                                              child: CustomText(
+                                                text: getTextBasedOnStatus(
+                                                    listUser.status ?? ''),
+                                                // text: getTextBasedOnStatus(
+                                                //     listUser.mobile ?? ''),
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                // color: getColorBasedOnStatus(
+                                                //         listUser.mobile ?? '')
+                                                //     .withOpacity(1.0),
+                                              ),
+                                            );
+                                          case 'Phone Number':
+                                            return SelectionArea(
+                                                child: CustomText(
+                                              text: value,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: AppColors.textColor,
+                                            ));
+                                          case 'ID':
+                                            return CustomText(
+                                              text: value,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors
+                                                  .orangeSecondaryColor,
+                                            );
+                                          case 'Action':
+                                            return PopupMenuButton<int>(
+                                                color: Colors.white,
+                                                itemBuilder: (context) => [
+                                                      PopupMenuItem(
+                                                          onTap: () =>
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) =>
+                                                                          EmployeeCreationScreen(
+                                                                            isEdit:
+                                                                                true,
+                                                                            officer:
+                                                                                value,
+                                                                          )),
+                                                          value: 1,
+                                                          child: const Row(
+                                                            spacing: 5,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.edit,
+                                                                color: AppColors
+                                                                    .greenSecondaryColor,
+                                                              ),
+                                                              Text("Edit"),
+                                                            ],
+                                                          )),
+                                                      PopupMenuItem(
+                                                          value: 1,
+                                                          onTap: () =>
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) =>
+                                                                          EmployeeEditScreen(
+                                                                            officerId:
+                                                                                listUser.sId ?? '',
+                                                                            isResetPassword:
+                                                                                false,
+                                                                          )),
+                                                          child: const Row(
+                                                            spacing: 5,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.password,
+                                                                color: AppColors
+                                                                    .redSecondaryColor,
+                                                              ),
+                                                              Text(
+                                                                  "Edit Password"),
+                                                            ],
+                                                          )),
+                                                      PopupMenuItem(
+                                                          onTap: () async {
+                                                            bool confirmed =
+                                                                await showDialog(
+                                                              context: context,
+                                                              builder: (_) =>
+                                                                  AlertDialog(
+                                                                title: const Text(
+                                                                    "Confirm Delete"),
+                                                                content: const Text(
+                                                                    "Are you sure you want to delete this officer?"),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed: () => Navigator.pop(
+                                                                          context,
+                                                                          false),
+                                                                      child: const Text(
+                                                                          "Cancel")),
+                                                                  TextButton(
+                                                                      onPressed: () => Navigator.pop(
+                                                                          context,
+                                                                          true),
+                                                                      child: const Text(
+                                                                          "Delete")),
+                                                                ],
+                                                              ),
+                                                            );
 
-                                                  if (confirmed) {
-                                                    final provider = Provider
-                                                        .of<OfficersControllerProvider>(
-                                                        context,
-                                                        listen: false);
-                                                    bool success =
-                                                    await provider
-                                                        .deleteOfficer(
-                                                      listUser.id ?? '',
-                                                    );
+                                                            if (confirmed) {
+                                                              final provider =
+                                                                  Provider.of<
+                                                                          OfficersControllerProvider>(
+                                                                      context,
+                                                                      listen:
+                                                                          false);
+                                                              bool success =
+                                                                  await provider
+                                                                      .deleteOfficer(
+                                                                context,
+                                                                listUser.sId ??
+                                                                    '',
+                                                              );
 
-                                                    if (success) {
-                                                      ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(SnackBar(
-                                                          content: Text(
-                                                              "Officer deleted.")));
-                                                    } else {
-                                                      ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(SnackBar(
-                                                          content: Text(provider
-                                                              .error ??
-                                                              "Delete failed")));
-                                                    }
-                                                  }
-                                                },
-                                                value: 1,
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.delete,
-                                                      color: AppColors
-                                                          .redSecondaryColor,
-                                                    ),
-                                                    Text("Delete"),
-                                                  ],
-                                                )),
-                                          ]);
+                                                              if (success) {
+                                                                CustomToast.showToast(
+                                                                    context:
+                                                                        context,
+                                                                    message:
+                                                                        'Officer deleted.');
+                                                                // ScaffoldMessenger.of(
+                                                                //     context)
+                                                                //     .showSnackBar(SnackBar(
+                                                                //     content: Text(
+                                                                //         "Officer deleted.")));
+                                                              } else {
+                                                                CustomToast.showToast(
+                                                                    context:
+                                                                        context,
+                                                                    message:
+                                                                        'Delete failed');
+                                                                // ScaffoldMessenger.of(
+                                                                //         context)
+                                                                //     .showSnackBar(SnackBar(
+                                                                //         content:
+                                                                //             Text(provider.error ??
+                                                                //                 "Delete failed")));
+                                                              }
+                                                            }
+                                                          },
+                                                          value: 1,
+                                                          child: const Row(
+                                                            spacing: 5,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.delete,
+                                                                color: AppColors
+                                                                    .redSecondaryColor,
+                                                              ),
+                                                              Text("Delete"),
+                                                            ],
+                                                          )),
+                                                    ]);
 
-                                    default:
-                                      return CustomText(
-                                        text: value,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                        color: AppColors.textColor,
-                                      );
-                                  }
-                                },
-                              ),
-                              onTap: () {
-                                if (column['name'] == 'ID') {
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) =>
-                                  //       const AddProjectVacancyScreen(),
-                                  // );
-                                }
-                              },
-                            );
-                          }).toList(),
-                        )
-                      ];
-                    }).toList()
+                                          default:
+                                            return CustomText(
+                                              text: value,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: AppColors.textColor,
+                                            );
+                                        }
+                                      },
+                                    ),
+                                    onTap: () {
+                                      if (column['name'] == 'ID') {
+                                        // showDialog(
+                                        //   context: context,
+                                        //   builder: (context) =>
+                                        //       const AddProjectVacancyScreen(),
+                                        // );
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                              )
+                            ];
+                          }).toList()
                         : [],
                   ),
                 ),
@@ -251,221 +278,221 @@ class EmployeeListTable extends StatelessWidget {
         );
       },
     );
-    return Scrollbar(
-      thumbVisibility: true,
-      controller: horizontalController,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(minWidth: MediaQuery.of(context).size.width - 100),
-        child: DataTable(
-          headingRowColor:
-              WidgetStateColor.resolveWith((states) => AppColors.primaryColor),
-          columns: columnsData.map((column) {
-            return DataColumn(
-              label: Flexible(
-                child: CustomText(
-                  text: column['name'],
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textWhiteColour,
-                  fontSize: 14,
-                ),
-              ),
-            );
-          }).toList(),
-          rows: userList.isNotEmpty
-              ? userList.expand((listUser) {
-                  return [
-                    DataRow(
-                      cells: columnsData.map((column) {
-                        final extractor = column['extractor'] as Function;
-                        final value = extractor(listUser);
-                        return DataCell(
-                          Builder(
-                            builder: (context) {
-                              switch (column['name']) {
-                                case 'Status':
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
+    // return Scrollbar(
+    //   thumbVisibility: true,
+    //   controller: horizontalController,
+    //   child: ConstrainedBox(
+    //     constraints:
+    //         BoxConstraints(minWidth: MediaQuery.of(context).size.width - 100),
+    //     child: DataTable(
+    //       headingRowColor:
+    //           WidgetStateColor.resolveWith((states) => AppColors.primaryColor),
+    //       columns: columnsData.map((column) {
+    //         return DataColumn(
+    //           label: Flexible(
+    //             child: CustomText(
+    //               text: column['name'],
+    //               fontWeight: FontWeight.bold,
+    //               color: AppColors.textWhiteColour,
+    //               fontSize: 14,
+    //             ),
+    //           ),
+    //         );
+    //       }).toList(),
+    //       rows: userList.isNotEmpty
+    //           ? userList.expand((listUser) {
+    //               return [
+    //                 DataRow(
+    //                   cells: columnsData.map((column) {
+    //                     final extractor = column['extractor'] as Function;
+    //                     final value = extractor(listUser);
+    //                     return DataCell(
+    //                       Builder(
+    //                         builder: (context) {
+    //                           switch (column['name']) {
+    //                             case 'Status':
+    //                               return Container(
+    //                                 decoration: BoxDecoration(
+    //                                   borderRadius: BorderRadius.circular(10),
 
-                                      ///---- status---------
-                                      // color: getColorBasedOnStatus(
-                                      //     Dimension.mobile ?? ''),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6),
-                                    child: CustomText(
-                                      text: getTextBasedOnStatus(
-                                          listUser.status ?? ''),
-                                      // text: getTextBasedOnStatus(
-                                      //     listUser.mobile ?? ''),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
-                                      // color: getColorBasedOnStatus(
-                                      //         listUser.mobile ?? '')
-                                      //     .withOpacity(1.0),
-                                    ),
-                                  );
-                                case 'Phone Number':
-                                  return SelectionArea(
-                                      child: CustomText(
-                                    text: value,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                    color: AppColors.textColor,
-                                  ));
-                                case 'ID':
-                                  return CustomText(
-                                    text: value,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryColor,
-                                  );
-                                case 'Action':
-                                  return PopupMenuButton<int>(
-                                      color: Colors.white,
-                                      itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                                onTap: () => showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        EmployeeCreationScreen(
-                                                          isEdit: true,
-                                                          officer: value,
-                                                        )),
-                                                value: 1,
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: AppColors
-                                                          .greenSecondaryColor,
-                                                    ),
-                                                    Text("Edit"),
-                                                  ],
-                                                )),
-                                            PopupMenuItem(
-                                                value: 1,
-                                                onTap: () => showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        EmployeeEditScreen(
-                                                          officerId:
-                                                              listUser.id ?? '',
-                                                          isResetPassword:
-                                                              false,
-                                                        )),
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.password,
-                                                      color: AppColors
-                                                          .redSecondaryColor,
-                                                    ),
-                                                    Text("Edit Password"),
-                                                  ],
-                                                )),
-                                            PopupMenuItem(
-                                                onTap: () async {
-                                                  bool confirmed =
-                                                      await showDialog(
-                                                    context: context,
-                                                    builder: (_) => AlertDialog(
-                                                      title: const Text(
-                                                          "Confirm Delete"),
-                                                      content: const Text(
-                                                          "Are you sure you want to delete this officer?"),
-                                                      actions: [
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    false),
-                                                            child: const Text(
-                                                                "Cancel")),
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    true),
-                                                            child: const Text(
-                                                                "Delete")),
-                                                      ],
-                                                    ),
-                                                  );
+    //                                   ///---- status---------
+    //                                   // color: getColorBasedOnStatus(
+    //                                   //     Dimension.mobile ?? ''),
+    //                                 ),
+    //                                 padding: const EdgeInsets.symmetric(
+    //                                     horizontal: 6),
+    //                                 child: CustomText(
+    //                                   text: getTextBasedOnStatus(
+    //                                       listUser.status ?? ''),
+    //                                   // text: getTextBasedOnStatus(
+    //                                   //     listUser.mobile ?? ''),
+    //                                   fontWeight: FontWeight.w600,
+    //                                   fontSize: 12,
+    //                                   // color: getColorBasedOnStatus(
+    //                                   //         listUser.mobile ?? '')
+    //                                   //     .withOpacity(1.0),
+    //                                 ),
+    //                               );
+    //                             case 'Phone Number':
+    //                               return SelectionArea(
+    //                                   child: CustomText(
+    //                                 text: value,
+    //                                 fontSize: 14,
+    //                                 fontWeight: FontWeight.normal,
+    //                                 color: AppColors.textColor,
+    //                               ));
+    //                             case 'ID':
+    //                               return CustomText(
+    //                                 text: value,
+    //                                 fontSize: 14,
+    //                                 fontWeight: FontWeight.w600,
+    //                                 color: AppColors.primaryColor,
+    //                               );
+    //                             case 'Action':
+    //                               return PopupMenuButton<int>(
+    //                                   color: Colors.white,
+    //                                   itemBuilder: (context) => [
+    //                                         PopupMenuItem(
+    //                                             onTap: () => showDialog(
+    //                                                 context: context,
+    //                                                 builder: (context) =>
+    //                                                     EmployeeCreationScreen(
+    //                                                       isEdit: true,
+    //                                                       officer: value,
+    //                                                     )),
+    //                                             value: 1,
+    //                                             child: const Row(
+    //                                               spacing: 5,
+    //                                               children: [
+    //                                                 Icon(
+    //                                                   Icons.edit,
+    //                                                   color: AppColors
+    //                                                       .greenSecondaryColor,
+    //                                                 ),
+    //                                                 Text("Edit"),
+    //                                               ],
+    //                                             )),
+    //                                         PopupMenuItem(
+    //                                             value: 1,
+    //                                             onTap: () => showDialog(
+    //                                                 context: context,
+    //                                                 builder: (context) =>
+    //                                                     EmployeeEditScreen(
+    //                                                       officerId:
+    //                                                           listUser.id ?? '',
+    //                                                       isResetPassword:
+    //                                                           false,
+    //                                                     )),
+    //                                             child: const Row(
+    //                                               spacing: 5,
+    //                                               children: [
+    //                                                 Icon(
+    //                                                   Icons.password,
+    //                                                   color: AppColors
+    //                                                       .redSecondaryColor,
+    //                                                 ),
+    //                                                 Text("Edit Password"),
+    //                                               ],
+    //                                             )),
+    //                                         PopupMenuItem(
+    //                                             onTap: () async {
+    //                                               bool confirmed =
+    //                                                   await showDialog(
+    //                                                 context: context,
+    //                                                 builder: (_) => AlertDialog(
+    //                                                   title: const Text(
+    //                                                       "Confirm Delete"),
+    //                                                   content: const Text(
+    //                                                       "Are you sure you want to delete this officer?"),
+    //                                                   actions: [
+    //                                                     TextButton(
+    //                                                         onPressed: () =>
+    //                                                             Navigator.pop(
+    //                                                                 context,
+    //                                                                 false),
+    //                                                         child: const Text(
+    //                                                             "Cancel")),
+    //                                                     TextButton(
+    //                                                         onPressed: () =>
+    //                                                             Navigator.pop(
+    //                                                                 context,
+    //                                                                 true),
+    //                                                         child: const Text(
+    //                                                             "Delete")),
+    //                                                   ],
+    //                                                 ),
+    //                                               );
 
-                                                  if (confirmed) {
-                                                    final provider = Provider
-                                                        .of<OfficersControllerProvider>(
-                                                            context,
-                                                            listen: false);
-                                                    bool success =
-                                                        await provider
-                                                            .deleteOfficer(
-                                                      listUser.id ?? '',
-                                                    );
+    //                                               if (confirmed) {
+    //                                                 final provider = Provider
+    //                                                     .of<OfficersControllerProvider>(
+    //                                                         context,
+    //                                                         listen: false);
+    //                                                 bool success =
+    //                                                     await provider
+    //                                                         .deleteOfficer(
+    //                                                   context,
+    //                                                   listUser.id ?? '',
+    //                                                 );
 
-                                                    if (success) {
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(SnackBar(
-                                                              content: Text(
-                                                                  "Officer deleted.")));
-                                                    } else {
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(SnackBar(
-                                                              content: Text(provider
-                                                                      .error ??
-                                                                  "Delete failed")));
-                                                    }
-                                                  }
-                                                },
-                                                value: 1,
-                                                child: const Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.delete,
-                                                      color: AppColors
-                                                          .redSecondaryColor,
-                                                    ),
-                                                    Text("Delete"),
-                                                  ],
-                                                )),
-                                          ]);
+    //                                                 if (success) {
+    //                                                   ScaffoldMessenger.of(
+    //                                                           context)
+    //                                                       .showSnackBar(SnackBar(
+    //                                                           content: Text(
+    //                                                               "Officer deleted.")));
+    //                                                 } else {
+    //                                                   ScaffoldMessenger.of(
+    //                                                           context)
+    //                                                       .showSnackBar(SnackBar(
+    //                                                           content: Text(provider
+    //                                                                   .error ??
+    //                                                               "Delete failed")));
+    //                                                 }
+    //                                               }
+    //                                             },
+    //                                             value: 1,
+    //                                             child: const Row(
+    //                                               spacing: 5,
+    //                                               children: [
+    //                                                 Icon(
+    //                                                   Icons.delete,
+    //                                                   color: AppColors
+    //                                                       .redSecondaryColor,
+    //                                                 ),
+    //                                                 Text("Delete"),
+    //                                               ],
+    //                                             )),
+    //                                       ]);
 
-                                default:
-                                  return CustomText(
-                                    text: value,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                    color: AppColors.textColor,
-                                  );
-                              }
-                            },
-                          ),
-                          onTap: () {
-                            if (column['name'] == 'ID') {
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) =>
-                              //       const AddProjectVacancyScreen(),
-                              // );
-                            }
-                          },
-                        );
-                      }).toList(),
-                    )
-                  ];
-                }).toList()
-              : [],
-        ),
-      ),
-    );
-
+    //                             default:
+    //                               return CustomText(
+    //                                 text: value,
+    //                                 fontSize: 14,
+    //                                 fontWeight: FontWeight.normal,
+    //                                 color: AppColors.textColor,
+    //                               );
+    //                           }
+    //                         },
+    //                       ),
+    //                       onTap: () {
+    //                         if (column['name'] == 'ID') {
+    //                           // showDialog(
+    //                           //   context: context,
+    //                           //   builder: (context) =>
+    //                           //       const AddProjectVacancyScreen(),
+    //                           // );
+    //                         }
+    //                       },
+    //                     );
+    //                   }).toList(),
+    //                 )
+    //               ];
+    //             }).toList()
+    //           : [],
+    //     ),
+    //   ),
+    // );
   }
 
 // @override

@@ -24,8 +24,12 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
 
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context, listen: false).fetchVacancies();
-    Provider.of<ProjectProvider>(context,listen: false).fetchClients();
+    Provider.of<ProjectProvider>(context, listen: false).fetchVacancies(
+      context,
+    );
+    Provider.of<ProjectProvider>(context, listen: false).fetchClients(
+      context,
+    );
     // TODO: implement initState
     super.initState();
   }
@@ -105,7 +109,7 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                           showDialog(
                             context: context,
                             builder: (context) =>
-                            const CreateEditVacancyPopup(),
+                                const CreateEditVacancyPopup(),
                           );
                         },
                         child: const Padding(

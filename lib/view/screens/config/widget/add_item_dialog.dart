@@ -138,16 +138,17 @@ class AddItemDialog extends StatelessWidget {
                       text: 'ADD',
                       icon: Icons.check,
                       onPressed: () {
-                        if(_formKey.currentState?.validate()??false){
+                        if (_formKey.currentState?.validate() ?? false) {
                           Provider.of<ConfigProvider>(context, listen: false)
-                              .addConfig(
-                              field: category,
-                              name: nameController.text.toUpperCase().trim(),
-                              colour: colourController.text.trim());
+                              .addConfig(context,
+                                  field: category,
+                                  name:
+                                      nameController.text.toUpperCase().trim(),
+                                  colour: colourController.text.trim());
                           Navigator.of(context).pop();
-                          CustomSnackBar.show(
-                              context, 'Added successfully');
+                          CustomSnackBar.show(context, 'Added successfully');
                         }
+
                         ///-- setstate
                         // item.name = nameController.text;
                         // if (item.hasField('code')) {
@@ -162,7 +163,6 @@ class AddItemDialog extends StatelessWidget {
                         // if (item.hasField('range')) {
                         //   item['range'] = rangeController.text;
                         // }
-
                       },
                       isFilled: true,
                       gradient: AppColors.orangeGradient,

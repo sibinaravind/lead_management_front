@@ -41,10 +41,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
     // Provider.of<LoginProvider>(context, listen: false).loadFromCache();
 
     Future.delayed(Duration.zero, () {
-      Provider.of<LeadProvider>(context, listen: false).getLeadList();
+      Provider.of<LeadProvider>(context, listen: false).getLeadList(
+        context,
+      );
       Provider.of<RoundRobinProvider>(context, listen: false)
-          .fetchRoundRobinGroups();
-      Provider.of<ConfigProvider>(context, listen: false).getConfigList();
+          .fetchRoundRobinGroups(
+        context,
+      );
+      Provider.of<ConfigProvider>(context, listen: false).getConfigList(
+        context,
+      );
     });
   }
 

@@ -32,13 +32,16 @@ class CampaignProvider extends ChangeNotifier {
   String? file64;
   // TextEditingController titleController = TextEditingController();
 
-  Future<void> getCampaignList() async {
+  Future<void> getCampaignList(context) async {
     _isLoading = true;
-    _error = null;
+    // _error = null;
     // notifyListeners();
 
     try {
-      final response = await _api.get(Constant().camapignList);
+      final response = await _api.get(
+        context: context,
+        Constant().camapignList,
+      );
       _campaignModel =
           List.from(response['data'].map((e) => CampaignModel.fromJson(e)));
     } catch (e) {
@@ -54,12 +57,16 @@ class CampaignProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> deleteCampaign(String id) async {
+  Future<bool> deleteCampaign(
+    context,
+    String id,
+  ) async {
     _isLoading = true;
-    _error = null;
+    // _error = null;
     notifyListeners();
     try {
-      final response = await _api.delete("${Constant().deleteCampaign}$id", {});
+      final response = await _api
+          .delete(context: context, "${Constant().deleteCampaign}$id", {});
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
     } catch (e) {
@@ -67,62 +74,68 @@ class CampaignProvider extends ChangeNotifier {
       return false;
     } finally {
       _isLoading = false;
-      getCampaignList();
+      getCampaignList(context);
       notifyListeners();
     }
   }
 
-  Future<bool> addCampaign(
+  Future<bool> addCampaign(context,
       {required String title,
       required String startDate,
       required String docName,
       required String image64}) async {
-    _isLoading = true;
-    _error = null;
+    // _isLoading = true;
+    // _error = null;
     notifyListeners();
 
+    print("req");
+
     try {
-      final response = await _api.post(Constant().addCampaign, {
+      final response =
+          await _api.post(context: context, Constant().addCampaign, {
         "title": title,
         "startDate": startDate,
         "doc_file": {"name": docName, "base64": image64}
       });
+      print("postReq");
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
     } catch (e) {
-      _error = 'Failed to load permissions: $e';
+      print(e);
+      // _error = 'Failed to load permissions: $e';
       return false;
     } finally {
       _isLoading = false;
-      getCampaignList();
+      getCampaignList(context);
       notifyListeners();
     }
   }
 
-  Future<bool> editCampaign(
-      {required String title,
-      required String startDate,
-      required String docName,
-      required String image64}) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+  // Future<bool> editCampaign(context,
+  //     {required String title,
+  //     required String startDate,
+  //     required String docName,
+  //     required String image64}) async {
+  //   _isLoading = true;
+  //   _error = null;
+  //   notifyListeners();
 
-    try {
-      final response = await _api.post(Constant().addCampaign, {
-        "title": title,
-        "startDate": startDate,
-        "doc_file": {"name": docName, "base64": image64}
-      });
-      // _campaignModel = CampaignModel.fromJson(response.data);
-      return response['success'] == true;
-    } catch (e) {
-      _error = 'Failed to load permissions: $e';
-      return false;
-    } finally {
-      _isLoading = false;
-      getCampaignList();
-      notifyListeners();
-    }
-  }
+  //   try {
+  //     final response =
+  //         await _api.post(context: context, Constant().addCampaign, {
+  //       "title": title,
+  //       "startDate": startDate,
+  //       "doc_file": {"name": docName, "base64": image64}
+  //     });
+  //     // _campaignModel = CampaignModel.fromJson(response.data);
+  //     return response['success'] == true;
+  //   } catch (e) {
+  //     _error = 'Failed to load permissions: $e';
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     getCampaignList(context);
+  //     notifyListeners();
+  //   }
+  // }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/view/screens/leads/edit_lead_screen.dart';
 import 'package:overseas_front_end/view/screens/leads/widgets/lead_details_tab.dart';
 import 'package:overseas_front_end/view/screens/leads/widgets/personal_details_tab.dart';
@@ -88,7 +89,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     super.initState();
     // Initialize the first tab as selected
     Provider.of<LeadProvider>(context, listen: false)
-        .getLeadDetails(widget.leadId);
+        .getLeadDetails(context, widget.leadId);
   }
 
   @override
@@ -306,8 +307,14 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                   remarksStr: leadProvider
                                                           .leadDetails?.note ??
                                                       '',
-                                                  dobStr: leadProvider
-                                                          .leadDetails?.dob ??
+                                                  dobStr: DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(DateTime.tryParse(
+                                                                  leadProvider
+                                                                          .leadDetails
+                                                                          ?.dob ??
+                                                                      '') ??
+                                                              DateTime.now()) ??
                                                       '',
                                                   cityStr: leadProvider
                                                           .leadDetails?.city ??
@@ -437,8 +444,15 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                             .leadDetails
                                                             ?.note ??
                                                         '',
-                                                    dobStr: leadProvider
-                                                            .leadDetails?.dob ??
+                                                    dobStr: DateFormat(
+                                                                'dd/MM/yyyy')
+                                                            .format(DateTime.tryParse(
+                                                                    leadProvider
+                                                                            .leadDetails
+                                                                            ?.dob ??
+                                                                        '') ??
+                                                                DateTime
+                                                                    .now()) ??
                                                         '',
                                                     cityStr: leadProvider
                                                             .leadDetails

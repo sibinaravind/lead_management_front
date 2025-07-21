@@ -217,7 +217,7 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                         ),
                                         ElevatedButton.icon(
                                           onPressed: () {
-                                            value.deleteOfficerFromLead(
+                                            value.deleteOfficerFromLead(context,
                                                 leadOfficerId: widget.officerId,
                                                 officerId: officer?.sId ?? "");
                                             Navigator.pop(context, true);
@@ -341,9 +341,9 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                       onPressed: () {
                                         _searchController.clear();
                                         value.getAllRemainingEmpoyees(
+                                            context,
                                             widget.officerSId,
-                                            value2.allOfficersListData ?? [],
-                                            false);
+                                            value2.allOfficersListData ?? []);
                                         // value.clearEmployees();
                                         // setDialogState(() {
                                         //   _filteredClients = _allClients
@@ -483,16 +483,15 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                                           ),
                                           child: ElevatedButton.icon(
                                             onPressed: () async {
-                                              Provider.of<TeamLeadProvider>(
-                                                      context,
-                                                      listen: false)
+                                              value
                                                   .addOfficerToLead(
+                                                context,
                                                 leadOfficerId:
                                                     widget.officerSId ?? '',
                                                 officerId: value
                                                         .remainingEmployees
                                                         ?.elementAt(index)
-                                                        .id ??
+                                                        .sId ??
                                                     "",
                                                 staffId: value
                                                         .remainingEmployees

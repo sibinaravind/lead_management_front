@@ -19,7 +19,9 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OfficersControllerProvider>().fetchOfficersList();
+      context.read<OfficersControllerProvider>().fetchOfficersList(
+            context,
+          );
     });
     // Provider.of<OfficersControllerProvider>(context, listen: false).fetchOfficersList();
   }
@@ -105,7 +107,9 @@ class _EmployeeDataDisplayState extends State<EmployeeDataDisplay> {
                             showDialog(
                               context: context,
                               builder: (context) =>
-                                  const EmployeeCreationScreen(isEdit: false,),
+                                  const EmployeeCreationScreen(
+                                isEdit: false,
+                              ),
                             );
                           },
                           child: const Padding(

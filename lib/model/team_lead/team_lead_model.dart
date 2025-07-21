@@ -64,6 +64,19 @@ class TeamLeadModel {
     }
     return data;
   }
+
+  static void updateOfficerInList(
+      List<TeamLeadModel> list, TeamLeadModel updatedOfficer) {
+    int index = list.indexWhere((officer) => officer.sId == updatedOfficer.sId);
+    if (index != -1) {
+      list[index] = updatedOfficer;
+    }
+  }
+
+  /// Delete from list
+  static void deleteOfficerFromList(List<TeamLeadModel> list, String id) {
+    list.removeWhere((officer) => officer.sId == id);
+  }
 }
 
 class Officers {
