@@ -9,17 +9,17 @@ import 'package:provider/provider.dart';
 import '../../../../controller/auth/login_controller.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
 
-class EmployeeEditScreen extends StatefulWidget {
+class PasswordReset extends StatefulWidget {
   final bool isResetPassword;
   final String officerId;
-  const EmployeeEditScreen(
+  const PasswordReset(
       {super.key, required this.officerId, required this.isResetPassword});
 
   @override
-  State<EmployeeEditScreen> createState() => _EmployeeCreationScreenState();
+  State<PasswordReset> createState() => _PasswordResetState();
 }
 
-class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
+class _PasswordResetState extends State<PasswordReset>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
@@ -58,7 +58,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
               constraints: BoxConstraints(
                 minWidth: 320,
                 maxWidth: 500,
-                minHeight: widget.isResetPassword ? 500 : 300,
+                minHeight: widget.isResetPassword ? 450 : 300,
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -95,6 +95,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                     child: Row(
                       children: [
                         Container(
+                          height: widget.isResetPassword ? 350 : 230,
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
@@ -148,6 +149,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                         child: Expanded(
                           flex: 3,
                           child: Container(
+                            height: widget.isResetPassword ? 350 : 180,
                             decoration: BoxDecoration(
                               color: Colors.grey.shade50,
                               borderRadius: BorderRadius.circular(16),
@@ -158,8 +160,9 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                 Expanded(
                                   child: Scrollbar(
                                     thumbVisibility: true,
-                                    child: SingleChildScrollView(
-                                      padding: const EdgeInsets.all(24),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
                                       child: LayoutBuilder(
                                         builder: (context, constraints) {
                                           final availableWidth =
@@ -206,26 +209,46 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                                         return null;
                                                       },
                                                     ),
-                                                    const SizedBox(height: 16),
-                                                    Visibility(
-                                                      visible: widget
-                                                          .isResetPassword,
-                                                      child:
-                                                          CustomPasswordTextFormField(
+
+                                                    // CustomPasswordTextFormField(
+                                                    //
+                                                    //                                                         label:
+                                                    //   'Confirm Password',
+                                                    //                                                         controller:
+                                                    //   _resetPasswordController,
+                                                    //                                                         isRequired: widget
+                                                    //   .isResetPassword,
+                                                    //                                                         validator:
+                                                    //   (String? value) {
+                                                    // if (value!.isEmpty) {
+                                                    //   return 'Required';
+                                                    // }
+                                                    // final regex = RegExp(
+                                                    //     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
+                                                    //
+                                                    // if (!regex.hasMatch(
+                                                    //     value)) {
+                                                    //   return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
+                                                    // }
+                                                    // return null;
+                                                    //                                                         },
+                                                    //                                                       ),
+                                                    if (widget.isResetPassword)
+                                                      const SizedBox(
+                                                          height: 16),
+                                                    if (widget.isResetPassword)
+                                                      CustomPasswordTextFormField(
                                                         label:
                                                             'Confirm Password',
                                                         controller:
                                                             _resetPasswordController,
-                                                        isRequired: widget
-                                                            .isResetPassword,
+                                                        isRequired: true,
                                                         validator:
                                                             (String? value) {
-                                                          if (value!.isEmpty) {
-                                                            return 'Required';
-                                                          }
+                                                          if (value!.isEmpty)
+                                                            return "Required";
                                                           final regex = RegExp(
                                                               r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
-
                                                           if (!regex.hasMatch(
                                                               value)) {
                                                             return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
@@ -233,9 +256,9 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
                                                           return null;
                                                         },
                                                       ),
-                                                    ),
                                                   ]),
-                                              const SizedBox(height: 32),
+                                              if (widget.isResetPassword)
+                                                const SizedBox(height: 32),
                                             ],
                                           );
                                         },
@@ -310,11 +333,12 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
 
     final officerId = widget.officerId; // or officerIdController.text
 
-    if (officerId.isEmpty) {
+    if (officerId.isNotEmpty) {
       bool success = await OfficersControllerProvider()
           .updateOfficer(context, officerId, officer);
 
       if (success) {
+        Navigator.pop(context);
         CustomSnackBar.show(context, "Password updated successfully");
       } else {
         CustomSnackBar.show(context, "Failed to update",
@@ -337,7 +361,7 @@ class _EmployeeCreationScreenState extends State<EmployeeEditScreen>
             TextButton(
                 onPressed: () async {
                   final officerId = widget.officerId;
-                  if (officerId.isEmpty) {
+                  if (officerId.isNotEmpty) {
                     bool success = await LoginProvider().resetPassword(
                         officerId: officerId,
                         currentPassword: _passwordController.text,

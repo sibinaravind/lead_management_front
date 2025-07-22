@@ -951,7 +951,7 @@ import 'package:intl/intl.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
+import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
 import '../../../widgets/custom_toast.dart';
 import '../../../widgets/widgets.dart';

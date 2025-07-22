@@ -160,9 +160,9 @@ class _AppBarContainerState extends State<AppBarContainer> {
                   PopupMenuItem<String>(
                     onTap: () => showDialog(
                       context: context,
-                      builder: (context) => EmployeeEditScreen(
+                      builder: (context) => PasswordReset(
                         isResetPassword: true,
-                        officerId: widget.user.officerId ?? '',
+                        officerId: widget.user.id ?? '',
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -53,7 +53,7 @@ import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
+import '../../../../controller/config/config_provider.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_toast.dart';
 

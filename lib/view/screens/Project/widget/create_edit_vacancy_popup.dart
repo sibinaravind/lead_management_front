@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/screens/Project/widget/vacancy_client.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../controller/project/vacancy_controller.dart';
 import '../../../../model/app_configs/config_list_model.dart';

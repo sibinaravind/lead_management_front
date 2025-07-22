@@ -3,7 +3,7 @@ import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_popup.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
+import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../model/app_configs/config_model.dart';
 import '../../../../res/style/colors/colors.dart';

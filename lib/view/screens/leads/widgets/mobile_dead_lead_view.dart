@@ -9,7 +9,7 @@ import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
+import '../../../../controller/config/config_provider.dart';
 import '../../../../model/app_configs/config_model.dart';
 import '../../../../res/style/colors/dimension.dart';
 import '../../../widgets/custom_date_range_field.dart';

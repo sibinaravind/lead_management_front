@@ -144,11 +144,11 @@ class EmployeeListTable extends StatelessWidget {
                                                                       context,
                                                                   builder:
                                                                       (context) =>
-                                                                          EmployeeEditScreen(
-                                                                            officerId:
-                                                                                listUser.sId ?? '',
-                                                                            isResetPassword:
-                                                                                false,
+                                                                          EmployeeCreationScreen(
+                                                                            isEdit:
+                                                                                true,
+                                                                            officer:
+                                                                                listUser,
                                                                           )),
                                                           child: const Row(
                                                             spacing: 5,

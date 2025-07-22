@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/Project/widget/create_edit_vacancy_popup.dart';
@@ -9,8 +8,7 @@ import '../../../controller/project/project_provider_controller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../../res/style/colors/dimension.dart';
 import '../../widgets/widgets.dart';
-import 'add_project_vacancy_screen.dart';
-import 'widget/project_user_list_table.dart';
+
 
 class VacancyDataDisplay extends StatefulWidget {
   VacancyDataDisplay({super.key});
@@ -407,16 +405,16 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                               ),
                             ],
                           ),
-                          CustomPager(
-                            currentPage: value.currentPage + 1,
-                            totalPages: min(value.clients.length, 100),
-                            onPageSelected: (page) {
-                              if (value.currentPage != page - 1) {
-                                value.currentPage = page - 1;
-                                // value.onPageSelected(page - 1);
-                              }
-                            },
-                          ),
+                          // CustomPager(
+                          //   currentPage: value.currentPage + 1,
+                          //   totalPages: min(value.clients.length, 100),
+                          //   onPageSelected: (page) {
+                          //     if (value.currentPage != page - 1) {
+                          //       value.currentPage = page - 1;
+                          //       // value.onPageSelected(page - 1);
+                          //     }
+                          //   },
+                          // ),
                         ],
                       ),
                     ),

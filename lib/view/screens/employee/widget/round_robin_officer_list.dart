@@ -5,7 +5,6 @@ import 'package:overseas_front_end/view/screens/config/widget/delete_dialogue.da
 import 'package:overseas_front_end/view/screens/employee/widget/officers_delete_dialogue.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
 import '../../../../model/lead/round_robin.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../config/widget/action_button.dart';

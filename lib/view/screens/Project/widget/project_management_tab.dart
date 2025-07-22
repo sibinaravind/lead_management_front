@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../controller/config/config_provider.dart';
 import '../../../../model/project/project_model.dart';
 import '../../../widgets/widgets.dart';
 

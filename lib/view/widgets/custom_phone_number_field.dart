@@ -95,6 +95,7 @@ class CustomPhoneField extends StatelessWidget {
                       if (value == null || value.isEmpty) {
                         return 'This field is required';
                       }
+
                       if (!RegExp(r'^\d+$').hasMatch(value)) {
                         return 'Only numbers are allowed';
                       }

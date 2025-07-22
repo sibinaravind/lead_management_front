@@ -18,7 +18,7 @@ class VacancyUserListTable extends StatelessWidget {
       builder: (context, constraints) {
         return Scrollbar(
           thumbVisibility: true,
-          controller: horizontalController, // ✅ attach controller
+          controller: horizontalController,
           child: SingleChildScrollView(
             controller: horizontalController, // ✅ attach controller
             scrollDirection: Axis.horizontal,

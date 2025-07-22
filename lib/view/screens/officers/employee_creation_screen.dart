@@ -4,10 +4,11 @@ import 'package:overseas_front_end/controller/permission_controller/access_permi
 import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../../controller/config_provider.dart';
+import '../../../controller/config/config_provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../model/team_lead/team_lead_model.dart';
 import '../employee/employee_permission_screen.dart';
@@ -31,8 +32,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
   Uint8List? imageBytes;
   List<String> salutationList = ['Mr', 'Mrs', 'Ms', 'Dr'];
 
-  String? _mobileTeleCode = '91';
-  String? _whatsmobileTeleCode = '91';
+  String? _phoneCode = '91';
+  String? _companyPhoneCode = '91';
   String prefix = '';
   String name = '';
 
@@ -59,9 +60,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     Future.delayed(Duration.zero, () async {
       final provider =
           Provider.of<AccessPermissionProvider>(context, listen: false);
-      await provider.fetchAccessPermissions(
-        context,
-      );
+      await provider.fetchAccessPermissions(context);
     });
     String name = widget.officer?.name ?? '';
     List<String> parts = name.trim().split(' ');
@@ -70,17 +69,44 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       prefix = parts[0];
       name = parts.sublist(1).join(' ');
     }
+    String fullPhone = widget.officer?.phone ?? '';
+    if (fullPhone.contains(' ')) {
+      _phoneCode = fullPhone.split(' ').first;
+      _phoneNumberController.text = fullPhone.split(' ').sublist(1).join(' ');
+    } else {
+      _phoneCode = '91'; // fallback default
+      _phoneNumberController.text = fullPhone;
+    }
+
+    String fullCompanyPhone = widget.officer?.companyPhoneNumber ?? '';
+    if (fullCompanyPhone.contains(' ')) {
+      _companyPhoneCode = fullCompanyPhone.split(' ').first;
+      _companyPhoneNumberController.text =
+          fullCompanyPhone.split(' ').sublist(1).join(' ');
+    } else {
+      _companyPhoneCode = '91';
+      _companyPhoneNumberController.text = fullCompanyPhone;
+    }
+
+    String phoneNumberSplit = widget.officer?.phone?.split(' ').last ?? "";
+    String phoneNumberCodeSplit = widget.officer?.phone?.split(' ').first ?? "";
+    print(phoneNumberSplit);
+    print(phoneNumberCodeSplit);
     _selectedGender = widget.officer?.gender ?? '';
     officerNameController.text = name ?? '';
     _selectedSalutation = prefix ?? '';
     officerIdController.text = widget.officer?.officerId ?? '';
-    _phoneNumberController.text = widget.officer?.phone ?? '';
-    _companyPhoneNumberController.text =
-        widget.officer?.companyPhoneNumber ?? '';
+    // _phoneNumberController.text = widget.officer?.phone?? '';
+    // _phoneCode = widget.officer?.phone?.split('').first ?? '';
+    // _companyPhoneNumberController.text =
+    //     widget.officer?.companyPhoneNumber ?? '';
     _branchController.text = widget.officer?.branch.toString() ?? '';
     // _statusController.text=widget.officer?.status??'';
     _statusController.text = widget.officer?.status ?? 'ACTIVE';
-    _designationController.text = widget.officer?.designation.toString() ?? '';
+    // _designationController.text = widget.officer?.designation?.map((e)=>e.toString()).join().toString() ?? '';
+    designation =
+        widget.officer?.designation?.map((e) => e.toString()).toList() ?? [];
+
     // _departmentController.text = widget.officer?.department.toString() ?? '';
     branch = widget.officer?.branch ?? [];
     super.initState();
@@ -282,6 +308,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                         isRequired: true,
                                                       ),
                                                       CustomTextFormField(
+                                                        isRequired: true,
                                                         readOnly: false,
                                                         label: 'Officer Id',
                                                         controller:
@@ -313,22 +340,23 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                         controller:
                                                             _phoneNumberController,
                                                         selectedCountry:
-                                                            _mobileTeleCode,
-                                                        onCountryChanged: (val) =>
-                                                            setState(() =>
-                                                                _mobileTeleCode =
-                                                                    val),
-                                                        isRequired: false,
+                                                            _phoneCode,
+                                                        onCountryChanged:
+                                                            (val) => setState(
+                                                                () =>
+                                                                    _phoneCode =
+                                                                        val),
+                                                        isRequired: true,
                                                       ),
                                                       CustomPhoneField(
                                                         label: 'Company Phone',
                                                         controller:
                                                             _companyPhoneNumberController,
                                                         selectedCountry:
-                                                            _whatsmobileTeleCode,
+                                                            _companyPhoneCode,
                                                         onCountryChanged: (val) =>
                                                             setState(() =>
-                                                                _whatsmobileTeleCode =
+                                                                _companyPhoneCode =
                                                                     val),
                                                         isRequired: false,
                                                       ),
@@ -350,16 +378,17 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                       //       status =
                                                       //           value ?? '';
                                                       //     }),
-                                                      CustomTextFormField(
-                                                          label: "Status",
-                                                          controller:
-                                                              _statusController),
+                                                      // CustomTextFormField(
+                                                      //     label: "Status",
+                                                      //     controller:
+                                                      //         _statusController),
 
                                                       Consumer<
                                                               AccessPermissionProvider>(
                                                           builder: (context,
                                                               value, child) {
                                                         return CustomMultiSelectDropdownField(
+                                                            isRequired: true,
                                                             label:
                                                                 "designation",
                                                             selectedItems:
@@ -428,6 +457,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
                                                             Widget? child) {
                                                           return CustomCheckDropdown<
                                                               String>(
+                                                            isRequired: true,
                                                             label: "Branch",
                                                             items: value
                                                                     .configModelList
@@ -541,33 +571,43 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
   }
 
   createOfficer() async {
-    final officer = {
-      "officer_id": officerIdController.text,
-      "name": '$_selectedSalutation ${officerNameController.text}',
-      "gender": _selectedGender.toString(),
-      "phone": _phoneNumberController.text,
-      "company_phone_number": _companyPhoneNumberController.text,
-      "status": _statusController.text,
-      "designation": designation,
-      "department": department,
+    final passwordRegex = RegExp(
+        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~])[A-Za-z\d!@#\$&*~]{8,}$');
+    if (passwordRegex.hasMatch(_passwordController.text)) {
+      final officer = {
+        "officer_id": officerIdController.text,
+        "name": '$_selectedSalutation ${officerNameController.text}',
+        "gender": _selectedGender.toString(),
+        "phone": '$_phoneCode ${_phoneNumberController.text}',
+        "company_phone_number": _companyPhoneNumberController.text.isEmpty
+            ? _companyPhoneNumberController.text
+            : '$_companyPhoneCode ${_companyPhoneNumberController.text}',
+        "status": _statusController.text,
+        "designation": designation,
+        // "department": department,
+        ///not required
 
-      ///not required
+        ///-------------not added - static ----------
+        "branch": branch,
+        "password": _passwordController.text
+      };
 
-      ///-------------not added - static ----------
-      "branch": branch,
-      "password": _passwordController.text
-    };
+      final provider =
+          Provider.of<OfficersControllerProvider>(context, listen: false);
+      final success = await provider.createOfficer(context, officer);
 
-    final provider =
-        Provider.of<OfficersControllerProvider>(context, listen: false);
-    final success = await provider.createOfficer(context, officer);
-
-    if (success) {
-      Navigator.pop(context);
-      CustomSnackBar.show(context, "Employee created successfully");
+      if (success) {
+        Navigator.pop(context);
+        CustomSnackBar.show(context, "Employee created successfully");
+      } else {
+        CustomSnackBar.show(context, "Creation failed",
+            backgroundColor: AppColors.redSecondaryColor);
+      }
     } else {
-      CustomSnackBar.show(context, "Creation failed",
-          backgroundColor: AppColors.redSecondaryColor);
+      CustomToast.showToast(
+          context: context,
+          message:
+              "Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters.");
     }
   }
 
@@ -575,11 +615,13 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     final updatedData = {
       "name": "$_selectedSalutation ${officerNameController.text}",
       "gender": _selectedGender ?? '',
-      "phone": _phoneNumberController.text,
-      "company_phone_number": _companyPhoneNumberController.text,
+      "phone": '$_phoneCode${_phoneNumberController.text}',
+      "company_phone_number": _companyPhoneNumberController.text.isEmpty
+          ? _companyPhoneNumberController.text
+          : '$_companyPhoneCode${_companyPhoneNumberController.text}',
       "status": _statusController.text,
       "designation": designation,
-      "department": department,
+      // "department": department,
 
       /// not required
       "branch": branch,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
 import 'package:overseas_front_end/view/screens/leads/edit_lead_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../controller/config/config_provider.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../flavour/customer_lead_flavour.dart';
