@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
@@ -24,6 +25,14 @@ class _AddLeadScreenState extends State<AddLeadScreen>
   String? _selectedBranch = 'AFFINIKIS';
   String? _selectedGender;
   String? _selectedMaritalStatus;
+
+  String? _selectedPhone;
+  String? _selectedAltPhone;
+  String? _selectedWAPhone;
+
+  String? _selectedPhoneCtry;
+  String? _selectedAltPhoneCtry;
+  String? _selectedWAPhoneCtry;
 
   String? _selectedLeadSource;
   String? _selectedLeadCategory;
@@ -68,7 +77,11 @@ class _AddLeadScreenState extends State<AddLeadScreen>
   @override
   void initState() {
     super.initState();
-    _leadDateController.text = DateTime.now().toString().substring(0, 10);
+    _selectedPhoneCtry = "";
+    _selectedAltPhoneCtry = "";
+    _selectedWAPhoneCtry = "";
+
+    _leadDateController.text = DateFormat("dd/MM/yyyy").format(DateTime.now());
   }
 
   @override
@@ -303,15 +316,17 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             isRequired: true,
                                                           ),
                                                           CustomPhoneField(
+                                                            showCountryCode:
+                                                                true,
                                                             label:
                                                                 'Mobile Number',
                                                             controller:
                                                                 _mobileController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedPhoneCtry =
                                                                         val),
                                                             isRequired: true,
                                                           ),
@@ -321,10 +336,10 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             controller:
                                                                 _waMobileController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedWAPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedWAPhoneCtry =
                                                                         val),
                                                             isRequired: false,
                                                           ),
@@ -349,16 +364,16 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             controller:
                                                                 _mobileOptionalController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedAltPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedAltPhoneCtry =
                                                                         val),
                                                           ),
                                                           CustomDropdownField(
                                                             label: 'Gender',
                                                             value:
-                                                                _selectedMaritalStatus,
+                                                                _selectedGender,
                                                             items: const [
                                                               'Male',
                                                               'Female',
@@ -366,7 +381,7 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             ],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedMaritalStatus =
+                                                                    _selectedGender =
                                                                         val),
                                                           ),
                                                           CustomCheckDropdown(
@@ -411,14 +426,14 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                             label:
                                                                 'Marital Status',
                                                             value:
-                                                                _selectedGender,
+                                                                _selectedMaritalStatus,
                                                             items: const [
                                                               'Single',
                                                               'Married',
                                                             ],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedGender =
+                                                                    _selectedMaritalStatus =
                                                                         val),
                                                           ),
                                                           CustomDropdownField(
@@ -716,29 +731,35 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                 Color(0xFFE100FF)
                                               ],
                                             ),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               if (_formKey.currentState!
                                                   .validate()) {
-                                                Provider.of<LeadProvider>(context, listen: false).addLead(
+                                                var completed = await Provider.of<LeadProvider>(context, listen: false).addLead(
+                                                    countryPhoneCode:
+                                                        _selectedPhoneCtry ??
+                                                            '',
                                                     context,
                                                     name: _nameController.text
                                                         .trim(),
                                                     email: _emailController.text
                                                         .trim(),
-                                                    phone: _mobileController.text
-                                                        .trim(),
+                                                    phone:
+                                                        "${_mobileController.text.trim()}",
                                                     alternatePhone:
-                                                        _mobileOptionalController
-                                                            .text
+                                                        "$_selectedAltPhoneCtry ${_mobileOptionalController.text.trim()}"
                                                             .trim(),
-                                                    whatsapp: _mobileController.text
-                                                        .trim(),
+                                                    whatsapp:
+                                                        "$_selectedWAPhoneCtry ${_waMobileController.text.trim()}"
+                                                            .trim(),
                                                     gender:
                                                         _selectedGender ?? "",
-                                                    dob: "",
-                                                    matrialStatus: "",
-                                                    address: _locationController
-                                                        .text
+                                                    dob: _dobController.text
+                                                            .trim() ??
+                                                        "",
+                                                    matrialStatus:
+                                                        _selectedMaritalStatus ??
+                                                            '',
+                                                    address: _locationController.text
                                                         .trim(),
                                                     city: "",
                                                     state: "",
@@ -748,41 +769,34 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                                         selectedCountries ?? [],
                                                     expectedSalary: 0,
                                                     qualification:
-                                                        _selectedQualification ??
-                                                            "",
+                                                        _selectedQualification ?? "",
                                                     university: "",
                                                     passingYear: "",
                                                     experience: 0,
                                                     skills: [],
                                                     profession: "",
-                                                    specializedIn:
-                                                        _selectedSpecialized ??
-                                                            [],
-                                                    leadSource:
-                                                        _selectedLeadSource ??
-                                                            "",
-                                                    comment: _remarksController
-                                                        .text
-                                                        .trim(),
+                                                    specializedIn: _selectedSpecialized ?? [],
+                                                    leadSource: _selectedLeadSource ?? "",
+                                                    comment: _remarksController.text.trim(),
                                                     onCallCommunication: true,
-                                                    onWhatsappCommunication:
-                                                        _sendWhatsapp,
+                                                    onWhatsappCommunication: _sendWhatsapp,
                                                     onEmailCommunication: _sendEmail,
                                                     status: _selectedLeadCategory ?? "",
                                                     serviceType: _selectedService ?? "",
                                                     branchName: _selectedBranch ?? "");
-
-                                                CustomToast.showToast(
-                                                    context: context,
-                                                    message:
-                                                        'Lead saved successfully');
-                                                // Save lead logic
-                                                // ScaffoldMessenger.of(context)
-                                                //     .showSnackBar(
-                                                //   const SnackBar(
-                                                //       content: Text(
-                                                //           'Lead saved successfully')),
-                                                // );
+                                                if (completed) {
+                                                  CustomToast.showToast(
+                                                      context: context,
+                                                      message:
+                                                          'Lead saved successfully');
+                                                  // Save lead logic
+                                                  // ScaffoldMessenger.of(context)
+                                                  //     .showSnackBar(
+                                                  //   const SnackBar(
+                                                  //       content: Text(
+                                                  //           'Lead saved successfully')),
+                                                  // );
+                                                }
                                                 Navigator.pop(context);
                                               }
                                             },

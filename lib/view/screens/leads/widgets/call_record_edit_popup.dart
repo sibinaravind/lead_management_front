@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
+import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/constants/enum_class.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/lead/lead_provider.dart';
 
-class CallRecordPopup extends StatefulWidget {
-  const CallRecordPopup({super.key, required this.clientId});
+class CallRecordEditPopup extends StatefulWidget {
+  const CallRecordEditPopup({super.key, required this.clientId});
 
   final String clientId;
 
   @override
-  State<CallRecordPopup> createState() => _CallRecordPopupState();
+  State<CallRecordEditPopup> createState() => _CallRecordEditPopupState();
 }
 
-class _CallRecordPopupState extends State<CallRecordPopup>
+class _CallRecordEditPopupState extends State<CallRecordEditPopup>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
@@ -264,8 +264,9 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                           value:
                                                               _selectedCallStatus,
                                                           items: Provider.of<
-                                                                          ConfigProvider>(
-                                                                      context)
+                                                                      ConfigProvider>(
+                                                                context,
+                                                              )
                                                                   .configModelList
                                                                   ?.callStatus
                                                                   ?.map((e) =>
@@ -285,8 +286,9 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                           value:
                                                               _selectedLeadStatus,
                                                           items: Provider.of<
-                                                                          ConfigProvider>(
-                                                                      context)
+                                                                      ConfigProvider>(
+                                                                context,
+                                                              )
                                                                   .configModelList
                                                                   ?.clientStatus
                                                                   ?.map((e) =>
@@ -419,7 +421,6 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                       callType:
                                                           _selectedCallType ?? '',
                                                       callStatus: _selectedCallStatus ?? '');
-                                                  Navigator.pop(context);
                                                   // showLoaderDialog(context);
                                                   // officerController
                                                   //     .addOfficer(OfficerModel(

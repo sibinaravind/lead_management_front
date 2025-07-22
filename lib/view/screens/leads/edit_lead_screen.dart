@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
@@ -41,7 +42,9 @@ class EditLeadScreen extends StatefulWidget {
       required this.countryStr,
       required this.selectedCountries,
       this.selectedSpecialized,
-      this.leadId});
+      this.leadId,
+      required this.altMobileStr,
+      this.selectedCountryPhoneCode});
 
   final String selectedService;
   final String selectedCountry;
@@ -61,6 +64,7 @@ class EditLeadScreen extends StatefulWidget {
   // final bool visibility;
   final String nameStr;
   final String mobileStr;
+  final String altMobileStr;
   final String waMobileStr;
   final String emailStr;
   final String leadDateStr;
@@ -74,8 +78,9 @@ class EditLeadScreen extends StatefulWidget {
   final String stateStr;
   final String countryStr;
   final List<String> selectedCountries;
-  final String? selectedSpecialized;
+  final List<String>? selectedSpecialized;
   final String? leadId;
+  final String? selectedCountryPhoneCode;
 
   @override
   State<EditLeadScreen> createState() => _EditLeadScreenState();
@@ -87,6 +92,14 @@ class _EditLeadScreenState extends State<EditLeadScreen>
 
   // Form fields
   String? _selectedService;
+  String? _selectedPhone;
+  // String? _selectedAltPhone;
+  // String? _selectedWAPhone;
+
+  String? _selectedPhoneCtry;
+  String? _selectedAltPhoneCtry;
+  String? _selectedWAPhoneCtry;
+
   String? _selectedCountry;
   String? _selectedBranch;
   String? _selectedGender;
@@ -128,7 +141,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
 
   final _countryController = TextEditingController();
 
-  List<String> selectedCountries = [];
+  List<String> _selectedCountries = [];
 
   List<String>? _selectedSpecialized;
 
@@ -163,10 +176,23 @@ class _EditLeadScreenState extends State<EditLeadScreen>
     _sendGreetings = widget.sendGreetings;
     _sendEmail = widget.sendEmail;
     _sendWhatsapp = widget.sendWhatsapp;
-    _selectedSpecialized = [];
-    selectedCountries = widget.selectedCountries;
+    _selectedSpecialized = widget.selectedSpecialized;
+    _selectedCountries = widget.selectedCountries;
+    _selectedPhone = widget.mobileStr;
+    _waMobileController.text = widget.waMobileStr.split(" ").last;
+    _mobileOptionalController.text = widget.altMobileStr.split(" ").last;
+    _selectedPhoneCtry = widget.selectedCountryPhoneCode;
+    _selectedAltPhoneCtry = widget.altMobileStr.split(" ").first;
+    _selectedWAPhoneCtry = widget.waMobileStr.split(" ").first;
+    _selectedPhoneCtry ??= "";
+    _selectedAltPhoneCtry ??= "";
+    _selectedWAPhoneCtry ??= "";
+
+    // print("=====> ${_selectedCountries.toString()}");
+    print("=====> ${_selectedPhone.toString()}");
+
     super.initState();
-    _leadDateController.text = DateTime.now().toString().substring(0, 10);
+    _leadDateController.text = DateFormat("dd/MM/yyyy").format(DateTime.now());
   }
 
   @override
@@ -331,60 +357,60 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const SectionTitle(
-                                                        title:
-                                                            'Lead Information',
-                                                        icon: Icons
-                                                            .info_outline_rounded),
-                                                    const SizedBox(height: 16),
-                                                    ResponsiveGrid(
-                                                        columns: columnsCount,
-                                                        children: [
-                                                          CustomDropdownField(
-                                                            label: 'Service',
-                                                            value:
-                                                                _selectedService,
-                                                            items: configProvider
-                                                                    .configModelList
-                                                                    ?.serviceType
-                                                                    ?.map((e) =>
-                                                                        e.name ??
-                                                                        "")
-                                                                    .toList() ??
-                                                                [],
-                                                            onChanged: (val) =>
-                                                                setState(() =>
-                                                                    _selectedService =
-                                                                        val),
-                                                            isRequired: true,
-                                                          ),
-                                                          CustomDropdownField(
-                                                            label: 'Branch',
-                                                            value:
-                                                                _selectedBranch,
-                                                            items: configProvider
-                                                                    .configModelList
-                                                                    ?.branch
-                                                                    ?.map((e) =>
-                                                                        e.name ??
-                                                                        "")
-                                                                    .toList() ??
-                                                                [],
-                                                            onChanged: (val) =>
-                                                                setState(() =>
-                                                                    _selectedBranch =
-                                                                        val),
-                                                            isRequired: true,
-                                                          ),
-                                                          CustomTextFormField(
-                                                            label: 'Lead Date',
-                                                            controller:
-                                                                _leadDateController,
-                                                            readOnly: true,
-                                                            isdate: true,
-                                                          ),
-                                                        ]),
-                                                    const SizedBox(height: 32),
+                                                    // const SectionTitle(
+                                                    //     title:
+                                                    //         'Lead Information',
+                                                    //     icon: Icons
+                                                    //         .info_outline_rounded),
+                                                    // const SizedBox(height: 16),
+                                                    // ResponsiveGrid(
+                                                    //     columns: columnsCount,
+                                                    //     children: [
+                                                    //       CustomDropdownField(
+                                                    //         label: 'Service',
+                                                    //         value:
+                                                    //             _selectedService,
+                                                    //         items: configProvider
+                                                    //                 .configModelList
+                                                    //                 ?.serviceType
+                                                    //                 ?.map((e) =>
+                                                    //                     e.name ??
+                                                    //                     "")
+                                                    //                 .toList() ??
+                                                    //             [],
+                                                    //         onChanged: (val) =>
+                                                    //             setState(() =>
+                                                    //                 _selectedService =
+                                                    //                     val),
+                                                    //         isRequired: true,
+                                                    //       ),
+                                                    //       CustomDropdownField(
+                                                    //         label: 'Branch',
+                                                    //         value:
+                                                    //             _selectedBranch,
+                                                    //         items: configProvider
+                                                    //                 .configModelList
+                                                    //                 ?.branch
+                                                    //                 ?.map((e) =>
+                                                    //                     e.name ??
+                                                    //                     "")
+                                                    //                 .toList() ??
+                                                    //             [],
+                                                    //         onChanged: (val) =>
+                                                    //             setState(() =>
+                                                    //                 _selectedBranch =
+                                                    //                     val),
+                                                    //         isRequired: true,
+                                                    //       ),
+                                                    //       CustomTextFormField(
+                                                    //         label: 'Lead Date',
+                                                    //         controller:
+                                                    //             _leadDateController,
+                                                    //         readOnly: true,
+                                                    //         isdate: true,
+                                                    //       ),
+                                                    //     ]),
+                                                    // const SizedBox(height: 32),
                                                     const SectionTitle(
                                                         title:
                                                             'Personal Details',
@@ -401,15 +427,17 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             isRequired: true,
                                                           ),
                                                           CustomPhoneField(
+                                                            showCountryCode:
+                                                                true,
                                                             label:
                                                                 'Mobile Number',
                                                             controller:
                                                                 _mobileController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedPhoneCtry =
                                                                         val),
                                                             isRequired: true,
                                                           ),
@@ -419,10 +447,10 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             controller:
                                                                 _waMobileController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedWAPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedWAPhoneCtry =
                                                                         val),
                                                             isRequired: false,
                                                           ),
@@ -447,10 +475,10 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             controller:
                                                                 _mobileOptionalController,
                                                             selectedCountry:
-                                                                _selectedCountry,
+                                                                _selectedAltPhoneCtry,
                                                             onCountryChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedCountry =
+                                                                    _selectedAltPhoneCtry =
                                                                         val),
                                                           ),
                                                           CustomDropdownField(
@@ -480,9 +508,10 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                     )
                                                                     .toList() ??
                                                                 [],
-                                                            values: [],
+                                                            values:
+                                                                _selectedCountries,
                                                             onChanged: (value) {
-                                                              selectedCountries =
+                                                              _selectedCountries =
                                                                   value.cast<
                                                                       String>();
                                                             },
@@ -503,7 +532,9 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                     _selectedSpecialized =
                                                                         val.cast<
                                                                             String>()),
-                                                            values: [],
+                                                            values:
+                                                                _selectedSpecialized ??
+                                                                    [],
                                                           ),
                                                           CustomDropdownField(
                                                             label:
@@ -511,8 +542,8 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             value:
                                                                 _selectedMaritalStatus,
                                                             items: const [
-                                                              'single',
-                                                              'married',
+                                                              'Single',
+                                                              'Married',
                                                             ],
                                                             onChanged: (val) =>
                                                                 setState(() =>
@@ -581,7 +612,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                             label:
                                                                 'Service Type',
                                                             value:
-                                                                _selectedStatus,
+                                                                _selectedServiceType,
                                                             items: configProvider
                                                                     .configModelList
                                                                     ?.serviceType
@@ -592,7 +623,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                 [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedStatus =
+                                                                    _selectedServiceType =
                                                                         val),
                                                           ),
                                                           CustomDropdownField(
@@ -612,7 +643,7 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                                 [],
                                                             onChanged: (val) =>
                                                                 setState(() =>
-                                                                    _selectedServiceType =
+                                                                    _selectedStatus =
                                                                         val),
                                                           ),
                                                         ]),
@@ -815,26 +846,32 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                               ],
                                             ),
                                             onPressed: () {
-                                              if (_formKey.currentState!
-                                                  .validate()) {
+                                              if ((_formKey.currentState
+                                                      ?.validate()) ??
+                                                  false) {
                                                 Provider.of<LeadProvider>(context, listen: false).updateLead(
+                                                    countryPhoneCode:
+                                                        _selectedPhoneCtry ??
+                                                            '',
                                                     context,
                                                     name: _nameController.text
                                                         .trim(),
                                                     email: _emailController.text
                                                         .trim(),
-                                                    phone: _mobileController.text
-                                                        .trim(),
+                                                    phone:
+                                                        "${_mobileController.text.trim()}",
                                                     alternatePhone:
-                                                        _mobileOptionalController
-                                                            .text
+                                                        "$_selectedPhoneCtry ${_mobileOptionalController.text.trim()}"
                                                             .trim(),
-                                                    whatsapp: _mobileController.text
-                                                        .trim(),
+                                                    whatsapp:
+                                                        "$_selectedPhoneCtry ${_waMobileController.text.trim()}"
+                                                            .trim(),
                                                     gender:
                                                         _selectedGender ?? "",
                                                     dob: "",
-                                                    matrialStatus: "",
+                                                    matrialStatus:
+                                                        _selectedMaritalStatus ??
+                                                            '',
                                                     address: _locationController
                                                         .text
                                                         .trim(),
@@ -843,7 +880,8 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                     country: "",
                                                     jobInterests: [],
                                                     countryInterested:
-                                                        selectedCountries ?? [],
+                                                        _selectedCountries ??
+                                                            [],
                                                     expectedSalary: 0,
                                                     qualification:
                                                         _selectedQualification ??
@@ -859,14 +897,11 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                                     leadSource:
                                                         _selectedLeadSource ??
                                                             "",
-                                                    comment: _remarksController
-                                                        .text
-                                                        .trim(),
+                                                    comment: _remarksController.text.trim(),
                                                     onCallCommunication: true,
-                                                    onWhatsappCommunication:
-                                                        _sendWhatsapp,
+                                                    onWhatsappCommunication: _sendWhatsapp,
                                                     onEmailCommunication: _sendEmail,
-                                                    status: _selectedLeadCategory ?? "",
+                                                    status: _selectedStatus ?? "",
                                                     serviceType: _selectedService ?? "",
                                                     branchName: _selectedBranch ?? "",
                                                     leadId: '${widget.leadId ?? ""}');

@@ -3,12 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/model/lead/call_event_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/view/screens/leads/widgets/call_record_edit_popup.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/widgets.dart';
 
 class CallHistoryTab extends StatelessWidget {
-  const CallHistoryTab({super.key});
+  const CallHistoryTab({super.key, required this.clientId});
+  final String clientId;
 
   @override
   Widget build(BuildContext context) {
@@ -172,13 +174,13 @@ class CallHistoryTab extends StatelessWidget {
         const SizedBox(height: 12),
         ...Provider.of<LeadProvider>(context, listen: false)
             .callEvents
-            .map((call) => _buildCallItem(call))
+            .map((call) => _buildCallItem(call, context))
             .toList(),
       ],
     );
   }
 
-  Widget _buildCallItem(CallEventModel call) {
+  Widget _buildCallItem(CallEventModel call, BuildContext context) {
     Color statusColor = call.callStatus == 'Answered'
         ? AppColors.greenSecondaryColor
         : AppColors.redSecondaryColor;
@@ -232,6 +234,20 @@ class CallHistoryTab extends StatelessWidget {
                         color: statusColor,
                       ),
                     ),
+                    InkWell(
+                        onTap: () {
+                          // showDialog(
+                          //     context: context,
+                          //     builder: (context) =>
+                          //         CallRecordEditPopup(clientId: clientId));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.edit,
+                            color: AppColors.blueSecondaryColor,
+                          ),
+                        ))
                   ],
                 ),
                 const SizedBox(height: 4),

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../controller/lead/lead_provider.dart';
-import '../../../model/models.dart';
 import '../../../res/style/colors/colors.dart';
-import '../../../res/style/colors/dimension.dart';
-import '../../widgets/custom_pager.dart';
 import '../../widgets/custom_text.dart';
 
 class LeadMobDisplay extends StatefulWidget {

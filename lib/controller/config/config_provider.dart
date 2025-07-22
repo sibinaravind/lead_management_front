@@ -76,14 +76,19 @@ class ConfigProvider extends ChangeNotifier {
         "value": {"name": name, "status": "ACTIVE", ...colorMap}
       });
       if (response['success'] == true) {
-        configModelList?.insertItem(
-            field,
-            ConfigModel(
-                name: name,
-                // colour: response['value']['colour'],
-                id: response['data']['insertedId'],
-                status: Status.ACTIVE));
-        notifyListeners();
+        try {
+          print("inserting config");
+          configModelList?.insertItem(
+              field,
+              ConfigModel(
+                  name: name,
+                  // colour: response['value']['colour'],
+                  id: response['data']['insertedId'],
+                  status: Status.ACTIVE));
+          notifyListeners();
+        } catch (e) {
+          print(e);
+        }
       }
       // return response['success'] == true;
     } catch (e) {

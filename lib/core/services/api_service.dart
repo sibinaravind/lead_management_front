@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/core/shared/app_routes.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 
@@ -15,17 +16,19 @@ class ApiService {
     return _instance;
   }
 
-  Options options = Options(
-    validateStatus: (status) => status != null && status < 500,
-    // baseUrl: _baseUrl,
-    // connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 15),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      // 'Authorization': 'Bearer your_token_here',
-    },
-  );
+  Options? options;
+
+  // Options(
+  //   validateStatus: (status) => status != null && status < 500,
+  //   // baseUrl: _baseUrl,
+  //   // connectTimeout: const Duration(seconds: 10),
+  //   receiveTimeout: const Duration(seconds: 15),
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json',
+  //     'Authorization': 'Bearer ${}',
+  //   },
+  // );
 
   ApiService._internal() {
     BaseOptions options = BaseOptions(
@@ -44,6 +47,17 @@ class ApiService {
 
   Future<dynamic> get(String endpoint, {BuildContext? context}) async {
     try {
+      String token = await UserCacheService().getAuthToken() ?? "";
+      options = Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+      );
+
       final response = await _dio.get(endpoint, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
@@ -80,11 +94,22 @@ class ApiService {
   Future<dynamic> post(String endpoint, Map<String, dynamic> data,
       {BuildContext? context}) async {
     try {
+      String token = await UserCacheService().getAuthToken() ?? "";
+      options = Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+      );
       final cleanedData = Map.fromEntries(
         data.entries.where((entry) => entry.value != null && entry.value != ""),
       );
 
-      final response = await _dio.post(endpoint, data: cleanedData);
+      final response =
+          await _dio.post(endpoint, data: cleanedData, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {
@@ -106,11 +131,22 @@ class ApiService {
   Future<dynamic> put(String endpoint, Map<String, dynamic> data,
       {BuildContext? context}) async {
     try {
+      String token = await UserCacheService().getAuthToken() ?? "";
+      options = Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+      );
       final cleanedData = Map.fromEntries(
         data.entries.where((entry) => entry.value != null && entry.value != ""),
       );
 
-      final response = await _dio.put(endpoint, data: cleanedData);
+      final response =
+          await _dio.put(endpoint, data: cleanedData, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {
@@ -132,11 +168,22 @@ class ApiService {
   Future<dynamic> patch(String endpoint, Map<String, dynamic> data,
       {BuildContext? context}) async {
     try {
+      String token = await UserCacheService().getAuthToken() ?? "";
+      options = Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+      );
       final cleanedData = Map.fromEntries(
         data.entries.where((entry) => entry.value != null && entry.value != ""),
       );
 
-      final response = await _dio.patch(endpoint, data: cleanedData);
+      final response =
+          await _dio.patch(endpoint, data: cleanedData, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {
@@ -158,6 +205,16 @@ class ApiService {
   Future<dynamic> delete(String endpoint, Map<String, dynamic> data,
       {BuildContext? context}) async {
     try {
+      String token = await UserCacheService().getAuthToken() ?? "";
+      options = Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+      );
       final response =
           await _dio.delete(endpoint, data: data, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {

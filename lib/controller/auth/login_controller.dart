@@ -131,6 +131,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/login_cache_service.dart';
@@ -145,6 +146,7 @@ class LoginProvider extends ChangeNotifier {
 
   final ApiService _apiService = ApiService();
   final OfficerCacheService _cacheService = OfficerCacheService();
+  final UserCacheService _userCacheService = UserCacheService();
 
   Officer? _officer;
   String? _token;
@@ -173,9 +175,10 @@ class LoginProvider extends ChangeNotifier {
       if (response["success"] == true) {
         _officer = Officer.fromJson(response["data"]["officer"]);
         _token = response["data"]["token"];
-
+        // UserCacheService().saveAuthToken(_token ?? '');
         await _cacheService.saveOfficer(_officer!);
         await _cacheService.saveToken(_token!);
+        await _userCacheService.saveAuthToken(_token ?? '');
 
         CustomToast.showToast(context: context, message: 'Login successful');
 

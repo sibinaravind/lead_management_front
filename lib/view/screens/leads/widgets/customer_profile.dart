@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/view/screens/leads/edit_lead_screen.dart';
 import 'package:overseas_front_end/view/screens/leads/widgets/lead_details_tab.dart';
-import 'package:overseas_front_end/view/screens/leads/widgets/personal_details_tab.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../controller/lead/lead_provider.dart';
@@ -12,7 +11,7 @@ import '../../../widgets/custom_text.dart';
 import 'call_history_tab.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
-  const CustomerProfileScreen(
+  CustomerProfileScreen(
       {super.key, required this.leadId, required this.clientId});
 
   final String leadId; // Example lead ID
@@ -25,19 +24,7 @@ class CustomerProfileScreen extends StatefulWidget {
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   int _selectedTabIndex = 0;
 
-  final List<Map<String, dynamic>> _tabs = [
-    {
-      'icon': Icons.assignment_outlined,
-      'label': 'Candidate Details',
-      'widget': const LeadDetailsTab(),
-      'completed': true,
-    },
-    {
-      'icon': Icons.call_outlined,
-      'label': 'Call History',
-      'widget': const CallHistoryTab(),
-      'completed': true,
-    },
+  List<Map<String, dynamic>> _tabs = [
     // {
     //   'icon': Icons.person_outline,
     //   'label': 'Eligibility',
@@ -87,6 +74,20 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   @override
   initState() {
     super.initState();
+    _tabs = [
+      {
+        'icon': Icons.assignment_outlined,
+        'label': 'Candidate Details',
+        'widget': const LeadDetailsTab(),
+        'completed': true,
+      },
+      {
+        'icon': Icons.call_outlined,
+        'label': 'Call History',
+        'widget': CallHistoryTab(clientId: widget.clientId),
+        'completed': true,
+      },
+    ];
     // Initialize the first tab as selected
     Provider.of<LeadProvider>(context, listen: false)
         .getLeadDetails(context, widget.leadId);
@@ -217,6 +218,14 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                 context: context,
                                                 builder: (context) =>
                                                     EditLeadScreen(
+                                                  selectedCountryPhoneCode:
+                                                      leadProvider.leadDetails
+                                                              ?.countryCode ??
+                                                          '',
+                                                  altMobileStr: leadProvider
+                                                          .leadDetails
+                                                          ?.alternatePhone ??
+                                                      '',
                                                   leadId: leadProvider
                                                           .leadDetails?.sId ??
                                                       '',
@@ -330,6 +339,10 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                           .leadDetails
                                                           ?.countryInterested ??
                                                       [],
+                                                  selectedSpecialized:
+                                                      leadProvider.leadDetails
+                                                              ?.specializedIn ??
+                                                          [],
                                                 ),
                                               );
                                             },
@@ -350,6 +363,14 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                   context: context,
                                                   builder: (context) =>
                                                       EditLeadScreen(
+                                                    selectedCountryPhoneCode:
+                                                        leadProvider.leadDetails
+                                                                ?.countryCode ??
+                                                            '',
+                                                    altMobileStr: leadProvider
+                                                            .leadDetails
+                                                            ?.alternatePhone ??
+                                                        '',
                                                     leadId: leadProvider
                                                             .leadDetails?.sId ??
                                                         '',
@@ -470,6 +491,10 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                             .leadDetails
                                                             ?.countryInterested ??
                                                         [],
+                                                    selectedSpecialized:
+                                                        leadProvider.leadDetails
+                                                                ?.specializedIn ??
+                                                            [],
                                                   ),
                                                 );
                                                 // Same onPressed logic as above

@@ -6,6 +6,7 @@ class CustomPhoneField extends StatelessWidget {
   final String? selectedCountry;
   final Function(String?) onCountryChanged;
   final bool isRequired;
+  final bool showCountryCode;
 
   const CustomPhoneField({
     super.key,
@@ -14,6 +15,7 @@ class CustomPhoneField extends StatelessWidget {
     required this.selectedCountry,
     required this.onCountryChanged,
     this.isRequired = false,
+    this.showCountryCode = true,
   });
 
   @override
@@ -39,35 +41,37 @@ class CustomPhoneField extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            Container(
-              width: 80,
-              height: 49,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  dropdownColor: Colors.white,
-                  value: selectedCountry,
-                  padding: const EdgeInsets.symmetric(),
-                  items: ['91', '1', '44', '61', '971'].map((String item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text('+$item'),
-                    );
-                  }).toList(),
-                  onChanged: onCountryChanged,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
+            if (showCountryCode)
+              Container(
+                width: 80,
+                height: 49,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    dropdownColor: Colors.white,
+                    value: selectedCountry,
+                    padding: const EdgeInsets.symmetric(),
+                    items: ['+91', '+1', '+44', '+61', '+971', '']
+                        .map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text('$item'),
+                      );
+                    }).toList(),
+                    onChanged: onCountryChanged,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ),
-            ),
             const SizedBox(width: 8),
             Expanded(
                 child: TextFormField(
@@ -90,33 +94,33 @@ class CustomPhoneField extends StatelessWidget {
                 fontSize: 14,
               ),
               keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (isRequired) {
-                      if (value == null || value.isEmpty) {
-                        return 'This field is required';
-                      }
+              validator: (value) {
+                if (isRequired) {
+                  if (value == null || value.isEmpty) {
+                    return 'This field is required';
+                  }
 
-                      if (!RegExp(r'^\d+$').hasMatch(value)) {
-                        return 'Only numbers are allowed';
-                      }
-                      if (value.length < 10 || value.length > 13) {
-                        return 'Phone number must be 10-13 digits';
-                      }
-                      return null;
-                    } else {
-                      if (value != null && value.isNotEmpty) {
-                        if (!RegExp(r'^\d+$').hasMatch(value)) {
-                          return 'Only numbers are allowed';
-                        }
-                        if (value.length < 10 || value.length > 13) {
-                          return 'Phone number must be 10-13 digits';
-                        }
-                      }
-                      return null;
+                  if (!RegExp(r'^\d+$').hasMatch(value)) {
+                    return 'Only numbers are allowed';
+                  }
+                  if (value.length < 10 || value.length > 13) {
+                    return 'Phone number must be 10-13 digits';
+                  }
+                  return null;
+                } else {
+                  if (value != null && value.isNotEmpty) {
+                    if (!RegExp(r'^\d+$').hasMatch(value)) {
+                      return 'Only numbers are allowed';
                     }
-                  },
+                    if (value.length < 10 || value.length > 13) {
+                      return 'Phone number must be 10-13 digits';
+                    }
+                  }
+                  return null;
+                }
+              },
 
-                  // validator: (value) {
+              // validator: (value) {
               //   if (isRequired) {
               //     if (isRequired && (value == null || value.isEmpty)) {
               //       return 'This field is required';

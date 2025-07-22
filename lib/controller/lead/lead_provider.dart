@@ -153,6 +153,7 @@ class LeadProvider extends ChangeNotifier {
     required String status,
     required String serviceType,
     required String branchName,
+    required String countryPhoneCode,
   }) async {
     notifyListeners();
     String officerId = (await OfficerCacheService().getOfficer())?.id ?? "";
@@ -165,6 +166,7 @@ class LeadProvider extends ChangeNotifier {
         "whatsapp": whatsapp,
         "gender": gender,
         "dob": dob,
+        "country_code": countryPhoneCode,
         "matrial_status": matrialStatus,
         "address": address,
         "city": city,
@@ -187,7 +189,7 @@ class LeadProvider extends ChangeNotifier {
         "on_email_communication": onEmailCommunication,
         "status": status,
         "service_type": serviceType,
-        // "branch_name": branchName,
+        "branch": branchName,
         "officer_id": officerId
       });
       // _campaignModel = CampaignModel.fromJson(response.data);
@@ -204,6 +206,7 @@ class LeadProvider extends ChangeNotifier {
 
   Future<bool> updateLead(
     context, {
+    required String countryPhoneCode,
     required String leadId,
     required String name,
     required String email,
@@ -242,6 +245,7 @@ class LeadProvider extends ChangeNotifier {
       final response = await _api
           .patch(context: context, "${Constant().updateLead}/$leadId", {
         "name": name,
+        "country_code": countryPhoneCode,
         "email": email,
         "phone": phone,
         "alternate_phone": alternatePhone,
@@ -252,6 +256,7 @@ class LeadProvider extends ChangeNotifier {
         "address": address,
         "city": city,
         "state": state,
+
         "country": country,
         "job_interests": jobInterests,
         "country_interested": countryInterested,
@@ -270,7 +275,7 @@ class LeadProvider extends ChangeNotifier {
         "on_email_communication": onEmailCommunication,
         "status": status,
         "service_type": serviceType,
-        // "branch_name": branchName,
+        "branch": branchName,
       });
       // _campaignModel = CampaignModel.fromJson(response.data);
       return response['success'] == true;
@@ -285,7 +290,8 @@ class LeadProvider extends ChangeNotifier {
     context, {
     required String clientId,
     required String duration,
-    required String nextSchedule,
+    required String nextScheduleDate,
+    required String nextScheduleTime,
     required String clientStatus,
     required String comment,
     required String callType,
@@ -297,10 +303,11 @@ class LeadProvider extends ChangeNotifier {
     try {
       final response =
           await _api.post(context: context, Constant().addFeedback, {
-        "officer_id": officerId,
+        // "officer_id": officerId,
         "client_id": clientId,
         "duration": duration,
-        "next_schedule": nextSchedule,
+        "next_schedule": nextScheduleDate,
+        "next_shedule_time": nextScheduleTime,
         "client_status": clientStatus,
         "comment": comment,
         "call_type": callType,
