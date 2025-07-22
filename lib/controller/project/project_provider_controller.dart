@@ -255,8 +255,12 @@ class ProjectProvider extends ChangeNotifier {
       await _apiService.get(context: context, Constant().vacancyList);
 
       if (response['success']) {
-        vacancies =
-            List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
+        vacancies = List<VacancyModel>.from(
+          response['data'].map((e) => VacancyModel.fromJson(e)),
+        );
+        filteredVacancies=vacancies;
+        // vacancies =
+        //     List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
       } else {
         throw Exception("Failed to load Vacancies");
       }
@@ -658,4 +662,41 @@ class ProjectProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+  List<VacancyModel> filteredVacancies = [];
+
+  void searchVacancies(String query) {
+    if (query.isEmpty) {
+      filteredVacancies = vacancies;
+    } else {
+      final q = query.toLowerCase();
+
+      filteredVacancies = vacancies.where((vacancy) {
+        return (vacancy.jobTitle?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.jobCategory?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.qualifications
+                ?.any((qual) => qual.toLowerCase().contains(q)) ??
+                false) ||
+            (vacancy.experience?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.salaryFrom?.toString().contains(q) ?? false) ||
+            (vacancy.salaryTo?.toString().contains(q) ?? false) ||
+            (vacancy.lastdatetoapply?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.description?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.country?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.city?.toLowerCase().contains(q) ?? false) ||
+            (vacancy.totalVacancies?.toString().contains(q) ?? false) ||
+            (vacancy.totalTargetCv?.toString().contains(q) ?? false) ||
+            (vacancy.projectModels?.any((project) =>
+            (project.projectName?.toLowerCase().contains(q) ?? false) ||
+                (project.organizationName?.toLowerCase().contains(q) ?? false) ||
+                (project.city?.toLowerCase().contains(q) ?? false) ||
+                (project.country?.toLowerCase().contains(q) ?? false)) ??
+                false);
+      }).toList();
+    }
+
+    notifyListeners();
+  }
+
+
+
 }

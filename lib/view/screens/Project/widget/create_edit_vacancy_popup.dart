@@ -8,12 +8,13 @@ import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../controller/project/vacancy_controller.dart';
 import '../../../../model/app_configs/config_list_model.dart';
+import '../../../../model/project/vacancy_model.dart';
 import '../../../widgets/custom_multi_selection_dropdown_field.dart';
 import '../../../widgets/custom_toast.dart';
 
 class CreateEditVacancyPopup extends StatefulWidget {
   final bool isEditMode;
-  const CreateEditVacancyPopup({super.key, this.isEditMode = false});
+  const CreateEditVacancyPopup({super.key, this.isEditMode = false,});
 
   @override
   State<CreateEditVacancyPopup> createState() =>

@@ -32,23 +32,47 @@ class VacancyModel {
       this.totalVacancies,
       this.totalTargetCv});
 
+  // VacancyModel.fromJson(Map<String, dynamic> json) {
+  //   sId = json['_id']??'';
+  //   jobTitle = json['job_title']??'';
+  //   jobCategory = json['job_category']??'';
+  //   qualifications = json['qualifications'].cast<String>()??[];
+  //   // projectModels = json['project'].cast<ProjectModel>();
+  //   // specializedModels = json['specialization_totals'] ?? {};
+  //   experience = json['experience']??[];
+  //   salaryFrom = json['salary_from']??0;
+  //   salaryTo = json['salary_to']??0;
+  //   lastdatetoapply = json['lastdatetoapply']??'';
+  //   description = json['description']??'';
+  //   country = json['country']??'';
+  //   city = json['city']??'';
+  //   totalVacancies = json['total_vacancies']??0;
+  //   totalTargetCv = json['total_target_cv']??0;
+  // }
   VacancyModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     jobTitle = json['job_title'];
     jobCategory = json['job_category'];
-    qualifications = json['qualifications'].cast<String>();
-    // projectModels = json['project'].cast<ProjectModel>();
-    // specializedModels = json['specialization_totals'] ?? {};
-    experience = json['experience'];
-    salaryFrom = json['salary_from'];
-    salaryTo = json['salary_to'];
+    qualifications = json['qualifications']?.cast<String>() ?? [];
+    experience = json['experience']?.toString();
+    salaryFrom = json['salary_from'] is int
+        ? json['salary_from']
+        : int.tryParse(json['salary_from']?.toString() ?? '');
+    salaryTo = json['salary_to'] is int
+        ? json['salary_to']
+        : int.tryParse(json['salary_to']?.toString() ?? '');
     lastdatetoapply = json['lastdatetoapply'];
     description = json['description'];
     country = json['country'];
     city = json['city'];
-    totalVacancies = json['total_vacancies'];
-    totalTargetCv = json['total_target_cv'];
+    totalVacancies = json['total_vacancies'] is int
+        ? json['total_vacancies']
+        : int.tryParse(json['total_vacancies']?.toString() ?? '');
+    totalTargetCv = json['total_target_cv'] is int
+        ? json['total_target_cv']
+        : int.tryParse(json['total_target_cv']?.toString() ?? '');
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

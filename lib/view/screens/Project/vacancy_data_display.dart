@@ -28,6 +28,9 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
     Provider.of<ProjectProvider>(context, listen: false).fetchClients(
       context,
     );
+    Provider.of<ProjectProvider>(context, listen: false).fetchProjects(
+      context,
+    );
     // TODO: implement initState
     super.initState();
   }
@@ -101,37 +104,40 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                     ),
                     child: Material(
                       color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                const CreateEditVacancyPopup(),
-                          );
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.add_circle_outline,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              SizedBox(width: 12),
-                              CustomText(
-                                text: 'New Vacancy',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ],
+                   child:    Consumer<ProjectProvider>(
+                         builder:(context,provider,child){
+                       return InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                              CreateEditVacancyPopup(),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                CustomText(
+                                  text: 'New Vacancy',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },),
                     ),
                   )
                 ],
@@ -148,6 +154,9 @@ class _VacancyDataDisplayState extends State<VacancyDataDisplay> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: TextField(
+                        onChanged: (value){
+                          Provider.of<ProjectProvider>(context, listen: false).searchVacancies(value);
+                        },
                         // controller: controller.searchController,
                         decoration: InputDecoration(
                           hintText: "Search Vacancies...",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../controller/auth/login_controller.dart';
+import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../model/officer/officers_lofin_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
@@ -25,6 +26,13 @@ class AppBarContainer extends StatefulWidget {
 
 class _AppBarContainerState extends State<AppBarContainer> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    Provider.of<ProjectProvider>(context,listen: false).fetchClients(context);
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -79,6 +87,13 @@ class _AppBarContainerState extends State<AppBarContainer> {
                 ),
               ),
               child: TextField(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => _buildClientSearchDialog(context),
+                  );
+                },
+
                 // controller: controller.searchController,
                 decoration: InputDecoration(
                   hintText: "Search Profiles...",
@@ -89,9 +104,7 @@ class _AppBarContainerState extends State<AppBarContainer> {
                   suffixIcon: IconButton(
                     icon:
                         const Icon(Icons.search, size: 20, color: Colors.grey),
-                    onPressed: () {
-                      print("Search query: ${_searchController.text}");
-                    },
+                    onPressed: null
                   ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
@@ -219,4 +232,68 @@ class _AppBarContainerState extends State<AppBarContainer> {
       ),
     );
   }
+  Widget _buildClientSearchDialog(BuildContext context) {
+    final clientProvider = Provider.of<ProjectProvider>(context, listen: false);
+    final TextEditingController searchController = TextEditingController();
+
+    List clients = clientProvider.clients;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          backgroundColor: AppColors.whiteMainColor,
+          title: const Text('Search Clients'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter client name...',
+                  prefixIcon: Icon(Icons.search),
+                ),
+                onChanged: (query) {
+                  setState(() {
+                    clients = clientProvider.clients
+                        .where((client) => client.name!
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                        .toList();
+                  });
+                },
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 300,
+                width: 300,
+                child: clients.isEmpty
+                    ? const Center(child: Text('No clients found'))
+                    : ListView.builder(
+                  itemCount: clients.length,
+                  itemBuilder: (context, index) {
+                    final client = clients[index];
+                    return ListTile(
+                      title: Text(client.name ?? ''),
+                      subtitle: Text(client.phone ?? ''),
+                      onTap: () {
+                        // Do something on tap like navigate or fill form
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close',style: TextStyle(color: AppColors.primaryColor),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

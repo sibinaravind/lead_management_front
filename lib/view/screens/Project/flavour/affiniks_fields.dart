@@ -89,44 +89,74 @@ class AffiniksFields {
     ];
   }
 
-
   List<Map<String, dynamic>> vacancyTableList() {
     return [
-      // {'name': 'ID', 'extractor': (VacancyModel user) => user.sId.toString()},
       {
         'name': 'Job Title',
-        'extractor': (VacancyModel user) => user.jobTitle.toString()
+        'extractor': (VacancyModel user) => user.jobTitle ?? ''
       },
       {
         'name': 'Experience',
-        'extractor': (VacancyModel user) => user.experience.toString()
+        'extractor': (VacancyModel user) => user.experience ?? ''
       },
-      // {'name': 'Email', 'extractor': (ProjectModel user) => user.email.toString()},
-      // {
-      //   'name': 'Country',
-      //   'extractor': (ClientModel user) => user.country.toString()
-      // },
       {
         'name': 'Description',
-        'extractor': (VacancyModel user) => user.description.toString()
+        'extractor': (VacancyModel user) => user.description ?? ''
       },
       {
         'name': 'Qualifications',
-        'extractor': (VacancyModel user) => user.qualifications.toString()
+        'extractor': (VacancyModel user) =>
+        user.qualifications?.join(", ") ?? ''
       },
       {
         'name': 'City',
-        'extractor': (VacancyModel user) => user.city.toString()
+        'extractor': (VacancyModel user) => user.city ?? ''
       },
-      // {
-      //   'name': 'State',
-      //   'extractor': (ProjectModel user) => user.state.toString()
-      // },
       {
         'name': 'Country',
-        'extractor': (VacancyModel user) => user.country.toString()
+        'extractor': (VacancyModel user) => user.country ?? ''
       },
-      // {'name': 'Action', 'extractor': (ProjectModel user) => user},
+      {'name': 'Action', 'extractor': (ProjectModel user) => user},
     ];
   }
+
+  // List<Map<String, dynamic>> vacancyTableList() {
+  //   return [
+  //     // {'name': 'ID', 'extractor': (VacancyModel user) => user.sId.toString()},
+  //     {
+  //       'name': 'Job Title',
+  //       'extractor': (VacancyModel user) => user.jobTitle.toString()
+  //     },
+  //     {
+  //       'name': 'Experience',
+  //       'extractor': (VacancyModel user) => user.experience.toString()
+  //     },
+  //     // {'name': 'Email', 'extractor': (ProjectModel user) => user.email.toString()},
+  //     // {
+  //     //   'name': 'Country',
+  //     //   'extractor': (ClientModel user) => user.country.toString()
+  //     // },
+  //     {
+  //       'name': 'Description',
+  //       'extractor': (VacancyModel user) => user.description.toString()
+  //     },
+  //     {
+  //       'name': 'Qualifications',
+  //       'extractor': (VacancyModel user) => user.qualifications.toString()
+  //     },
+  //     {
+  //       'name': 'City',
+  //       'extractor': (VacancyModel user) => user.city.toString()
+  //     },
+  //     // {
+  //     //   'name': 'State',
+  //     //   'extractor': (ProjectModel user) => user.state.toString()
+  //     // },
+  //     {
+  //       'name': 'Country',
+  //       'extractor': (VacancyModel user) => user.country.toString()
+  //     },
+  //     // {'name': 'Action', 'extractor': (ProjectModel user) => user},
+  //   ];
+  // }
 }
