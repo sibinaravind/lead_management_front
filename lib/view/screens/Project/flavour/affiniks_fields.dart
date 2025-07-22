@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/model/client/client_data_model.dart';
 import 'package:overseas_front_end/model/client/client_model.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
@@ -46,7 +47,6 @@ class AffiniksFields {
 
   List<Map<String, dynamic>> projectTableList() {
     return [
-      // {'name': 'ID', 'extractor': (ProjectModel user) => user.sId.toString()},
       {
         'name': 'Project Name',
         'extractor': (ProjectModel user) => user.projectName.toString()
@@ -55,37 +55,40 @@ class AffiniksFields {
         'name': 'Status',
         'extractor': (ProjectModel user) => user.status.toString()
       },
-      // {'name': 'Email', 'extractor': (ProjectModel user) => user.email.toString()},
-      // {
-      //   'name': 'Country',
-      //   'extractor': (ClientModel user) => user.country.toString()
-      // },
       {
         'name': 'Organization Name',
         'extractor': (ProjectModel user) => user.organizationName.toString()
-      },{
+      },
+      {
         'name': 'Organization Type',
         'extractor': (ProjectModel user) => user.organizationType.toString()
       },
       {
         'name': 'Created At',
-        'extractor': (ProjectModel user) => user.createdAt.toString()
+        'extractor': (ProjectModel user) {
+          try {
+            final date = DateTime.parse(user.createdAt ?? '');
+            return DateFormat('dd-MM-yyyy').format(date);
+          } catch (e) {
+            return '';
+          }
+        }
       },
       {
         'name': 'City',
         'extractor': (ProjectModel user) => user.city.toString()
       },
-      // {
-      //   'name': 'State',
-      //   'extractor': (ProjectModel user) => user.state.toString()
-      // },
       {
         'name': 'Country',
         'extractor': (ProjectModel user) => user.country.toString()
       },
-      {'name': 'Action', 'extractor': (ProjectModel user) => user},
+      {
+        'name': 'Action',
+        'extractor': (ProjectModel user) => user,
+      },
     ];
   }
+
 
   List<Map<String, dynamic>> vacancyTableList() {
     return [

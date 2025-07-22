@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/project_management_tab.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/add_edit_project.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_gradient_button.dart';
 import '../../../widgets/custom_pager.dart';
@@ -215,7 +215,7 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
 
                                     showDialog(
                                       context: context,
-                                      builder: (context) =>Dialog(child: ProjectManagementTab( isEditMode: true, project: widget.project,) ,)
+                                      builder: (context) =>Dialog(child: AddNewProjectTab( isEditMode: true, project: widget.project,) ,)
 
                                    );
                                   },
