@@ -3,8 +3,8 @@ import 'package:overseas_front_end/core/shared/enums.dart';
 import 'package:overseas_front_end/model/app_configs/config_list_model.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 
-import '../core/services/api_service.dart';
-import '../core/shared/constants.dart';
+import '../../core/services/api_service.dart';
+import '../../core/shared/constants.dart';
 
 class ConfigProvider extends ChangeNotifier {
   ConfigProvider._privateConstructor() {
@@ -80,7 +80,7 @@ class ConfigProvider extends ChangeNotifier {
             field,
             ConfigModel(
                 name: name,
-                colour: response['value']['colour'],
+                // colour: response['value']['colour'],
                 id: response['data']['insertedId'],
                 status: Status.ACTIVE));
         notifyListeners();

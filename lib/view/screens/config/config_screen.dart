@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/core/shared/enums.dart';
 import 'package:overseas_front_end/view/screens/config/widget/action_button.dart';
 import 'package:overseas_front_end/view/screens/config/widget/add_item_dialog.dart';

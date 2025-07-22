@@ -23,7 +23,7 @@ class ApiService {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer your_token_here',
+      // 'Authorization': 'Bearer your_token_here',
     },
   );
 

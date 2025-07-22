@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/app_user_provider.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_provider.dart';
 import 'package:overseas_front_end/model/officer/officers_lofin_model.dart';

@@ -393,10 +393,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
                     if (screenWidth > 1400) {
                       crossAxisCount = 5;
-                      childAspectRatio = 0.6;
+                      childAspectRatio = 0.7;
                     } else if (screenWidth > 1200) {
                       crossAxisCount = 4;
-                      childAspectRatio = 0.6;
+                      childAspectRatio = 0.7;
                     } else if (screenWidth > 900) {
                       crossAxisCount = 3;
                       childAspectRatio = 0.8;
@@ -571,8 +571,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
                                         Expanded(
                                           flex: 1,
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 5),
+                                            padding: const EdgeInsets.only(
+                                                left: 10, right: 10, top: 6),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,

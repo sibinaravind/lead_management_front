@@ -5,7 +5,7 @@ import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
-import 'package:overseas_front_end/controller/config_provider.dart';
+import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_provider.dart';
 import 'package:overseas_front_end/view/screens/Auth/login_screen.dart';

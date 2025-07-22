@@ -4,7 +4,7 @@ import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/view/screens/config/widget/delete_dialogue.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../controller/config_provider.dart';
+import '../../../../controller/config/config_provider.dart';
 import '../../../../res/style/colors/colors.dart';
 import 'action_button.dart';
 import 'show_dialogue_widget.dart';
