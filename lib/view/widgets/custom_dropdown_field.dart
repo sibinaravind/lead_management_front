@@ -54,35 +54,62 @@ class CustomDropdownField extends StatelessWidget {
                 maxWidth: constraints.maxWidth,
                 minWidth: 100,
               ),
-              child: DropdownButtonFormField<String>(
-                value: selectedValue,
-                isExpanded: true,
-                decoration: const InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                ),
-                dropdownColor: Colors.white,
-                items: dropdownItems.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: CustomText(text: isSplit ? item.split(',')[0] : item),
-                  );
-                }).toList(),
-                onChanged: onChanged,
-                validator: isRequired
-                    ? (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value == 'Choose...') {
-                          return 'This field is required';
-                        }
-                        return null;
-                      }
-                    : null,
-              ),
+              // child: DropdownButtonFormField<String>(
+              //   value: selectedValue,
+              //   isExpanded: true,
+              //   decoration: const InputDecoration(
+              //     fillColor: Colors.white,
+              //     filled: true,
+              //     border: OutlineInputBorder(),
+              //     contentPadding:
+              //         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              //   ),
+              //   dropdownColor: Colors.white,
+              //   items: dropdownItems.map((String item) {
+              //     return DropdownMenuItem<String>(
+              //       value: item,
+              //       child: CustomText(text: isSplit ? item.split(',')[0] : item),
+              //     );
+              //   }).toList(),
+              //   onChanged: onChanged,
+              //   validator: isRequired
+              //       ? (value) {
+              //           if (value == null ||
+              //               value.isEmpty ||
+              //               value == 'Choose...') {
+              //             return 'This field is required';
+              //           }
+              //           return null;
+              //         }
+              //       : null,
+              // ),
+              child:   DropdownButtonFormField<String>(
+                  value: selectedValue,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  ),
+                  dropdownColor: Colors.white,
+                  items: dropdownItems.map((String item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: CustomText(text: isSplit ? item.split(',')[0] : item),
+                    );
+                  }).toList(),
+                  onChanged: onChanged,
+                  validator: isRequired
+                      ? (value) {
+                    if (value == null || value.isEmpty || value == 'Choose...') {
+                      return 'This field is required';
+                    }
+                    return null;
+                  }
+                      : null,
+                )
+
             ),
           ],
         );

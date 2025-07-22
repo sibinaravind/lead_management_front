@@ -1,49 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../controller/config/config_provider.dart';
 import '../../../../model/project/project_model.dart';
 import '../../../widgets/widgets.dart';
 
-class ProjectManagementTab extends StatefulWidget {
+class AddNewProjectTab extends StatefulWidget {
   final ProjectModel? project;
 
   final bool isEditMode;
-  const ProjectManagementTab(
+  const AddNewProjectTab(
       {super.key, required this.isEditMode, this.project});
 
   @override
-  State<ProjectManagementTab> createState() => _ProjectManagementTabState();
+  State<AddNewProjectTab> createState() => _AddNewProjectTabState();
 }
 
-class _ProjectManagementTabState extends State<ProjectManagementTab> {
+class _AddNewProjectTabState extends State<AddNewProjectTab> {
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedOrganizationType;
   String? _selectedOrganizationCategory;
   String? _selectedCountry;
+  String? _selectedStatus;
 
-  List<String> remarks = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   List<String> selectedRemarks = [];
 
-  var _organizationNameController = TextEditingController();
-
-  var _locationController = TextEditingController();
-
-  var _projectNameController = TextEditingController();
+  final _organizationNameController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _projectNameController = TextEditingController();
 
   @override
   void initState() {
-    _selectedOrganizationType = widget.project?.organizationType == 'GOV'
-        ? "Government"
-        : "Private" ?? '';
+    _selectedOrganizationType = widget.project?.organizationType ?? '';
     _selectedOrganizationCategory = widget.project?.organizationCategory ?? '';
     _selectedCountry = widget.project?.country ?? '';
     _organizationNameController.text = widget.project?.organizationName ?? '';
     _locationController.text = widget.project?.city ?? '';
     _projectNameController.text = widget.project?.projectName ?? '';
-
+    _selectedStatus=widget.project?.status??'';
     super.initState();
   }
 
@@ -96,8 +93,8 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                   label: 'Organization Type',
                                   value: _selectedOrganizationType,
                                   items: const [
-                                    'Government',
-                                    'Private',
+                                    'GOV',
+                                    'PRIVATE',
                                   ],
                                   onChanged: (val) => setState(
                                       () => _selectedOrganizationType = val),
@@ -116,11 +113,23 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                   isRequired: true,
                                 ),
                                 CustomTextFormField(
+                                  isRequired: true,
                                   label: 'Organization Name',
                                   controller: _organizationNameController,
                                   isdate: false,
                                   readOnly: false,
                                 ),
+                                Consumer<ConfigProvider>(
+                                    builder: (context, configProvider, child) {
+                                      return CustomDropdownField(
+                                        label: 'Status',
+                                        value: _selectedStatus,
+                                        items: ['ACTIVE', 'INACTIVE'],
+                                        onChanged: (val) =>
+                                            setState(() => _selectedStatus = val),
+                                        isRequired: true,
+                                      );
+                                    }),
                                 Consumer<ConfigProvider>(
                                     builder: (context, configProvider, child) {
                                   return CustomDropdownField(
@@ -183,13 +192,10 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                           onPressed: () async {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              String organizationTypeShort =
-                                                  _selectedOrganizationType ==
-                                                          'Government'
-                                                      ? 'GOV'
-                                                      : 'PVT';
+
                                               if (widget.isEditMode) {
                                                 final editProject = await value.editProject(
+                                                    status:_selectedStatus??'ACTIVE',
                                                     context,
                                                     projectId:
                                                         widget.project?.sId ??
@@ -199,7 +205,7 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                                                 .trim() ??
                                                             '',
                                                     organizationType:
-                                                        organizationTypeShort ??
+                                                        _selectedOrganizationType ??
                                                             '',
                                                     organizationCategory:
                                                         _selectedOrganizationCategory ??
@@ -219,21 +225,22 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                                 if (editProject) {
                                                   Navigator.pop(context);
                                                   Navigator.pop(context);
-                                                  CustomSnackBar.show(context,
-                                                      'Project Updated Successfully');
+                                                  CustomToast.showToast(context: context, message: 'Project Updated Successfully');
+
                                                 } else {
-                                                  CustomSnackBar.show(context,
-                                                      "Project Update Failed");
+                                                  CustomToast.showToast(context: context,
+                                                    message:   "Project Update Failed");
                                                 }
                                               } else {
                                                 final addProject = await value.addProject(
+                                                  status: _selectedStatus??'ACTIVE',
                                                     context,
                                                     projectName:
                                                         _projectNameController
                                                             .text
                                                             .trim(),
                                                     organizationType:
-                                                        organizationTypeShort ??
+                                                        _selectedOrganizationType ??
                                                             '',
                                                     organizationCategory:
                                                         _selectedOrganizationCategory ??
@@ -249,11 +256,11 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                                                         _selectedCountry ?? '');
                                                 if (addProject) {
                                                   Navigator.pop(context);
-                                                  CustomSnackBar.show(context,
-                                                      'Project Created Successfully');
+                                                  CustomToast.showToast(context: context,
+                                                     message:  'Project Created Successfully');
                                                 } else {
-                                                  CustomSnackBar.show(context,
-                                                      "Project Creation Failed");
+                                                  CustomToast.showToast(context: context,
+                                                    message:   "Project Creation Failed");
                                                 }
                                               }
                                             }
@@ -271,7 +278,6 @@ class _ProjectManagementTabState extends State<ProjectManagementTab> {
                 ),
               ),
             ),
-            // Status Sidebar
             const SizedBox(width: 24),
           ],
         ),

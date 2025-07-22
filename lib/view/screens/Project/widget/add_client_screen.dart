@@ -24,7 +24,7 @@ class _AddClientScreenState extends State<AddClientScreen>
   String? _selectedCountry = '91';
   String? _selectedAlternativeCountry = '91';
   String? _selectedBranch = 'AFFINIKIS';
-
+String? _statusSelection='';
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -45,6 +45,7 @@ class _AddClientScreenState extends State<AddClientScreen>
     _countryController.text = widget.clientList?.country ?? '';
     _addressController.text = widget.clientList?.address ?? '';
     _mobileOptionalController.text = widget.clientList?.alternatePhone ?? '';
+    _statusSelection=widget.clientList?.status??'';
     TextEditingController();
     super.initState();
   }
@@ -226,6 +227,9 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                           controller:
                                                               _emailController,
                                                         ),
+                                                        CustomDropdownField(label: "Status", value: _statusSelection, items: ['ACTIVE', 'INACTIVE'], onChanged: (value){
+                                                          _statusSelection=value??'';
+                                                        }),
                                                         CustomTextFormField(
                                                           label: 'Address',
                                                           controller:
@@ -354,6 +358,7 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                     country: _countryController
                                                             .text ??
                                                         '',
+                                                    status:_statusSelection??'',
                                                     context: context,
                                                   );
                                                   Navigator.pop(context);
@@ -362,6 +367,8 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                           context,
                                                           listen: false)
                                                       .createClient(
+                                                    status:_statusSelection??'',
+
                                                     name:
                                                         _nameController.text ??
                                                             '',
@@ -421,160 +428,6 @@ class _AddClientScreenState extends State<AddClientScreen>
                                 ),
                               ),
                             ),
-                            // const SizedBox(width: 24),
-                            // Visibility(
-                            //   visible: maxWidth > 1000 ? _visibility : false,
-                            //   child: Container(
-                            //     // width: 280,
-                            //     width: MediaQuery.of(context).size.width * .2,
-                            //     decoration: BoxDecoration(
-                            //       gradient: LinearGradient(
-                            //         begin: Alignment.topCenter,
-                            //         end: Alignment.bottomCenter,
-                            //         colors: [
-                            //           AppColors.violetPrimaryColor
-                            //               .withOpacity(0.08),
-                            //           AppColors.blueSecondaryColor
-                            //               .withOpacity(0.04),
-                            //         ],
-                            //       ),
-                            //       borderRadius: BorderRadius.circular(16),
-                            //       border: Border.all(
-                            //           color: AppColors.violetPrimaryColor
-                            //               .withOpacity(0.15)),
-                            //     ),
-                            //     child: SingleChildScrollView(
-                            //       child: Column(
-                            //         children: [
-                            //           Container(
-                            //             padding: const EdgeInsets.all(24),
-                            //             child: Column(
-                            //               children: [
-                            //                 Container(
-                            //                   padding: const EdgeInsets.all(16),
-                            //                   decoration: BoxDecoration(
-                            //                     color: AppColors
-                            //                         .violetPrimaryColor
-                            //                         .withOpacity(0.1),
-                            //                     borderRadius:
-                            //                         BorderRadius.circular(12),
-                            //                   ),
-                            //                   child: const Icon(
-                            //                     Icons.person_add_alt_1_rounded,
-                            //                     size: 40,
-                            //                     color: AppColors
-                            //                         .violetPrimaryColor,
-                            //                   ),
-                            //                 ),
-                            //                 const SizedBox(width: 12),
-                            //                 const FittedBox(
-                            //                   fit: BoxFit.scaleDown,
-                            //                   child: CustomText(
-                            //                     text:
-                            //                         'Communication Preferences',
-                            //                     fontWeight: FontWeight.bold,
-                            //                     // fontSize: 17,
-                            //                     color: AppColors.primaryColor,
-                            //                   ),
-                            //                 ),
-                            //                 const SizedBox(height: 8),
-                            //                 const CustomText(
-                            //                   text:
-                            //                       'Fill all required fields to add new client',
-                            //                   fontSize: 13,
-                            //                   color: Colors.grey,
-                            //                   textAlign: TextAlign.center,
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //           ),
-                            //           Visibility(
-                            //               visible:
-                            //                   maxWidth > 1000 ? false : true,
-                            //               child: const SizedBox(height: 24)),
-                            //           Container(
-                            //             padding: const EdgeInsets.all(24),
-                            //             child: Column(
-                            //               crossAxisAlignment:
-                            //                   CrossAxisAlignment.start,
-                            //               children: [
-                            //                 Row(
-                            //                   children: [
-                            //                     Container(
-                            //                       padding:
-                            //                           const EdgeInsets.all(8),
-                            //                       decoration: BoxDecoration(
-                            //                         color: AppColors
-                            //                             .violetPrimaryColor
-                            //                             .withOpacity(0.1),
-                            //                         borderRadius:
-                            //                             BorderRadius.circular(
-                            //                                 10),
-                            //                       ),
-                            //                       child: const Icon(
-                            //                           Icons
-                            //                               .notifications_active_rounded,
-                            //                           size: 20,
-                            //                           color: AppColors
-                            //                               .violetPrimaryColor),
-                            //                     ),
-                            //                     const SizedBox(width: 12),
-                            //                     const Expanded(
-                            //                       child: CustomText(
-                            //                         maxline: true,
-                            //                         maxLines: 1,
-                            //                         overflow:
-                            //                             TextOverflow.ellipsis,
-                            //                         text:
-                            //                             'Communication Preferences',
-                            //                         fontWeight: FontWeight.bold,
-                            //                         fontSize: 16,
-                            //                         color:
-                            //                             AppColors.primaryColor,
-                            //                       ),
-                            //                     ),
-                            //                   ],
-                            //                 ),
-                            //                 const SizedBox(height: 20),
-                            //                 Column(
-                            //                   children: [
-                            //                     EnhancedSwitchTile(
-                            //                       label: 'Send Greetings',
-                            //                       icon:
-                            //                           Icons.celebration_rounded,
-                            //                       value: _sendGreetings,
-                            //                       onChanged: (val) => setState(
-                            //                           () =>
-                            //                               _sendGreetings = val),
-                            //                     ),
-                            //                     const SizedBox(height: 12),
-                            //                     EnhancedSwitchTile(
-                            //                       label: 'Send Email Updates',
-                            //                       icon: Icons.email_rounded,
-                            //                       value: _sendEmail,
-                            //                       onChanged: (val) => setState(
-                            //                           () => _sendEmail = val),
-                            //                     ),
-                            //                     const SizedBox(height: 12),
-                            //                     EnhancedSwitchTile(
-                            //                       label:
-                            //                           'WhatsApp Communication',
-                            //                       icon: Icons.chat_rounded,
-                            //                       value: _sendWhatsapp,
-                            //                       onChanged: (val) => setState(
-                            //                           () =>
-                            //                               _sendWhatsapp = val),
-                            //                     ),
-                            //                   ],
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),

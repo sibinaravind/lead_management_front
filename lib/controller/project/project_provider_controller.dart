@@ -142,6 +142,7 @@ class ProjectProvider extends ChangeNotifier {
     required String city,
     required String state,
     required String country,
+    required String status,
     required BuildContext context,
   }) async {
     _isLoading = true;
@@ -156,6 +157,7 @@ class ProjectProvider extends ChangeNotifier {
       "city": city,
       "state": state,
       "country": country,
+      'status':status
     };
 
     try {
@@ -180,16 +182,12 @@ class ProjectProvider extends ChangeNotifier {
       } else {
         CustomToast.showToast(
             context: context, message: "Failed: ${response["data"]}");
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text("Failed: ${response["data"]}")),
-        // );
+
         return false;
       }
     } catch (e) {
       CustomToast.showToast(context: context, message: "Error: $e");
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text("Error: $e")),
-      // );
+
       return false;
     } finally {
       _isLoading = false;
@@ -246,6 +244,29 @@ class ProjectProvider extends ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+
+  Future<void> fetchVacancies(
+      context,
+      ) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response =
+      await _apiService.get(context: context, Constant().vacancyList);
+
+      if (response['success']) {
+        vacancies =
+            List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
+      } else {
+        throw Exception("Failed to load Vacancies");
+      }
+    } catch (e) {
+      throw Exception('Error fetching Vacancies: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> createVacancy(context, Map<String, dynamic> vacancyData) async {
     _isLoading = true;
@@ -351,29 +372,6 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchVacancies(
-    context,
-  ) async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final response =
-          await _apiService.get(context: context, Constant().vacancyList);
-
-      if (response['success']) {
-        vacancies =
-            List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
-      } else {
-        throw Exception("Failed to load Vacancies");
-      }
-    } catch (e) {
-      throw Exception('Error fetching Vacancies: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   Future<bool> addProject(
     context, {
     required String projectName,
@@ -382,6 +380,7 @@ class ProjectProvider extends ChangeNotifier {
     required String organizationName,
     required String city,
     required String country,
+        required String status,
   }) async {
     _isLoading = true;
     _error = null;
@@ -396,6 +395,7 @@ class ProjectProvider extends ChangeNotifier {
         "organization_name": organizationName,
         "city": city,
         "country": country,
+            "status":status,
       });
       projects.add(ProjectModel(
           city: city,
@@ -404,8 +404,10 @@ class ProjectProvider extends ChangeNotifier {
           organizationCategory: organizationCategory,
           projectName: projectName,
           organizationName: organizationName,
-          createdAt: DateTime.now().toString(),
-          status: "ACTIVE"));
+          createdAt: DateTime.now().toString()??'',
+          status: status
+
+      ));
 
       // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
@@ -430,6 +432,7 @@ class ProjectProvider extends ChangeNotifier {
     required String organizationName,
     required String city,
     required String country,
+    required String status,
   }) async {
     _isLoading = true;
     _error = null;
@@ -444,6 +447,7 @@ class ProjectProvider extends ChangeNotifier {
         "organization_name": organizationName,
         "city": city,
         "country": country,
+        "status":status,
       });
       projects.removeWhere((element) => element.sId == projectId);
       projects.add(ProjectModel(
@@ -452,7 +456,10 @@ class ProjectProvider extends ChangeNotifier {
           organizationCategory: organizationCategory,
           organizationName: organizationName,
           organizationType: organizationType,
-          projectName: projectName));
+          projectName: projectName,
+          createdAt: DateTime.now().toString(),
+          status: status
+      ));
       // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
 
@@ -467,14 +474,45 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
+
+
+  Future deleteProject(String projectId, BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiService.delete(
+          context: context, "${Constant().deleteProject}/$projectId", {});
+      if (response["success"] == true) {
+        projects.removeWhere((element) => element.sId == projectId);
+
+        notifyListeners();
+        CustomToast.showToast(
+            context: context, message: "deleted successfully");
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("deleted successfully")),
+        // );
+        return true;
+      } else {
+        CustomToast.showToast(context: context, message: 'Deletion failed');
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Deletion failed')),
+        // );
+        return false;
+      }
+    } catch (ex) {
+      throw Exception(ex);
+    }
+  }
+
   Future<void> fetchClients(
-    context,
-  ) async {
+      context,
+      ) async {
     _isLoading = true;
     notifyListeners();
     try {
       final response =
-          await _apiService.get(context: context, Constant().clientList);
+      await _apiService.get(context: context, Constant().clientList);
 
       if (response['success']) {
         final List<ClientModel> loadedClients = [];
@@ -496,35 +534,6 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future deleteProject(String projectId, BuildContext context) async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final response = await _apiService.delete(
-          context: context, "${Constant().deleteProject}/$projectId", {});
-      if (response["success"] == true) {
-        projects.removeWhere((element) => element.sId == projectId);
-        // fetchProjects();
-        notifyListeners();
-        CustomToast.showToast(
-            context: context, message: "deleted successfully");
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("deleted successfully")),
-        // );
-        return true;
-      } else {
-        CustomToast.showToast(context: context, message: 'Deletion failed');
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Deletion failed')),
-        // );
-        return false;
-      }
-    } catch (ex) {
-      throw Exception(ex);
-    }
-  }
-
   Future<bool> editClient({
     required String clientId, // this is "_id"
     required String name,
@@ -535,6 +544,7 @@ class ProjectProvider extends ChangeNotifier {
     required String city,
     required String state,
     required String country,
+    required String status,
     required BuildContext context,
   }) async {
     _isLoading = true;
@@ -556,51 +566,51 @@ class ProjectProvider extends ChangeNotifier {
           context: context, "${Constant().updateClient}/$clientId", body);
 
       if (response["success"] == true) {
-        fetchClients(
-          context,
-        );
+        final index = _clients.indexWhere((client) => client.sId == clientId);
+        if (index != -1) {
+          _clients[index] = ClientModel(
+            sId: clientId,
+            name: name,
+            email: email,
+            phone: phone,
+            alternatePhone: alternatePhone,
+            address: address,
+            city: city,
+            state: state,
+            country: country,
+            status: status,
+            createdAt: _clients[index].createdAt, // preserve old createdAt
+          );
+        }
 
-        // final index = _clients.indexWhere((client) => client.id == clientId);
-        // if (index != -1) {
-        //   final updatedClient = ClientModel(
-        //     id: clientId,
-        //     clientId: _clients[index].clientId,
-        //     name: name,
-        //     email: email,
-        //     phone: phone,
-        //     alternatePhone: alternatePhone,
-        //     address: address,
-        //     city: city,
-        //     state: state,
-        //     country: country,
-        //     status: _clients[index].status,
-        //     createdAt: _clients[index].createdAt,
-        //   );
-        //
-        //   _clients[index] = updatedClient;
-        //   _filteredClients[index] = updatedClient;
-        //   notifyListeners();
-        // }
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Client updated successfully")),
-        // );
+        final filteredIndex = filteredClients.indexWhere((client) => client.sId == clientId);
+        if (filteredIndex != -1) {
+          filteredClients[filteredIndex] = ClientModel(
+            sId: clientId,
+            name: name,
+            email: email,
+            phone: phone,
+            alternatePhone: alternatePhone,
+            address: address,
+            city: city,
+            state: state,
+            country: country,
+            status: status,
+            createdAt: filteredClients[filteredIndex].createdAt,
+          );
+        }
         CustomToast.showToast(
             context: context, message: 'Client updated successfully');
         return true;
       } else {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text("Failed: ${response["data"]}")),
-        // );
+
         CustomToast.showToast(
             context: context, message: "Failed: ${response["data"]}");
         return false;
       }
     } catch (e) {
       CustomToast.showToast(context: context, message: "Error: $e");
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text("Error: $e")),
-      // );
+
       return false;
     } finally {
       _isLoading = false;
@@ -642,7 +652,6 @@ class ProjectProvider extends ChangeNotifier {
             (client.city?.toLowerCase().contains(q) ?? false) ||
             (client.state?.toLowerCase().contains(q) ?? false) ||
             (client.country?.toLowerCase().contains(q) ?? false) ||
-            // (client.clientId?.toLowerCase().contains(q) ?? false) ||
             (client.status?.toLowerCase().contains(q) ?? false);
       }).toList();
     }

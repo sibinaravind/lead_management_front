@@ -182,20 +182,6 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                       ],
                     ),
                   ),
-                  // Expanded(
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: LayoutBuilder(builder: (context, constraints) {
-                  //           final availableWidth = constraints.maxWidth;
-                  //           int columnsCount = availableWidth > 1000 ? 3 : 2;
-                  //           return ProjectDetails(columnsCount: columnsCount, jobTitleController: _jobTitleController, jobVacancyController: _jobVacancyController, experienceController: _experienceController, skillsController: _skillsController, salaryFromController: _salaryFromController, salaryToController: _salaryToController, lastDateToApplyController: _lastDateToApplyController, descriptionController: _descriptionController, countryController: _countryController, cityController: _cityController);
-                  //         }),
-                  //       ),
-                  //       // Side Panel
-                  //     ],
-                  //   ),
-                  // ),
                   Expanded(
                     child: Row(
                       children: [
@@ -354,7 +340,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                   child: Column(
                                                     children: [
                                                       const SectionTitle(
-                                                        title: 'Job Details',
+                                                        title: 'Project Details',
                                                         icon: Icons
                                                             .info_outline_rounded,
                                                       ),
@@ -452,33 +438,65 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                             readOnly: false,
                                                             isRequired: true,
                                                           ),
-                                                          // CustomMultiSelectDropdownField(label: "Qualification", selectedItems: qualification, items: dropdownItems, onChanged: (value){}),
 
-                                                          CustomMultiSelectDropdownField(
-                                                            label:
-                                                                "Qualification",
-                                                            selectedItems:
-                                                                qualification,
-                                                            items:
-                                                                dropdownItems, // From mapped items
-                                                            onChanged:
-                                                                (selectedIds) {
-                                                              setState(() {
-                                                                qualification = dropdownItems
-                                                                    .where((item) =>
-                                                                        selectedIds
-                                                                            .contains(item.split(",")[1]))
-                                                                    .toList();
-                                                              });
-                                                            },
-                                                          ),
+                                                          // CustomMultiSelectDropdownField(
+                                                          //   isRequired: true,
+                                                          //   isSplit: false,
+                                                          //   label:
+                                                          //       "Qualification",
+                                                          //   selectedItems:
+                                                          //       qualification,
+                                                          //   items:
+                                                          //       dropdownItems, // From mapped items
+                                                          //   onChanged:
+                                                          //       (selectedIds) {
+                                                          //     setState(() {
+                                                          //       qualification = dropdownItems
+                                                          //           .where((item) =>
+                                                          //               selectedIds
+                                                          //                   .contains(item.split(",")[1]))
+                                                          //           .toList();
+                                                          //     });
+                                                          //   },
+                                                          // ),
+
+                                                          Consumer<ConfigProvider>(builder: (context, provider,child){
+                                                            return    CustomMultiSelectDropdownField(
+                                                              isRequired: true,
+                                                              isSplit: false,
+                                                              label: "Qualification",
+                                                              selectedItems: qualification,
+                                                              items: provider.configModelList?.qualification?.where((quali)=>quali.name!=null &&quali.id!=null).map((item) => "${item.name},${item.id}").toList()??[],
+                                                              onChanged: (selectedList) {
+                                                                setState(() {
+                                                                  qualification = selectedList.map((item) => item.split(",").first).toList();
+
+                                                                });
+                                                              },
+                                                            );
+                                                          }),
+                                                          // CustomMultiSelectDropdownField(
+                                                          //   isRequired: true,
+                                                          //   isSplit: false,
+                                                          //   label: "Qualification",
+                                                          //   selectedItems: qualification,
+                                                          //   items: dropdownItems,
+                                                          //   onChanged: (selectedList) {
+                                                          //     setState(() {
+                                                          //       qualification = selectedList;
+                                                          //
+                                                          //     });
+                                                          //   },
+                                                          // ),
+
                                                           CustomTextFormField(
+
                                                             label: 'Experience',
                                                             controller:
                                                                 _experienceController,
                                                             isdate: false,
                                                             readOnly: false,
-                                                            isRequired: false,
+                                                            isRequired: true,
                                                           ),
                                                           CustomTextFormField(
                                                             label: 'Skills',
@@ -505,14 +523,9 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                             readOnly: false,
                                                             isRequired: false,
                                                           ),
-                                                          // CustomTextFormField(
-                                                          //   label: 'Skills',
-                                                          //   controller:_skillsController,
-                                                          //   isdate: false,
-                                                          //   readOnly: false,
-                                                          //   isRequired: false,
-                                                          // ),
+
                                                           CustomDateField(
+                                                            isRequired: true,
                                                               label:
                                                                   "Last Date To Apply",
                                                               controller:
@@ -755,6 +768,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
 
                                             final vacancyData = {
                                               "project_id": projectId.trim(),
+                                              'status':'ACTIVE',
                                               "job_title":
                                                   _jobTitleController.text,
                                               "job_category":

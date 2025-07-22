@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
 import 'package:overseas_front_end/model/client/client_model.dart';
 import 'package:overseas_front_end/view/screens/project/flavour/customer_client_flavour.dart';
 import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 
@@ -15,86 +17,86 @@ class ClientUserListTable extends StatelessWidget {
     final verticalController = ScrollController();
     final columnsData = CustomerClientFlavour.userTableList();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scrollbar(
-          thumbVisibility: true,
-          controller: horizontalController,
-          child: SingleChildScrollView(
-            controller: horizontalController,
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-              child: Scrollbar(
-                thumbVisibility: true,
-                controller: verticalController,
-                child: SingleChildScrollView(
-                  controller: verticalController,
-                  scrollDirection: Axis.vertical,
-                  child: DataTable(
-                    headingRowColor: WidgetStateColor.resolveWith(
-                        (states) => AppColors.primaryColor),
-                    columnSpacing: 16.0,
-                    columns: columnsData.map((column) {
-                      return DataColumn(
-                        label: CustomText(
-                          text: column['name'],
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textWhiteColour,
-                          fontSize: 14,
-                        ),
-                      );
-                    }).toList(),
-                    rows: userlist.map((listUser) {
-                      return DataRow(
-                        color: WidgetStateProperty.resolveWith<Color?>(
-                            (_) => Colors.white),
-                        cells: columnsData.map((column) {
-                          final extractor = column['extractor'] as Function;
-                          final value = (column['name'] == 'Offer' ||
+    return Consumer<ProjectProvider>(
+      builder: (context,provider,child){
+        return  LayoutBuilder(
+          builder: (context, constraints) {
+            return Scrollbar(
+              thumbVisibility: true,
+              controller: horizontalController,
+              child: SingleChildScrollView(
+                controller: horizontalController,
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    controller: verticalController,
+                    child: SingleChildScrollView(
+                      controller: verticalController,
+                      scrollDirection: Axis.vertical,
+                      child: DataTable(
+                        headingRowColor: WidgetStateColor.resolveWith(
+                                (states) => AppColors.primaryColor),
+                        columnSpacing: 16.0,
+                        columns: columnsData.map((column) {
+                          return DataColumn(
+                            label: CustomText(
+                              text: column['name'],
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textWhiteColour,
+                              fontSize: 14,
+                            ),
+                          );
+                        }).toList(),
+                        rows: provider.filteredClients.map((listUser) {
+                          return DataRow(
+                            color: WidgetStateProperty.resolveWith<Color?>(
+                                    (_) => Colors.white),
+                            cells: columnsData.map((column) {
+                              final extractor = column['extractor'] as Function;
+                              final value = (column['name'] == 'Offer' ||
                                   column['name'] == 'Offer Amount' ||
                                   column['name'] == 'Eligibility Date')
-                              ? extractor(listUser, null)
-                              : extractor(listUser);
+                                  ? extractor(listUser, null)
+                                  : extractor(listUser);
 
-                          return DataCell(
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: 200,
-                              ),
-                              child: Builder(
-                                builder: (context) {
-                                  switch (column['name']) {
-                                    case 'Status':
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
+                              return DataCell(
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 200,
+                                  ),
+                                  child: Builder(
+                                    builder: (context) {
+                                      switch (column['name']) {
+                                        case 'Status':
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
                                               BorderRadius.circular(10),
-                                          color: getColorBasedOnStatus(value)
-                                              .withOpacity(0.5),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: CustomText(
-                                            text: value,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12,
-                                            color:
-                                                Colors.black.withOpacity(0.6)),
-                                      );
-                                    case 'Phone Number':
-                                      return SelectionArea(
-                                        child: CustomText(
-                                          text: value,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: AppColors.textColor,
-                                        ),
-                                      );
-                                    case 'Action':
-                                      return PopupMenuButton<int>(
-                                          color: Colors.white,
-                                          itemBuilder: (context) => [
+                                              color:AppColors.primaryColor,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: CustomText(
+                                                text: value,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                color:AppColors.whiteMainColor),
+                                          );
+                                        case 'Phone Number':
+                                          return SelectionArea(
+                                            child: CustomText(
+                                              text: value,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              color: AppColors.textColor,
+                                            ),
+                                          );
+                                        case 'Action':
+                                          return PopupMenuButton<int>(
+                                              color: Colors.white,
+                                              itemBuilder: (context) => [
                                                 PopupMenuItem(
                                                     onTap: () => showDialog(
                                                         context: context,
@@ -207,77 +209,79 @@ class ClientUserListTable extends StatelessWidget {
                                                 //     )),
                                               ]);
 
-                                    // return IconButton(
-                                    //   color: AppColors.greenSecondaryColor,
-                                    //   icon: const Icon(Icons.call),
-                                    //   onPressed: () {
-                                    //     showDialog(
-                                    //       context: context,
-                                    //       builder: (context) =>
-                                    //           const CallRecordPopup(),
-                                    //     );
-                                    //   },
-                                    // );
-                                    case 'ID':
-                                      return CustomText(
-                                        text: value,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primaryColor,
-                                      );
-                                    default:
-                                      return CustomText(
-                                        text: value,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                        color: AppColors.textColor,
-                                      );
-                                  }
+                                      // return IconButton(
+                                      //   color: AppColors.greenSecondaryColor,
+                                      //   icon: const Icon(Icons.call),
+                                      //   onPressed: () {
+                                      //     showDialog(
+                                      //       context: context,
+                                      //       builder: (context) =>
+                                      //           const CallRecordPopup(),
+                                      //     );
+                                      //   },
+                                      // );
+                                        case 'ID':
+                                          return CustomText(
+                                            text: value,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primaryColor,
+                                          );
+                                        default:
+                                          return CustomText(
+                                            text: value,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal,
+                                            color: AppColors.textColor,
+                                          );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                onTap: () {
+                                  // if (column['name'] == 'ID') {
+                                  //   showDialog(
+                                  //     context: context,
+                                  //     builder: (context) =>
+                                  //     const ClientDetailsTab(),
+                                  //   );
+                                  // }
                                 },
-                              ),
-                            ),
-                            onTap: () {
-                              // if (column['name'] == 'ID') {
-                              //   showDialog(
-                              //     context: context,
-                              //     builder: (context) =>
-                              //     const ClientDetailsTab(),
-                              //   );
-                              // }
-                            },
+                              );
+                            }).toList(),
                           );
                         }).toList(),
-                      );
-                    }).toList(),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
 }
 
-Color getColorBasedOnStatus(String status) {
-  switch (status.toLowerCase()) {
-    case 'hotlead':
-      return AppColors.greenSecondaryColor;
-    case 'noteligible' || 'closed':
-      return AppColors.redSecondaryColor;
-    case 'registered' || 'qualified':
-      return AppColors.blueSecondaryColor;
-    case 'interview':
-      return AppColors.pinkSecondaryColor;
-    case 'onHold':
-      return AppColors.orangeSecondaryColor;
-    case 'blocked':
-      return Colors.red.withOpacity(0.1);
-    default:
-      return Colors.grey.withOpacity(0.1);
-  }
-}
+// Color getColorBasedOnStatus(String status) {
+//   switch (status.toLowerCase()) {
+//     case 'hotlead':
+//       return AppColors.greenSecondaryColor;
+//     case 'noteligible' || 'closed':
+//       return AppColors.redSecondaryColor;
+//     case 'registered' || 'qualified':
+//       return AppColors.blueSecondaryColor;
+//     case 'interview':
+//       return AppColors.pinkSecondaryColor;
+//     case 'onHold':
+//       return AppColors.orangeSecondaryColor;
+//     case 'blocked':
+//       return Colors.red.withOpacity(0.1);
+//     default:
+//       return Colors.grey.withOpacity(0.1);
+//   }
+// }
 
 
 

@@ -976,22 +976,22 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
 
   bool _isInit = true;
   late final List<String> specializationDropdownItems;
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      final configListModel = Provider.of<ConfigProvider?>(context);
-      final specializationList =
-          configListModel?.configModelList?.specialized ?? [];
-      specializationDropdownItems =
-          specializationList.map((item) => item.name ?? '').toList();
-      _isInit = false;
-    }
-    super.didChangeDependencies();
-  }
+  //
+  // @override
+  // void didChangeDependencies() {
+  //   if (_isInit) {
+  //
+  //
+  //     _isInit = false;
+  //   }
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void initState() {
+    Provider.of<ConfigProvider?>(context)?.fetchConfigData();
+
+    Provider.of<ProjectProvider>(context).fetchProjects(context);
     super.initState();
   }
 
@@ -1399,17 +1399,24 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       // },
                     ),
                     const SizedBox(height: 16),
-                    // Specialization Inputs
-                    CustomDropdownField(
-                      label: 'Specialized',
-                      value: specializedSelection,
-                      items: specializationDropdownItems,
-                      onChanged: (value) {
-                        setDialogState(() {
-                          specializedSelection = value ?? '';
-                        });
-                      },
-                    ),
+                    Consumer<ConfigProvider>(
+                        builder: (context, specialization, child) {
+                      return CustomDropdownField(
+                        label: 'Specialized',
+                        value: specializedSelection,
+                        items: specialization.configModelList?.specialized
+                                ?.map((item) => item.name ?? '')
+                                .toList() ??
+                            [],
+                        onChanged: (value) {
+                          setDialogState(() {
+                            specializedSelection = value ?? '';
+                          });
+                        },
+                      );
+                    }),
+
+
                     const SizedBox(height: 16),
                     CustomTextFormField(
                       controller: _vacancyController,
@@ -1522,11 +1529,7 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                                       context: context,
                                       message:
                                           'Please add at least one specialization');
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //       content: Text(
-                                  //           'Please add at least one specialization')),
-                                  // );
+
                                   return;
                                 }
                                 final Map<String, dynamic> vacanciesMap = {
@@ -1746,7 +1749,6 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                       gradient: AppColors.orangeGradient,
                     ),
                     const SizedBox(height: 16),
-                    // Show Added Specializations List
                     if (addedSpecializations.isNotEmpty)
                       Column(
                         children: [
@@ -1794,11 +1796,7 @@ class _ClientManagementTabState extends State<ClientManagementTabVacancy> {
                                       context: context,
                                       message:
                                           'Please add at least one specialization');
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //       content: Text(
-                                  //           'Please add at least one specialization')),
-                                  // );
+
                                   return;
                                 }
                                 final Map<String, dynamic> vacanciesMap = {

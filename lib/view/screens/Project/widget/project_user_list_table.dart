@@ -77,8 +77,8 @@ class ProjectUserListTable extends StatelessWidget {
                                           return CustomText(
                                             text: value,
                                             fontSize: 14,
-                                            fontWeight: FontWeight.normal,
-                                            color: AppColors.textColor,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.orangeSecondaryColor,
                                           );
                                         case 'ID':
                                           return CustomText(
@@ -95,10 +95,7 @@ class ProjectUserListTable extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
-                                                color: getColorBasedOnStatus(
-                                                            value, configVal)
-                                                        ?.withOpacity(0.5) ??
-                                                    Colors.white,
+                                                color: AppColors.primaryColor,
                                               ),
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -107,7 +104,7 @@ class ProjectUserListTable extends StatelessWidget {
                                                 text: value,
                                                 fontSize: 12,
                                                 // fontWeight: FontWeight.w600,
-                                                color: AppColors.primaryColor,
+                                                color: AppColors.whiteMainColor,
                                               ),
                                             ),
                                           );
@@ -184,23 +181,23 @@ class ProjectUserListTable extends StatelessWidget {
     );
   }
 }
-
-Color hexToColorWithAlpha(String hexString) {
-  hexString = hexString.replaceFirst('0X', '');
-  return Color(int.parse(hexString, radix: 16));
-}
-
-Color? getColorBasedOnStatus(String status, ConfigProvider configVal) {
-  String? value = configVal.configModelList?.clientStatus
-          ?.firstWhere(
-            (element) =>
-                element.name?.toLowerCase() == status.toString().toLowerCase(),
-            orElse: () => ConfigModel(colour: "0Xffffffff"),
-          )
-          .colour ??
-      "0Xffffffff";
-  return hexToColorWithAlpha(value ?? "0Xffffffff");
-}
+//
+// Color hexToColorWithAlpha(String hexString) {
+//   hexString = hexString.replaceFirst('0X', '');
+//   return Color(int.parse(hexString, radix: 16));
+// }
+//
+// Color? getColorBasedOnStatus(String status, ConfigProvider configVal) {
+//   String? value = configVal.configModelList?.clientStatus
+//           ?.firstWhere(
+//             (element) =>
+//                 element.name?.toLowerCase() == status.toString().toLowerCase(),
+//             orElse: () => ConfigModel(colour: "0Xffffffff"),
+//           )
+//           .colour ??
+//       "0Xffffffff";
+//   return hexToColorWithAlpha(value ?? "0Xffffffff");
+// }
 
 // Color getColorBasedOnStatus(String status) {
 //   switch (status.toLowerCase()) {

@@ -28,11 +28,7 @@ class _ClientDataDisplayState extends State<ClientDataDisplay> {
     'Ad Set',
     'Ad',
     'Assigned To'
-    // 'Status',
-    // 'Source',
-    // 'Priority',
-    // 'Date Range',
-    // 'Assigned To'
+
   ];
 
   final filterOptions = {

@@ -105,7 +105,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) => ProjectClientManagementScreen(
+                            builder: (context) => AddNewProject(
                               isEditMode: false,
                             ),
                           );
@@ -203,7 +203,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
                               });
                               Provider.of<ProjectProvider>(context,
                                       listen: false)
-                                  .searchProjects('PVT');
+                                  .searchProjects('PRIVATE');
                             },
                           ),
                           // _buildFilterChip(
@@ -358,8 +358,7 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
               child: Consumer<ProjectProvider>(
                 builder: (context, value, child) => Column(
                   children: [
-                    // Table Header
-                    // Table Content
+
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: ProjectUserListTable(userlist: value.projects),
@@ -423,120 +422,6 @@ class _ProjectDataDisplayState extends State<ProjectDataDisplay> {
         ),
       ),
     );
-    //   return Padding(
-    //     padding: const EdgeInsets.all(15.0),
-    //     child: Column(
-    //       children: [
-    //         Row(
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           children: [
-    //             const CustomText(
-    //               text: "Projects",
-    //               color: AppColors.primaryColor,
-    //               fontSize: 17,
-    //               fontWeight: FontWeight.w600,
-    //             ),
-    //             ElevatedButton(
-    //               style: ElevatedButton.styleFrom(
-    //                 shadowColor: AppColors.primaryColor,
-    //                 backgroundColor: AppColors.blueGrayColour,
-    //                 foregroundColor: Colors.white,
-    //                 padding:
-    //                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    //               ),
-    //               onPressed: () {
-    //                 // showDialog(
-    //                 //   context: context,
-    //                 //   builder: (context) => RegistrationAdd(),
-    //                 // );
-    //               },
-    //               child: const CustomText(
-    //                 text: 'Add Project',
-    //                 fontWeight: FontWeight.w500,
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //         Row(
-    //           children: [
-    //             SizedBox(
-    //               height: 35,
-    //               width: 250,
-    //               child: CustomTextField(
-    //                 controller: controller.searchController,
-    //                 labelText: "Search...",
-    //                 validator: (v) {
-    //                   return null;
-    //                 },
-    //               ),
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.all(8.0),
-    //               child: SizedBox(
-    //                 width: 100,
-    //                 height: 40,
-    //                 child: CustomButton(
-    //                     text: "Search",
-    //                     color: AppColors.darkVioletColour,
-    //                     fontSize: 12,
-    //                     onTap: () {
-    //                       controller.searchController.text.isNotEmpty
-    //                           ? controller.fetchData(
-    //                               search: controller.searchController.text,
-    //                             )
-    //                           : controller.fetchData();
-    //                     }),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-
-    //         // Main content area
-    //         Expanded(
-    //           child: Obx(() {
-    //             final userList = controller.userList.value;
-    //             if (userList == null || userList.data.isEmpty) {
-    //               return const Center(child: Text('No data available'));
-    //             }
-
-    //             return Padding(
-    //               padding: const EdgeInsets.all(10.0),
-    //               child: Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   ProjectUserListTable(userlist: userList.data),
-    //                   // Footer
-    //                   Padding(
-    //                     padding: const EdgeInsets.all(10.0),
-    //                     child: Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         CustomText(
-    //                           text: "${userList.totalItems} Total",
-    //                           color: Colors.black38,
-    //                         ),
-    //                         CustomPager(
-    //                           currentPage: controller.currentPage.value + 1,
-    //                           totalPages: min(userList.totalItems, 100),
-    //                           onPageSelected: (page) {
-    //                             if (controller.currentPage.value != page - 1) {
-    //                               controller.currentPage.value = page - 1;
-    //                               controller.onPageSelected(page - 1);
-    //                             }
-    //                           },
-    //                         )
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             );
-    //           }),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
   }
 
   Widget _buildFilterChip({
