@@ -92,7 +92,7 @@ class ApiService {
   // }
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> data,
-      {BuildContext? context}) async {
+      {BuildContext? context, List listData = const []}) async {
     try {
       String token = await UserCacheService().getAuthToken() ?? "";
       options = Options(
@@ -108,8 +108,8 @@ class ApiService {
         data.entries.where((entry) => entry.value != null && entry.value != ""),
       );
 
-      final response =
-          await _dio.post(endpoint, data: cleanedData, options: options);
+      final response = await _dio.post(endpoint,
+          data: cleanedData.isEmpty ? listData : cleanedData, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {
@@ -166,7 +166,7 @@ class ApiService {
   }
 
   Future<dynamic> patch(String endpoint, Map<String, dynamic> data,
-      {BuildContext? context}) async {
+      {BuildContext? context, List listData = const []}) async {
     try {
       String token = await UserCacheService().getAuthToken() ?? "";
       options = Options(
@@ -182,8 +182,8 @@ class ApiService {
         data.entries.where((entry) => entry.value != null && entry.value != ""),
       );
 
-      final response =
-          await _dio.patch(endpoint, data: cleanedData, options: options);
+      final response = await _dio.patch(endpoint,
+          data: cleanedData.isEmpty ? listData : cleanedData, options: options);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {

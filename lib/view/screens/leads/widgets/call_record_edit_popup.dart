@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
-import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/constants/enum_class.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
@@ -12,9 +10,26 @@ import 'package:provider/provider.dart';
 import '../../../../controller/lead/lead_provider.dart';
 
 class CallRecordEditPopup extends StatefulWidget {
-  const CallRecordEditPopup({super.key, required this.clientId});
+  const CallRecordEditPopup(
+      {super.key,
+      required this.clientId,
+      required this.selectedCallType,
+      required this.selectedLeadStatus,
+      required this.selectedScheduleDate,
+      required this.selectedDuration,
+      required this.selectedCallStatus,
+      required this.selectedFeedback,
+      required this.selectedScheduleTime});
 
   final String clientId;
+  final String selectedCallType;
+  final String selectedLeadStatus;
+  final String selectedScheduleDate;
+  final String selectedScheduleTime;
+
+  final String selectedDuration;
+  final String selectedCallStatus;
+  final String selectedFeedback;
 
   @override
   State<CallRecordEditPopup> createState() => _CallRecordEditPopupState();
@@ -37,10 +52,10 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
   final int seconds = 0;
 
   // Phone/Tele codes
-  String? _mobileTeleCode = '91';
-  String? _whatsmobileTeleCode = '91';
-  String? _alterselectedTeleCode = '91';
-  String? _emerselectedTeleCode = '91';
+  String? _mobileTeleCode = '+91';
+  String? _whatsmobileTeleCode = '+91';
+  String? _alterselectedTeleCode = '+91';
+  String? _emerselectedTeleCode = '+91';
 
   // Controllers
   final TextEditingController _joiningDateController = TextEditingController();
@@ -71,6 +86,14 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
   @override
   void initState() {
     super.initState();
+    _selectedCallStatus = widget.selectedCallStatus;
+    _selectedCallType = widget.selectedCallType;
+    _selectedLeadStatus = widget.selectedLeadStatus;
+    _nextScheduleController.text =
+        "${widget.selectedScheduleDate} ${widget.selectedScheduleTime}";
+    _feedbackController.text = widget.selectedFeedback;
+    _callDurationController.text = widget.selectedDuration;
+
     _joiningDateController.text = DateTime.now().toString().substring(0, 10);
   }
 
@@ -315,8 +338,7 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
                                                         CustomTextFormField(
                                                           label:
                                                               'Call Duration',
-                                                          hintText:
-                                                              'mm:ss or hh:mm:ss',
+                                                          hintText: 'mm:ss',
                                                           controller:
                                                               _callDurationController,
                                                           isRequired: true,
@@ -337,7 +359,6 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
                                                           label: 'Feedback',
                                                           controller:
                                                               _feedbackController,
-                                                          isRequired: true,
                                                         ),
                                                       ]),
                                                   const SizedBox(
@@ -396,14 +417,16 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
                                                     context,
                                                   ).addFeedback(context,
                                                       nextScheduleTime: DateFormat("HH:mm").format(
-                                                          DateTime.tryParse(_nextScheduleController.text
-                                                                  .trim()
-                                                                  .split(" ")
-                                                                  .last) ??
+                                                          DateTime.tryParse(_nextScheduleController.text.trim().split(" ").last) ??
                                                               DateTime.now()),
                                                       clientId: widget.clientId,
-                                                      duration:
-                                                          _callDurationController
+                                                      duration: _callDurationController.text
+                                                              .contains(":")
+                                                          ? (((int.tryParse(_callDurationController.text.trim().split(":").first ?? "0") ?? 0) * 60) +
+                                                                  (int.tryParse(_callDurationController.text.trim().split(":").last) ??
+                                                                      0))
+                                                              .toString()
+                                                          : _callDurationController
                                                               .text
                                                               .trim(),
                                                       nextScheduleDate:
@@ -413,13 +436,9 @@ class _CallRecordEditPopupState extends State<CallRecordEditPopup>
                                                               .split(" ")
                                                               .first,
                                                       clientStatus:
-                                                          _selectedLeadStatus ??
-                                                              '',
-                                                      comment: _feedbackController
-                                                          .text
-                                                          .trim(),
-                                                      callType:
-                                                          _selectedCallType ?? '',
+                                                          _selectedLeadStatus ?? '',
+                                                      comment: _feedbackController.text.trim(),
+                                                      callType: _selectedCallType ?? '',
                                                       callStatus: _selectedCallStatus ?? '');
                                                   // showLoaderDialog(context);
                                                   // officerController

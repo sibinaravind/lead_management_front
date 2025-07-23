@@ -3,7 +3,7 @@ import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
-import 'package:overseas_front_end/view/screens/leads/edit_lead_screen.dart';
+import 'package:overseas_front_end/view/screens/leads/widgets/officer_assignment_popup.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../controller/config/config_provider.dart';
@@ -119,6 +119,17 @@ class DeadLeadUserListTable extends StatelessWidget {
                                               itemBuilder: (context) => [
                                                     PopupMenuItem(
                                                         value: 1,
+                                                        onTap: () {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) =>
+                                                                OfficerAssignmentPopup(
+                                                              leadId: listUser
+                                                                      .sId ??
+                                                                  '',
+                                                            ),
+                                                          );
+                                                        },
                                                         child: Row(
                                                           children: [
                                                             Icon(
@@ -172,6 +183,17 @@ class DeadLeadUserListTable extends StatelessWidget {
                                               color: Colors.white,
                                               itemBuilder: (context) => [
                                                     PopupMenuItem(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              OfficerAssignmentPopup(
+                                                            leadId:
+                                                                listUser.sId ??
+                                                                    '',
+                                                          ),
+                                                        );
+                                                      },
                                                       value: 1,
                                                       child: Row(
                                                         children: [
@@ -210,6 +232,9 @@ class DeadLeadUserListTable extends StatelessWidget {
                                                   context: context,
                                                   builder: (context) =>
                                                       CallRecordPopup(
+                                                          clientName:
+                                                              listUser.name ??
+                                                                  '',
                                                           clientId:
                                                               listUser.sId ??
                                                                   ""),
@@ -258,6 +283,7 @@ class DeadLeadUserListTable extends StatelessWidget {
                                       context: context,
                                       builder: (context) =>
                                           CustomerProfileScreen(
+                                              isRegistration: false,
                                               clientId: "",
                                               leadId: listUser.sId ?? ""));
                                 }

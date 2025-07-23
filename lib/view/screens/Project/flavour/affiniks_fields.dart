@@ -106,17 +106,14 @@ class AffiniksFields {
       {
         'name': 'Qualifications',
         'extractor': (VacancyModel user) =>
-        user.qualifications?.join(", ") ?? ''
+            user.qualifications?.join(", ") ?? ''
       },
-      {
-        'name': 'City',
-        'extractor': (VacancyModel user) => user.city ?? ''
-      },
+      {'name': 'City', 'extractor': (VacancyModel user) => user.city ?? ''},
       {
         'name': 'Country',
         'extractor': (VacancyModel user) => user.country ?? ''
       },
-      {'name': 'Action', 'extractor': (ProjectModel user) => user},
+      {'name': 'Action', 'extractor': (VacancyModel user) => user},
     ];
   }
 

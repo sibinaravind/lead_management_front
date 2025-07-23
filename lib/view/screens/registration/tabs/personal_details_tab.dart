@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_check_dropdown.dart';
-import '../../../widgets/custom_dropdown_field.dart';
+import 'package:provider/provider.dart';
+import '../../../../controller/registration/registration_controller.dart';
 import '../../../widgets/custom_gender_row_format.dart';
-import '../../../widgets/custom_phone_number_field.dart';
-import '../../../widgets/custom_rich_text.dart';
-import '../../../widgets/custom_text.dart';
-import '../../../widgets/custom_text_form_field.dart';
-import '../../../widgets/responsive_grid.dart';
+import '../../../widgets/widgets.dart';
 
 class PersonalDetailsTab extends StatefulWidget {
-  const PersonalDetailsTab({super.key});
+  const PersonalDetailsTab({
+    super.key,
+    required this.id,
+    required this.nameStr,
+  });
+  final String id;
+  final String nameStr;
 
   @override
   State<PersonalDetailsTab> createState() => _PersonalDetailsTabState();
@@ -38,13 +38,18 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
   final TextEditingController _skypeController = TextEditingController();
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _alternativeCountryCode = '+91';
-  String? _maritalStatus = 'Choose ...';
-  String? _religion = 'Choose ...';
-  String? _nationality = 'India';
-  String? _countryOfBirth = 'India';
-  String? _gender = 'Male';
-  String? _contactCountryCode = '+91';
+  final TextEditingController _expectedSalaryController =
+      TextEditingController();
+
+  String? _alternativeCountryCode = '';
+  String? _emergencyCountryCode = '';
+
+  String? _maritalStatus = '';
+  String? _religion = '';
+  String? _nationality = '';
+  String? _countryOfBirth = '';
+  String? _gender = '';
+  String? _contactCountryCode = '';
   bool withInSixMonths = false;
   int noDays = 0;
   List<dynamic>? selectedCountry = [];
@@ -57,6 +62,11 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
     _nameController.text = '';
     _contactNumberController.text = '';
     _emailController.text = '';
+
+    // _gender = widget.selectedGender;
+    _nameController.text = widget.nameStr;
+    // _emailController.text = widget.emailStr;
+    // _dobController.text = widget.dobStr;
   }
 
   @override
@@ -198,11 +208,11 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
                           ),
                           CustomPhoneField(
                             label: 'Emergency Contact Number',
-                            controller: _alternativeNumberController,
-                            selectedCountry: _alternativeCountryCode,
+                            controller: _emergencyContactController,
+                            selectedCountry: _emergencyCountryCode,
                             onCountryChanged: (value) {
                               setState(() {
-                                _alternativeCountryCode = value;
+                                _emergencyCountryCode = value;
                               });
                             },
                           ),
@@ -371,7 +381,7 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
                           ),
                           CustomTextFormField(
                             label: 'Expected Salary',
-                            controller: _passwordController,
+                            controller: _expectedSalaryController,
                             obscureText: true,
                           ),
                         ],
@@ -392,6 +402,70 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
                                   // Save form data
+                                  Provider.of<RegistrationController>(context,
+                                          listen: false)
+                                      .editRegistration(
+                                          context,
+                                          {
+                                            "name": _nameController.text.trim(),
+                                            "email":
+                                                _emailController.text.trim(),
+                                            "email_password": "",
+                                            "phone": _contactNumberController
+                                                .text
+                                                .trim(),
+                                            "gender": _gender ?? "",
+                                            "country_code":
+                                                _contactCountryCode ?? '',
+                                            "alternate_phone":
+                                                _alternativeNumberController
+                                                    .text
+                                                    .trim(),
+                                            "emergency_contact":
+                                                _emergencyContactController.text
+                                                    .trim(),
+                                            "whatsapp":
+                                                _alternativeNumberController
+                                                    .text
+                                                    .trim(),
+                                            "address":
+                                                _currentLocationController.text
+                                                    .trim(),
+                                            "city": "",
+                                            "state": "",
+                                            "country": "",
+                                            "matrial_status":
+                                                _maritalStatus ?? '',
+                                            "dob": _dobController.text,
+                                            "birth_place": "",
+                                            "birth_country": "",
+                                            "religion": "",
+                                            "passport_number":
+                                                _passportNumberController.text
+                                                    .trim(),
+                                            "passport_expiry_date":
+                                                _passportExpiryController.text
+                                                    .trim(),
+                                            "profession": "",
+                                            "specialized_in": "",
+                                            "job_interests": [],
+                                            "country_interested": [],
+                                            "expected_salary":
+                                                _expectedSalaryController.text
+                                                    .trim(),
+                                            "skills": [],
+                                            // "on_call_communication":
+                                            //     true,
+                                            // "on_whatsapp_communication":
+                                            //     _sendWhatsapp,
+                                            // "on_email_communication":
+                                            //     _sendEmail,
+                                            // "note":
+                                            //     _remarksController
+                                            //         .text
+                                            //         .trim()
+                                          },
+                                          clientId: widget.id ?? '');
                                   Navigator.pop(context);
                                 }
                               },

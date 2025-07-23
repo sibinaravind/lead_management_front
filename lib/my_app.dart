@@ -17,6 +17,7 @@ import 'controller/permission_controller/access_permission_controller.dart';
 import 'controller/project/project_provider_controller.dart';
 import 'controller/project/vacancy_controller.dart';
 import 'view/screens/drawer/drawer_screen.dart';
+import 'view/screens/team_lead/team_lead_data_display.dart';
 // import 'view/features/drawer/drawer_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -67,8 +68,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/not-found': (context) =>
               Center(child: Text('404 - Page not found')),
-          // '/': (context) => DrawerScreen()
-
+          '/dashboard': (context) => DrawerScreen(),
+          '/test': (context) => TeamLeadDataDisplay(),
           '/': (context) => LoginScreen()
         },
         initialRoute: '/',

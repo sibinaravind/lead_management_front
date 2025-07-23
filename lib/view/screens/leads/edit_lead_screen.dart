@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,8 @@ class EditLeadScreen extends StatefulWidget {
       this.selectedSpecialized,
       this.leadId,
       required this.altMobileStr,
-      this.selectedCountryPhoneCode});
+      this.selectedCountryPhoneCode,
+      required this.isRegistration});
 
   final String selectedService;
   final String selectedCountry;
@@ -81,7 +83,7 @@ class EditLeadScreen extends StatefulWidget {
   final List<String>? selectedSpecialized;
   final String? leadId;
   final String? selectedCountryPhoneCode;
-
+  final bool isRegistration;
   @override
   State<EditLeadScreen> createState() => _EditLeadScreenState();
 }
@@ -849,62 +851,142 @@ class _EditLeadScreenState extends State<EditLeadScreen>
                                               if ((_formKey.currentState
                                                       ?.validate()) ??
                                                   false) {
-                                                Provider.of<LeadProvider>(context, listen: false).updateLead(
-                                                    countryPhoneCode:
-                                                        _selectedPhoneCtry ??
-                                                            '',
-                                                    context,
-                                                    name: _nameController.text
-                                                        .trim(),
-                                                    email: _emailController.text
-                                                        .trim(),
-                                                    phone:
-                                                        "${_mobileController.text.trim()}",
-                                                    alternatePhone:
-                                                        "$_selectedPhoneCtry ${_mobileOptionalController.text.trim()}"
+                                                widget.isRegistration
+                                                    ? Provider.of<RegistrationController>(
+                                                            context,
+                                                            listen: false)
+                                                        .editRegistration(
+                                                            context,
+                                                            {
+                                                              "name":
+                                                                  _nameController
+                                                                      .text
+                                                                      .trim(),
+                                                              "email":
+                                                                  _emailController
+                                                                      .text
+                                                                      .trim(),
+                                                              "email_password":
+                                                                  "",
+                                                              "phone":
+                                                                  _mobileController
+                                                                      .text
+                                                                      .trim(),
+                                                              "gender":
+                                                                  _selectedGender ??
+                                                                      "",
+                                                              "country_code":
+                                                                  _selectedPhoneCtry ??
+                                                                      '',
+                                                              "alternate_phone":
+                                                                  _mobileOptionalController
+                                                                      .text
+                                                                      .trim(),
+                                                              "emergency_contact":
+                                                                  "",
+                                                              "whatsapp":
+                                                                  _waMobileController
+                                                                      .text
+                                                                      .trim(),
+                                                              "address":
+                                                                  _locationController
+                                                                      .text
+                                                                      .trim(),
+                                                              "city": "",
+                                                              "state": "",
+                                                              "country": "",
+                                                              "matrial_status":
+                                                                  _selectedMaritalStatus ??
+                                                                      '',
+                                                              "dob":
+                                                                  _dobController
+                                                                      .text,
+                                                              "birth_place": "",
+                                                              "birth_country":
+                                                                  "",
+                                                              "marital_status":
+                                                                  _selectedMaritalStatus ??
+                                                                      '',
+                                                              "religion": "",
+                                                              "passport_number":
+                                                                  "",
+                                                              "passport_expiry_date":
+                                                                  "",
+                                                              "profession": "",
+                                                              "specialized_in":
+                                                                  _selectedSpecialized ??
+                                                                      [],
+                                                              "job_interests":
+                                                                  [],
+                                                              "country_interested":
+                                                                  _selectedCountries ??
+                                                                      [],
+                                                              "expected_salary":
+                                                                  0,
+                                                              "skills": [],
+                                                              "on_call_communication":
+                                                                  true,
+                                                              "on_whatsapp_communication":
+                                                                  _sendWhatsapp,
+                                                              "on_email_communication":
+                                                                  _sendEmail,
+                                                              "note":
+                                                                  _remarksController
+                                                                      .text
+                                                                      .trim()
+                                                            },
+                                                            clientId:
+                                                                widget.leadId ??
+                                                                    '')
+                                                    : Provider.of<LeadProvider>(context, listen: false).updateLead(
+                                                        countryPhoneCode:
+                                                            _selectedPhoneCtry ??
+                                                                '',
+                                                        context,
+                                                        name: _nameController.text
                                                             .trim(),
-                                                    whatsapp:
-                                                        "$_selectedPhoneCtry ${_waMobileController.text.trim()}"
+                                                        email: _emailController
+                                                            .text
                                                             .trim(),
-                                                    gender:
-                                                        _selectedGender ?? "",
-                                                    dob: "",
-                                                    matrialStatus:
-                                                        _selectedMaritalStatus ??
-                                                            '',
-                                                    address: _locationController
-                                                        .text
-                                                        .trim(),
-                                                    city: "",
-                                                    state: "",
-                                                    country: "",
-                                                    jobInterests: [],
-                                                    countryInterested:
-                                                        _selectedCountries ??
-                                                            [],
-                                                    expectedSalary: 0,
-                                                    qualification:
-                                                        _selectedQualification ??
-                                                            "",
-                                                    university: "",
-                                                    passingYear: "",
-                                                    experience: 0,
-                                                    skills: [],
-                                                    profession: "",
-                                                    specializedIn:
-                                                        _selectedSpecialized ??
-                                                            [],
-                                                    leadSource:
-                                                        _selectedLeadSource ??
-                                                            "",
-                                                    comment: _remarksController.text.trim(),
-                                                    onCallCommunication: true,
-                                                    onWhatsappCommunication: _sendWhatsapp,
-                                                    onEmailCommunication: _sendEmail,
-                                                    status: _selectedStatus ?? "",
-                                                    serviceType: _selectedService ?? "",
-                                                    branchName: _selectedBranch ?? "",
-                                                    leadId: '${widget.leadId ?? ""}');
+                                                        phone:
+                                                            "${_mobileController.text.trim()}",
+                                                        alternatePhone:
+                                                            "$_selectedPhoneCtry ${_mobileOptionalController.text.trim()}"
+                                                                .trim(),
+                                                        whatsapp:
+                                                            "$_selectedPhoneCtry ${_waMobileController.text.trim()}"
+                                                                .trim(),
+                                                        gender:
+                                                            _selectedGender ??
+                                                                "",
+                                                        dob:
+                                                            _dobController.text,
+                                                        matrialStatus:
+                                                            _selectedMaritalStatus ??
+                                                                '',
+                                                        address: _locationController.text.trim(),
+                                                        city: "",
+                                                        state: "",
+                                                        country: "",
+                                                        jobInterests: [],
+                                                        countryInterested: _selectedCountries ?? [],
+                                                        expectedSalary: 0,
+                                                        qualification: _selectedQualification ?? "",
+                                                        university: "",
+                                                        passingYear: "",
+                                                        experience: 0,
+                                                        skills: [],
+                                                        profession: "",
+                                                        specializedIn: _selectedSpecialized ?? [],
+                                                        leadSource: _selectedLeadSource ?? "",
+                                                        comment: _remarksController.text.trim(),
+                                                        onCallCommunication: true,
+                                                        onWhatsappCommunication: _sendWhatsapp,
+                                                        onEmailCommunication: _sendEmail,
+                                                        status: _selectedStatus ?? "",
+                                                        serviceType: _selectedService ?? "",
+                                                        branchName: _selectedBranch ?? "",
+                                                        leadId: '${widget.leadId ?? ""}');
                                                 // Save lead logic
                                                 CustomToast.showToast(
                                                     context: context,

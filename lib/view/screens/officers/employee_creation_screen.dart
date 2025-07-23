@@ -32,8 +32,8 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
   Uint8List? imageBytes;
   List<String> salutationList = ['Mr', 'Mrs', 'Ms', 'Dr'];
 
-  String? _phoneCode = '91';
-  String? _companyPhoneCode = '91';
+  String? _phoneCode = '+91';
+  String? _companyPhoneCode = '+91';
   String prefix = '';
   String name = '';
 
@@ -74,7 +74,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       _phoneCode = fullPhone.split(' ').first;
       _phoneNumberController.text = fullPhone.split(' ').sublist(1).join(' ');
     } else {
-      _phoneCode = '91'; // fallback default
+      _phoneCode = '+91'; // fallback default
       _phoneNumberController.text = fullPhone;
     }
 
@@ -84,7 +84,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       _companyPhoneNumberController.text =
           fullCompanyPhone.split(' ').sublist(1).join(' ');
     } else {
-      _companyPhoneCode = '91';
+      _companyPhoneCode = '+91';
       _companyPhoneNumberController.text = fullCompanyPhone;
     }
 

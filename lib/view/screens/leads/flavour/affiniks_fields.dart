@@ -21,8 +21,8 @@ class AffiniksFields {
         'extractor': (LeadModel user) => user.leadSource.toString()
       },
       {
-        'name': 'Counsellor',
-        'extractor': (LeadModel user) => user.assignedTo.toString()
+        'name': 'Service Type',
+        'extractor': (LeadModel user) => user.serviceType.toString()
       },
       {
         'name': 'Action',

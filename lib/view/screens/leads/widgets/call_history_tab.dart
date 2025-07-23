@@ -236,10 +236,30 @@ class CallHistoryTab extends StatelessWidget {
                     ),
                     InkWell(
                         onTap: () {
-                          // showDialog(
-                          //     context: context,
-                          //     builder: (context) =>
-                          //         CallRecordEditPopup(clientId: clientId));
+                          showDialog(
+                              context: context,
+                              builder: (context) => CallRecordEditPopup(
+                                    clientId: clientId,
+                                    selectedCallType:
+                                        call.callType?.toLowerCase() ?? '',
+                                    selectedLeadStatus: call.callStatus ?? '',
+                                    selectedScheduleDate: DateFormat(
+                                                "dd/mm/yyyy")
+                                            .format(DateTime.tryParse(
+                                                    call.nextSchedule ?? "") ??
+                                                DateTime.now()) ??
+                                        '',
+                                    selectedDuration:
+                                        call.duration.toString() ?? '',
+                                    selectedCallStatus: call.callStatus ?? '',
+                                    selectedFeedback: call.comment ?? '',
+                                    selectedScheduleTime: DateFormat("HH:mm a")
+                                            .format(DateTime.tryParse(
+                                                    call.nextScheduleTime ??
+                                                        "") ??
+                                                DateTime.now()) ??
+                                        '',
+                                  ));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

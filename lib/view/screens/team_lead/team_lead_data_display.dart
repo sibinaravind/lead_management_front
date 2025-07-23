@@ -120,7 +120,7 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                     context: context,
                                     builder: (context) => AlertDialog(
                                           content: Container(
-                                            height: 200,
+                                            height: 100,
                                             width: 500,
                                             child: CustomDropdownField(
                                               label: "Select Team Lead",

@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_provider.dart';
 import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/custom_toast.dart';
 
-class AddLeadScreen extends StatefulWidget {
-  const AddLeadScreen({super.key});
+class EditRegistrationScreen extends StatefulWidget {
+  const EditRegistrationScreen({super.key});
 
   @override
-  State<AddLeadScreen> createState() => _AddLeadScreenState();
+  State<EditRegistrationScreen> createState() => _EditRegistrationScreenState();
 }
 
-class _AddLeadScreenState extends State<AddLeadScreen>
+class _EditRegistrationScreenState extends State<EditRegistrationScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
@@ -734,56 +735,13 @@ class _AddLeadScreenState extends State<AddLeadScreen>
                                             onPressed: () async {
                                               if (_formKey.currentState!
                                                   .validate()) {
-                                                var completed = await Provider.of<LeadProvider>(context, listen: false).addLead(
-                                                    countryPhoneCode:
-                                                        _selectedPhoneCtry ??
-                                                            '',
-                                                    context,
-                                                    name: _nameController.text
-                                                        .trim(),
-                                                    email: _emailController.text
-                                                        .trim(),
-                                                    phone:
-                                                        "${_mobileController.text.trim()}",
-                                                    alternatePhone:
-                                                        "$_selectedAltPhoneCtry ${_mobileOptionalController.text.trim()}"
-                                                            .trim(),
-                                                    whatsapp:
-                                                        "$_selectedWAPhoneCtry ${_waMobileController.text.trim()}"
-                                                            .trim(),
-                                                    gender:
-                                                        _selectedGender ?? "",
-                                                    dob: _dobController.text
-                                                            .trim() ??
-                                                        "",
-                                                    matrialStatus:
-                                                        _selectedMaritalStatus ??
-                                                            '',
-                                                    address: _locationController.text
-                                                        .trim(),
-                                                    city: "",
-                                                    state: "",
-                                                    country: "",
-                                                    jobInterests: [],
-                                                    countryInterested:
-                                                        selectedCountries ?? [],
-                                                    expectedSalary: 0,
-                                                    qualification:
-                                                        _selectedQualification ?? "",
-                                                    university: "",
-                                                    passingYear: "",
-                                                    experience: 0,
-                                                    skills: [],
-                                                    profession: "",
-                                                    specializedIn: _selectedSpecialized ?? [],
-                                                    leadSource: _selectedLeadSource ?? "",
-                                                    comment: _remarksController.text.trim(),
-                                                    onCallCommunication: true,
-                                                    onWhatsappCommunication: _sendWhatsapp,
-                                                    onEmailCommunication: _sendEmail,
-                                                    status: _selectedLeadCategory ?? "",
-                                                    serviceType: _selectedService ?? "",
-                                                    branchName: _selectedBranch ?? "");
+                                                var completed = await Provider
+                                                        .of<RegistrationController>(
+                                                            context,
+                                                            listen: false)
+                                                    .editRegistration(
+                                                        context, {},
+                                                        clientId: "");
                                                 if (completed) {
                                                   CustomToast.showToast(
                                                       context: context,

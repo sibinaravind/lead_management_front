@@ -6,6 +6,8 @@ import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../leads/flavour/customer_lead_flavour.dart';
 import '../../leads/widgets/call_record_popup.dart';
+import '../../leads/widgets/customer_profile.dart';
+import '../registeration_add.dart';
 
 class RegisterUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;
@@ -97,14 +99,17 @@ class RegisterUserListTable extends StatelessWidget {
                                           IconButton(
                                             color:
                                                 AppColors.greenSecondaryColor,
-                                            icon: const Icon(
+                                            icon: Icon(
                                                 Icons.app_registration_rounded),
                                             onPressed: () {
-                                              // showDialog(
-                                              //   context: context,
-                                              //   builder: (context) =>
-                                              //       RegistrationAdd(),
-                                              // );
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    RegistrationAdd(
+                                                  name: listUser.name ?? '',
+                                                  id: listUser.sId ?? '',
+                                                ),
+                                              );
                                             },
                                           ),
                                           PopupMenuButton<int>(
@@ -115,6 +120,9 @@ class RegisterUserListTable extends StatelessWidget {
                                                         context: context,
                                                         builder: (context) =>
                                                             CallRecordPopup(
+                                                          clientName:
+                                                              listUser.name ??
+                                                                  '',
                                                           clientId: '',
                                                         ),
                                                       ),
@@ -158,8 +166,11 @@ class RegisterUserListTable extends StatelessWidget {
                               if (column['name'] == 'ID') {
                                 // showDialog(
                                 //   context: context,
-                                //   builder: (context) =>
-                                //       const CustomerProfileScreen(),
+                                //   builder: (context) => CustomerProfileScreen(
+                                //     isRegistration: true,
+                                //     clientId: listUser.clientId ?? "",
+                                //     leadId: listUser.sId ?? "",
+                                //   ),
                                 // );
                               }
                             },

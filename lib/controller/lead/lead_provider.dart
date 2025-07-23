@@ -318,8 +318,25 @@ class LeadProvider extends ChangeNotifier {
     } catch (e) {
       return false;
     } finally {
+      getLeadList(context);
       notifyListeners();
     }
+  }
+
+  Future<void> restoreDeadLead(
+      context, Map<String, dynamic> updatedData) async {
+    try {
+      final response = await _api.patch(
+        context: context,
+        '${Constant().restoreDeadLead}',
+        updatedData,
+      );
+      if (response['success'] == true) {}
+    } catch (e) {
+      print('Error restoring client officer: $e');
+    }
+    getDeadLeadList(context);
+    notifyListeners();
   }
 
   Future<void> fetchCallEvents(

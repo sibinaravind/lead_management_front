@@ -12,9 +12,11 @@ import '../../../../controller/config/config_provider.dart';
 import '../../../../controller/lead/lead_provider.dart';
 
 class CallRecordPopup extends StatefulWidget {
-  const CallRecordPopup({super.key, required this.clientId});
+  const CallRecordPopup(
+      {super.key, required this.clientId, required this.clientName});
 
   final String clientId;
+  final String clientName;
 
   @override
   State<CallRecordPopup> createState() => _CallRecordPopupState();
@@ -37,10 +39,10 @@ class _CallRecordPopupState extends State<CallRecordPopup>
   final int seconds = 0;
 
   // Phone/Tele codes
-  String? _mobileTeleCode = '91';
-  String? _whatsmobileTeleCode = '91';
-  String? _alterselectedTeleCode = '91';
-  String? _emerselectedTeleCode = '91';
+  String? _mobileTeleCode = '+91';
+  String? _whatsmobileTeleCode = '+91';
+  String? _alterselectedTeleCode = '+91';
+  String? _emerselectedTeleCode = '+91';
 
   // Controllers
   final TextEditingController _joiningDateController = TextEditingController();
@@ -171,13 +173,13 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomText(
-                                text: 'Call Followup',
+                                text: 'Call Followup ${widget.clientName}',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -313,8 +315,7 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                         CustomTextFormField(
                                                           label:
                                                               'Call Duration',
-                                                          hintText:
-                                                              'mm:ss or hh:mm:ss',
+                                                          hintText: 'mm:ss',
                                                           controller:
                                                               _callDurationController,
                                                           isRequired: true,
@@ -335,7 +336,6 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                           label: 'Feedback',
                                                           controller:
                                                               _feedbackController,
-                                                          isRequired: true,
                                                         ),
                                                       ]),
                                                   const SizedBox(
@@ -394,14 +394,16 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                     context,
                                                   ).addFeedback(context,
                                                       nextScheduleTime: DateFormat("HH:mm").format(
-                                                          DateTime.tryParse(_nextScheduleController.text
-                                                                  .trim()
-                                                                  .split(" ")
-                                                                  .last) ??
+                                                          DateTime.tryParse(_nextScheduleController.text.trim().split(" ").last) ??
                                                               DateTime.now()),
                                                       clientId: widget.clientId,
-                                                      duration:
-                                                          _callDurationController
+                                                      duration: _callDurationController.text
+                                                              .contains(":")
+                                                          ? (((int.tryParse(_callDurationController.text.trim().split(":").first ?? "0") ?? 0) * 60) +
+                                                                  (int.tryParse(_callDurationController.text.trim().split(":").last) ??
+                                                                      0))
+                                                              .toString()
+                                                          : _callDurationController
                                                               .text
                                                               .trim(),
                                                       nextScheduleDate:
@@ -411,13 +413,9 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                               .split(" ")
                                                               .first,
                                                       clientStatus:
-                                                          _selectedLeadStatus ??
-                                                              '',
-                                                      comment: _feedbackController
-                                                          .text
-                                                          .trim(),
-                                                      callType:
-                                                          _selectedCallType ?? '',
+                                                          _selectedLeadStatus ?? '',
+                                                      comment: _feedbackController.text.trim(),
+                                                      callType: _selectedCallType ?? '',
                                                       callStatus: _selectedCallStatus ?? '');
                                                   Navigator.pop(context);
                                                   // showLoaderDialog(context);

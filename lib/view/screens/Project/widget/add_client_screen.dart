@@ -21,10 +21,10 @@ class _AddClientScreenState extends State<AddClientScreen>
 
   // Form fields
 
-  String? _selectedCountry = '91';
-  String? _selectedAlternativeCountry = '91';
+  String? _selectedCountry = '+91';
+  String? _selectedAlternativeCountry = '+91';
   String? _selectedBranch = 'AFFINIKIS';
-String? _statusSelection='';
+  String? _statusSelection = '';
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -45,7 +45,7 @@ String? _statusSelection='';
     _countryController.text = widget.clientList?.country ?? '';
     _addressController.text = widget.clientList?.address ?? '';
     _mobileOptionalController.text = widget.clientList?.alternatePhone ?? '';
-    _statusSelection=widget.clientList?.status??'';
+    _statusSelection = widget.clientList?.status ?? '';
     TextEditingController();
     super.initState();
   }
@@ -227,9 +227,18 @@ String? _statusSelection='';
                                                           controller:
                                                               _emailController,
                                                         ),
-                                                        CustomDropdownField(label: "Status", value: _statusSelection, items: ['ACTIVE', 'INACTIVE'], onChanged: (value){
-                                                          _statusSelection=value??'';
-                                                        }),
+                                                        CustomDropdownField(
+                                                            label: "Status",
+                                                            value:
+                                                                _statusSelection,
+                                                            items: [
+                                                              'ACTIVE',
+                                                              'INACTIVE'
+                                                            ],
+                                                            onChanged: (value) {
+                                                              _statusSelection =
+                                                                  value ?? '';
+                                                            }),
                                                         CustomTextFormField(
                                                           label: 'Address',
                                                           controller:
@@ -358,7 +367,8 @@ String? _statusSelection='';
                                                     country: _countryController
                                                             .text ??
                                                         '',
-                                                    status:_statusSelection??'',
+                                                    status:
+                                                        _statusSelection ?? '',
                                                     context: context,
                                                   );
                                                   Navigator.pop(context);
@@ -367,8 +377,8 @@ String? _statusSelection='';
                                                           context,
                                                           listen: false)
                                                       .createClient(
-                                                    status:_statusSelection??'',
-
+                                                    status:
+                                                        _statusSelection ?? '',
                                                     name:
                                                         _nameController.text ??
                                                             '',

@@ -11,11 +11,15 @@ import '../../../widgets/custom_text.dart';
 import 'call_history_tab.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
-  CustomerProfileScreen(
-      {super.key, required this.leadId, required this.clientId});
+  const CustomerProfileScreen(
+      {super.key,
+      required this.leadId,
+      required this.clientId,
+      required this.isRegistration});
 
-  final String leadId; // Example lead ID
-  final String clientId; // Example lead ID
+  final String leadId;
+  final String clientId;
+  final bool isRegistration;
 
   @override
   State<CustomerProfileScreen> createState() => _CustomerProfileScreenState();
@@ -218,6 +222,8 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                 context: context,
                                                 builder: (context) =>
                                                     EditLeadScreen(
+                                                  isRegistration:
+                                                      widget.isRegistration,
                                                   selectedCountryPhoneCode:
                                                       leadProvider.leadDetails
                                                               ?.countryCode ??
@@ -363,6 +369,8 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                   context: context,
                                                   builder: (context) =>
                                                       EditLeadScreen(
+                                                    isRegistration:
+                                                        widget.isRegistration,
                                                     selectedCountryPhoneCode:
                                                         leadProvider.leadDetails
                                                                 ?.countryCode ??

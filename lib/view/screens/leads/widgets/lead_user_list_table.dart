@@ -210,6 +210,9 @@ class LeadUserListTable extends StatelessWidget {
                                                   context: context,
                                                   builder: (context) =>
                                                       CallRecordPopup(
+                                                          clientName:
+                                                              listUser.name ??
+                                                                  '',
                                                           clientId:
                                                               listUser.sId ??
                                                                   ""),
@@ -258,6 +261,7 @@ class LeadUserListTable extends StatelessWidget {
                                       context: context,
                                       builder: (context) =>
                                           CustomerProfileScreen(
+                                              isRegistration: false,
                                               clientId: listUser.clientId ?? '',
                                               leadId: listUser.sId ?? ""));
                                 }

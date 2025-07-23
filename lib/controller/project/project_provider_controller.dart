@@ -157,7 +157,7 @@ class ProjectProvider extends ChangeNotifier {
       "city": city,
       "state": state,
       "country": country,
-      'status':status
+      'status': status
     };
 
     try {
@@ -246,19 +246,19 @@ class ProjectProvider extends ChangeNotifier {
   // }
 
   Future<void> fetchVacancies(
-      context,
-      ) async {
+    context,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {
       final response =
-      await _apiService.get(context: context, Constant().vacancyList);
+          await _apiService.get(context: context, Constant().vacancyList);
 
       if (response['success']) {
         vacancies = List<VacancyModel>.from(
           response['data'].map((e) => VacancyModel.fromJson(e)),
         );
-        filteredVacancies=vacancies;
+        filteredVacancies = vacancies;
         // vacancies =
         //     List.from(response['data'].map((e) => VacancyModel.fromJson(e)));
       } else {
@@ -330,6 +330,8 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  
+
   Future<void> deleteVacancy(context, String vacancyId) async {
     _isLoading = true;
     notifyListeners();
@@ -384,7 +386,7 @@ class ProjectProvider extends ChangeNotifier {
     required String organizationName,
     required String city,
     required String country,
-        required String status,
+    required String status,
   }) async {
     _isLoading = true;
     _error = null;
@@ -399,7 +401,7 @@ class ProjectProvider extends ChangeNotifier {
         "organization_name": organizationName,
         "city": city,
         "country": country,
-            "status":status,
+        "status": status,
       });
       projects.add(ProjectModel(
           city: city,
@@ -408,10 +410,8 @@ class ProjectProvider extends ChangeNotifier {
           organizationCategory: organizationCategory,
           projectName: projectName,
           organizationName: organizationName,
-          createdAt: DateTime.now().toString()??'',
-          status: status
-
-      ));
+          createdAt: DateTime.now().toString() ?? '',
+          status: status));
 
       // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
@@ -451,7 +451,7 @@ class ProjectProvider extends ChangeNotifier {
         "organization_name": organizationName,
         "city": city,
         "country": country,
-        "status":status,
+        "status": status,
       });
       projects.removeWhere((element) => element.sId == projectId);
       projects.add(ProjectModel(
@@ -462,8 +462,7 @@ class ProjectProvider extends ChangeNotifier {
           organizationType: organizationType,
           projectName: projectName,
           createdAt: DateTime.now().toString(),
-          status: status
-      ));
+          status: status));
       // fetchProjects();
       // _campaignModel = CampaignModel.fromJson(response.data);
 
@@ -477,8 +476,6 @@ class ProjectProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-
 
   Future deleteProject(String projectId, BuildContext context) async {
     _isLoading = true;
@@ -510,13 +507,13 @@ class ProjectProvider extends ChangeNotifier {
   }
 
   Future<void> fetchClients(
-      context,
-      ) async {
+    context,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {
       final response =
-      await _apiService.get(context: context, Constant().clientList);
+          await _apiService.get(context: context, Constant().clientList);
 
       if (response['success']) {
         final List<ClientModel> loadedClients = [];
@@ -587,7 +584,8 @@ class ProjectProvider extends ChangeNotifier {
           );
         }
 
-        final filteredIndex = filteredClients.indexWhere((client) => client.sId == clientId);
+        final filteredIndex =
+            filteredClients.indexWhere((client) => client.sId == clientId);
         if (filteredIndex != -1) {
           filteredClients[filteredIndex] = ClientModel(
             sId: clientId,
@@ -607,7 +605,6 @@ class ProjectProvider extends ChangeNotifier {
             context: context, message: 'Client updated successfully');
         return true;
       } else {
-
         CustomToast.showToast(
             context: context, message: "Failed: ${response["data"]}");
         return false;
@@ -662,6 +659,7 @@ class ProjectProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
   List<VacancyModel> filteredVacancies = [];
 
   void searchVacancies(String query) {
@@ -673,8 +671,9 @@ class ProjectProvider extends ChangeNotifier {
       filteredVacancies = vacancies.where((vacancy) {
         return (vacancy.jobTitle?.toLowerCase().contains(q) ?? false) ||
             (vacancy.jobCategory?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.qualifications
-                ?.any((qual) => qual.toLowerCase().contains(q)) ??
+            (vacancy
+                    .qualifications
+                    ?.any((qual) => qual.toLowerCase().contains(q)) ??
                 false) ||
             (vacancy.experience?.toLowerCase().contains(q) ?? false) ||
             (vacancy.salaryFrom?.toString().contains(q) ?? false) ||
@@ -686,17 +685,15 @@ class ProjectProvider extends ChangeNotifier {
             (vacancy.totalVacancies?.toString().contains(q) ?? false) ||
             (vacancy.totalTargetCv?.toString().contains(q) ?? false) ||
             (vacancy.projectModels?.any((project) =>
-            (project.projectName?.toLowerCase().contains(q) ?? false) ||
-                (project.organizationName?.toLowerCase().contains(q) ?? false) ||
-                (project.city?.toLowerCase().contains(q) ?? false) ||
-                (project.country?.toLowerCase().contains(q) ?? false)) ??
+                    (project.projectName?.toLowerCase().contains(q) ?? false) ||
+                    (project.organizationName?.toLowerCase().contains(q) ??
+                        false) ||
+                    (project.city?.toLowerCase().contains(q) ?? false) ||
+                    (project.country?.toLowerCase().contains(q) ?? false)) ??
                 false);
       }).toList();
     }
 
     notifyListeners();
   }
-
-
-
 }

@@ -61,11 +61,15 @@ class Constant {
   String updateLead = 'lead/updateLead';
   String getLeadDetail = 'customer/getCustomer';
   String getDeadLeads = 'lead/getAllDeadLeads';
+  String restoreDeadLead = 'lead/restoreClientFromDead';
 
   String addFeedback = 'customer/logCallEvent';
   String getIncompleteList = 'customer/register/incompleteList';
 
-  // String editConfig = customer/register/incompleteList lead/getAllDeadLeads 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
+  String editRegistration = 'customer/register/update_basic_info';
+  String updateAcademicRecords = 'customer/register/update_academic_records';
+
+  // String editConfig = customer/register/incompleteList lead/getAllDeadLeads customer/register/update_academic_records 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';

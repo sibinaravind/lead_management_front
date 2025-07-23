@@ -63,4 +63,41 @@ class RegistrationController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> addAcademicRecords(context,
+      {required List<Map<String, dynamic>> educationList,
+      required String leadId}) async {
+    notifyListeners();
+    try {
+      final response = await _apiService.post(
+          context: context,
+          "${Constant().updateAcademicRecords}/$leadId",
+          {},
+          listData: educationList);
+      return response['success'] == true;
+    } catch (e) {
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> editRegistration(context, Map<String, dynamic> updatedData,
+      {required String clientId}) async {
+    notifyListeners();
+    try {
+      final response = await _apiService.patch(
+        context: context,
+        '${Constant().editRegistration}/$clientId',
+        updatedData,
+      );
+      if (response['success'] == true) {
+        return true;
+      }
+    } catch (e) {
+      print('Error restoring client officer: $e');
+    }
+    notifyListeners();
+    return false;
+  }
 }
