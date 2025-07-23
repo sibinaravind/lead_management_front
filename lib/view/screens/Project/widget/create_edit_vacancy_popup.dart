@@ -14,7 +14,9 @@ import '../../../widgets/custom_toast.dart';
 
 class CreateEditVacancyPopup extends StatefulWidget {
   final bool isEditMode;
-  const CreateEditVacancyPopup({super.key, this.isEditMode = false,});
+  final VacancyModel? vacancy;
+
+  const CreateEditVacancyPopup({super.key, this.isEditMode = false, this.vacancy,});
 
   @override
   State<CreateEditVacancyPopup> createState() =>
@@ -29,6 +31,8 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   final TextEditingController _skillsController = TextEditingController();
   final TextEditingController _salaryFromController = TextEditingController();
   final TextEditingController _salaryToController = TextEditingController();
+  final TextEditingController _organizationNameController  = TextEditingController();
+  final TextEditingController _organizationCategoryController  = TextEditingController();
   final TextEditingController _lastDateToApplyController =
       TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -53,6 +57,22 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
   String specializedSelection = '';
   @override
   void initState() {
+  //   _countryController=widget.isEditMode?widget.vacancy?.country??"":'';
+  //   _cityController.text=widget.isEditMode?widget.vacancy?.city??"":'';
+  //   projectList=widget.isEditMode?widget.vacancy?.project?.projectName??'':'';
+  //   _organizationNameController.text=widget.isEditMode?widget.vacancy?.project?.organizationName??"":'';
+  //   _organizationCategoryController.text=widget.isEditMode?widget.vacancy?.project?.organizationCategory??"":'';
+  //   _jobTitleController.text=widget.isEditMode?widget.vacancy?.jobTitle??"":'';
+  //   _jobVacancyController.text=widget.isEditMode?widget.vacancy?.jobCategory??"":'';
+  // qualification=widget.isEditMode?widget.vacancy?.qualifications?.map((item) => item).toList()??[]:[];
+  // _experienceController.text=widget.isEditMode?widget.vacancy?.experience??'':'';
+  // _salaryFromController.text=widget.isEditMode?widget.vacancy?.salaryFrom.toString()??'':'';
+  // _salaryToController.text=widget.isEditMode?widget.vacancy?.salaryTo.toString()??'':'';
+  // _lastDateToApplyController.text=widget.isEditMode?widget.vacancy?.lastDateToApply??'':'';
+  // _descriptionController.text=widget.isEditMode?widget.vacancy?.description??'':'';
+  // _countryController=widget.isEditMode?widget.vacancy?.country??'':_countryController;
+  // _cityController.text=widget.isEditMode?widget.vacancy?.city??'':_cityController.text;
+
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     Provider.of<ProjectProvider>(context, listen: false).fetchClients(context,);
@@ -386,8 +406,12 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                                     });
                                                                   },
                                                                 );
+
                                                               },
                                                             ),
+                                                            if(widget.isEditMode)
+                                                              CustomTextFormField(controller: _organizationNameController, label: "Organization Name",readOnly: true,  ),
+                                                            if(widget.isEditMode)  CustomTextFormField(controller: _organizationCategoryController, label: "Organization Category",readOnly: true,),
                                                           ]),
                                                       const SizedBox(
                                                           height: 16),
@@ -505,7 +529,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                                 _skillsController,
                                                             isdate: false,
                                                             readOnly: false,
-                                                            isRequired: false,
+                                                            isRequired: true,
                                                           ),
                                                           CustomTextFormField(
                                                             label:
@@ -514,7 +538,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                                 _salaryFromController,
                                                             isdate: false,
                                                             readOnly: false,
-                                                            isRequired: false,
+                                                            isRequired: true,
                                                           ),
                                                           CustomTextFormField(
                                                             label: 'Salary To',
@@ -522,7 +546,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                                 _salaryToController,
                                                             isdate: false,
                                                             readOnly: false,
-                                                            isRequired: false,
+                                                            isRequired: true,
                                                           ),
 
                                                           CustomDateField(
@@ -538,7 +562,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                                 _descriptionController,
                                                             isdate: false,
                                                             readOnly: false,
-                                                            isRequired: false,
+                                                            isRequired: true,
                                                           ),
                                                         ],
                                                       ),
@@ -619,7 +643,6 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                             ],
                                           ),
                                         ),
-                                        // Display selected clients
                                         if (_selectedClients.isNotEmpty)
                                           Padding(
                                             padding: const EdgeInsets.all(16.0),
@@ -784,7 +807,7 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                                   _salaryToController.text,
                                               "lastdatetoapply":
                                                   _lastDateToApplyController
-                                                      .text,
+                                                      .text.trim(),
                                               "description":
                                                   _descriptionController.text,
                                               "country": _countryController,
@@ -802,16 +825,16 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
                                               }).toList(),
                                             };
 
-                                            await vacancyProvider
+                                        bool vacancy=    await vacancyProvider
                                                 .createVacancy(context,vacancyData);
 
-                                            if (vacancyProvider.responseId !=
-                                                null) {
+                                            if (vacancy) {
                                               Navigator.pop(context);
-                                              print(
-                                                  'Vacancy Created Successfully: ${vacancyProvider.responseId}');
+                                              CustomToast.showToast(context: context, message: "Vacancy Created Successfully");
+
                                             } else {
-                                              print('Failed to create vacancy');
+                                              CustomToast.showToast(context: context, message: 'Failed to create vacancy');
+
                                             }
                                           }
                                         },

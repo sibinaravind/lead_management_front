@@ -8,7 +8,7 @@ import 'widget/add_edit_project.dart';
 
 class AddNewProject extends StatefulWidget {
   final bool isEditMode;
-  final List<ProjectModel>? projectList;
+  final ProjectModel? projectList;
   const AddNewProject({super.key, required this.isEditMode , this.projectList});
 
   @override
@@ -24,6 +24,7 @@ class _AddNewProjectState
 
   @override
   void initState() {
+
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
@@ -147,6 +148,7 @@ class _AddNewProjectState
                         Expanded(
                           child: Expanded(
                             child:AddNewProjectTab(
+                              project: widget.projectList,
                                 isEditMode: widget.isEditMode,)
                           ),
                         ),

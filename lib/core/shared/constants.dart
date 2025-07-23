@@ -32,6 +32,7 @@ class Constant {
   String addClient = "project/clientCreate";
   String clientList = "project/clientList";
   String updateClient = "project/clientUpdate";
+  String deleteClient = "project/deleteClient";
 
   String projectList = "project/projectList";
   String addProject = "project/createProject";
@@ -44,6 +45,8 @@ class Constant {
   String createVacancy = "project/createVacancy";
   String editVacancy = "project/editVacancy";
   String deleteVacancy = "project/deleteVacancy";
+  String vacancyClientList = "project/getClientListOnVacancy";
+  String removeClientFromVacancy = "project/removeClient";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../controller/config/config_provider.dart';
 import '../../../../model/project/project_model.dart';
+import '../../../../model/project/vacancy_model.dart';
 import '../../../widgets/widgets.dart';
 
 class AddNewProjectTab extends StatefulWidget {
@@ -40,7 +41,8 @@ class _AddNewProjectTabState extends State<AddNewProjectTab> {
     _organizationNameController.text = widget.project?.organizationName ?? '';
     _locationController.text = widget.project?.city ?? '';
     _projectNameController.text = widget.project?.projectName ?? '';
-    _selectedStatus=widget.project?.status??'';
+    _selectedStatus = widget.project?.status ?? '';
+    // _selectedStatus=widget.project?.status??'';
     super.initState();
   }
 
@@ -223,7 +225,6 @@ class _AddNewProjectTabState extends State<AddNewProjectTab> {
                                                             ?.trim() ??
                                                         '');
                                                 if (editProject) {
-                                                  Navigator.pop(context);
                                                   Navigator.pop(context);
                                                   CustomToast.showToast(context: context, message: 'Project Updated Successfully');
 

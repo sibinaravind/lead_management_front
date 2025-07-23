@@ -109,7 +109,9 @@ import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../core/services/api_service.dart';
+import '../../model/client/client_data_model.dart';
 import '../../model/client/client_model.dart';
+import '../../model/project/client_data_vacancy_mocel.dart';
 
 class ProjectProvider extends ChangeNotifier {
   ProjectProvider._privateConstructor();
@@ -130,6 +132,7 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> projects = [];
   List<ProjectModel> filterProjects = [];
   List<VacancyModel> vacancies = [];
+  List<VacancyClientDataModel> vacanciesClientList = [];
 
   List<ClientModel> get clients => _clients;
 
@@ -272,7 +275,60 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createVacancy(context, Map<String, dynamic> vacancyData) async {
+  Future<bool> fetchVacancyClient(context, String id) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiService.get(
+          context: context, '${Constant().vacancyClientList}/$id');
+      if (response['success']) {
+        print('.........1........');
+        vacanciesClientList = List.from(
+            response['data'].map((e) => VacancyClientDataModel.fromJson(e)));
+        print('.......2..........');
+        print(vacanciesClientList.length);
+        print('.......3..........');
+
+        notifyListeners();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+
+      Exception(e);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> removeClientFromVacancy(
+      context, String vacancyId, String clientId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      Map<String, dynamic> data = {
+        "vacancyId": vacancyId,
+        "clientId": clientId
+      };
+      final response = await _apiService.delete(
+          context: context, Constant().removeClientFromVacancy, data);
+      if (response['success'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (ex) {
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> createVacancy(context, Map<String, dynamic> vacancyData) async {
     _isLoading = true;
     notifyListeners();
 
@@ -283,22 +339,21 @@ class ProjectProvider extends ChangeNotifier {
         vacancyData,
       );
 
-      if (response.data['data'] != null && response.data['success'] == true) {
-        fetchVacancies(
-          context,
-        );
+      if (response["success"] == true) {
+         SpecializationTotal.addVacancy(vacancies, VacancyModel.fromJson(vacancyData));
         print('Vacancy created successfully');
-        responseId = response.data['data']['_id'];
+
+        return true;
       } else {
-        responseId = null;
+        return false;
       }
     } catch (e) {
       print('Error creating vacancy: $e');
-      responseId = null;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> editVacancy(
@@ -330,29 +385,70 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-
-  Future<void> deleteVacancy(context, String vacancyId) async {
+  // Future<void> deleteVacancy(context, String vacancyId) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     final response = await _apiService.delete(
+  //         context: context, '${Constant().deleteVacancy}/$vacancyId', {});
+  //
+  //     if (response.data['success'] == true) {
+  //       vacancies.removeWhere((vacancy) => vacancy.id == vacancyId);
+  //       CustomToast.showToast(
+  //           context: context, message: "Deleted Successfully ");
+  //     } else {
+  //       CustomToast.showToast(context: context, message: "Deletion Failed");
+  //     }
+  //   } catch (e) {
+  //     CustomToast.showToast(context: context, message: "Deletion Failed");
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+  Future<void> deleteVacancy(BuildContext context, String vacancyId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       final response = await _apiService.delete(
-          context: context, '${Constant().deleteVacancy}/$vacancyId', {});
+        context: context,
+        '${Constant().deleteVacancy}/$vacancyId',
+        {},
+      );
 
       if (response.data['success'] == true) {
-        print('Vacancy deleted successfully');
-        vacancies.removeWhere((vacancy) => vacancy.sId == vacancyId);
+        vacancies.removeWhere((vacancy) => vacancy.id == vacancyId);
+
+        // Delay toast and notify to next frame to avoid context issues
+        Future.microtask(() {
+          CustomToast.showToast(
+            context: context,
+            message: "Deleted Successfully",
+          );
+        });
       } else {
-        print('Failed to delete vacancy');
+        Future.microtask(() {
+          CustomToast.showToast(
+            context: context,
+            message: "Deletion Failed",
+          );
+        });
       }
     } catch (e) {
-      print('Error deleting vacancy: $e');
+      Future.microtask(() {
+        CustomToast.showToast(
+          context: context,
+          message: "Deletion Failed",
+        );
+      });
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
+
 
   Future<void> fetchProjects(
     context,
@@ -477,6 +573,30 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
+Future deleteClient(context, String clientId)async{
+    _isLoading = true;
+  notifyListeners();
+try{
+  final response = await _apiService.delete(
+      context: context, "${Constant().deleteClient}/$clientId", {});
+  if(response['success']==true){
+    _clients.removeWhere((element) => element.sId == clientId);
+    notifyListeners();
+    CustomToast.showToast(context: context, message: "deleted successfully");
+    return true;
+  }else{
+    CustomToast.showToast(context: context, message: 'Deletion failed');
+
+  }
+
+}catch(ex){
+  Exception(ex);
+}
+  finally{
+    _isLoading = false;
+    notifyListeners();
+  }
+}
   Future deleteProject(String projectId, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
@@ -662,6 +782,38 @@ class ProjectProvider extends ChangeNotifier {
 
   List<VacancyModel> filteredVacancies = [];
 
+  // void searchVacancies(String query) {
+  //   if (query.isEmpty) {
+  //     filteredVacancies = vacancies;
+  //   } else {
+  //     final q = query.toLowerCase();
+  //
+  //     filteredVacancies = vacancies.where((vacancy) {
+  //       return (vacancy.jobTitle?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.jobCategory?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.qualifications
+  //               ?.any((qual) => qual.toLowerCase().contains(q)) ??
+  //               false) ||
+  //           (vacancy.experience?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.salaryFrom?.toString().contains(q) ?? false) ||
+  //           (vacancy.salaryTo?.toString().contains(q) ?? false) ||
+  //           (vacancy.lastdatetoapply?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.description?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.country?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.city?.toLowerCase().contains(q) ?? false) ||
+  //           (vacancy.totalVacancies?.toString().contains(q) ?? false) ||
+  //           (vacancy.totalTargetCv?.toString().contains(q) ?? false) ||
+  //           (vacancy.project?.any((project) =>
+  //           (project.projectName?.toLowerCase().contains(q) ?? false) ||
+  //               (project.organizationName?.toLowerCase().contains(q) ?? false) ||
+  //               (project.city?.toLowerCase().contains(q) ?? false) ||
+  //               (project.country?.toLowerCase().contains(q) ?? false)) ??
+  //               false);
+  //     }).toList();
+  //   }
+  //
+  //   notifyListeners();
+  // }
   void searchVacancies(String query) {
     if (query.isEmpty) {
       filteredVacancies = vacancies;
@@ -691,6 +843,49 @@ class ProjectProvider extends ChangeNotifier {
                     (project.city?.toLowerCase().contains(q) ?? false) ||
                     (project.country?.toLowerCase().contains(q) ?? false)) ??
                 false);
+        final inJobTitle = vacancy.jobTitle?.toLowerCase().contains(q) ?? false;
+        final inJobCategory =
+            vacancy.jobCategory?.toLowerCase().contains(q) ?? false;
+        final inQualifications = vacancy.qualifications
+                ?.any((qual) => qual.toLowerCase().contains(q)) ??
+            false;
+        final inExperience =
+            vacancy.experience?.toLowerCase().contains(q) ?? false;
+        final inSalaryFrom =
+            vacancy.salaryFrom?.toString().contains(q) ?? false;
+        final inSalaryTo = vacancy.salaryTo?.toString().contains(q) ?? false;
+        final inLastDate =
+            vacancy.lastDateToApply?.toLowerCase().contains(q) ?? false;
+        final inDescription =
+            vacancy.description?.toLowerCase().contains(q) ?? false;
+        final inCountry = vacancy.country?.toLowerCase().contains(q) ?? false;
+        final inCity = vacancy.city?.toLowerCase().contains(q) ?? false;
+        final inTotalVacancies =
+            vacancy.totalVacancies?.toString().contains(q) ?? false;
+        final inTotalTargetCv =
+            vacancy.totalTargetCv?.toString().contains(q) ?? false;
+
+        final project = vacancy.project;
+        final inProject = project != null &&
+            ((project.projectName?.toLowerCase().contains(q) ?? false) ||
+                (project.organizationName?.toLowerCase().contains(q) ??
+                    false) ||
+                (project.city?.toLowerCase().contains(q) ?? false) ||
+                (project.country?.toLowerCase().contains(q) ?? false));
+
+        return inJobTitle ||
+            inJobCategory ||
+            inQualifications ||
+            inExperience ||
+            inSalaryFrom ||
+            inSalaryTo ||
+            inLastDate ||
+            inDescription ||
+            inCountry ||
+            inCity ||
+            inTotalVacancies ||
+            inTotalTargetCv ||
+            inProject;
       }).toList();
     }
 

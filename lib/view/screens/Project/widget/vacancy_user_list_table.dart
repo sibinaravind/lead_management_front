@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/controller/project/project_provider_controller.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/project_details_tab.dart';
+import 'package:overseas_front_end/view/screens/Project/widget/project_vacancy_tab.dart';
+import 'package:overseas_front_end/view/screens/campaign/widget/delete_dialogue.dart';
 import 'package:overseas_front_end/view/screens/project/flavour/customer_vacancy_flavour.dart';
 import 'package:provider/provider.dart';
 import '../../../../res/style/colors/colors.dart';
+import '../../../widgets/custom_popup.dart';
 import '../../../widgets/custom_text.dart';
+import 'create_edit_vacancy_popup.dart';
 
 class VacancyUserListTable extends StatelessWidget {
   final List<VacancyModel> userlist;
@@ -67,72 +72,81 @@ class VacancyUserListTable extends StatelessWidget {
                                    builder: (context) {
                                      switch (column['name']) {
                                        case 'Project Name':
-                                         return SelectionArea(
-                                           child: CustomText(
-                                             text: value,
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.normal,
-                                             color: AppColors.textColor,
-                                           ),
+                                         return CustomText(
+                                           text: value,
+                                           fontSize: 14,
+                                           fontWeight: FontWeight.w600,
+                                           color: AppColors.orangeSecondaryColor,
+                                         ); case 'Job Title':
+                                         return CustomText(
+                                           text: value,
+                                           fontSize: 14,
+                                           fontWeight: FontWeight.w600,
+                                           color: AppColors.orangeSecondaryColor,
                                          );
                                        case 'Job Position':
-                                         return SelectionArea(
-                                           child: CustomText(
-                                             text: value,
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.normal,
-                                             color: AppColors.textColor,
-                                           ),
+                                         return CustomText(
+                                           text: value,
+                                           fontSize: 14,
+                                           fontWeight: FontWeight.normal,
+                                           color: AppColors.textColor,
                                          );
                                      case 'Action':
-                                       return Row(
-                                         children: [
-                                           IconButton(
-                                             color:
-                                                 AppColors.greenSecondaryColor,
-                                             icon: const Icon(
-                                                 Icons.delete),
-                                             onPressed: () {
+                                       return PopupMenuButton(
+                                         color: Colors.white,
+                                         itemBuilder: (context)=> [
+                                         // PopupMenuItem(
+                                         //     onTap: () => showDialog(
+                                         //         context: context,
+                                         //         builder: (context) =>
+                                         //             CreateEditVacancyPopup(
+                                         //               isEditMode: true,
+                                         //               vacancy:value ,
+                                         //             )),
+                                         //     value: 1,
+                                         //     child: const Row(
+                                         //       spacing: 5,
+                                         //       children: [
+                                         //         Icon(
+                                         //           Icons.edit,
+                                         //           color: AppColors
+                                         //               .greenSecondaryColor,
+                                         //         ),
+                                         //         Text("Edit"),
+                                         //       ],
+                                         //     )),
+                                           PopupMenuItem(
+                                             onTap: () => showDialog(
+                                               context: context,
+                                               builder: (context) =>
+                                                   DeleteConfirmationDialog(
+                                                       title:
+                                                       "Delete",
+                                                       message:
+                                                       "Are you sure?",
+                                                       onConfirm:
+                                                           () {
+                                                             Future.microtask(() {
+                                                               Provider.of<ProjectProvider>(context, listen: false).deleteVacancy(context,listUser.id ??'');
+                                                             });
+                                                         // Provider.of<ProjectProvider>(context, listen: false).deleteVacancy(context,listUser.id ??'');
+                                                       }),
+                                             ),
+                                             value: 1,
+                                             child: const Row(
+                                               spacing: 5,
+                                               children: [
+                                                 Icon(
+                                                   Icons.delete,
+                                                   color: AppColors
+                                                       .redSecondaryColor,
+                                                 ),
+                                                 Text("Delete"),
+                                               ],
+                                             )),
 
-                                               ///------------delete Popup------------
-                                               // showDialog(
-                                               //   context: context,
-                                               //   builder: (context) {
-                                               //
-                                               //   }
-                                               //       // RegistrationAdd(),
-                                               // );
-                                             },
-                                           ),
-                                           // PopupMenuButton<int>(
-                                           //     color: Colors.white,
-                                           //     itemBuilder: (context) => [
-                                           //           PopupMenuItem(
-                                           //             value: 1,
-                                           //             child: InkWell(
-                                           //               onTap: () => showDialog(
-                                           //                 context: context,
-                                           //                 builder: (context) =>
-                                           //                     CallRecordPopup(),
-                                           //               ),
-                                           //               child: const Row(
-                                           //                 children: [
-                                           //                   Icon(
-                                           //                     Icons.call,
-                                           //                     color: AppColors
-                                           //                         .greenSecondaryColor,
-                                           //                   ),
-                                           //                   SizedBox(
-                                           //                     width: 10,
-                                           //                   ),
-                                           //                   Text("Call")
-                                           //                 ],
-                                           //               ),
-                                           //             ),
-                                           //           ),
-                                           //         ]),
-                                         ],
-                                       );
+
+                                       ],);
                                        case 'ID':
                                          return CustomText(
                                            text: value,
@@ -152,12 +166,21 @@ class VacancyUserListTable extends StatelessWidget {
                                  ),
                                ),
                                onTap: () {
-                                 if (column['name'] == 'ID') {
-                                   // showDialog(
-                                   //   context: context,
-                                   //   builder: (context) => ProjectDetailsTab(),
-                                   // );
+                                 if (column['name'] == 'Job Title') {
+                                   showDialog(
+                                     context: context,
+                                     builder: (context) => VacancyDetailTab(
+                                       id: listUser.id ?? '',
+                                        vacancy: listUser,
+                                     ),
+                                   );
                                  }
+                                 // if (column['name'] == 'ID') {
+                                 //   // showDialog(
+                                 //   //   context: context,
+                                 //   //   builder: (context) => ProjectDetailsTab(),
+                                 //   // );
+                                 // }
                                },
                              );
                            }).toList(),

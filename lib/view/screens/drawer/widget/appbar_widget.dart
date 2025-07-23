@@ -6,6 +6,7 @@ import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../model/officer/officers_lofin_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
+import '../../Project/widget/client_detail_tab.dart';
 import '../../officers/widgets/reset_password.dart';
 
 class AppBarContainer extends StatefulWidget {
@@ -276,8 +277,17 @@ class _AppBarContainerState extends State<AppBarContainer> {
                       title: Text(client.name ?? ''),
                       subtitle: Text(client.phone ?? ''),
                       onTap: () {
-                        // Do something on tap like navigate or fill form
-                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ClientDetailTab(
+                                client:client
+                            ); // Pass necessary arguments
+                          },
+                        );
+                        // ClientDetailTab(
+                        //   client:client
+                        // );
                       },
                     );
                   },
