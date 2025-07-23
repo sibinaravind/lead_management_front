@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
+import 'package:overseas_front_end/view/screens/Project/add_project_vacancy_screen.dart';
 import 'package:overseas_front_end/view/widgets/custom_popup.dart';
 import 'package:provider/provider.dart';
 
@@ -130,7 +131,7 @@ class ProjectUserListTable extends StatelessWidget {
                                                                       }),
                                                             ),
                                                         value: 1,
-                                                        child: const Row(
+                                                        child:  Row(
                                                           spacing: 5,
                                                           children: [
                                                             Icon(
@@ -139,6 +140,24 @@ class ProjectUserListTable extends StatelessWidget {
                                                                   .redSecondaryColor,
                                                             ),
                                                             Text("Delete"),
+                                                          ],
+                                                        )),      PopupMenuItem(
+                                                        onTap: () => showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              AddNewProject(isEditMode: true,projectList: listUser,),
+
+                                                        ),
+                                                        value: 1,
+                                                        child: const Row(
+                                                          spacing: 5,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.edit,
+                                                              color: AppColors
+                                                                  .greenSecondaryColor,
+                                                            ),
+                                                            Text("Edit"),
                                                           ],
                                                         )),
                                                   ]);
@@ -154,16 +173,16 @@ class ProjectUserListTable extends StatelessWidget {
                                   ),
                                 ),
                                 onTap: () {
-                                  print(column['name']);
-                                  if (column['name'] == 'Project Name') {
-                                    print('project name');
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ProjectDetailsTab(
-                                        project: listUser,
-                                      ),
-                                    );
-                                  }
+                                  // print(column['name']);
+                                  // if (column['name'] == 'Project Name') {
+                                  //   print('project name');
+                                  //   showDialog(
+                                  //     context: context,
+                                  //     builder: (context) => ProjectDetailsTab(
+                                  //       project: listUser,
+                                  //     ),
+                                  //   );
+                                  // }
                                 },
                               );
                             }).toList(),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/view/screens/Project/widget/add_edit_project.dart';
+import '../../../../model/project/vacancy_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_gradient_button.dart';
 import '../../../widgets/custom_pager.dart';
@@ -215,7 +216,7 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
 
                                     showDialog(
                                       context: context,
-                                      builder: (context) =>Dialog(child: AddNewProjectTab( isEditMode: true, project: widget.project,) ,)
+                                      builder: (context) =>Dialog(child: AddNewProjectTab( isEditMode: true, project: widget.project) ,)
 
                                    );
                                   },
@@ -230,7 +231,7 @@ class _ProjectDetailsTabState extends State<ProjectDetailsTab> {
                                 children: [
                                   _buildInfoChip(
                                       Icons.date_range,
-                                      'Deadline: ${widget.project.createdAt}',
+                                      'Deadline: ',
                                       AppColors.blueSecondaryColor),
                                   // _buildInfoChip(
                                   //     Icons.numbers,

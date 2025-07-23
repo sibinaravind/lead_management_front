@@ -116,7 +116,9 @@ class AffiniksFields {
         'name': 'Country',
         'extractor': (VacancyModel user) => user.country ?? ''
       },
-      {'name': 'Action', 'extractor': (ProjectModel user) => user},
+      {'name': 'Action', 'extractor': (VacancyModel user) => user},
+
+
     ];
   }
 
