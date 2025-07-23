@@ -340,7 +340,8 @@ class ProjectProvider extends ChangeNotifier {
       );
 
       if (response["success"] == true) {
-         SpecializationTotal.addVacancy(vacancies, VacancyModel.fromJson(vacancyData));
+        SpecializationTotal.addVacancy(
+            vacancies, VacancyModel.fromJson(vacancyData));
         print('Vacancy created successfully');
 
         return true;
@@ -448,7 +449,6 @@ class ProjectProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   Future<void> fetchProjects(
     context,
@@ -573,30 +573,29 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-Future deleteClient(context, String clientId)async{
+  Future deleteClient(context, String clientId) async {
     _isLoading = true;
-  notifyListeners();
-try{
-  final response = await _apiService.delete(
-      context: context, "${Constant().deleteClient}/$clientId", {});
-  if(response['success']==true){
-    _clients.removeWhere((element) => element.sId == clientId);
     notifyListeners();
-    CustomToast.showToast(context: context, message: "deleted successfully");
-    return true;
-  }else{
-    CustomToast.showToast(context: context, message: 'Deletion failed');
-
+    try {
+      final response = await _apiService
+          .delete(context: context, "${Constant().deleteClient}/$clientId", {});
+      if (response['success'] == true) {
+        _clients.removeWhere((element) => element.sId == clientId);
+        notifyListeners();
+        CustomToast.showToast(
+            context: context, message: "deleted successfully");
+        return true;
+      } else {
+        CustomToast.showToast(context: context, message: 'Deletion failed');
+      }
+    } catch (ex) {
+      Exception(ex);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-}catch(ex){
-  Exception(ex);
-}
-  finally{
-    _isLoading = false;
-    notifyListeners();
-  }
-}
   Future deleteProject(String projectId, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
@@ -821,28 +820,6 @@ try{
       final q = query.toLowerCase();
 
       filteredVacancies = vacancies.where((vacancy) {
-        return (vacancy.jobTitle?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.jobCategory?.toLowerCase().contains(q) ?? false) ||
-            (vacancy
-                    .qualifications
-                    ?.any((qual) => qual.toLowerCase().contains(q)) ??
-                false) ||
-            (vacancy.experience?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.salaryFrom?.toString().contains(q) ?? false) ||
-            (vacancy.salaryTo?.toString().contains(q) ?? false) ||
-            (vacancy.lastdatetoapply?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.description?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.country?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.city?.toLowerCase().contains(q) ?? false) ||
-            (vacancy.totalVacancies?.toString().contains(q) ?? false) ||
-            (vacancy.totalTargetCv?.toString().contains(q) ?? false) ||
-            (vacancy.projectModels?.any((project) =>
-                    (project.projectName?.toLowerCase().contains(q) ?? false) ||
-                    (project.organizationName?.toLowerCase().contains(q) ??
-                        false) ||
-                    (project.city?.toLowerCase().contains(q) ?? false) ||
-                    (project.country?.toLowerCase().contains(q) ?? false)) ??
-                false);
         final inJobTitle = vacancy.jobTitle?.toLowerCase().contains(q) ?? false;
         final inJobCategory =
             vacancy.jobCategory?.toLowerCase().contains(q) ?? false;
