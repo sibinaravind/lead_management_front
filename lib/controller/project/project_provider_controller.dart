@@ -101,17 +101,15 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/core/services/login_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
-import 'package:overseas_front_end/model/lead/call_event_model.dart';
-import 'package:overseas_front_end/model/project/project_manager.dart';
+
 import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../core/services/api_service.dart';
-import '../../model/client/client_data_model.dart';
 import '../../model/client/client_model.dart';
-import '../../model/project/client_data_vacancy_mocel.dart';
+import '../../model/project/client_data_vacancy_model.dart'
+    show VacancyClientDataModel;
 
 class ProjectProvider extends ChangeNotifier {
   ProjectProvider._privateConstructor();

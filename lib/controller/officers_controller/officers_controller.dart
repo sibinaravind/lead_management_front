@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
-import '../../model/officer/officer_model.dart';
 import '../../model/team_lead/team_lead_model.dart';
 
 class OfficersControllerProvider with ChangeNotifier {
@@ -100,7 +99,6 @@ class OfficersControllerProvider with ChangeNotifier {
   Future<bool> createOfficer(context, Map<String, dynamic> officer) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final response = await _apiService.post(
           context: context, Constant().officerInsert, officer);
@@ -124,7 +122,6 @@ class OfficersControllerProvider with ChangeNotifier {
       context, String officerId, Map<String, dynamic> updatedData) async {
     _isLoading = true;
     notifyListeners();
-
     Map<String, dynamic>? updatedData1 = Map.from(updatedData);
     updatedData1.remove('_id');
     updatedData1.remove('officer_id');

@@ -1,4 +1,3 @@
-import '../../../../model/officer/officer_model.dart';
 import '../../../../model/team_lead/team_lead_model.dart';
 
 class AffiniksFields {

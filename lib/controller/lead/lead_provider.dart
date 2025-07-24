@@ -80,6 +80,7 @@ class LeadProvider extends ChangeNotifier {
       allLeadModel =
           List.from(response['data'].map((e) => LeadModel.fromJson(e)));
     } catch (e) {
+      print('Error fetching lead list: $e');
     } finally {
       // notifyListeners();
     }

@@ -8,7 +8,7 @@ import 'package:overseas_front_end/view/screens/Project/widget/vacancy_client_sc
 import 'package:overseas_front_end/view/screens/campaign/widget/delete_dialogue.dart';
 import 'package:provider/provider.dart';
 import '../../../../controller/project/project_provider_controller.dart';
-import '../../../../model/project/client_data_vacancy_mocel.dart';
+import '../../../../model/project/client_data_vacancy_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/custom_gradient_button.dart';
 import '../../../widgets/custom_pager.dart';
@@ -657,7 +657,8 @@ class _ClientTabState extends State<ClientTab> {
                                               Provider.of<ProjectProvider>(
                                                       context,
                                                       listen: false)
-                                                  .removeClientFromVacancy(context,
+                                                  .removeClientFromVacancy(
+                                                      context,
                                                       widget.id,
                                                       client.clientId ?? '');
                                             }),

@@ -1,19 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/client/client_model.dart';
-import 'package:overseas_front_end/model/project/project_model.dart';
-import 'package:overseas_front_end/model/project/vacancy_model.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/add_edit_project.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/vacancy_client_screen.dart';
-import 'package:overseas_front_end/view/screens/campaign/widget/delete_dialogue.dart';
-import 'package:provider/provider.dart';
-import '../../../../controller/project/project_provider_controller.dart';
-import '../../../../model/project/client_data_vacancy_mocel.dart';
 import '../../../../res/style/colors/colors.dart';
-import '../../../widgets/custom_gradient_button.dart';
-import '../../../widgets/custom_pager.dart';
-import '../../../widgets/custom_popup.dart';
 import '../../../widgets/custom_text.dart';
 
 class ClientDetailTab extends StatefulWidget {
@@ -39,7 +26,7 @@ class _ProjectDetailsTabState extends State<ClientDetailTab> {
         'icon': Icons.assessment,
         'label': 'Client Details',
         'widget': ClientTab(
-         client:  widget.client,
+          client: widget.client,
         ),
         'completed': true,
       },
@@ -159,7 +146,7 @@ class _ProjectDetailsTabState extends State<ClientDetailTab> {
               ),
               child: Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -219,8 +206,7 @@ class _ProjectDetailsTabState extends State<ClientDetailTab> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(
-                                  text:
-                                  widget.client.name ?? '',
+                                  text: widget.client.name ?? '',
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textWhiteColour,
@@ -333,19 +319,19 @@ class _ProjectDetailsTabState extends State<ClientDetailTab> {
                               ),
                               trailing: tab['completed'] as bool
                                   ? Icon(
-                                Icons.check_circle,
-                                color: isSelected
-                                    ? Colors.white
-                                    : AppColors.greenSecondaryColor,
-                                size: 18,
-                              )
+                                      Icons.check_circle,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : AppColors.greenSecondaryColor,
+                                      size: 18,
+                                    )
                                   : Icon(
-                                Icons.radio_button_unchecked,
-                                color: isSelected
-                                    ? Colors.white70
-                                    : AppColors.textGrayColour,
-                                size: 18,
-                              ),
+                                      Icons.radio_button_unchecked,
+                                      color: isSelected
+                                          ? Colors.white70
+                                          : AppColors.textGrayColour,
+                                      size: 18,
+                                    ),
                               onTap: () {
                                 setState(() {
                                   _selectedTabIndex = index;
@@ -424,18 +410,26 @@ class ClientTab extends StatelessWidget {
         _buildSectionHeader('Client Information', Icons.assignment_outlined),
         const SizedBox(height: 16),
         _buildDetailCard([
-          _buildDetailRow('Client Name', client.name?? ''),
+          _buildDetailRow('Client Name', client.name ?? ''),
           _buildDetailRow('Phone', client.phone ?? ''),
-          _buildDetailRow(
-              'Email', client.email ?? '',
+          _buildDetailRow('Email', client.email ?? '',
               color: AppColors.primaryColor),
-          _buildDetailRow('Status', client.status?? '',color: AppColors.greenSecondaryColor),
+          _buildDetailRow('Status', client.status ?? '',
+              color: AppColors.greenSecondaryColor),
 
           _buildDetailRow('Address', client.address ?? ''),
 
-          _buildDetailRow('City', client.city?? '',),
-          _buildDetailRow('State', client.state?? '',),
-          _buildDetailRow('Country', client.country?? '',
+          _buildDetailRow(
+            'City',
+            client.city ?? '',
+          ),
+          _buildDetailRow(
+            'State',
+            client.state ?? '',
+          ),
+          _buildDetailRow(
+            'Country',
+            client.country ?? '',
           ),
           // _buildDetailRow('Deadline', '28 July 2025',
           //     color: AppColors.greenSecondaryColor),
@@ -1254,12 +1248,12 @@ class InterviewTab extends StatelessWidget {
               ),
               boxShadow: isSelected
                   ? [
-                BoxShadow(
-                  color: color.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
+                      BoxShadow(
+                        color: color.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
                   : null,
             ),
             child: Row(
@@ -1280,7 +1274,7 @@ class InterviewTab extends StatelessWidget {
                 const SizedBox(width: 12),
                 Container(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? Colors.white.withOpacity(0.2)
@@ -1535,8 +1529,8 @@ class MatchingTab extends StatelessWidget {
     Color statusColor = campaign['status'] == 'Active'
         ? AppColors.greenSecondaryColor
         : campaign['status'] == 'Paused'
-        ? AppColors.orangeSecondaryColor
-        : AppColors.blueSecondaryColor;
+            ? AppColors.orangeSecondaryColor
+            : AppColors.blueSecondaryColor;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

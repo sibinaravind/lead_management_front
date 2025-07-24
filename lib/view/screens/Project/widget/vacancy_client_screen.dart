@@ -1,11 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import '../../../../model/project/client_data_vacancy_mocel.dart';
-
+import '../../../../model/project/client_data_vacancy_model.dart';
 
 class ClientDashboard extends StatefulWidget {
   @override
@@ -23,8 +20,6 @@ class _ClientDashboardState extends State<ClientDashboard> {
     super.initState();
   }
 
-
-
   void toggleExpanded(String clientId) {
     setState(() {
       if (expandedClients.contains(clientId)) {
@@ -36,9 +31,7 @@ class _ClientDashboardState extends State<ClientDashboard> {
   }
 
   Color getStatusColor(String status) {
-    return status.toLowerCase() == 'active'
-        ? Colors.green
-        : Colors.red;
+    return status.toLowerCase() == 'active' ? Colors.green : Colors.red;
   }
 
   @override
@@ -53,14 +46,13 @@ class _ClientDashboardState extends State<ClientDashboard> {
         ],
       ),
     );
-
   }
 
   Widget _buildSummaryCards() {
-    int activeClients = clients.where((c) => c.clientInfo?.status == 'active').length;
+    int activeClients =
+        clients.where((c) => c.clientInfo?.status == 'active').length;
     // double totalCommission = clients.fold(0.0, (sum, client) => sum + client.commissionHistory);
     double totalCommission = 0;
-
 
     return Row(
       children: [
@@ -94,7 +86,8 @@ class _ClientDashboardState extends State<ClientDashboard> {
     );
   }
 
-  Widget _buildSummaryCard(String title, String value, IconData icon, Color color) {
+  Widget _buildSummaryCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -166,7 +159,7 @@ class _ClientDashboardState extends State<ClientDashboard> {
         children: [
           // Client Header - Only Name and Email
           InkWell(
-            onTap: () => toggleExpanded(client.clientId??''),
+            onTap: () => toggleExpanded(client.clientId ?? ''),
             borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: EdgeInsets.all(20),
@@ -188,7 +181,7 @@ class _ClientDashboardState extends State<ClientDashboard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          client.clientInfo?.name??'',
+                          client.clientInfo?.name ?? '',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -196,8 +189,9 @@ class _ClientDashboardState extends State<ClientDashboard> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          client.clientInfo?.email??'',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          client.clientInfo?.email ?? '',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 14),
                         ),
                       ],
                     ),
@@ -260,27 +254,32 @@ class _ClientDashboardState extends State<ClientDashboard> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: getStatusColor(client.clientInfo?.status??'').withOpacity(0.1),
+                  color: getStatusColor(client.clientInfo?.status ?? '')
+                      .withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: getStatusColor(client.clientInfo?.status??'').withOpacity(0.3),
+                    color: getStatusColor(client.clientInfo?.status ?? '')
+                        .withOpacity(0.3),
                   ),
                 ),
                 child: Text(
-                  client.clientInfo?.status?.toUpperCase()??'',
+                  client.clientInfo?.status?.toUpperCase() ?? '',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: getStatusColor(client.clientInfo?.status??""),
+                    color: getStatusColor(client.clientInfo?.status ?? ""),
                   ),
                 ),
               ),
               Spacer(),
-              _buildStatChip('${client.vacancies?.length??0}', 'Vacancies', Colors.blue),
+              _buildStatChip(
+                  '${client.vacancies?.length ?? 0}', 'Vacancies', Colors.blue),
               SizedBox(width: 16),
-              _buildStatChip('{client.vacancies.map(convert)}', 'Target CVs', Colors.orange),
+              _buildStatChip('{client.vacancies.map(convert)}', 'Target CVs',
+                  Colors.orange),
               SizedBox(width: 16),
-              _buildStatChip('\${client.totalCommission.toInt()}', 'Commission', Colors.green),
+              _buildStatChip('\${client.totalCommission.toInt()}', 'Commission',
+                  Colors.green),
             ],
           ),
 
@@ -292,16 +291,21 @@ class _ClientDashboardState extends State<ClientDashboard> {
           Row(
             children: [
               Expanded(
-                child: _buildInfoItem('Phone', client.clientInfo?.phone??'', Icons.phone),
+                child: _buildInfoItem(
+                    'Phone', client.clientInfo?.phone ?? '', Icons.phone),
               ),
               SizedBox(width: 16),
               Expanded(
-                child: _buildInfoItem('Address', client.clientInfo?.address??'', Icons.location_on),
+                child: _buildInfoItem('Address',
+                    client.clientInfo?.address ?? '', Icons.location_on),
               ),
             ],
           ),
           SizedBox(height: 12),
-          _buildInfoItem('Location', '${client.clientInfo?.city}, ${client.clientInfo?.country}', Icons.place),
+          _buildInfoItem(
+              'Location',
+              '${client.clientInfo?.city}, ${client.clientInfo?.country}',
+              Icons.place),
 
           SizedBox(height: 20),
 
@@ -322,7 +326,8 @@ class _ClientDashboardState extends State<ClientDashboard> {
             child: ListView.builder(
               itemCount: client.commissionHistory?.length,
               itemBuilder: (context, index) {
-                final commission = client.commissionHistory?[index]??[] as CommissionHistory;
+                final commission =
+                    client.commissionHistory?[index] ?? [] as CommissionHistory;
                 return _buildCommissionItem(commission);
               },
             ),
@@ -415,13 +420,13 @@ class _ClientDashboardState extends State<ClientDashboard> {
                 ),
               ),
               // if (vacancy.targetCv > 0)
-                Text(
-                  '{vacancy.targetCv} target CVs',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
+              Text(
+                '{vacancy.targetCv} target CVs',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 12,
                 ),
+              ),
             ],
           ),
         ],
@@ -441,7 +446,8 @@ class _ClientDashboardState extends State<ClientDashboard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            DateFormat('MMM dd, yyyy - HH:mm').format(commission?.updatedAt??DateTime.now()),
+            DateFormat('MMM dd, yyyy - HH:mm')
+                .format(commission?.updatedAt ?? DateTime.now()),
             style: TextStyle(fontSize: 14),
           ),
           Text(
@@ -457,7 +463,3 @@ class _ClientDashboardState extends State<ClientDashboard> {
     );
   }
 }
-
-
-
-

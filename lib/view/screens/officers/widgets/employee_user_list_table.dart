@@ -105,7 +105,7 @@ class EmployeeListTable extends StatelessWidget {
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               color: AppColors
-                                                  .orangeSecondaryColor,
+                                                  .viloletSecondaryColor,
                                             );
                                           case 'Action':
                                             return PopupMenuButton<int>(

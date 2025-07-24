@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
-import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-
 import '../../../controller/config/config_provider.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
 import '../../../model/team_lead/team_lead_model.dart';
-import '../employee/employee_permission_screen.dart';
 
 class EmployeeCreationScreen extends StatefulWidget {
   final bool isEdit;
@@ -635,7 +632,6 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     if (officerId != null) {
       bool success = await OfficersControllerProvider()
           .updateOfficer(context, officerId, updatedData);
-
       if (success) {
         Navigator.pop(context);
         CustomSnackBar.show(context, "Employee updated successfully");

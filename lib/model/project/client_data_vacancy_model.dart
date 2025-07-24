@@ -18,7 +18,7 @@ class VacancyClientDataModel {
           : null,
       clientId: json['client_id'],
       vacancies: (json['vacancies'] as Map<String, dynamic>?)?.map(
-            (key, value) {
+        (key, value) {
           if (value is Map<String, dynamic>) {
             return MapEntry(key, VacancyDetail.fromJson(value));
           } else if (value is int) {
