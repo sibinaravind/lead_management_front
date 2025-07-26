@@ -760,245 +760,254 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
   }
 
   Widget _buildTableHeader() {
-    return Dimension().isMobile(context)?Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        gradient: AppColors.buttonGraidentColour,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      child: SingleChildScrollView(scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-             SizedBox(
-               width: 100,
-              child: Text(
-                'Permission',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+    return Dimension().isMobile(context)
+        ? Container(
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              gradient: AppColors.buttonGraidentColour,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
               ),
             ),
-            ...roles.map((role) => Container(
-              width: 100,
-              child: Text(
-                _formatRoleName(role),
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            )),
-          ],
-        ),
-      ),
-    ): Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        gradient: AppColors.buttonGraidentColour,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Expanded(
-            flex: 3,
-            child: Text(
-              'Permission',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          ...roles.map((role) => Expanded(
-                child: Text(
-                  _formatRoleName(role),
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPermissionRow(PermissionData permission, int index) {
-    return Dimension().isMobile(context)?Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: index.isEven ? Colors.grey[50] : Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 150,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.violetPrimaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(permission.icon,
-                        color: AppColors.violetPrimaryColor, size: 16),
-                  ),
-                  const SizedBox(width: 12),
                   SizedBox(
                     width: 100,
                     child: Text(
-                      permission.displayName,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryColor),
+                      'Permission',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ),
+                  ...roles.map((role) => Container(
+                        width: 100,
+                        child: Text(
+                          _formatRoleName(role),
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
                 ],
               ),
             ),
-            ...roles.map((role) => SizedBox(
-              width: 100,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () => _togglePermission(role, permission.name),
-                  child: Container(
-                    width: 50,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: permission.rolePermissions[role]!
-                          ? AppColors.greenSecondaryColor
-                          : AppColors.redSecondaryColor,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Stack(
+          )
+        : Container(
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              gradient: AppColors.buttonGraidentColour,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Permission',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+                ...roles.map((role) => Expanded(
+                      child: Text(
+                        _formatRoleName(role),
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    )),
+              ],
+            ),
+          );
+  }
+
+  Widget _buildPermissionRow(PermissionData permission, int index) {
+    return Dimension().isMobile(context)
+        ? Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: index.isEven ? Colors.grey[50] : Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: Row(
                       children: [
-                        AnimatedAlign(
-                          alignment: permission.rolePermissions[role]!
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          duration: const Duration(milliseconds: 200),
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            margin: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                                color: Colors.white, shape: BoxShape.circle),
-                            child: Icon(
-                              permission.rolePermissions[role]!
-                                  ? Icons.check
-                                  : Icons.close,
-                              size: 12,
-                              color: permission.rolePermissions[role]!
-                                  ? AppColors.greenSecondaryColor
-                                  : AppColors.redSecondaryColor,
-                            ),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color:
+                                AppColors.violetPrimaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(permission.icon,
+                              color: AppColors.violetPrimaryColor, size: 16),
+                        ),
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            permission.displayName,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryColor),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ),
-            )),
-          ],
-        ),
-      ),
-    ): Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: index.isEven ? Colors.grey[50] : Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.violetPrimaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(permission.icon,
-                      color: AppColors.violetPrimaryColor, size: 16),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    permission.displayName,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.primaryColor),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ...roles.map((role) => Expanded(
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () => _togglePermission(role, permission.name),
-                    child: Container(
-                      width: 50,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: permission.rolePermissions[role]!
-                            ? AppColors.greenSecondaryColor
-                            : AppColors.redSecondaryColor,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Stack(
-                        children: [
-                          AnimatedAlign(
-                            alignment: permission.rolePermissions[role]!
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            duration: const Duration(milliseconds: 200),
+                  ...roles.map((role) => SizedBox(
+                        width: 100,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: () =>
+                                _togglePermission(role, permission.name),
                             child: Container(
-                              width: 24,
-                              height: 24,
-                              margin: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white, shape: BoxShape.circle),
-                              child: Icon(
-                                permission.rolePermissions[role]!
-                                    ? Icons.check
-                                    : Icons.close,
-                                size: 12,
+                              width: 50,
+                              height: 28,
+                              decoration: BoxDecoration(
                                 color: permission.rolePermissions[role]!
                                     ? AppColors.greenSecondaryColor
                                     : AppColors.redSecondaryColor,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Stack(
+                                children: [
+                                  AnimatedAlign(
+                                    alignment: permission.rolePermissions[role]!
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      margin: const EdgeInsets.all(2),
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        permission.rolePermissions[role]!
+                                            ? Icons.check
+                                            : Icons.close,
+                                        size: 12,
+                                        color: permission.rolePermissions[role]!
+                                            ? AppColors.greenSecondaryColor
+                                            : AppColors.redSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          )
+        : Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: index.isEven ? Colors.grey[50] : Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.violetPrimaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(permission.icon,
+                            color: AppColors.violetPrimaryColor, size: 16),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          permission.displayName,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryColor),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              )),
-        ],
-      ),
-    );
+                ...roles.map((role) => Expanded(
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () => _togglePermission(role, permission.name),
+                          child: Container(
+                            width: 50,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: permission.rolePermissions[role]!
+                                  ? AppColors.greenSecondaryColor
+                                  : AppColors.redSecondaryColor,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Stack(
+                              children: [
+                                AnimatedAlign(
+                                  alignment: permission.rolePermissions[role]!
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    margin: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      permission.rolePermissions[role]!
+                                          ? Icons.check
+                                          : Icons.close,
+                                      size: 12,
+                                      color: permission.rolePermissions[role]!
+                                          ? AppColors.greenSecondaryColor
+                                          : AppColors.redSecondaryColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          );
   }
 }
 

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/CustomPasswordTextField.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
-import 'package:provider/provider.dart';
-
 import '../../../../controller/auth/login_controller.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
 
@@ -334,16 +330,16 @@ class _PasswordResetState extends State<PasswordReset>
     final officerId = widget.officerId; // or officerIdController.text
 
     if (officerId.isNotEmpty) {
-      bool success = await OfficersControllerProvider()
-          .updateOfficer(context, officerId, officer);
+      // bool success = await OfficersControllerProvider()
+      //     .updateOfficer(context, officerId, officer);
 
-      if (success) {
-        Navigator.pop(context);
-        CustomSnackBar.show(context, "Password updated successfully");
-      } else {
-        CustomSnackBar.show(context, "Failed to update",
-            backgroundColor: AppColors.redSecondaryColor);
-      }
+      // if (success) {
+      //   Navigator.pop(context);
+      //   CustomSnackBar.show(context, "Password updated successfully");
+      // } else {
+      //   CustomSnackBar.show(context, "Failed to update",
+      //       backgroundColor: AppColors.redSecondaryColor);
+      // }
     }
   }
 
@@ -362,19 +358,19 @@ class _PasswordResetState extends State<PasswordReset>
                 onPressed: () async {
                   final officerId = widget.officerId;
                   if (officerId.isNotEmpty) {
-                    bool success = await LoginProvider().resetPassword(
-                        officerId: officerId,
-                        currentPassword: _passwordController.text,
-                        newPassword: _resetPasswordController.text,
-                        context: context);
-                    Navigator.pop(context);
-                    if (success) {
-                      CustomSnackBar.show(
-                          context, "Password Rest successfully");
-                    } else {
-                      CustomSnackBar.show(context, "Failed to Update",
-                          backgroundColor: AppColors.redSecondaryColor);
-                    }
+                    // bool success = await LoginProvider().resetPassword(
+                    //     officerId: officerId,
+                    //     currentPassword: _passwordController.text,
+                    //     newPassword: _resetPasswordController.text,
+                    //     context: context);
+                    // Navigator.pop(context);
+                    // if (success) {
+                    //   CustomSnackBar.show(
+                    //       context, "Password Rest successfully");
+                    // } else {
+                    //   CustomSnackBar.show(context, "Failed to Update",
+                    //       backgroundColor: AppColors.redSecondaryColor);
+                    // }
                   }
                 },
                 child: const Text("Reset")),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/models.dart';
 
 import '../model/app_configs/config_model.dart';
-import '../model/officer/user_model.dart';
 
 class AppUserProvider extends ChangeNotifier {
   AppUserProvider._privateConstructor();
@@ -10,7 +10,7 @@ class AppUserProvider extends ChangeNotifier {
     return _instance;
   }
   int? selectedIndex = 0;
-  UserModel? userModel;
+  OfficerModel? userModel;
   ConfigModel? configModel;
 
   void updateIndex(int index) {
@@ -18,10 +18,10 @@ class AppUserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  UserModel getUserDetails() {
+  OfficerModel getUserDetails() {
     if (userModel != null) {
-      return userModel ?? const UserModel();
+      return userModel ?? OfficerModel();
     }
-    return userModel ?? const UserModel();
+    return userModel ?? OfficerModel();
   }
 }

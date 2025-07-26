@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../controller/auth/login_controller.dart';
 import '../../../../controller/project/project_provider_controller.dart';
-import '../../../../model/officer/officers_lofin_model.dart';
+import '../../../../model/officer/officer_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 import '../../Project/widget/client_detail_tab.dart';
@@ -11,7 +9,7 @@ import '../../officers/widgets/reset_password.dart';
 
 class AppBarContainer extends StatefulWidget {
   final bool isdesktop;
-  final Officer user;
+  final OfficerModel user;
   final void Function()? onDrawerButtonPressed;
 
   const AppBarContainer({
@@ -30,8 +28,7 @@ class _AppBarContainerState extends State<AppBarContainer> {
 
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context,listen: false).fetchClients(context);
-    // TODO: implement initState
+    // Provider.of<ProjectProvider>(context, listen: false).fetchClients(context);
     super.initState();
   }
 
@@ -45,7 +42,7 @@ class _AppBarContainerState extends State<AppBarContainer> {
     return Container(
       height: 65,
       width: double.maxFinite,
-      margin: const EdgeInsets.only(left: 20, right: 15, bottom: 5, top: 10),
+      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 10),
       // padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -94,7 +91,6 @@ class _AppBarContainerState extends State<AppBarContainer> {
                     builder: (context) => _buildClientSearchDialog(context),
                   );
                 },
-
                 // controller: controller.searchController,
                 decoration: InputDecoration(
                   hintText: "Search Profiles...",
@@ -103,10 +99,9 @@ class _AppBarContainerState extends State<AppBarContainer> {
                     fontSize: 15,
                   ),
                   suffixIcon: IconButton(
-                    icon:
-                        const Icon(Icons.search, size: 20, color: Colors.grey),
-                    onPressed: null
-                  ),
+                      icon: const Icon(Icons.search,
+                          size: 20, color: Colors.grey),
+                      onPressed: null),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -233,12 +228,11 @@ class _AppBarContainerState extends State<AppBarContainer> {
       ),
     );
   }
+
   Widget _buildClientSearchDialog(BuildContext context) {
-    final clientProvider = Provider.of<ProjectProvider>(context, listen: false);
+    // final clientProvider = Provider.of<ProjectProvider>(context, listen: false);
     final TextEditingController searchController = TextEditingController();
-
-    List clients = clientProvider.clients;
-
+    final clients = []; // clientProvider.clients;
     return StatefulBuilder(
       builder: (context, setState) {
         return AlertDialog(
@@ -255,11 +249,11 @@ class _AppBarContainerState extends State<AppBarContainer> {
                 ),
                 onChanged: (query) {
                   setState(() {
-                    clients = clientProvider.clients
-                        .where((client) => client.name!
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                        .toList();
+                    // clients = clientProvider.clients
+                    //     .where((client) => client.name!
+                    //         .toLowerCase()
+                    //         .contains(query.toLowerCase()))
+                    //     .toList();
                   });
                 },
               ),
@@ -270,40 +264,42 @@ class _AppBarContainerState extends State<AppBarContainer> {
                 child: clients.isEmpty
                     ? const Center(child: Text('No clients found'))
                     : ListView.builder(
-                  itemCount: clients.length,
-                  itemBuilder: (context, index) {
-                    final client = clients[index];
-                    return ListTile(
-                      title: Text(client.name ?? ''),
-                      subtitle: Text(client.phone ?? ''),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ClientDetailTab(
-                                client:client
-                            ); // Pass necessary arguments
-                          },
-                        );
-                        // ClientDetailTab(
-                        //   client:client
-                        // );
-                      },
-                    );
-                  },
-                ),
+                        itemCount: clients.length,
+                        itemBuilder: (context, index) {
+                          final client = clients[index];
+                          return ListTile(
+                            title: Text(client.name ?? ''),
+                            subtitle: Text(client.phone ?? ''),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ClientDetailTab(
+                                      client:
+                                          client); // Pass necessary arguments
+                                },
+                              );
+                              // ClientDetailTab(
+                              //   client:client
+                              // );
+                            },
+                          );
+                        },
+                      ),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close',style: TextStyle(color: AppColors.primaryColor),),
+              child: const Text(
+                'Close',
+                style: TextStyle(color: AppColors.primaryColor),
+              ),
             ),
           ],
         );
       },
     );
   }
-
 }

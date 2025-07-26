@@ -1,3 +1,5 @@
+import '../officer/officer_model.dart';
+
 class CallEventModel {
   String? sId;
   String? type;
@@ -57,32 +59,6 @@ class CallEventModel {
     if (officer != null) {
       data['officer'] = officer!.toJson();
     }
-    return data;
-  }
-}
-
-class OfficerModel {
-  String? sId;
-  String? name;
-  String? phone;
-
-  OfficerModel({
-    this.sId,
-    this.name,
-    this.phone,
-  });
-
-  OfficerModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    name = json['name'];
-    phone = json['phone'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['_id'] = sId;
-    data['name'] = name;
-    data['phone'] = phone;
     return data;
   }
 }

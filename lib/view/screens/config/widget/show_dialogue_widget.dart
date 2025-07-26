@@ -158,16 +158,16 @@ void configEditDialog(BuildContext context, String category, ConfigModel item
                           // if (item.containsKey('range')) {
                           //   item['range'] = rangeController.text;
                           // }
-                          Provider.of<ConfigProvider>(context, listen: false)
-                              .updateConfig(context,
-                                  colour: colourController.text.trim(),
-                                  field: category,
-                                  name: item.name ?? "",
-                                  id: item.id ?? "",
-                                  status: "ACTIVE");
-                          Navigator.of(context).pop();
-                          CustomSnackBar.show(
-                              context, '${item.name} updated successfully');
+                          // Provider.of<ConfigProvider>(context, listen: false)
+                          //     .updateConfig(context,
+                          //         colour: colourController.text.trim(),
+                          //         field: category,
+                          //         name: item.name ?? "",
+                          //         id: item.id ?? "",
+                          //         status: "ACTIVE");
+                          // Navigator.of(context).pop();
+                          // CustomSnackBar.show(
+                          //     context, '${item.name} updated successfully');
                         }
                       },
                       isFilled: true,

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/flavour_config.dart';
-import '../../model/officer/user_model.dart';
+import '../../model/officer/officer_model.dart';
 import '../di/service_locator.dart';
 
 const String USER_CACHE_KEY = 'usercache';
@@ -13,16 +13,16 @@ const String TOKEN_CACHE_KEY = 'tokencache';
 const String SIGNUP_STATUS_CACHE_KEY = 'signupcache';
 
 class UserCacheService {
-  UserModel? _user;
-  UserModel? get user => _user;
+  OfficerModel? _user;
+  OfficerModel? get user => _user;
   SharedPreferences get sharedPrefs => serviceLocator<SharedPreferences>();
-  Future<bool> saveUser(UserModel user) async {
+  Future<bool> saveUser(OfficerModel user) async {
     // _user = user;
     var saved = await sharedPrefs.setString(USER_CACHE_KEY, jsonEncode(user));
     return saved;
   }
 
-  UserModel? getUser() {
+  OfficerModel? getUser() {
     var userMap = sharedPrefs.getString(USER_CACHE_KEY);
     if (userMap == null) {
       return null;
@@ -62,7 +62,7 @@ class UserCacheService {
     return await sharedPrefs.setBool(SIGNUP_STATUS_CACHE_KEY, signupStatus);
   }
 
-  Future<UserModel?> getIsSignedUp() async {
+  Future<OfficerModel?> getIsSignedUp() async {
     var status = sharedPrefs.getBool(SIGNUP_STATUS_CACHE_KEY);
 
     if (status == null) {

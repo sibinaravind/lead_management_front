@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:overseas_front_end/controller/app_user_provider.dart';
 import 'package:overseas_front_end/view/screens/dashboard/widgets/todays_quotes.dart';
-import 'package:provider/provider.dart';
 
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
@@ -109,50 +107,48 @@ class DashboardScreen extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Consumer<AppUserProvider>(
-                              builder: (context, value, child) => Wrap(
-                                spacing: 20,
-                                runSpacing: 20,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      value.selectedIndex = 35;
-                                    },
-                                    child: _buildCallStatCard(
-                                      title: "Today's Calls",
-                                      value: "47",
-                                      icon: Icons.phone_in_talk_rounded,
-                                      color: Colors.green,
-                                      width: (constraints.maxWidth - 80) /
-                                          6, // Adjusted for row layout
-                                    ),
+                            Wrap(
+                              spacing: 20,
+                              runSpacing: 20,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    // value.selectedIndex = 35;
+                                  },
+                                  child: _buildCallStatCard(
+                                    title: "Today's Calls",
+                                    value: "47",
+                                    icon: Icons.phone_in_talk_rounded,
+                                    color: Colors.green,
+                                    width: (constraints.maxWidth - 80) /
+                                        6, // Adjusted for row layout
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      value.selectedIndex = 35;
-                                    },
-                                    child: _buildCallStatCard(
-                                      title: "This Week",
-                                      value: "285",
-                                      icon: Icons.trending_up_rounded,
-                                      color: Colors.blue,
-                                      width: (constraints.maxWidth - 80) / 6,
-                                    ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    // value.selectedIndex = 35;
+                                  },
+                                  child: _buildCallStatCard(
+                                    title: "This Week",
+                                    value: "285",
+                                    icon: Icons.trending_up_rounded,
+                                    color: Colors.blue,
+                                    width: (constraints.maxWidth - 80) / 6,
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      value.selectedIndex = 35;
-                                    },
-                                    child: _buildCallStatCard(
-                                      title: "This Month",
-                                      value: "1,247",
-                                      icon: Icons.bar_chart_rounded,
-                                      color: Colors.purple,
-                                      width: (constraints.maxWidth - 80) / 6,
-                                    ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    // value.selectedIndex = 35;
+                                  },
+                                  child: _buildCallStatCard(
+                                    title: "This Month",
+                                    value: "1,247",
+                                    icon: Icons.bar_chart_rounded,
+                                    color: Colors.purple,
+                                    width: (constraints.maxWidth - 80) / 6,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -175,53 +171,51 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Consumer<AppUserProvider>(
-                        builder: (context, value, child) => LayoutBuilder(
-                          builder: (context, innerConstraints) {
-                            return Wrap(
-                              spacing: 20,
-                              runSpacing: 20,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    value.selectedIndex = 35;
-                                  },
-                                  child: _buildCallStatCard(
-                                    title: "Today's Calls",
-                                    value: "47",
-                                    icon: Icons.phone_in_talk_rounded,
-                                    color: Colors.green,
-                                    width: innerConstraints.maxWidth - 40,
-                                  ),
+                      LayoutBuilder(
+                        builder: (context, innerConstraints) {
+                          return Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  // value.selectedIndex = 35;
+                                },
+                                child: _buildCallStatCard(
+                                  title: "Today's Calls",
+                                  value: "47",
+                                  icon: Icons.phone_in_talk_rounded,
+                                  color: Colors.green,
+                                  width: innerConstraints.maxWidth - 40,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    value.selectedIndex = 35;
-                                  },
-                                  child: _buildCallStatCard(
-                                    title: "This Week",
-                                    value: "285",
-                                    icon: Icons.trending_up_rounded,
-                                    color: Colors.blue,
-                                    width: innerConstraints.maxWidth - 40,
-                                  ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  // value.selectedIndex = 35;
+                                },
+                                child: _buildCallStatCard(
+                                  title: "This Week",
+                                  value: "285",
+                                  icon: Icons.trending_up_rounded,
+                                  color: Colors.blue,
+                                  width: innerConstraints.maxWidth - 40,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    value.selectedIndex = 35;
-                                  },
-                                  child: _buildCallStatCard(
-                                    title: "This Month",
-                                    value: "1,247",
-                                    icon: Icons.bar_chart_rounded,
-                                    color: Colors.purple,
-                                    width: innerConstraints.maxWidth - 40,
-                                  ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  // value.selectedIndex = 35;
+                                },
+                                child: _buildCallStatCard(
+                                  title: "This Month",
+                                  value: "1,247",
+                                  icon: Icons.bar_chart_rounded,
+                                  color: Colors.purple,
+                                  width: innerConstraints.maxWidth - 40,
                                 ),
-                              ],
-                            );
-                          },
-                        ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
 
                       const SizedBox(height: 30),

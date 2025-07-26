@@ -8,7 +8,7 @@ class AffiniksFields {
         'extractor': (TeamLeadModel user) => user.officerId.toString()
       },
       {
-        'name': 'Officer Name',
+        'name': 'OfficerModel Name',
         'extractor': (TeamLeadModel user) => user.name.toString()
       },
       {

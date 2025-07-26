@@ -108,15 +108,7 @@ class AddItemDialog extends StatelessWidget {
                         }),
                   )
               ],
-              // if (item.hasFieldName('range')) ...[
-              //   SizedBox(height: 16),
-              //   CustomTextFormField(
-              //     controller: rangeController,
-              //     label: 'Range',
-              //     isRequired: true,
-              //     // keyboardType: TextInputType.number,
-              //   ),
-              // ],
+
               SizedBox(height: 16),
 
               // Action buttons
@@ -139,14 +131,14 @@ class AddItemDialog extends StatelessWidget {
                       icon: Icons.check,
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          Provider.of<ConfigProvider>(context, listen: false)
-                              .addConfig(context,
-                                  field: category,
-                                  name:
-                                      nameController.text.toUpperCase().trim(),
-                                  colour: colourController.text.trim());
-                          Navigator.of(context).pop();
-                          CustomSnackBar.show(context, 'Added successfully');
+                          // Provider.of<ConfigProvider>(context, listen: false)
+                          //     .addConfig(context,
+                          //         field: category,
+                          //         name:
+                          //             nameController.text.toUpperCase().trim(),
+                          //         colour: colourController.text.trim());
+                          // Navigator.of(context).pop();
+                          // CustomSnackBar.show(context, 'Added successfully');
                         }
 
                         ///-- setstate
