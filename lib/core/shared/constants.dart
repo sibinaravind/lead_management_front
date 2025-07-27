@@ -5,7 +5,7 @@ class Constant {
   String get featureBaseUrl {
     switch (FlavourConfig.partner()) {
       case Partner.affiniks:
-        return 'http://52.66.252.146:3000/';
+        return 'http://localhost:3000/'; //'http://52.66.252.146:3000/';
       case Partner.partner1:
         return '';
       case Partner.partner2:

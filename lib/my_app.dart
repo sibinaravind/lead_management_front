@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:overseas_front_end/view/screens/config/config_screen.dart';
+import 'core/shared/global_key.dart';
 import 'view/screens/Auth/login_screen.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
@@ -15,10 +17,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GoRouter router = GoRouter(
+      // navigatorKey: GlobalKeyService().navigatorKey,
+      navigatorKey: Get.key,
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const LoginScreen(),
+          builder: (context, state) => Scaffold(
+            body: Container(
+              child: Center(
+                child: Text("Login Screen Placeholder"),
+              ),
+            ),
+          ),
         ),
         GoRoute(
           path: '/dashboard/:mainTab/:subTab',
@@ -28,11 +38,16 @@ class MyApp extends StatelessWidget {
             return MainLayoutScreen(mainTab: mainTab, subTab: subTab);
           },
         ),
+        GoRoute(
+          path: '/test',
+          builder: (context, state) => ConfigScreen(),
+        ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
-      initialLocation: '/dashboard/dashboard/overview',
+      initialLocation: '/test',
     );
     return GetMaterialApp.router(
+      // navigatorKey: Get.key,
       initialBinding: GlobalBindings(),
       title: ' ${FlavourConfig.partnerName()} ',
       debugShowCheckedModeBanner: false,
@@ -45,9 +60,22 @@ class MyApp extends StatelessWidget {
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,
+      builder: (context, child) {
+        // This ensures Get.context is available for snackbars
+        return MediaQuery(
+          data: MediaQuery.of(context),
+          child: child!,
+        );
+      },
+      // Add this to handle Get.snackbar globally
+      scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(),
     );
   }
 }
+         // Get.offAll(() => ErrorScreen());
+          // GoRouter.of(Get.key.currentContext!).replace('/');
+          // GoRouter.of(Get.key.currentContext!).push('/error');
+          
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 // import 'package:overseas_front_end/controller/app_user_provider.dart';

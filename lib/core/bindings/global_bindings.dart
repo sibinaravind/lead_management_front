@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:overseas_front_end/controller/config/config_controller.dart';
 // import 'package:overseas_front_end/controller/employee/bloc/employee_data_controller.dart';
 // import 'package:overseas_front_end/controller/leads/bloc/call_data_controller.dart';
 // import 'package:overseas_front_end/controller/leads/bloc/lead_data_controller.dart';
@@ -13,9 +14,9 @@ import 'package:get/get.dart';
 class GlobalBindings extends Bindings {
   @override
   void dependencies() {
-    // Get.put(() => AppUserController());
     // Get.put(AppUserController());
-    // Get.lazyPut(() => LeadDataController());
+
+    Get.lazyPut(() => ConfigController());
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());
     // Get.lazyPut(() => EmployeeDataController());

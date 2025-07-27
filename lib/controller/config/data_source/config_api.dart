@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:overseas_front_end/core/error/api_exception_handler.dart';
 import '../../../core/di/service_locator.dart';
-import '../../../core/error/failure.dart';
 import '../../../core/services/user_cache_service.dart';
 import '../../../core/shared/constants.dart';
 import '../../../model/app_configs/config_list_model.dart';
@@ -10,7 +9,7 @@ import '../../../model/app_configs/config_list_model.dart';
 class ConfigApi {
   ConfigApi();
 
-  Future<Either<Failure, ConfigListModel>> getConfigItem() async {
+  Future<Either<Exception, ConfigListModel>> getConfigItem() async {
     Dio client = serviceLocator();
 
     try {
@@ -33,7 +32,7 @@ class ConfigApi {
     }
   }
 
-  Future<Either<Failure, ConfigListModel>> patchConfigItem(
+  Future<Either<Exception, ConfigListModel>> patchConfigItem(
       Map<String, dynamic> data) async {
     Dio client = serviceLocator();
 

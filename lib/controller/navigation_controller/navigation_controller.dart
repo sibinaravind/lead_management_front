@@ -196,10 +196,10 @@ class NavigationController extends GetxController {
       color: AppColors.greenSecondaryColor,
       items: [
         NavigationItem(
-            label: 'Config',
-            route: 'config',
-            icon: Icons.settings,
-            screen: ConfigScreen()),
+          label: 'Config',
+          route: 'config',
+          icon: Icons.settings,
+        ),
       ],
     ),
     'campaign': NavigationSection(

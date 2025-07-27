@@ -8,8 +8,16 @@ abstract class Failure extends Equatable {
   List<Object> get props => [message];
 }
 
-class Exception extends Failure {
-  const Exception(String message) : super(message);
+class GenericException extends Failure {
+  const GenericException(String message) : super(message);
+}
+
+class ServerException extends Failure {
+  const ServerException(String message) : super(message);
+}
+
+class SocketFailure extends Failure {
+  const SocketFailure(String message) : super(message);
 }
 
 class LocalDatabaseQueryFailure extends Failure {

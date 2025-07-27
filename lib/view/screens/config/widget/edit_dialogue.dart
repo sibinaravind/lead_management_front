@@ -54,28 +54,28 @@ void _showEditDialog(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildStyledTextField(
-                      nameController, 'Name', Icons.badge_rounded),
-                  if (item.containsKey('code')) ...[
-                    SizedBox(height: 16),
-                    _buildStyledTextField(
-                        codeController, 'Code', Icons.code_rounded),
-                  ],
-                  if (item.containsKey('country')) ...[
-                    SizedBox(height: 16),
-                    _buildStyledTextField(
-                        countryController, 'Country', Icons.flag_rounded),
-                  ],
-                  if (item.containsKey('province')) ...[
-                    SizedBox(height: 16),
-                    _buildStyledTextField(provinceController, 'Province',
-                        Icons.location_on_rounded),
-                  ],
-                  if (item.containsKey('range')) ...[
-                    SizedBox(height: 16),
-                    _buildStyledTextField(rangeController, 'Salary Range',
-                        Icons.attach_money_rounded),
-                  ],
+                  // _buildStyledTextField(
+                  //     nameController, 'Name', Icons.badge_rounded),
+                  // if (item.containsKey('code')) ...[
+                  //   SizedBox(height: 16),
+                  //   _buildStyledTextField(
+                  //       codeController, 'Code', Icons.code_rounded),
+                  // ],
+                  // if (item.containsKey('country')) ...[
+                  //   SizedBox(height: 16),
+                  //   _buildStyledTextField(
+                  //       countryController, 'Country', Icons.flag_rounded),
+                  // ],
+                  // if (item.containsKey('province')) ...[
+                  //   SizedBox(height: 16),
+                  //   _buildStyledTextField(provinceController, 'Province',
+                  //       Icons.location_on_rounded),
+                  // ],
+                  // if (item.containsKey('range')) ...[
+                  //   SizedBox(height: 16),
+                  //   _buildStyledTextField(rangeController, 'Salary Range',
+                  //       Icons.attach_money_rounded),
+                  // ],
                 ],
               ),
             ),

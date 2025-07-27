@@ -11,4 +11,6 @@ class GlobalKeyService {
 
   final GlobalKey<ScaffoldState> dashboardScaffoldKey =
       GlobalKey<ScaffoldState>(debugLabel: 'dashboard_screen_key');
+  final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'navigator_key');
 }

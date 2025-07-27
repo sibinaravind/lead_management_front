@@ -1,123 +1,119 @@
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:overseas_front_end/core/di/service_locator.dart';
+import 'package:overseas_front_end/core/error/failure.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
-
-import '../di/service_locator.dart';
-import 'user_cache_service.dart';
+import '../error/api_exception_handler.dart';
 
 class ApiService extends GetxService {
-  late final Dio _dio;
   final String baseUrl = Constant().featureBaseUrl;
 
   @override
   void onInit() {
     super.onInit();
-
-    _dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
-    ));
-
-    // Add interceptors
-    _dio.interceptors.add(AuthInterceptor());
-    // _dio.interceptors.add(LoggingInterceptor());
   }
 
-  Future<Response> get(String endpoint, {Map<String, dynamic>? params}) async {
+  /// ✅ GET Request
+  Future<Either<Exception, T>> getRequest<T>({
+    required String endpoint,
+    required T Function(dynamic json) fromJson,
+    Map<String, dynamic>? params,
+  }) async {
+    Dio dio = serviceLocator();
     try {
-      return await _dio.get(
+      final response = await dio.get(
         endpoint,
         queryParameters: params,
         options: _getOptions(),
       );
+      if (response.statusCode == 200) {
+        return Right(fromJson(response.data["data"]));
+      } else {
+        throw Left(Exception(response.data['msg'] ?? 'Unknown error'));
+      }
     } on DioException catch (e) {
-      throw _handleError(e);
+      return Left(handleApiException(e));
     }
   }
 
-  Future<Response> post(String endpoint, dynamic data) async {
+  /// ✅ POST Request
+  Future<Either<Exception, T>> postRequest<T>({
+    required String endpoint,
+    required dynamic body,
+    required T Function(dynamic json) fromJson,
+  }) async {
     try {
-      return await _dio.post(
+      Dio dio = serviceLocator();
+      final response = await dio.post(
         endpoint,
-        data: data,
+        data: body,
         options: _getOptions(),
       );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(fromJson(response.data["data"]));
+      } else {
+        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+      }
     } on DioException catch (e) {
-      throw _handleError(e);
+      return Left(handleApiException(e));
     }
   }
 
-  Future<Response> put(String endpoint, dynamic data) async {
+  /// ✅ PUT Request
+  Future<Either<Exception, T>> putRequest<T>({
+    required String endpoint,
+    required dynamic body,
+    required T Function(dynamic json) fromJson,
+  }) async {
     try {
-      return await _dio.put(
+      Dio dio = serviceLocator();
+      final response = await dio.put(
         endpoint,
-        data: data,
+        data: body,
         options: _getOptions(),
       );
+      if (response.statusCode == 200) {
+        return Right(fromJson(response.data["data"]));
+      } else {
+        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+      }
     } on DioException catch (e) {
-      throw _handleError(e);
+      return Left(handleApiException(e));
     }
   }
 
-  Future<Response> patch(String endpoint, dynamic data) async {
+  /// ✅ DELETE Request
+  Future<Either<Exception, T>> deleteRequest<T>({
+    required String endpoint,
+    required T Function(dynamic json) fromJson,
+    Map<String, dynamic>? params,
+  }) async {
     try {
-      return await _dio.patch(
+      Dio dio = serviceLocator();
+      final response = await dio.delete(
         endpoint,
-        data: data,
+        queryParameters: params,
         options: _getOptions(),
       );
+      if (response.statusCode == 200) {
+        return Right(fromJson(response.data["data"]));
+      } else {
+        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+      }
     } on DioException catch (e) {
-      throw _handleError(e);
+      throw Left(handleApiException(e));
     }
   }
 
-  Future<Response> delete(String endpoint, {dynamic data}) async {
-    try {
-      return await _dio.delete(
-        endpoint,
-        data: data,
-        options: _getOptions(),
-      );
-    } on DioException catch (e) {
-      throw _handleError(e);
-    }
-  }
-
+  /// ✅ Common Options
   Options _getOptions() {
-    // final token = serviceLocator<UserCacheService>().getAuthToken();
     return Options(
       headers: {
-        // 'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+        // 'Authorization': 'Bearer your_token_here', // optional
       },
     );
-  }
-
-  dynamic _handleError(DioException e) {
-    if (e.response?.statusCode == 401) {
-      // Get.offAll(page: '/login');
-
-      throw Exception('Unauthorized access. Please log in again.');
-    }
-    throw e.response?.data['message'] ?? 'Unknown error occurred';
-  }
-}
-
-class AuthInterceptor extends Interceptor {
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = serviceLocator<UserCacheService>().getAuthToken();
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
-    handler.next(options);
-  }
-
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {}
-    handler.next(err);
   }
 }
 
