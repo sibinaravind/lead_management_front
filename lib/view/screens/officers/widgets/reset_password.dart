@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
-import 'package:overseas_front_end/view/widgets/CustomPasswordTextField.dart';
+import 'package:overseas_front_end/view/widgets/backup/CustomPasswordTextField.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../controller/auth/login_controller.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
@@ -179,14 +179,13 @@ class _PasswordResetState extends State<PasswordReset>
                                               ResponsiveGrid(
                                                   columns: columnsCount,
                                                   children: [
-                                                    CustomPasswordTextFormField(
-                                                      label: widget
+                                                    CustomTextField(
+                                                      labelText: widget
                                                               .isResetPassword
                                                           ? 'Current Password'
                                                           : 'Password',
                                                       controller:
                                                           _passwordController,
-                                                      isRequired: true,
                                                       validator:
                                                           (String? value) {
                                                         if (value!.isEmpty) {
@@ -233,16 +232,16 @@ class _PasswordResetState extends State<PasswordReset>
                                                       const SizedBox(
                                                           height: 16),
                                                     if (widget.isResetPassword)
-                                                      CustomPasswordTextFormField(
-                                                        label:
+                                                      CustomTextField(
+                                                        labelText:
                                                             'Confirm Password',
                                                         controller:
                                                             _resetPasswordController,
-                                                        isRequired: true,
                                                         validator:
                                                             (String? value) {
-                                                          if (value!.isEmpty)
+                                                          if (value!.isEmpty) {
                                                             return "Required";
+                                                          }
                                                           final regex = RegExp(
                                                               r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
                                                           if (!regex.hasMatch(

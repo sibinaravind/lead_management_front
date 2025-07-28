@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:overseas_front_end/core/di/service_locator.dart';
-import 'package:overseas_front_end/core/error/failure.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../error/api_exception_handler.dart';
 
@@ -88,12 +87,14 @@ class ApiService extends GetxService {
     required String endpoint,
     required T Function(dynamic json) fromJson,
     Map<String, dynamic>? params,
+    Map<String, dynamic>? body,
   }) async {
     try {
       Dio dio = serviceLocator();
       final response = await dio.delete(
         endpoint,
         queryParameters: params,
+        data: body,
         options: _getOptions(),
       );
       if (response.statusCode == 200) {
@@ -103,6 +104,29 @@ class ApiService extends GetxService {
       }
     } on DioException catch (e) {
       throw Left(handleApiException(e));
+    }
+  }
+
+  /// ✅ PATCH Request
+  Future<Either<Exception, T>> patchRequest<T>({
+    required String endpoint,
+    required dynamic body,
+    required T Function(dynamic json) fromJson,
+  }) async {
+    try {
+      Dio dio = serviceLocator();
+      final response = await dio.patch(
+        endpoint,
+        data: body,
+        options: _getOptions(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(fromJson(response.data["data"]));
+      } else {
+        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+      }
+    } on DioException catch (e) {
+      return Left(handleApiException(e));
     }
   }
 

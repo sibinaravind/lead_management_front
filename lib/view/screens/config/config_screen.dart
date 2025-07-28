@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/res/style/colors/colors.dart';
 
 import '../../../controller/config/config_controller.dart';
+import '../../../model/app_configs/config_model.dart';
+import 'widget/action_button.dart';
 import 'widget/add_edit_dialog.dart';
 
 class ConfigScreen extends StatelessWidget {
   final ConfigController controller = Get.put(ConfigController());
-
-  ConfigScreen({Key? key}) : super(key: key);
+  ConfigScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('System Configuration'),
-        backgroundColor: Colors.blue.shade700,
-        foregroundColor: Colors.white,
-      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-
         if (controller.configData.value == null) {
           return const Center(child: Text('No data available'));
         }
-
-        final categories = controller.configData.value!.keys.toList();
-
+        final categories = controller.getAvailableCategories();
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -76,12 +70,14 @@ class ConfigScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: _getCategoryColor(index),
+                              color: AppColors.roleColors[
+                                  index % AppColors.roleColors.length],
                               borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
-                                  color:
-                                      _getCategoryColor(index).withOpacity(0.3),
+                                  color: AppColors.roleColors[
+                                          index % AppColors.roleColors.length]
+                                      .withOpacity(0.3),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
@@ -108,7 +104,7 @@ class ConfigScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${items.length} items • ${items.where((e) => e['status'] == 'ACTIVE').length} active',
+                                  '${items.length} items • ${items.where((e) => e.status == "ACTIVE").length} active',
                                   style: TextStyle(
                                     color: Colors.grey.shade600,
                                     fontSize: 12,
@@ -118,11 +114,11 @@ class ConfigScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          _buildActionButton(
+                          ActionButton(
                             icon: Icons.add,
-                            color: Colors.green,
+                            gradient: AppColors.greenGradient,
                             onTap: () => _showAddEditDialog(context, category),
-                            tooltip: 'Add New Item',
+                            tooltip: 'ADD Item',
                           ),
                         ],
                       ),
@@ -142,7 +138,7 @@ class ConfigScreen extends StatelessWidget {
   }
 
   Widget _buildItemTile(
-      BuildContext context, String category, Map<String, dynamic> item) {
+      BuildContext context, String category, ConfigModel item) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
@@ -158,11 +154,25 @@ class ConfigScreen extends StatelessWidget {
             width: 12,
             height: 12,
             decoration: BoxDecoration(
-              color: item['status'] == 'ACTIVE' ? Colors.green : Colors.red,
+              color: item.status == "ACTIVE" ? Colors.green : Colors.red,
               shape: BoxShape.circle,
             ),
           ),
           const SizedBox(width: 12),
+
+          // Color indicator (if item has color)
+          if (item.colour != null && item.colour!.isNotEmpty) ...[
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: _parseColor(item.colour!),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
 
           // Item details
           Expanded(
@@ -170,7 +180,7 @@ class ConfigScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name'] ?? 'No Name',
+                  item.name ?? 'No Name',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -194,16 +204,16 @@ class ConfigScreen extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildActionButton(
+              ActionButton(
                 icon: Icons.edit,
-                color: Colors.blue,
+                gradient: AppColors.blueGradient,
                 onTap: () => _showAddEditDialog(context, category, item: item),
                 tooltip: 'Edit Item',
               ),
               const SizedBox(width: 8),
-              _buildActionButton(
+              ActionButton(
                 icon: Icons.delete,
-                color: Colors.red,
+                gradient: AppColors.redGradient,
                 onTap: () => _showDeleteConfirmation(context, category, item),
                 tooltip: 'Delete Item',
               ),
@@ -214,133 +224,86 @@ class ConfigScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-    required String tooltip,
-  }) {
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 16,
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _buildSubtitle(Map<String, dynamic> item) {
+  String _buildSubtitle(ConfigModel item) {
     List<String> parts = [];
 
-    if (item.containsKey('program') &&
-        item['program'] != null &&
-        item['program'].toString().isNotEmpty) {
-      parts.add('Program: ${item['program']}');
+    if (item.code != null && item.code!.isNotEmpty) {
+      parts.add('Code: ${item.code}');
     }
-    if (item.containsKey('address') &&
-        item['address'] != null &&
-        item['address'].toString().isNotEmpty) {
-      parts.add('Address: ${item['address']}');
+    if (item.country != null && item.country!.isNotEmpty) {
+      parts.add('Country: ${item.country}');
     }
-    if (item.containsKey('phone') &&
-        item['phone'] != null &&
-        item['phone'].toString().isNotEmpty) {
-      parts.add('Phone: ${item['phone']}');
-    }
-    if (item.containsKey('category') &&
-        item['category'] != null &&
-        item['category'].toString().isNotEmpty) {
-      parts.add('Category: ${item['category']}');
-    }
-    if (item.containsKey('colour') &&
-        item['colour'] != null &&
-        item['colour'].toString().isNotEmpty) {
-      parts.add('Color: ${item['colour']}');
+    if (item.province != null && item.province!.isNotEmpty) {
+      parts.add('Province: ${item.province}');
     }
 
     return parts.join(' • ');
   }
 
-  Color _getCategoryColor(int index) {
-    final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.red,
-      Colors.teal,
-      Colors.indigo,
-      Colors.pink,
-      Colors.amber,
-      Colors.cyan,
-    ];
-    return colors[index % colors.length];
+  Color _parseColor(String colorString) {
+    try {
+      if (colorString.startsWith('0X') || colorString.startsWith('0x')) {
+        return Color(int.parse(colorString.substring(2), radix: 16));
+      }
+      return Colors.grey;
+    } catch (e) {
+      return Colors.grey;
+    }
   }
 
   IconData _getCategoryIcon(String category) {
     switch (category) {
-      case 'program_type':
+      case 'branch':
+        return Icons.location_on;
+      case 'education_program':
         return Icons.school;
-      case 'program':
-        return Icons.book;
+      case 'known_languages':
+        return Icons.language;
+      case 'call_status':
+        return Icons.phone_callback;
+      case 'university':
+        return Icons.account_balance;
+      case 'intake':
+        return Icons.calendar_today;
       case 'country':
         return Icons.public;
       case 'lead_source':
         return Icons.source;
       case 'service_type':
         return Icons.build;
+      case 'profession':
+        return Icons.work;
+      case 'medical_profession_category':
+        return Icons.medical_services;
+      case 'non_medical':
+        return Icons.business;
       case 'call_type':
         return Icons.call;
-      case 'call_status':
-        return Icons.phone_callback;
       case 'client_status':
         return Icons.person;
-      case 'test':
-        return Icons.quiz;
-      case 'branch':
-        return Icons.location_on;
-      case 'job_category':
-        return Icons.work;
+      case 'designation':
+        return Icons.badge;
       case 'specialized':
-        return Icons.medical_services;
-      case 'closed_status':
-        return Icons.close;
+        return Icons.psychology;
+      case 'qualification':
+        return Icons.school_outlined;
       default:
         return Icons.category;
     }
   }
 
   void _showAddEditDialog(BuildContext context, String category,
-      {Map<String, dynamic>? item}) {
-    print("hello");
+      {ConfigModel? item}) {
     showDialog(
       context: context,
       builder: (context) => AddEditDialog(
         category: category,
-        item: item,
+        item: item != null ? controller.configModelToMap(item) : null,
         onSave: (data) {
           if (item == null) {
             controller.addItem(category, data);
           } else {
-            controller.updateItem(category, item['_id'], data);
+            controller.updateItem(category, item.id!, data);
           }
         },
       ),
@@ -348,22 +311,75 @@ class ConfigScreen extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(
-      BuildContext context, String category, Map<String, dynamic> item) {
+      BuildContext context, String category, ConfigModel item) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: Text('Are you sure you want to delete "${item['name']}"?'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            const SizedBox(width: 8),
+            const Text('Confirm Delete'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Are you sure you want to delete the following item?'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color:
+                          item.status == "ACTIVE" ? Colors.green : Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      item.name ?? 'No Name',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'This action cannot be undone.',
+              style: TextStyle(
+                color: Colors.red.shade600,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
-              controller.deleteItem(category, item['_id']);
-              Get.back();
+              controller.deleteItem(category, item.id!);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Delete'),
           ),
         ],

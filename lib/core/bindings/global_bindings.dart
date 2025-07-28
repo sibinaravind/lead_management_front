@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
+
+import '../../controller/campaign/campaign_controller.dart';
+import '../../controller/permission_controller/access_permission_controller.dart';
 // import 'package:overseas_front_end/controller/employee/bloc/employee_data_controller.dart';
 // import 'package:overseas_front_end/controller/leads/bloc/call_data_controller.dart';
 // import 'package:overseas_front_end/controller/leads/bloc/lead_data_controller.dart';
@@ -17,6 +20,9 @@ class GlobalBindings extends Bindings {
     // Get.put(AppUserController());
 
     Get.lazyPut(() => ConfigController());
+    Get.lazyPut(() => AccessPermissionController());
+    Get.lazyPut(() => CampaignController());
+
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());
     // Get.lazyPut(() => EmployeeDataController());

@@ -5,8 +5,7 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/config/config_screen.dart';
-import 'core/shared/global_key.dart';
-import 'view/screens/Auth/login_screen.dart';
+import 'view/screens/campaign/campaign_screen.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          builder: (context, state) => ConfigScreen(),
+          builder: (context, state) => CampaignScreen(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

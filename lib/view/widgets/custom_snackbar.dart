@@ -24,13 +24,14 @@ class CustomSnackBar {
 
   static void showMessage(String title, String message,
       {Duration duration = const Duration(seconds: 3),
-      Color backgroundColor = Colors.transparent}) {
+      Color backgroundColor = Colors.transparent,
+      Color colorText = Colors.white}) {
     Get.snackbar(
       title,
       message,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: backgroundColor,
-      colorText: Colors.white,
+      colorText: colorText,
     );
   }
 }
