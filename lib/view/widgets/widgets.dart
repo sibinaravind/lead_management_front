@@ -24,4 +24,6 @@ export 'custom_check_dropdown.dart';
 export 'loading_dialog.dart';
 export 'popup_text_form_filed.dart';
 export 'popup_dropdown_widget.dart';
+export 'custom_multi_selection_dropdown_field.dart';
+export 'custom_multi_officer_select_dropdown_field.dart';
 // export 'responsiveDetailGrid.dart';

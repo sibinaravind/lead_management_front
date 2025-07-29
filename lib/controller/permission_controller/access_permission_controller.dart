@@ -6,12 +6,10 @@ import '../../core/shared/constants.dart';
 import '../../model/access_permissions/access_permissions.dart';
 
 class AccessPermissionController extends GetxController {
-  // Singleton pattern using GetX (optional, GetX handles this automatically)
   static AccessPermissionController get instance => Get.find();
 
   // Dependencies
   final ApiService apiService = ApiService();
-
   // Observables
   final RxList<EmployeePermissionModel> _permissions =
       <EmployeePermissionModel>[].obs;
@@ -26,10 +24,7 @@ class AccessPermissionController extends GetxController {
   String? get error => _error.value;
   bool get hasError => _error.value != null;
 
-  // Clear error method
   void clearError() => _error.value = null;
-
-  /// Fetches access permissions from API
   Future<void> fetchAccessPermissions() async {
     _isLoading.value = true;
     clearError();
@@ -125,14 +120,8 @@ class AccessPermissionController extends GetxController {
         success = true;
         clearError();
 
-        // Show success snackbar
-        Get.snackbar(
-          'Success',
-          'Permission deleted successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-        );
+        CustomSnackBar.showMessage('Success', 'Permission deleted successfully',
+            backgroundColor: Colors.red.withOpacity(0.8));
       },
     );
 
@@ -215,6 +204,7 @@ class AccessPermissionController extends GetxController {
   List<String> get categories => _permissions.map((p) => p.category).toList();
 
   /// Refreshes the permissions list
+  @override
   Future<void> refresh() async {
     await fetchAccessPermissions();
   }
@@ -299,6 +289,7 @@ extension AccessPermissionExtension on AccessPermissionController {
     return null;
   }
 }
+
 // import 'package:flutter/foundation.dart';
 //
 // import '../../core/services/api_service.dart';

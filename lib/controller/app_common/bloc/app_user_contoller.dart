@@ -1,9 +1,7 @@
 import 'package:get/get.dart';
-import 'package:overseas_front_end/core/di/service_locator.dart';
 import 'package:overseas_front_end/core/services/api_service.dart'
     show ApiService;
 import 'package:overseas_front_end/model/app_configs/config_list_model.dart';
-import '../../../core/services/user_cache_service.dart';
 import '../../../core/shared/constants.dart';
 import '../../../model/officer/officer_model.dart';
 // import '../data_source/dashboard_api.dart';
@@ -14,7 +12,6 @@ class AppUserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getUserDetails();
     getConfigConstants();
   }
 
@@ -36,7 +33,7 @@ class AppUserController extends GetxController {
           // GoRouter.of(Get.key.currentContext!).push('/error');
 
           // await Future.delayed(Duration(seconds: 2), () {
-          //   Get.back();
+          //   NavigationService.goBack();
           // });
           configList.value = data;
         },
@@ -44,13 +41,5 @@ class AppUserController extends GetxController {
     } catch (e) {
       print("Exception occurred while fetching config: $e");
     }
-  }
-
-  OfficerModel getUserDetails() {
-    if (userModel != null && userModel!.id != null) {
-      return userModel ?? OfficerModel();
-    }
-    userModel = serviceLocator<UserCacheService>().getUser();
-    return userModel ?? OfficerModel();
   }
 }

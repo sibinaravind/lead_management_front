@@ -19,9 +19,22 @@ class RoundRobinGroup {
       name: json['name'] ?? '',
       country: json['country'] ?? '',
       officerDetails: (json['officer_details'] as List<dynamic>?)
-          ?.map((e) => RoundRobinOfficerModel.fromJson(e))
-          .toList() ??
+              ?.map((e) => RoundRobinOfficerModel.fromJson(e))
+              .toList() ??
           [],
+    );
+  }
+  RoundRobinGroup copyWith({
+    String? id,
+    String? name,
+    String? country,
+    List<RoundRobinOfficerModel>? officerDetails,
+  }) {
+    return RoundRobinGroup(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      country: country ?? this.country,
+      officerDetails: officerDetails ?? this.officerDetails,
     );
   }
 }

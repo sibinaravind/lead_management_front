@@ -5,6 +5,7 @@ import 'package:overseas_front_end/core/services/api_service.dart';
 import 'package:overseas_front_end/model/campaign/campaign_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
+import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';
 
 class CampaignController extends GetxController {
@@ -43,6 +44,7 @@ class CampaignController extends GetxController {
       response.fold(
         (failure) {
           error?.value = 'Failed to load campaigns:';
+
           CustomSnackBar.showMessage(
             "Error",
             "Failed to load campaigns",
@@ -83,15 +85,13 @@ class CampaignController extends GetxController {
           );
         },
         (data) {
-          // ✅ Remove locally
-          Get.back();
+          NavigationService.goBack();
           CustomSnackBar.showMessage(
             "Success",
             "Campaign deleted successfully",
             backgroundColor: AppColors.greenSecondaryColor,
           );
           campaignList.removeWhere((campaign) => campaign.sId == id);
-
           success = true;
         },
       );
@@ -117,7 +117,7 @@ class CampaignController extends GetxController {
             "base64": file64,
           },
         },
-        fromJson: (json) => json, // returns raw JSON with id
+        fromJson: (json) => json,
       );
 
       bool success = false;
@@ -133,15 +133,15 @@ class CampaignController extends GetxController {
         (result) {
           if (result != null) {
             final newCampaign = CampaignModel(
-              sId: result, // ID from API
+              sId: result,
               title: title,
               startDate: startDate,
-              image: file64 != null ? "local_base64_image" : null, // temporary
+              image: file64 != null ? "local_base64_image" : null,
             );
 
             campaignList.insert(0, newCampaign);
 
-            Get.back();
+            NavigationService.goBack();
             CustomSnackBar.showMessage(
               "Success",
               "Campaign added successfully",

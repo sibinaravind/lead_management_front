@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 
+import '../../my_app.dart';
+
 class CustomSnackBar {
   CustomSnackBar._();
 
@@ -26,12 +28,18 @@ class CustomSnackBar {
       {Duration duration = const Duration(seconds: 3),
       Color backgroundColor = Colors.transparent,
       Color colorText = Colors.white}) {
-    Get.snackbar(
-      title,
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: backgroundColor,
-      colorText: colorText,
+    final context = routerNavigatorKey.currentContext;
+    if (context == null) {
+      debugPrint("❌ Navigator context is null — cannot show snackbar");
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: TextStyle(color: colorText)),
+        backgroundColor: backgroundColor,
+        duration: duration,
+      ),
     );
   }
 }

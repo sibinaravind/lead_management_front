@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:get/get.dart';
 import 'package:overseas_front_end/view/screens/dashboard/widgets/todays_quotes.dart';
-
-import '../../../controller/app_common/bloc/app_user_contoller.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
 
@@ -12,7 +9,6 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AppUserController>();
     final screenWidth = MediaQuery.of(context).size.width;
     final isWeb = screenWidth > 600;
 

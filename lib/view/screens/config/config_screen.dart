@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 
 import '../../../controller/config/config_controller.dart';
+import '../../../core/services/navigation_service.dart';
 import '../../../model/app_configs/config_model.dart';
 import 'widget/action_button.dart';
 import 'widget/add_edit_dialog.dart';
@@ -312,8 +313,9 @@ class ConfigScreen extends StatelessWidget {
 
   void _showDeleteConfirmation(
       BuildContext context, String category, ConfigModel item) {
-    Get.dialog(
-      AlertDialog(
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -369,7 +371,7 @@ class ConfigScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => NavigationService.goBack(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(

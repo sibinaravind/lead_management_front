@@ -4,6 +4,7 @@ import 'package:overseas_front_end/res/style/colors/dimension.dart';
 import 'package:overseas_front_end/view/widgets/popup_text_form_filed.dart';
 import 'package:overseas_front_end/view/widgets/custom_shimmer_widget.dart';
 import '../../../controller/permission_controller/access_permission_controller.dart';
+import '../../../core/services/navigation_service.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_toast.dart';
 
@@ -326,8 +327,9 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
   }
 
   void _onAddNewRole() {
-    Get.dialog(
-      AlertDialog(
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         title: const Text("Insert Role"),
         content: Form(
           child: Column(
@@ -345,7 +347,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: () => Get.back(),
+                    onPressed: () => NavigationService.goBack(),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -406,7 +408,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
       CustomToast.showToast(context: context, message: 'Role cannot be empty');
       return;
     }
-    Get.back(); // Close dialog
+    NavigationService.goBack(); // Close dialog
     final defaultPermissions = {
       "view_all_leads": false,
       "edit_lead": false,
@@ -433,18 +435,19 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
   }
 
   void _onDeleteRole(String role) {
-    Get.dialog(
-      AlertDialog(
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         title: const Text('Confirm Delete'),
         content: Text('Do you want to delete "$role" Role?'),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => NavigationService.goBack(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              Get.back();
+              NavigationService.goBack();
               final success =
                   await controller.deleteAccessPermission(role.toUpperCase());
               if (success) {

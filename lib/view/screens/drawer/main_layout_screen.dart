@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:overseas_front_end/controller/navigation_controller/navigation_controller.dart';
+import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'dart:io' show Platform;
+import '../../../core/di/service_locator.dart';
 import 'animated_drawer.dart';
 import 'widget/appbar_widget.dart';
 
@@ -26,14 +28,17 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
   late NavigationController navigationController;
   bool _isInitialized = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  OfficerModel? user;
   @override
   void initState() {
     super.initState();
+
     navigationController = Get.put(NavigationController());
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       navigationController.updateTab(widget.mainTab, widget.subTab);
       _isInitialized = true;
+      user = serviceLocator<UserCacheService>().getUser();
+      setState(() {});
     });
   }
 
@@ -58,9 +63,9 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
       drawer: !isDesktop
           ? AnimatedDrawer(
               user: OfficerModel(
-                id: "1",
-                officerId: "OFF123",
-                name: "John Doe",
+                id: user?.id ?? "1",
+                officerId: user?.officerId ?? "",
+                name: user?.name ?? "",
               ),
               ismobile: true,
             )
@@ -71,9 +76,9 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
           if (isDesktop)
             AnimatedDrawer(
               user: OfficerModel(
-                id: "1",
-                officerId: "OFF123",
-                name: "John Doe",
+                id: user?.id ?? "1",
+                officerId: user?.officerId ?? "",
+                name: user?.name ?? "",
               ),
             ),
           Expanded(

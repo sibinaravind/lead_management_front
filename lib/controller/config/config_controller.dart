@@ -3,6 +3,7 @@ import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/model/app_configs/config_list_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import '../../core/services/api_service.dart';
+import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';
 import '../../view/widgets/custom_snackbar.dart';
 
@@ -17,6 +18,8 @@ class ConfigController extends GetxController {
   }
 
   Future<void> loadConfigData() async {
+    // print(configData.value);
+    // if (configData.value.getAllKeys().isNotEmpty) return;
     isLoading.value = true;
     try {
       var result = await ApiService().getRequest(
@@ -63,7 +66,8 @@ class ConfigController extends GetxController {
               DateTime.now().millisecondsSinceEpoch.toString();
           configData.value.insertItem(category, newItem);
           configData.refresh();
-          Get.back();
+          NavigationService.goBack();
+
           CustomSnackBar.showMessage("Success", "Item added successfully",
               backgroundColor: AppColors.greenSecondaryColor.withOpacity(0.5));
         },
@@ -101,7 +105,7 @@ class ConfigController extends GetxController {
           });
           configData.value.updateItem(category, updatedItem);
           configData.refresh();
-          Get.back();
+          NavigationService.goBack();
           CustomSnackBar.showMessage("Success", "Item updated successfully",
               backgroundColor: AppColors.greenSecondaryColor.withOpacity(0.5));
         },
@@ -131,7 +135,7 @@ class ConfigController extends GetxController {
               backgroundColor: AppColors.redSecondaryColor);
         },
         (data) {
-          Get.back();
+          NavigationService.goBack();
           final existingList = getItemsByCategory(category);
           final item = existingList.firstWhereOrNull((e) => e.id == itemId);
           if (item == null) return;

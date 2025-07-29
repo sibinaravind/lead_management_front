@@ -1,44 +1,42 @@
-
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/officer/officer_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 
-class CustomMultiSelectDropdownField extends StatefulWidget {
+class CustomMultiOfficerSelectDropdownField extends StatefulWidget {
   final String label;
-  final bool isSplit;
-  final List<String> selectedItems;
-  final List<String> items;
+  final List<String> selectedItems; // should store IDs
+  final List<OfficerModel> items; // full officer objects
   final Function(List<String>) onChanged;
   final bool isRequired;
 
-  const CustomMultiSelectDropdownField({
+  const CustomMultiOfficerSelectDropdownField({
     super.key,
     required this.label,
     required this.selectedItems,
     required this.items,
     required this.onChanged,
-    this.isRequired = false,  this.isSplit=false,
+    this.isRequired = false,
   });
 
   @override
-  State<CustomMultiSelectDropdownField> createState() =>
-      _CustomMultiSelectDropdownFieldState();
+  State<CustomMultiOfficerSelectDropdownField> createState() =>
+      _CustomMultiOfficerSelectDropdownFieldState();
 }
 
-class _CustomMultiSelectDropdownFieldState
-    extends State<CustomMultiSelectDropdownField> {
-  late List<String> _selectedItems;
+class _CustomMultiOfficerSelectDropdownFieldState
+    extends State<CustomMultiOfficerSelectDropdownField> {
+  late List<String> _selectedIds; // store IDs
   bool _isTouched = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedItems = List.from(widget.selectedItems);
+    _selectedIds = List.from(widget.selectedItems); // copy IDs
   }
 
   void _showMultiSelectDialog() async {
-    final List<String> selecIds = [];
-    final List<String> tempSelected = List.from(_selectedItems);
-    List<String> filteredItems = List.from(widget.items);
+    final List<String> tempSelectedIds = List.from(_selectedIds);
+    List<OfficerModel> filteredItems = List.from(widget.items);
     String searchQuery = '';
 
     await showDialog(
@@ -53,8 +51,6 @@ class _CustomMultiSelectDropdownFieldState
                 width: 300,
                 height: 350,
                 child: Column(
-
-                  mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
                       decoration: const InputDecoration(
@@ -66,9 +62,9 @@ class _CustomMultiSelectDropdownFieldState
                         setStateDialog(() {
                           searchQuery = value;
                           filteredItems = widget.items
-                              .where((item) => item
-                              .toLowerCase()
-                              .contains(searchQuery.toLowerCase()))
+                              .where((item) => (item.name ?? '')
+                                  .toLowerCase()
+                                  .contains(searchQuery.toLowerCase()))
                               .toList();
                         });
                       },
@@ -77,19 +73,19 @@ class _CustomMultiSelectDropdownFieldState
                     Expanded(
                       child: ListView(
                         children: filteredItems.map((item) {
-                          final itemOne = item.split(",");
-                          final isSelected = tempSelected.contains(item);
+                          final String officerId = item.id ?? '';
+                          final isSelected =
+                              tempSelectedIds.contains(officerId);
+
                           return CheckboxListTile(
-                            title: Text(item.split(",").first),
+                            title: Text(item.name ?? ''),
                             value: isSelected,
                             onChanged: (checked) {
                               setStateDialog(() {
                                 if (checked == true) {
-                                  tempSelected.add(item);
-                                  widget.isSplit ? selecIds.add(item.split(",")[1]) : selecIds.add(item);
+                                  tempSelectedIds.add(officerId);
                                 } else {
-                                  widget.isSplit ? selecIds.remove(item.split(",")[1]) : selecIds.remove(item);
-                                  tempSelected.remove(item);
+                                  tempSelectedIds.remove(officerId);
                                 }
                               });
                             },
@@ -102,22 +98,22 @@ class _CustomMultiSelectDropdownFieldState
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => Navigator.pop(context),
                   child: const Text('Cancel'),
                 ),
                 ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.orangeSecondaryColor)),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        AppColors.orangeSecondaryColor),
+                  ),
                   onPressed: () {
-                   if(context.mounted) {
-                     setState(() {
-                       _selectedItems = List.from(tempSelected);
-                       // _selectedItems = List.from(selecIds);
-                       _isTouched = true;
-                     });
-                   }
-                    widget.onChanged(selecIds);
+                    if (context.mounted) {
+                      setState(() {
+                        _selectedIds = List.from(tempSelectedIds);
+                        _isTouched = true;
+                      });
+                      widget.onChanged(_selectedIds); // pass IDs
+                    }
                     Navigator.pop(context);
                   },
                   child: const Text('OK'),
@@ -132,7 +128,13 @@ class _CustomMultiSelectDropdownFieldState
 
   @override
   Widget build(BuildContext context) {
-    final hasError = widget.isRequired && _isTouched && _selectedItems.isEmpty;
+    final hasError = widget.isRequired && _isTouched && _selectedIds.isEmpty;
+
+    // Convert selected IDs to names for display
+    final selectedNames = _selectedIds
+        .map(
+            (id) => widget.items.firstWhere((item) => item.id == id).name ?? '')
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,11 +148,11 @@ class _CustomMultiSelectDropdownFieldState
             ),
             children: widget.isRequired
                 ? const [
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
-            ]
+                    TextSpan(
+                      text: ' *',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ]
                 : [],
           ),
         ),
@@ -158,9 +160,7 @@ class _CustomMultiSelectDropdownFieldState
         GestureDetector(
           onTap: () {
             _showMultiSelectDialog();
-            setState(() {
-              _isTouched = true;
-            });
+            setState(() => _isTouched = true);
           },
           child: SizedBox(
             width: double.infinity,
@@ -168,25 +168,25 @@ class _CustomMultiSelectDropdownFieldState
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 errorText: hasError ? 'This field is required' : null,
               ),
-              isEmpty: _selectedItems.isEmpty,
-              child: _selectedItems.isEmpty
+              isEmpty: selectedNames.isEmpty,
+              child: selectedNames.isEmpty
                   ? SizedBox(
-                height: 24,
-                child: Text(
-                  'Select...',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              )
+                      height: 24,
+                      child: Text(
+                        'Select...',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    )
                   : Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: _selectedItems
-                    .map((item) => Chip(label: Text(item.split(",")[0])))
-                    .toList(),
-              ),
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: selectedNames
+                          .map((name) => Chip(label: Text(name)))
+                          .toList(),
+                    ),
             ),
           ),
         ),

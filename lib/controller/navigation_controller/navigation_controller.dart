@@ -1,8 +1,10 @@
 // Updated Navigation Controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
 import '../../res/style/colors/colors.dart';
+import '../../view/screens/config/config_screen.dart';
 
 class NavigationController extends GetxController {
   var currentMainTab =
@@ -194,10 +196,10 @@ class NavigationController extends GetxController {
       color: AppColors.greenSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Config',
-          route: 'config',
-          icon: Icons.settings,
-        ),
+            label: 'Config',
+            route: 'config',
+            icon: Icons.settings,
+            screen: ConfigScreen()),
       ],
     ),
     'campaign': NavigationSection(
@@ -206,10 +208,10 @@ class NavigationController extends GetxController {
       color: AppColors.greenSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Campaign',
-          route: 'campaign',
-          icon: Icons.campaign,
-        ),
+            label: 'Campaign',
+            route: 'campaign',
+            icon: Icons.campaign,
+            screen: CampaignScreen()),
       ],
     ),
   };

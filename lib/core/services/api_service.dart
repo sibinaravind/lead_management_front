@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:overseas_front_end/core/di/service_locator.dart';
+import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../error/api_exception_handler.dart';
 
@@ -24,7 +25,7 @@ class ApiService extends GetxService {
       final response = await dio.get(
         endpoint,
         queryParameters: params,
-        options: _getOptions(),
+        options: await _getOptions(),
       );
       if (response.statusCode == 200) {
         return Right(fromJson(response.data["data"]));
@@ -47,7 +48,7 @@ class ApiService extends GetxService {
       final response = await dio.post(
         endpoint,
         data: body,
-        options: _getOptions(),
+        options: await _getOptions(),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
@@ -70,7 +71,7 @@ class ApiService extends GetxService {
       final response = await dio.put(
         endpoint,
         data: body,
-        options: _getOptions(),
+        options: await _getOptions(),
       );
       if (response.statusCode == 200) {
         return Right(fromJson(response.data["data"]));
@@ -95,7 +96,7 @@ class ApiService extends GetxService {
         endpoint,
         queryParameters: params,
         data: body,
-        options: _getOptions(),
+        options: await _getOptions(),
       );
       if (response.statusCode == 200) {
         return Right(fromJson(response.data["data"]));
@@ -118,7 +119,7 @@ class ApiService extends GetxService {
       final response = await dio.patch(
         endpoint,
         data: body,
-        options: _getOptions(),
+        options: await _getOptions(),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
@@ -131,11 +132,11 @@ class ApiService extends GetxService {
   }
 
   /// ✅ Common Options
-  Options _getOptions() {
+  Future<Options> _getOptions() async {
     return Options(
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': 'Bearer your_token_here', // optional
+        'Authorization': await UserCacheService().getAuthToken() ?? '',
       },
     );
   }

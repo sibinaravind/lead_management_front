@@ -25,6 +25,7 @@ class UserCacheService {
   Future<bool> saveUser(OfficerModel user) async {
     // _user = user;
     var saved = await sharedPrefs.setString(USER_CACHE_KEY, jsonEncode(user));
+
     return saved;
   }
 
@@ -33,7 +34,7 @@ class UserCacheService {
     if (userMap == null) {
       return null;
     }
-
+    _user = OfficerModel.fromJson(jsonDecode(userMap));
     return _user;
   }
 

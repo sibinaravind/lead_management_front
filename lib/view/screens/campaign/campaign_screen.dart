@@ -8,6 +8,7 @@ import 'package:overseas_front_end/functions/pick_image.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 import '../../../../res/style/colors/colors.dart';
+import '../../../core/services/navigation_service.dart';
 import '../../widgets/custom_toast.dart';
 import 'widget/delete_dialogue.dart';
 
@@ -595,7 +596,7 @@ class CampaignScreen extends StatelessWidget {
                             controller.titleController.clear();
                             controller.startDateController.clear();
                             controller.file64 = null;
-                            Get.back();
+                            NavigationService.goBack();
                           },
                           child: CustomText(
                             text: 'Cancel',
@@ -623,7 +624,7 @@ class CampaignScreen extends StatelessWidget {
                                   controller.titleController.clear();
                                   controller.startDateController.clear();
                                   controller.file64 = null;
-                                  Get.back();
+                                  NavigationService.goBack();
                                   CustomToast.showToast(
                                     context: context,
                                     message: 'Campaign created successfully!',

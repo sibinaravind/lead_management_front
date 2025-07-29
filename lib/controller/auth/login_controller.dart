@@ -1,14 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
+import '../../core/di/service_locator.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/navigation_service.dart';
+import '../../res/style/colors/colors.dart';
+import '../../view/widgets/custom_snackbar.dart';
 
 class LoginController extends GetxController {
   final ApiService _apiService = ApiService();
-  final UserCacheService _userCacheService = UserCacheService();
+  final _userCacheService = serviceLocator<UserCacheService>();
   // Observables
   var officer = Rxn<OfficerModel>();
   var isLoading = false.obs;
@@ -44,21 +48,13 @@ class LoginController extends GetxController {
           // Show success message
           NavigationService.goBack();
           NavigationService.goBack();
-          // CustomSnackBar.showMessage(
-          //   'Login Successful',
-          //   'Welcome ${data.name ?? 'Officer'}',
-          //   backgroundColor: AppColors.greenSecondaryColor.withOpacity(0.5),
-          //   colorText: Colors.white,
-          // );
-          // Navigate to home
-          // Get.offAllNamed('/home');
-          // Equivalent of Navigator.pushAndRemoveUntil in NavigationService:
-          // NavigationService.replaceAndClearStack(newRouteName);
-          // If you want to use Navigator directly:
-          // Navigator.pushAndRemoveUntil(Get.context!, newRoute, predicate);
+          CustomSnackBar.showMessage(
+            'Login Successful',
+            'Welcome ${data.name ?? 'Officer'}',
+            backgroundColor: AppColors.greenSecondaryColor.withOpacity(0.5),
+            colorText: Colors.white,
+          );
 
-          // Example usage (replace with your route and predicate):
-          // GoRouter.of(Get.context!).go('/dashboard/dashboard/overview');
           NavigationService.go('/dashboard/dashboard/overview');
         },
       );

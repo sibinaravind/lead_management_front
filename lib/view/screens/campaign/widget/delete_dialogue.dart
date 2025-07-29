@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../controller/campaign/campaign_controller.dart';
+import '../../../../core/services/navigation_service.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_toast.dart';
 
@@ -18,13 +19,13 @@ void showDeleteCampaignDialog(BuildContext context, String name, String id) {
       ),
       actions: [
         TextButton(
-          onPressed: () => Get.back(), // closes dialog
+          onPressed: () => NavigationService.goBack(), // closes dialog
           child: Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () async {
             await controller.deleteCampaign(context, id);
-            Get.back(); // close dialog
+            NavigationService.goBack(); // close dialog
             CustomToast.showToast(
               context: context,
               message: '$name deleted successfully',

@@ -1,180 +1,173 @@
-// import 'package:flutter/material.dart';
-// import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
-// import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
-// import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:overseas_front_end/controller/config/config_controller.dart';
+import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/view/widgets/custom_action_button.dart';
+import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
+import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
+import 'package:overseas_front_end/view/widgets/custom_text.dart';
+import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 
-// import '../../../../controller/config/config_provider.dart';
-// import '../../../../controller/lead/round_robin_provider.dart';
-// import '../../../../controller/officers_controller/officers_controller.dart';
-// import '../../../../res/style/colors/colors.dart';
-// import '../../../widgets/custom_action_button.dart';
-// import '../../../widgets/custom_multi_selection_dropdown_field.dart';
-// import '../../../widgets/custom_text.dart';
-// import '../../../widgets/custom_text_form_field.dart';
+class AddRoundRobinDialog extends StatefulWidget {
+  const AddRoundRobinDialog({super.key, this.roundRobinId});
+  final String? roundRobinId;
 
-// class AddRoundRobinDialog extends StatefulWidget {
-//   const AddRoundRobinDialog({super.key, this.roundRobinId});
-//   final String? roundRobinId;
+  @override
+  State<AddRoundRobinDialog> createState() => _AddRoundRobinDialogState();
+}
 
-//   @override
-//   State<AddRoundRobinDialog> createState() => _AddRoundRobinDialogState();
-// }
+class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
+  final _formKey = GlobalKey<FormState>();
 
-// class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
-//   @override
-//   void initState() {
-//     Provider.of<ConfigProvider>(context, listen: false).fetchConfigData();
-//     Provider.of<OfficersControllerProvider>(context, listen: false)
-//         .fetchOfficersList(context);
-//     Provider.of<OfficersControllerProvider>(context, listen: false)
-//         .fetchOfficersList(
-//       context,
-//     );
-//     // TODO: implement initState
-//     super.initState();
-//   }
+  String _nameController = '';
+  String _selectedCountry = 'GCC';
+  List<String> _selectedOfficerIds = [];
 
-//   String _nameController = '';
-//   String _selectedCountry = 'GCC';
-//   List<String> _selectedOfficerIds = [];
-//   final _formKey = GlobalKey<FormState>();
+  final configController = Get.find<ConfigController>();
+  final officersController = Get.find<OfficersController>();
+  final roundRobinController = Get.find<RoundRobinController>();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//       child: Container(
-//         width: 450,
-//         padding: const EdgeInsets.all(24),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(16),
-//           color: Colors.white,
-//         ),
-//         child: Form(
-//           key: _formKey,
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               const CustomText(
-//                   text: 'Add Round Robin',
-//                   fontWeight: FontWeight.bold,
-//                   fontSize: 18),
-//               const SizedBox(height: 16),
-//               Consumer<ConfigProvider>(builder: (context, name, child) {
-//                 return CustomDropdownField(
-//                     isRequired: true,
-//                     label: "Round Robin Name",
-//                     value: _nameController,
-//                     items: name.configModelList?.serviceType
-//                             ?.map((e) => e.name ?? '')
-//                             .toList() ??
-//                         [],
-//                     onChanged: (value) {
-//                       setState(() {
-//                         _nameController = value ?? '';
-//                       });
-//                     });
-//               }),
-//               // CustomTextFormField(
-//               //   controller: _nameController,
-//               //   label: 'Round Robin Name',
-//               //   isRequired: true,
-//               // ),
-//               const SizedBox(height: 16),
-//               Consumer<ConfigProvider>(builder: (context, country, child) {
-//                 return CustomDropdownField(
-//                     isRequired: true,
-//                     label: "Country",
-//                     value: _selectedCountry,
-//                     items: country.configModelList?.country
-//                             ?.map((e) => e.name ?? '')
-//                             .toList() ??
-//                         [],
-//                     onChanged: (value) {
-//                       _selectedCountry = value ?? '';
-//                     });
-//               }),
-//               const SizedBox(height: 16),
-//               Consumer<OfficersControllerProvider>(
-//                 builder: (context, officers, child) {
-//                   return CustomMultiSelectDropdownField(
-//                     isRequired: true,
-//                     isSplit: true,
-//                     label: 'Add Officers',
-//                     selectedItems: _selectedOfficerIds,
-//                     items: officers.officersListModel
-//                             ?.map((e) => "${e.name},${e.sId}")
-//                             .toList() ??
-//                         [],
-//                     onChanged: (selectedIds) {
-//                       setState(() {
-//                         _selectedOfficerIds = selectedIds;
-//                         print("........................");
-//                         print(_selectedOfficerIds);
-//                       });
-//                     },
-//                   );
-//                 },
-//               ),
-//               const SizedBox(height: 16),
-//               Row(
-//                 children: [
-//                   Expanded(
-//                     child: CustomActionButton(
-//                       text: 'Cancel',
-//                       icon: Icons.close,
-//                       onPressed: () => Navigator.pop(context),
-//                       isFilled: false,
-//                       textColor: Colors.blue.shade600,
-//                       borderColor: Colors.blue.shade100,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 16),
-//                   Expanded(
-//                     child: Consumer<RoundRobinProvider>(
-//                       builder: (context, provider, child) {
-//                         return CustomActionButton(
-//                           text: 'ADD',
-//                           icon: Icons.check,
-//                           onPressed: () async {
-//                             print('PRESSED');
-//                             if ((_formKey.currentState?.validate() ?? false) &&
-//                                 _selectedOfficerIds.isNotEmpty) {
-//                               // add(provider);
-//                               final name = _nameController.trim();
-//                               bool result = await provider.createRoundRobin(
-//                                 context,
-//                                 name: name,
-//                                 country: _selectedCountry,
-//                                 officerIds: _selectedOfficerIds,
-//                               );
-//                               if (result) {
-//                                 SnackBar(
-//                                     content: Text(
-//                                         'Round Robin Created Successfully'));
+  @override
+  void initState() {
+    super.initState();
+    officersController.fetchOfficersList();
+  }
 
-//                                 if (context.mounted) Navigator.pop(context);
-//                               } else {
-//                                 SnackBar(content: Text('Failed to create'));
-//                               }
-//                             }
-//                           },
-//                           isFilled: true,
-//                           gradient: AppColors.orangeGradient,
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        width: 450,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CustomText(
+                text: 'Add Round Robin',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              const SizedBox(height: 16),
 
-//   void add(RoundRobinProvider provider) async {
-//     print("------------validate----------");
-//   }
-// }
+              /// Round Robin Name Dropdown
+              Obx(() {
+                final serviceTypes =
+                    configController.configData.value.serviceType ?? [];
+
+                return CustomDropdownField(
+                  isRequired: true,
+                  label: "Round Robin Name",
+                  value: _nameController,
+                  items: serviceTypes.map((e) => e.name ?? '').toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _nameController = value ?? '';
+                    });
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+
+              /// Country Dropdown
+              Obx(() {
+                final countries =
+                    configController.configData.value.country ?? [];
+                return CustomDropdownField(
+                  isRequired: true,
+                  label: "Country",
+                  value: _selectedCountry,
+                  items: countries.map((e) => e.name ?? '').toList(),
+                  onChanged: (value) {
+                    _selectedCountry = value ?? '';
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+
+              /// Officer Multi Select
+              Obx(() {
+                final officers = officersController.filteredOfficersList;
+                return CustomMultiSelectDropdownField(
+                  isRequired: true,
+                  isSplit: true,
+                  label: 'Add Officers',
+                  selectedItems: _selectedOfficerIds,
+                  items: officers.map((e) => "${e.name},${e.id}").toList(),
+                  onChanged: (selectedIds) {
+                    setState(() {
+                      _selectedOfficerIds = selectedIds;
+                    });
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+
+              /// Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomActionButton(
+                      text: 'Cancel',
+                      icon: Icons.close,
+                      onPressed: () => Navigator.pop(context),
+                      isFilled: false,
+                      textColor: Colors.blue.shade600,
+                      borderColor: Colors.blue.shade100,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Obx(() {
+                      return CustomActionButton(
+                        text: 'ADD',
+                        icon: Icons.check,
+                        isFilled: true,
+                        gradient: AppColors.orangeGradient,
+                        onPressed: roundRobinController.isLoading.value
+                            ? () {}
+                            : () async {
+                                if ((_formKey.currentState?.validate() ??
+                                        false) &&
+                                    _selectedOfficerIds.isNotEmpty) {
+                                  final name = _nameController.trim();
+                                  bool result = await roundRobinController
+                                      .createRoundRobin(
+                                    name: name,
+                                    country: _selectedCountry,
+                                    officerIds: _selectedOfficerIds,
+                                  );
+
+                                  if (result) {
+                                    CustomSnackBar.showMessage("Success",
+                                        "Round Robin Created Successfully");
+                                    Navigator.pop(context);
+                                  } else {
+                                    CustomSnackBar.showMessage(
+                                      "error",
+                                      roundRobinController.error.value ??
+                                          'Failed to create',
+                                    );
+                                  }
+                                }
+                              },
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

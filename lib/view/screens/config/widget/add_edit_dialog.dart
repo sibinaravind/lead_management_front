@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../controller/config/config_controller.dart';
+import '../../../../core/services/navigation_service.dart';
 
 class AddEditDialog extends StatefulWidget {
   final String category;
@@ -100,7 +101,7 @@ class _AddEditDialogState extends State<AddEditDialog> {
                         fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    onPressed: () => Get.back(),
+                    onPressed: () => NavigationService.goBack(),
                     icon: const Icon(Icons.close, color: Colors.white),
                   ),
                 ],

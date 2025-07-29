@@ -6,11 +6,11 @@ class OfficerModel {
   String? phone;
   String? gender;
   String? companyPhoneNumber;
-  List<dynamic>? designation;
-  List<String>? department;
+  List<String>? designation;
   List<String>? branch;
   String? createdAt;
   String? token;
+  List<Officers>? officers;
 
   OfficerModel({
     this.id,
@@ -21,10 +21,10 @@ class OfficerModel {
     this.gender,
     this.companyPhoneNumber,
     this.designation,
-    this.department,
     this.branch,
     this.createdAt,
     this.token,
+    this.officers,
   });
 
   factory OfficerModel.fromJson(Map<String, dynamic> json) {
@@ -37,14 +37,14 @@ class OfficerModel {
       gender: json["gender"],
       companyPhoneNumber: json["company_phone_number"],
       designation: json["designation"] != null
-          ? List<dynamic>.from(json["designation"])
-          : null,
-      department: json["department"] != null
-          ? List<String>.from(json["department"])
+          ? List<String>.from(json["designation"])
           : null,
       branch: json["branch"] != null ? List<String>.from(json["branch"]) : null,
       createdAt: json["created_at"],
       token: json["token"],
+      officers: json["officers"] != null
+          ? (json["officers"] as List).map((v) => Officers.fromJson(v)).toList()
+          : null,
     );
   }
 
@@ -58,10 +58,57 @@ class OfficerModel {
       "gender": gender,
       "company_phone_number": companyPhoneNumber,
       "designation": designation,
-      "department": department,
       "branch": branch,
       "created_at": createdAt,
       "token": token,
+      "officers": officers?.map((v) => v.toJson()).toList(),
+    };
+  }
+}
+
+/// ✅ Same Officers model from your TeamLeadModel
+class Officers {
+  String? officerId;
+  bool? editPermission;
+  String? staffId;
+  String? name;
+  String? phone;
+  String? companyPhoneNumber;
+  String? sId;
+  String? branch;
+
+  Officers({
+    this.officerId,
+    this.editPermission,
+    this.staffId,
+    this.name,
+    this.phone,
+    this.companyPhoneNumber,
+    this.sId,
+    this.branch,
+  });
+
+  Officers.fromJson(Map<String, dynamic> json) {
+    officerId = json['officer_id'];
+    editPermission = json['edit_permission'];
+    staffId = json['staff_id'];
+    name = json['name'];
+    phone = json['phone'];
+    companyPhoneNumber = json['company_phone_number'];
+    sId = json['_id'];
+    branch = json['branch'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'officer_id': officerId,
+      'edit_permission': editPermission,
+      'staff_id': staffId,
+      'name': name,
+      'phone': phone,
+      'company_phone_number': companyPhoneNumber,
+      '_id': sId,
+      'branch': branch,
     };
   }
 }

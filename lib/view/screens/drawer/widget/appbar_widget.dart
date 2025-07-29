@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../controller/project/project_provider_controller.dart';
 import '../../../../model/officer/officer_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
