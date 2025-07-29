@@ -8,8 +8,9 @@ import '../../../widgets/custom_toast.dart';
 void showDeleteCampaignDialog(BuildContext context, String name, String id) {
   final CampaignController controller = Get.find<CampaignController>();
 
-  Get.dialog(
-    AlertDialog(
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
       title: CustomText(text: 'Delete $name'),
       content: CustomText(
         text:

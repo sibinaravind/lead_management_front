@@ -10,6 +10,7 @@ class OfficerModel {
   List<String>? department;
   List<String>? branch;
   String? createdAt;
+  String? token;
 
   OfficerModel({
     this.id,
@@ -23,6 +24,7 @@ class OfficerModel {
     this.department,
     this.branch,
     this.createdAt,
+    this.token,
   });
 
   factory OfficerModel.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,7 @@ class OfficerModel {
           : null,
       branch: json["branch"] != null ? List<String>.from(json["branch"]) : null,
       createdAt: json["created_at"],
+      token: json["token"],
     );
   }
 
@@ -58,6 +61,7 @@ class OfficerModel {
       "department": department,
       "branch": branch,
       "created_at": createdAt,
+      "token": token,
     };
   }
 }

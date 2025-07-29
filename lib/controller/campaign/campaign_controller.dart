@@ -29,7 +29,6 @@ class CampaignController extends GetxController {
 
   Future<void> getCampaignList() async {
     isLoading.value = true;
-
     try {
       final response = await _api.getRequest(
         endpoint: Constant().camapignList,
@@ -66,14 +65,14 @@ class CampaignController extends GetxController {
   }
 
   Future<bool> deleteCampaign(BuildContext context, String id) async {
-    isLoading.value = true;
-
     try {
       dynamic response = await _api.deleteRequest(
         endpoint: "${Constant().deleteCampaign}$id",
         body: {},
         fromJson: (json) => json,
       );
+
+      bool success = false;
       response.fold(
         (failure) {
           error?.value = 'Failed to delete campaign:';
@@ -82,30 +81,30 @@ class CampaignController extends GetxController {
             "Failed to delete campaign",
             backgroundColor: AppColors.redSecondaryColor,
           );
-          return false;
         },
         (data) {
+          // ✅ Remove locally
+          Get.back();
           CustomSnackBar.showMessage(
             "Success",
             "Campaign deleted successfully",
             backgroundColor: AppColors.greenSecondaryColor,
           );
-          return true;
+          campaignList.removeWhere((campaign) => campaign.sId == id);
+
+          success = true;
         },
       );
-      return false;
+      return success;
     } catch (e) {
       error?.value = 'Failed to delete campaign: $e';
       return false;
-    } finally {
-      isLoading.value = false;
-    }
+    } finally {}
   }
 
   Future<bool> addCampaign(BuildContext context) async {
     final String title = titleController.text.trim();
     final String startDate = startDateController.text.trim();
-    final String docName = docNameController.text.trim();
 
     try {
       final response = await _api.postRequest(
@@ -114,12 +113,14 @@ class CampaignController extends GetxController {
           "title": title,
           "startDate": startDate,
           "doc_file": {
-            "name": docName,
+            "name": title,
             "base64": file64,
           },
         },
-        fromJson: (json) => json,
+        fromJson: (json) => json, // returns raw JSON with id
       );
+
+      bool success = false;
       response.fold(
         (failure) {
           error?.value = 'Failed to add campaign:';
@@ -128,18 +129,33 @@ class CampaignController extends GetxController {
             "Failed to add campaign",
             backgroundColor: AppColors.redSecondaryColor,
           );
-          return false;
         },
-        (data) {
-          CustomSnackBar.showMessage(
-            "Success",
-            "Campaign added successfully",
-            backgroundColor: AppColors.greenSecondaryColor,
-          );
-          return true;
+        (result) {
+          if (result != null) {
+            final newCampaign = CampaignModel(
+              sId: result, // ID from API
+              title: title,
+              startDate: startDate,
+              image: file64 != null ? "local_base64_image" : null, // temporary
+            );
+
+            campaignList.insert(0, newCampaign);
+
+            Get.back();
+            CustomSnackBar.showMessage(
+              "Success",
+              "Campaign added successfully",
+              backgroundColor: AppColors.greenSecondaryColor,
+            );
+            success = true;
+
+            titleController.clear();
+            startDateController.clear();
+            file64 = null;
+          }
         },
       );
-      return false;
+      return success;
     } catch (e) {
       error?.value = 'Failed to add campaign: $e';
       return false;

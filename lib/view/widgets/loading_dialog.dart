@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
 
+import '../../res/style/colors/colors.dart';
+
 showLoaderDialog(context) {
   showDialog<void>(
       // barrierColor: Colors.white,
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return
-            // SimpleDialog(
-            //   backgroundColor: Colors.white,
-            //   children: [
-            //     Center(
-            //       child: Column(
-            //         mainAxisSize: MainAxisSize.min,
-            //         children: [
-            //           Padding(
-            //             padding: EdgeInsets.only(left: 16, top: 16, right: 16),
-            //             child:
-            Stack(
+        return SimpleDialog(
+          backgroundColor: AppColors.primaryColor.withOpacity(0.2),
           children: [
             Center(
-              child: SizedBox(
-                height: 200,
-                width: 200,
-                child: Image.asset(
-                  "assets/images/loading_cat.gif",
-                  color: Colors.white,
-                  fit: BoxFit.contain,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: SizedBox(
+                              child: Image.asset(
+                                "assets/images/affiniks_logo.webp",
+                                // color: Colors.t,
+                                fit: BoxFit.contain,
+                                height: 100,
+                                width: 200,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                  CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                ],
               ),
-            ),
+            )
           ],
         );
-        //         ),
-        //       ],
-        //     ),
-        //   )
-        // ],
-        // );
       });
 }

@@ -1,3 +1,121 @@
+import 'package:get/get.dart';
+import 'package:overseas_front_end/core/services/user_cache_service.dart';
+import 'package:overseas_front_end/core/shared/constants.dart';
+import 'package:overseas_front_end/model/officer/officer_model.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
+import '../../core/services/api_service.dart';
+import '../../core/services/navigation_service.dart';
+
+class LoginController extends GetxController {
+  final ApiService _apiService = ApiService();
+  final UserCacheService _userCacheService = UserCacheService();
+  // Observables
+  var officer = Rxn<OfficerModel>();
+  var isLoading = false.obs;
+
+  /// LOGIN OFFICER
+  Future<void> loginOfficer({
+    required String officerId,
+    required String password,
+  }) async {
+    isLoading.value = true;
+    try {
+      final result = await _apiService.postRequest(
+        endpoint: Constant().officerLogin,
+        body: {
+          "officer_id": officerId,
+          "password": password,
+        },
+        fromJson: (json) {
+          return OfficerModel.fromJson(json["officer"]);
+        },
+      );
+      result.fold(
+        (failure) {
+          CustomToast.showToast(
+            context: Get.context!,
+            message: 'Login failed: $failure',
+          );
+        },
+        (data) async {
+          officer.value = data;
+          _userCacheService.saveUser(data);
+          _userCacheService.saveAuthToken(data.token ?? '');
+          // Show success message
+          NavigationService.goBack();
+          NavigationService.goBack();
+          // CustomSnackBar.showMessage(
+          //   'Login Successful',
+          //   'Welcome ${data.name ?? 'Officer'}',
+          //   backgroundColor: AppColors.greenSecondaryColor.withOpacity(0.5),
+          //   colorText: Colors.white,
+          // );
+          // Navigate to home
+          // Get.offAllNamed('/home');
+          // Equivalent of Navigator.pushAndRemoveUntil in NavigationService:
+          // NavigationService.replaceAndClearStack(newRouteName);
+          // If you want to use Navigator directly:
+          // Navigator.pushAndRemoveUntil(Get.context!, newRoute, predicate);
+
+          // Example usage (replace with your route and predicate):
+          // GoRouter.of(Get.context!).go('/dashboard/dashboard/overview');
+          NavigationService.go('/dashboard/dashboard/overview');
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: Get.context!,
+        message: 'Error: $e',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// RESET PASSWORD
+  Future<bool> resetPassword({
+    required String officerId,
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final result = await _apiService.patchRequest(
+        endpoint: '${Constant().officerPasswordReset}/$officerId',
+        body: {
+          "current_password": currentPassword,
+          "new_password": newPassword,
+        },
+        fromJson: (json) => json,
+      );
+
+      bool success = false;
+      result.fold(
+        (failure) {
+          CustomToast.showToast(
+            context: Get.context!,
+            message: 'Failed: $failure',
+          );
+          success = false;
+        },
+        (data) {
+          CustomToast.showToast(
+            context: Get.context!,
+            message: 'Password updated successfully',
+          );
+          success = true;
+        },
+      );
+      return success;
+    } catch (e) {
+      CustomToast.showToast(
+        context: Get.context!,
+        message: 'Error: $e',
+      );
+      return false;
+    }
+  }
+}
+
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/core/services/user_cache_service.dart';
 // import 'package:overseas_front_end/core/shared/constants.dart';

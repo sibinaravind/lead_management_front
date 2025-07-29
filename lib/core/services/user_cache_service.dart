@@ -16,6 +16,12 @@ class UserCacheService {
   OfficerModel? _user;
   OfficerModel? get user => _user;
   SharedPreferences get sharedPrefs => serviceLocator<SharedPreferences>();
+
+  bool isLogin() {
+    final token = sharedPrefs.getString(TOKEN_CACHE_KEY);
+    return token != null && token.isNotEmpty;
+  }
+
   Future<bool> saveUser(OfficerModel user) async {
     // _user = user;
     var saved = await sharedPrefs.setString(USER_CACHE_KEY, jsonEncode(user));
