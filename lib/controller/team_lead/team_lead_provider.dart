@@ -1,3 +1,186 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../core/services/api_service.dart';
+import '../../core/shared/constants.dart';
+import '../../model/officer/officer_model.dart';
+
+class TeamLeadController extends GetxController {
+  final ApiService _apiService = ApiService();
+
+  /// Reactive State
+  var teamLeadListData = <OfficerModel>[].obs;
+
+  var assignedEmployees = <OfficerModel>[].obs;
+  var remainingEmployees = <OfficerModel>[].obs;
+  var allRemainingEmployees = <OfficerModel>[].obs;
+
+  var isLoading = false.obs;
+  var error = RxnString();
+
+  /// Search filter for employees
+  void filterEmployees(String str) {
+    remainingEmployees.value = allRemainingEmployees
+        .where((element) =>
+            (element.officerId?.toLowerCase().contains(str.toLowerCase()) ??
+                false) ||
+            (element.name?.toLowerCase().contains(str.toLowerCase()) ?? false))
+        .toList();
+  }
+
+  /// Add officer to lead
+  Future<void> addOfficerToLead({
+    required String leadOfficerId,
+    required String officerId,
+    required String staffId,
+  }) async {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: Constant().addOfficerToLead,
+        body: {
+          "lead_officer_id": leadOfficerId,
+          "officer": {
+            "officer_id": officerId,
+            "staff_id": staffId,
+            "edit_permission": false
+          }
+        },
+        fromJson: (json) => json,
+      );
+      response.fold(
+        (failure) {
+          error.value = 'Failed to add officer: $failure';
+        },
+        (data) {
+          if (data['success'] == true) {
+            // fetchTeamLeadList();
+          } else {
+            error.value = data['message'] ?? 'Failed to add officer';
+          }
+        },
+      );
+    } catch (e) {
+      error.value = 'Failed to add officer: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Delete officer from lead
+  Future<void> deleteOfficerFromLead(
+    BuildContext context, {
+    required String leadOfficerId,
+    required String officerId,
+  }) async {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: Constant().deleteOfficerFromLead,
+        body: {
+          "lead_officer_id": leadOfficerId,
+          "officer_id": officerId,
+        },
+        fromJson: (json) => json,
+      );
+      response.fold(
+        (failure) {
+          error.value = 'Failed to add officer: $failure';
+        },
+        (data) {
+          if (data['success'] == true) {
+            // fetchTeamLeadList();
+          } else {
+            error.value = data['message'] ?? 'Failed to add officer';
+          }
+        },
+      );
+    } catch (e) {
+      error.value = 'Failed to delete officer: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Get all remaining employees for a lead
+  void getAllRemainingEmployees(
+    BuildContext context,
+    String id,
+    List<OfficerModel> officersList,
+  ) {
+    final listIds = teamLeadListData
+            .where((element) => element.officerId == id)
+            .expand((e) => e.officers?.map((e) => e.sId) ?? [])
+            .toList() ??
+        [];
+
+    final li = officersList
+        .where((element) => !listIds.contains(element.sId))
+        .toList();
+
+    remainingEmployees.assignAll(li);
+    allRemainingEmployees.assignAll(li);
+  }
+
+  /// Fetch all team leads
+  Future<void> fetchTeamLeadList(BuildContext context) async {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      final json =
+          await _apiService.get(context: context, Constant().teamLeadList);
+
+      if (json['success'] == true && json['data'] != null) {
+        final List<dynamic> dataList = json['data'];
+        teamLeadListData.assignAll(
+          dataList.map((e) => OfficerModel.fromJson(e)).toList(),
+        );
+      } else {
+        error.value = 'Invalid response structure';
+      }
+    } catch (e) {
+      error.value = 'Failed to load lead officers: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Create officer
+  Future<bool> createOfficer(
+    BuildContext context,
+    Map<String, dynamic> officer,
+  ) async {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      final response = await _apiService.post(
+        context: context,
+        Constant().officerInsert,
+        officer,
+      );
+
+      if (response['success'] == true) {
+        await fetchTeamLeadList(context);
+        return true;
+      } else {
+        error.value = response['message'] ?? 'Creation failed';
+        return false;
+      }
+    } catch (e) {
+      error.value = 'Error creating officer: $e';
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/model/officer/officer_model.dart';
 // import 'package:overseas_front_end/model/team_lead/team_lead_model.dart';
@@ -14,12 +197,12 @@
 
 //   final ApiService _apiService = ApiService();
 
-//   List<TeamLeadModel>? _teamLeadListData;
+//   List<OfficerModel>? _teamLeadListData;
 
-//   List<TeamLeadModel>? assignedEmployees = [];
+//   List<OfficerModel>? assignedEmployees = [];
 
-//   List<TeamLeadModel>? remainingEmployees = [];
-//   List<TeamLeadModel>? allRemainingEmployees = [];
+//   List<OfficerModel>? remainingEmployees = [];
+//   List<OfficerModel>? allRemainingEmployees = [];
 
 //   // List<SubOfficerModel> selectedClients = [];
 
@@ -27,7 +210,7 @@
 //   String? _error;
 
 //   // List<OfficersModel>? get officersListModel => _officersListData;
-//   List<TeamLeadModel>? get teamListListModel => _teamLeadListData;
+//   List<OfficerModel>? get teamListListModel => _teamLeadListData;
 
 //   bool get isLoading => _isLoading;
 //   String? get error => _error;
@@ -145,7 +328,7 @@
 //   }
 
 //   void getAllRemainingEmpoyees(
-//       context, String id, List<TeamLeadModel> officersList) {
+//       context, String id, List<OfficerModel> officersList) {
 //     List listIds = [];
 //     listIds = _teamLeadListData
 //             ?.where((element) => element.officerId == id)
@@ -153,7 +336,7 @@
 //             .toList() ??
 //         [];
 //     // _teamLeadListData.add(officersList.where((element) => element.id == id,));
-//     List<TeamLeadModel> li = officersList
+//     List<OfficerModel> li = officersList
 //         .where(
 //           (element) => !listIds.contains(element.sId),
 //         )
@@ -180,7 +363,7 @@
 //       if (json['success'] == true && json['data'] != null) {
 //         final List<dynamic> dataList = json['data'];
 //         _teamLeadListData =
-//             dataList.map((e) => TeamLeadModel.fromJson(e)).toList();
+//             dataList.map((e) => OfficerModel.fromJson(e)).toList();
 //         notifyListeners();
 //       } else {
 //         _error = 'Invalid response structure';

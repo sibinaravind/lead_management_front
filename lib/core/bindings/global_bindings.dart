@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
 
 import '../../controller/app_common/bloc/app_user_contoller.dart'
     show AppUserController;
@@ -30,6 +31,7 @@ class GlobalBindings extends Bindings {
     Get.lazyPut(() => LoginController());
     Get.lazyPut(() => RoundRobinController());
     Get.lazyPut(() => OfficersController());
+    Get.lazyPut(() => TeamLeadController());
 
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());
