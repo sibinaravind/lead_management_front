@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/officers_controller/round_robin_controller.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_toast.dart';
 

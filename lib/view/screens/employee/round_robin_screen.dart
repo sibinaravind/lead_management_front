@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
-import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/officers_controller/round_robin_controller.dart';
 import 'package:overseas_front_end/view/screens/config/widget/action_button.dart';
 import 'package:overseas_front_end/view/screens/employee/widget/add_officers.dart';
 import 'package:overseas_front_end/view/screens/employee/widget/add_round_robin.dart';

@@ -10,13 +10,52 @@ class TeamLeadController extends GetxController {
 
   /// Reactive State
   var teamLeadListData = <OfficerModel>[].obs;
-
   var assignedEmployees = <OfficerModel>[].obs;
   var remainingEmployees = <OfficerModel>[].obs;
   var allRemainingEmployees = <OfficerModel>[].obs;
-
+  TextEditingController searchController = TextEditingController();
   var isLoading = false.obs;
   var error = RxnString();
+
+  Future<void> fetchTeamLeadList() async {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      final json = await _apiService.getRequest(
+        endpoint: Constant().teamLeadList,
+        fromJson: (dynamic json) {
+          if (json is List) {
+            final parsed = json.map((e) => OfficerModel.fromJson(e)).toList();
+            print("Parsed data: $parsed");
+            teamLeadListData.assignAll(parsed);
+            assignedEmployees.assignAll(parsed);
+            remainingEmployees.assignAll(parsed);
+            allRemainingEmployees.assignAll(parsed);
+
+            return parsed;
+          } else {
+            throw Exception('Expected List but got ${json.runtimeType}');
+          }
+        },
+      );
+      print("hello");
+      print("object: $json");
+      json.fold(
+        (failure) {
+          error.value = 'Failed to load lead officers: $failure';
+        },
+        (data) {
+          print(data);
+          teamLeadListData.value = data;
+        },
+      );
+    } catch (e) {
+      print("Error: $e");
+      error.value = 'Failed to load lead officers: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   /// Search filter for employees
   void filterEmployees(String str) {
@@ -113,65 +152,33 @@ class TeamLeadController extends GetxController {
     List<OfficerModel> officersList,
   ) {
     final listIds = teamLeadListData
-            .where((element) => element.officerId == id)
-            .expand((e) => e.officers?.map((e) => e.sId) ?? [])
-            .toList() ??
-        [];
-
-    final li = officersList
-        .where((element) => !listIds.contains(element.sId))
+        .where((element) => element.officerId == id)
+        .expand((e) => e.officers?.map((e) => e.id) ?? [])
         .toList();
+
+    final li =
+        officersList.where((element) => !listIds.contains(element.id)).toList();
 
     remainingEmployees.assignAll(li);
     allRemainingEmployees.assignAll(li);
   }
 
   /// Fetch all team leads
-  Future<void> fetchTeamLeadList(BuildContext context) async {
-    isLoading.value = true;
-    error.value = null;
-
-    try {
-      final json =
-          await _apiService.get(context: context, Constant().teamLeadList);
-
-      if (json['success'] == true && json['data'] != null) {
-        final List<dynamic> dataList = json['data'];
-        teamLeadListData.assignAll(
-          dataList.map((e) => OfficerModel.fromJson(e)).toList(),
-        );
-      } else {
-        error.value = 'Invalid response structure';
-      }
-    } catch (e) {
-      error.value = 'Failed to load lead officers: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
   /// Create officer
   Future<bool> createOfficer(
-    BuildContext context,
     Map<String, dynamic> officer,
   ) async {
     isLoading.value = true;
     error.value = null;
-
     try {
-      final response = await _apiService.post(
-        context: context,
-        Constant().officerInsert,
-        officer,
+      final response = await _apiService.postRequest(
+        endpoint: Constant().officerInsert,
+        body: officer,
+        fromJson: (json) => json,
       );
-
-      if (response['success'] == true) {
-        await fetchTeamLeadList(context);
-        return true;
-      } else {
-        error.value = response['message'] ?? 'Creation failed';
-        return false;
-      }
+      await fetchTeamLeadList();
+      return true;
     } catch (e) {
       error.value = 'Error creating officer: $e';
       return false;

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
-import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
-import 'package:overseas_front_end/controller/team_lead/team_lead_provider.dart';
+import 'package:overseas_front_end/controller/officers_controller/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/team_lead/team_lead_controller.dart';
 
 import '../../controller/app_common/bloc/app_user_contoller.dart'
     show AppUserController;

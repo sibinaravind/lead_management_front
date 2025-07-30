@@ -8,7 +8,9 @@ import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
-import 'view/screens/officers/employee_data_display.dart'; // Import your navigation service
+import 'view/screens/officers/employee_data_display.dart';
+import 'view/screens/team_lead/team_lead_data_display.dart';
+import 'view/screens/team_lead/widgets/team_lead_display.dart'; // Import your navigation service
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -48,7 +50,7 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          builder: (context, state) => EmployeeDataDisplay(),
+          builder: (context, state) => TeamLeadDataDisplay(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

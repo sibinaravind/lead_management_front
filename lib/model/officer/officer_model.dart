@@ -12,6 +12,7 @@ class OfficerModel {
   String? token;
   List<OfficerModel>? officers;
   String? password;
+  String? staffId;
 
   OfficerModel({
     this.id,
@@ -27,6 +28,7 @@ class OfficerModel {
     this.token,
     this.officers,
     this.password,
+    this.staffId,
   });
 
   factory OfficerModel.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class OfficerModel {
               .toList()
           : null,
       password: json["password"],
+      staffId: json["staff_id"],
     );
   }
 
@@ -68,6 +71,7 @@ class OfficerModel {
       "token": token,
       "officers": officers?.map((v) => v.toJson()).toList(),
       "password": password,
+      "staff_id": staffId,
     };
   }
 
@@ -85,6 +89,7 @@ class OfficerModel {
     String? token,
     List<OfficerModel>? officers,
     String? password,
+    String? staffId,
   }) {
     return OfficerModel(
       id: id ?? this.id,
@@ -100,6 +105,7 @@ class OfficerModel {
       token: token ?? this.token,
       officers: officers ?? this.officers,
       password: password ?? this.password,
+      staffId: staffId ?? this.staffId,
     );
   }
 }
