@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
-import 'package:overseas_front_end/view/widgets/backup/CustomPasswordTextField.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
-import '../../../../controller/auth/login_controller.dart';
-import '../../../../controller/officers_controller/officers_controller.dart';
 
 class PasswordReset extends StatefulWidget {
   final bool isResetPassword;
@@ -46,7 +43,6 @@ class _PasswordResetState extends State<PasswordReset>
           } else if (maxWidth > 600) {
             dialogWidth = maxWidth * 0.95;
           }
-
           return Center(
             child: Container(
               width: dialogWidth,
@@ -204,30 +200,6 @@ class _PasswordResetState extends State<PasswordReset>
                                                         return null;
                                                       },
                                                     ),
-
-                                                    // CustomPasswordTextFormField(
-                                                    //
-                                                    //                                                         label:
-                                                    //   'Confirm Password',
-                                                    //                                                         controller:
-                                                    //   _resetPasswordController,
-                                                    //                                                         isRequired: widget
-                                                    //   .isResetPassword,
-                                                    //                                                         validator:
-                                                    //   (String? value) {
-                                                    // if (value!.isEmpty) {
-                                                    //   return 'Required';
-                                                    // }
-                                                    // final regex = RegExp(
-                                                    //     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$');
-                                                    //
-                                                    // if (!regex.hasMatch(
-                                                    //     value)) {
-                                                    //   return 'Password must be at least 8 characters\nwith uppercase, lowercase, number & special character';
-                                                    // }
-                                                    // return null;
-                                                    //                                                         },
-                                                    //                                                       ),
                                                     if (widget.isResetPassword)
                                                       const SizedBox(
                                                           height: 16),

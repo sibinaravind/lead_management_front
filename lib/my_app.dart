@@ -6,9 +6,9 @@ import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
-import 'view/screens/employee/round_robin_screen.dart' show RoundRobinScreen;
 import 'view/screens/error_screen/error_screen.dart';
-import 'core/services/navigation_service.dart'; // Import your navigation service
+import 'core/services/navigation_service.dart';
+import 'view/screens/officers/employee_data_display.dart'; // Import your navigation service
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          builder: (context, state) => RoundRobinScreen(),
+          builder: (context, state) => EmployeeDataDisplay(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

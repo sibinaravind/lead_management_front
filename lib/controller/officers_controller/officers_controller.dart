@@ -15,6 +15,13 @@ class OfficersController extends GetxController {
   var error = RxnString();
   var searchQuery = ''.obs;
 
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   // Fetch the officers list when the controller is initialized
+  //   fetchOfficersList();
+  // }
+
   /// Fetch Officers List
   Future<void> fetchOfficersList() async {
     if (officersList.isNotEmpty) return;
@@ -76,22 +83,22 @@ class OfficersController extends GetxController {
   }
 
   /// Create Officer
-  Future<bool> createOfficer(Map<String, dynamic> officer) async {
+  Future<bool> createOfficer(OfficerModel officer) async {
     try {
       final response = await _apiService.postRequest(
         endpoint: Constant().officerInsert,
-        body: officer,
-        fromJson: (json) => OfficerModel.fromJson(json),
+        body: officer.toJson(),
+        fromJson: (json) => json,
       );
-
       return response.fold(
         (failure) {
           error.value = failure.toString();
           return false;
         },
         (createdOfficer) {
-          officersList.add(createdOfficer);
-          filteredOfficersList.add(createdOfficer);
+          officersList.add(officer.copyWith(id: createdOfficer));
+          filteredOfficersList.add(officer.copyWith(id: createdOfficer));
+
           return true;
         },
       );
@@ -101,21 +108,13 @@ class OfficersController extends GetxController {
     }
   }
 
-  /// Update Officer
-  Future<bool> updateOfficer(
-      String officerId, Map<String, dynamic> updatedData) async {
-    // Remove unwanted keys
-    final updatedDataCopy = Map<String, dynamic>.from(updatedData)
-      ..remove('_id')
-      ..remove('officer_id');
-
+  Future<bool> updateOfficer(String officerId, OfficerModel officer) async {
     try {
       final response = await _apiService.patchRequest(
         endpoint: "${Constant().officerUpdate}/$officerId",
-        body: updatedDataCopy,
-        fromJson: (json) => OfficerModel.fromJson(json),
+        body: officer.toJson()..remove('_id'),
+        fromJson: (json) => json,
       );
-
       return response.fold(
         (failure) {
           error.value = failure.toString();
@@ -124,8 +123,12 @@ class OfficersController extends GetxController {
         (updatedOfficer) {
           final index = officersList.indexWhere((o) => o.id == officerId);
           if (index != -1) {
-            officersList[index] = updatedOfficer;
-            filteredOfficersList[index] = updatedOfficer;
+            officersList[index] = officer.copyWith(
+              id: officerId,
+            );
+            filteredOfficersList[index] = officer.copyWith(
+              id: officerId,
+            );
           }
           return true;
         },
@@ -158,6 +161,32 @@ class OfficersController extends GetxController {
       );
     } catch (e) {
       error.value = 'Error deleting officer: $e';
+      return false;
+    }
+  }
+
+  /// Reset Officer Password
+  Future<bool> resetOfficerPassword(
+      String officerId, String newPassword) async {
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: "${Constant().officerUpdate}/$officerId",
+        body: {
+          "password": newPassword,
+        },
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          error.value = failure.toString();
+          return false;
+        },
+        (_) {
+          return true;
+        },
+      );
+    } catch (e) {
+      error.value = 'Error resetting password: $e';
       return false;
     }
   }

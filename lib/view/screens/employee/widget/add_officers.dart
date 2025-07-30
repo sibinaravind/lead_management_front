@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/model/officer/officer_model.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_action_button.dart';
 import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
@@ -22,7 +23,7 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
   final OfficersController officersController = Get.put(OfficersController());
   final RoundRobinController roundRobinController = Get.find();
 
-  final List<String> _employeeController = [];
+  final List<OfficerModel> _employeeController = [];
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -115,7 +116,7 @@ class _AddOfficerDialogState extends State<AddOfficerDialog> {
                           final result = await roundRobinController
                               .addOfficersToRoundRobin(
                             roundRobinId: widget.roundRobinId,
-                            officerIds: _employeeController,
+                            officer: _employeeController,
                           );
 
                           if (result) {

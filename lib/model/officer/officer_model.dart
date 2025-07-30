@@ -10,7 +10,8 @@ class OfficerModel {
   List<String>? branch;
   String? createdAt;
   String? token;
-  List<Officers>? officers;
+  List<OfficerModel>? officers;
+  String? password;
 
   OfficerModel({
     this.id,
@@ -25,6 +26,7 @@ class OfficerModel {
     this.createdAt,
     this.token,
     this.officers,
+    this.password,
   });
 
   factory OfficerModel.fromJson(Map<String, dynamic> json) {
@@ -43,8 +45,11 @@ class OfficerModel {
       createdAt: json["created_at"],
       token: json["token"],
       officers: json["officers"] != null
-          ? (json["officers"] as List).map((v) => Officers.fromJson(v)).toList()
+          ? (json["officers"] as List)
+              .map((v) => OfficerModel.fromJson(v))
+              .toList()
           : null,
+      password: json["password"],
     );
   }
 
@@ -62,53 +67,39 @@ class OfficerModel {
       "created_at": createdAt,
       "token": token,
       "officers": officers?.map((v) => v.toJson()).toList(),
+      "password": password,
     };
   }
-}
 
-/// ✅ Same Officers model from your TeamLeadModel
-class Officers {
-  String? officerId;
-  bool? editPermission;
-  String? staffId;
-  String? name;
-  String? phone;
-  String? companyPhoneNumber;
-  String? sId;
-  String? branch;
-
-  Officers({
-    this.officerId,
-    this.editPermission,
-    this.staffId,
-    this.name,
-    this.phone,
-    this.companyPhoneNumber,
-    this.sId,
-    this.branch,
-  });
-
-  Officers.fromJson(Map<String, dynamic> json) {
-    officerId = json['officer_id'];
-    editPermission = json['edit_permission'];
-    staffId = json['staff_id'];
-    name = json['name'];
-    phone = json['phone'];
-    companyPhoneNumber = json['company_phone_number'];
-    sId = json['_id'];
-    branch = json['branch'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'officer_id': officerId,
-      'edit_permission': editPermission,
-      'staff_id': staffId,
-      'name': name,
-      'phone': phone,
-      'company_phone_number': companyPhoneNumber,
-      '_id': sId,
-      'branch': branch,
-    };
+  OfficerModel copyWith({
+    String? id,
+    String? officerId,
+    String? name,
+    String? status,
+    String? phone,
+    String? gender,
+    String? companyPhoneNumber,
+    List<String>? designation,
+    List<String>? branch,
+    String? createdAt,
+    String? token,
+    List<OfficerModel>? officers,
+    String? password,
+  }) {
+    return OfficerModel(
+      id: id ?? this.id,
+      officerId: officerId ?? this.officerId,
+      name: name ?? this.name,
+      status: status ?? this.status,
+      phone: phone ?? this.phone,
+      gender: gender ?? this.gender,
+      companyPhoneNumber: companyPhoneNumber ?? this.companyPhoneNumber,
+      designation: designation ?? this.designation,
+      branch: branch ?? this.branch,
+      createdAt: createdAt ?? this.createdAt,
+      token: token ?? this.token,
+      officers: officers ?? this.officers,
+      password: password ?? this.password,
+    );
   }
 }

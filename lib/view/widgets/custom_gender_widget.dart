@@ -127,7 +127,7 @@ class CustomGenderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Row(
+                  Row(
                     children: [
                       Icon(Icons.person_outline_rounded,
                           size: 18, color: AppColors.violetPrimaryColor),
@@ -143,7 +143,7 @@ class CustomGenderWidget extends StatelessWidget {
                   const SizedBox(height: 16),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final genderOptions = ['Male', 'Female', 'Other'];
+                      final genderOptions = ['MALE', 'FEMALE', 'OTHER'];
                       final tiles = genderOptions.map((gender) {
                         return RadioListTile<String>(
                           title: CustomText(text: gender, fontSize: 15),

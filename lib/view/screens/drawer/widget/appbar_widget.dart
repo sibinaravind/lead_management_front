@@ -3,7 +3,7 @@ import '../../../../model/officer/officer_model.dart';
 import '../../../../res/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 import '../../Project/widget/client_detail_tab.dart';
-import '../../officers/widgets/reset_password.dart';
+import '../../officers/widgets/password_reset_dialog.dart';
 
 class AppBarContainer extends StatefulWidget {
   final bool isdesktop;
@@ -167,8 +167,8 @@ class _AppBarContainerState extends State<AppBarContainer> {
                   PopupMenuItem<String>(
                     onTap: () => showDialog(
                       context: context,
-                      builder: (context) => PasswordReset(
-                        isResetPassword: true,
+                      builder: (context) => PasswordResetDialog(
+                        isAdmin: false,
                         officerId: widget.user.id ?? '',
                       ),
                     ),

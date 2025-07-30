@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
   final bool isRequired;
@@ -17,6 +16,8 @@ class CustomTextFormField extends StatelessWidget {
   final DateTime? lastDate;
   final String? hintText;
   final List<TextInputFormatter>? inputFormatters;
+  final FormFieldValidator<String>? validator;
+  final bool showPasswordToggle; // ⬅️ New
 
   const CustomTextFormField({
     super.key,
@@ -34,14 +35,29 @@ class CustomTextFormField extends StatelessWidget {
     this.lastDate,
     this.hintText,
     this.inputFormatters,
+    this.validator,
+    this.showPasswordToggle = false, // ⬅️ Default off
   });
+
+  @override
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  late bool _obscureText; // ⬅️ Controls visibility
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText; // Start with given state
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: firstDate ?? DateTime.now(),
-      lastDate: lastDate ?? DateTime(2030),
+      firstDate: widget.firstDate ?? DateTime.now(),
+      lastDate: widget.lastDate ?? DateTime(2030),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -57,14 +73,14 @@ class CustomTextFormField extends StatelessWidget {
       },
     );
     if (date != null) {
-      controller.text =
+      widget.controller.text =
           "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final defaultFormatters = keyboardType == TextInputType.number
+    final defaultFormatters = widget.keyboardType == TextInputType.number
         ? [FilteringTextInputFormatter.digitsOnly]
         : null;
 
@@ -75,10 +91,10 @@ class CustomTextFormField extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: label,
+                text: widget.label,
                 style: const TextStyle(color: Colors.black87),
               ),
-              if (isRequired)
+              if (widget.isRequired)
                 const TextSpan(
                   text: ' *',
                   style: TextStyle(color: Colors.red),
@@ -88,76 +104,58 @@ class CustomTextFormField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextFormField(
-          controller: controller,
+          controller: widget.controller,
           decoration: InputDecoration(
-            hintText: hintText,
+            hintText: widget.hintText,
             fillColor: Colors.white,
             filled: true,
             border: const OutlineInputBorder(),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             isDense: true,
+            suffixIcon: widget.showPasswordToggle
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : null,
           ),
-          keyboardType: keyboardType ?? TextInputType.text,
-          maxLines: maxLines,
-          readOnly: isdate ? true : readOnly,
-          onTap: isdate
+          keyboardType: widget.keyboardType ?? TextInputType.text,
+          maxLines: widget.maxLines,
+          readOnly: widget.isdate ? true : widget.readOnly,
+          onTap: widget.isdate
               ? () async {
                   await _selectDate(context);
                 }
-              : onTap,
-          obscureText: obscureText,
-          inputFormatters: inputFormatters ?? defaultFormatters,
+              : widget.onTap,
+          obscureText: _obscureText,
+          inputFormatters: widget.inputFormatters ?? defaultFormatters,
           validator: (value) {
-            // print("===> ${value?.length}");
-            if (isRequired && (value == null || value.trim().isEmpty)) {
+            if (widget.isRequired && (value == null || value.trim().isEmpty)) {
               return 'This field is required';
             }
 
-            if (isEmail && value != null && value.trim().isNotEmpty) {
+            if (widget.isEmail && value != null && value.trim().isNotEmpty) {
               final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
               if (!emailRegex.hasMatch(value)) {
                 return 'Enter a valid email address';
               }
             }
 
+            if (widget.validator != null) {
+              return widget.validator!(value);
+            }
+
             return null;
           },
         ),
       ],
-    );
-  }
-}
-
-class DurationInputFormatter extends TextInputFormatter {
-  final bool allowHours;
-
-  DurationInputFormatter({this.allowHours = false});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final text = newValue.text;
-
-    // Allow only digits and colon
-    final filtered = text.replaceAll(RegExp(r'[^0-9:]'), '');
-
-    // Optionally limit to `hh:mm:ss` or `mm:ss`
-    final parts = filtered.split(':');
-    if (parts.length > (allowHours ? 3 : 2)) {
-      return oldValue; // Prevent too many colons
-    }
-
-    // Prevent parts from being too long (e.g., mm or ss > 2 digits)
-    for (final part in parts) {
-      if (part.length > 2) return oldValue;
-    }
-
-    return TextEditingValue(
-      text: filtered,
-      selection: TextSelection.collapsed(offset: filtered.length),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:overseas_front_end/view/screens/employee/widget/add_officers.dar
 import 'package:overseas_front_end/view/screens/employee/widget/add_round_robin.dart';
 import 'package:overseas_front_end/view/screens/employee/widget/round_robin_officer_list.dart';
 import 'package:overseas_front_end/view/widgets/custom_button.dart';
-import 'package:overseas_front_end/view/widgets/custom_popup.dart';
+import 'package:overseas_front_end/view/widgets/delete_confirm_dialog.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import '../../../res/style/colors/colors.dart';
 import '../../widgets/custom_toast.dart';
@@ -33,7 +33,7 @@ class _RoundRobinScreenState extends State<RoundRobinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteMainColor,
+      backgroundColor: Colors.transparent,
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -64,155 +64,150 @@ class _RoundRobinScreenState extends State<RoundRobinScreen> {
                   ),
                 ),
               ),
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: AppColors.backgroundGraident,
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: controller.roundRobinGroups.length,
-                  itemBuilder: (context, index) {
-                    final group = controller.roundRobinGroups[index];
-                    final officersList = group.officerDetails;
+              ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.roundRobinGroups.length,
+                itemBuilder: (context, index) {
+                  final group = controller.roundRobinGroups[index];
+                  final officersList = group.officerDetails;
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 20.0),
-                      elevation: 8,
-                      shadowColor: AppColors.primaryColor.withOpacity(0.1),
-                      shape: RoundedRectangleBorder(
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    elevation: 8,
+                    shadowColor: AppColors.primaryColor.withOpacity(0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.whiteMainColor,
-                              AppColors.whiteMainColor.withOpacity(0.9),
-                            ],
-                          ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.whiteMainColor.withOpacity(0.2),
+                            AppColors.whiteMainColor.withOpacity(0.2),
+                            AppColors.whiteMainColor,
+                          ],
                         ),
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            tilePadding: const EdgeInsets.all(8),
-                            childrenPadding: const EdgeInsets.all(8),
-                            collapsedBackgroundColor: Colors.transparent,
-                            backgroundColor: Colors.transparent,
-                            title: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: _getCategoryColor(index),
-                                    borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: _getCategoryColor(index)
-                                            .withOpacity(0.3),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.group_add,
-                                    color: AppColors.whiteMainColor,
-                                    size: 24,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        group.name?.toUpperCase() ?? '',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.primaryColor,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      CustomText(
-                                        text: group.country ?? '',
-                                        color: AppColors.textGrayColour,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  spacing: 10,
-                                  children: [
-                                    ActionButton(
-                                      icon: Icons.delete,
-                                      gradient: AppColors.redGradient,
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) =>
-                                              DeleteConfirmationDialog(
-                                            title: "Delete",
-                                            message: 'You want to delete',
-                                            onConfirm: () async {
-                                              final success = await controller
-                                                  .deleteRoundRobin(
-                                                      group.id ?? '');
-                                              if (success) {
-                                                CustomToast.showToast(
-                                                    context: context,
-                                                    message:
-                                                        'Round robin deleted successfully');
-                                              } else {
-                                                CustomToast.showToast(
-                                                    context: context,
-                                                    message: 'Delete failed');
-                                              }
-                                            },
-                                          ),
-                                        );
-                                      },
-                                      tooltip: 'Delete',
-                                    ),
-                                    ActionButton(
-                                      icon: Icons.add,
-                                      gradient: AppColors.buttonGraidentColour,
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) => AddOfficerDialog(
-                                            roundRobinId: group.id,
-                                          ),
-                                        );
-                                      },
-                                      tooltip: 'Add Officer',
+                      ),
+                      child: Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          tilePadding: const EdgeInsets.all(8),
+                          childrenPadding: const EdgeInsets.all(8),
+                          collapsedBackgroundColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
+                          title: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: _getCategoryColor(index),
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: _getCategoryColor(index)
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            children: [
-                              ...officersList.map((item) {
-                                return RoundRobinOfficerList(
-                                  roundrobinId: group.id ?? '',
-                                  item: item,
-                                );
-                              }),
+                                child: const Icon(
+                                  Icons.group_add,
+                                  color: AppColors.whiteMainColor,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      group.name?.toUpperCase() ?? '',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    CustomText(
+                                      text: group.country ?? '',
+                                      color: AppColors.textGrayColour,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  ActionButton(
+                                    icon: Icons.delete,
+                                    gradient: AppColors.redGradient,
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) =>
+                                            DeleteConfirmationDialog(
+                                          title: "Delete",
+                                          message: 'You want to delete',
+                                          onConfirm: () async {
+                                            final success = await controller
+                                                .deleteRoundRobin(
+                                                    group.id ?? '');
+                                            if (success) {
+                                              CustomToast.showToast(
+                                                  context: context,
+                                                  message:
+                                                      'Round robin deleted successfully');
+                                            } else {
+                                              CustomToast.showToast(
+                                                  context: context,
+                                                  message: 'Delete failed');
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    tooltip: 'Delete',
+                                  ),
+                                  ActionButton(
+                                    icon: Icons.add,
+                                    gradient: AppColors.buttonGraidentColour,
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => AddOfficerDialog(
+                                          roundRobinId: group.id,
+                                        ),
+                                      );
+                                    },
+                                    tooltip: 'Add Officer',
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
+                          children: [
+                            ...officersList.map((item) {
+                              return RoundRobinOfficerList(
+                                roundrobinId: group.id ?? '',
+                                item: item,
+                              );
+                            }),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

@@ -5,7 +5,7 @@ import 'package:overseas_front_end/res/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 
 class ProfilePhotoUploadWidget extends StatefulWidget {
-  final String title ;
+  final String title;
   final Uint8List? initialImageBytes;
   final ValueChanged<Uint8List?>? onImageChanged;
 
@@ -57,7 +57,7 @@ class _ProfilePhotoUploadWidgetState extends State<ProfilePhotoUploadWidget> {
                   size: 18, color: AppColors.violetPrimaryColor),
               const SizedBox(width: 8),
               CustomText(
-                text:widget.title ,
+                text: widget.title,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: AppColors.primaryColor,
@@ -117,7 +117,7 @@ class _ProfilePhotoUploadWidgetState extends State<ProfilePhotoUploadWidget> {
                   label: const CustomText(text: 'Upload', fontSize: 12),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    side:  BorderSide(color: AppColors.violetPrimaryColor),
+                    side: BorderSide(color: AppColors.violetPrimaryColor),
                     foregroundColor: AppColors.violetPrimaryColor,
                   ),
                 ),

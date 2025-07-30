@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/navigation_service.dart';
-import '../../model/lead/round_robin.dart';
 import '../../model/lead/round_robin_group.dart';
+import '../../model/officer/officer_model.dart';
 
 class RoundRobinController extends GetxController {
   static RoundRobinController get to => Get.find();
@@ -45,14 +44,37 @@ class RoundRobinController extends GetxController {
   /// Add Officers (update locally)
   Future<bool> addOfficersToRoundRobin({
     required String roundRobinId,
-    required List<String> officerIds,
+    required List<OfficerModel> officer,
   }) async {
     try {
+      // Find the group
+      final index = roundRobinGroups.indexWhere((g) => g.id == roundRobinId);
+
+      // If group exists, filter out already-present officers
+      List<OfficerModel> officersToAdd = officer;
+      if (index != -1) {
+        final existingOfficerIds = roundRobinGroups[index]
+            .officerDetails
+            .map((o) => o.id)
+            .whereType<String>()
+            .toSet();
+
+        officersToAdd =
+            officer.where((o) => !existingOfficerIds.contains(o.id)).toList();
+      }
+
+      // If nothing new to add, return true (success)
+      if (officersToAdd.isEmpty) {
+        return true;
+      }
+
+      // Prepare request data
       final data = {
         "round_robin_id": roundRobinId,
-        "officers": officerIds,
+        "officers": officersToAdd.map((o) => o.id).toList(),
       };
 
+      // API request
       final response = await _apiService.patchRequest(
         endpoint: Constant().insertOfficersInToRoundRobinList,
         body: data,
@@ -65,27 +87,24 @@ class RoundRobinController extends GetxController {
           return false;
         },
         (data) {
-          // final index =
-          //     roundRobinGroups.indexWhere((g) => g.id == roundRobinId);
-          // if (index != -1) {
-          //   final group = roundRobinGroups[index];
-          //   final updatedOfficers =
-          //       List<RoundRobinOfficerModel>.from(group.officerDetails)
-          //         ..addAll(
-          //           officerIds.map((id) => RoundRobinOfficerModel(
-          //                 id: id,
-          //                 name: '', // Fill if needed
-          //                 phone: '',
-          //                 companyPhoneNumber: '',
-          //                 branch: [],
-          //                 designation: [],
-          //               )),
-          //         );
-          //   roundRobinGroups[index] =
-          //       group.copyWith(officerDetails: updatedOfficers);
-          // }
-          // return true;
-          fetchRoundRobinGroups();
+          // Update local state if group found
+          if (index != -1) {
+            final group = roundRobinGroups[index];
+            final updatedOfficers =
+                List<OfficerModel>.from(group.officerDetails)
+                  ..addAll(
+                    officersToAdd.map((officer) => OfficerModel(
+                          id: officer.id,
+                          name: officer.name,
+                          phone: officer.phone,
+                          companyPhoneNumber: officer.companyPhoneNumber,
+                          branch: officer.branch,
+                          designation: officer.designation,
+                        )),
+                  );
+            roundRobinGroups[index] =
+                group.copyWith(officerDetails: updatedOfficers);
+          }
           return true;
         },
       );
@@ -119,21 +138,21 @@ class RoundRobinController extends GetxController {
         },
         (data) {
           // 🔹 Update locally
-          // NavigationService.goBack();
-          // final index =
-          //     roundRobinGroups.indexWhere((g) => g.id == roundRobinId);
-          // if (index != -1) {
-          //   final group = roundRobinGroups[index];
-          //   final updatedOfficers = group.officerDetails
-          //       .where((o) => !officerIds.contains(o.id))
-          //       .toList();
-          //   roundRobinGroups[index] =
-          //       group.copyWith(officerDetails: updatedOfficers);
-          // }
-          // return true;
           NavigationService.goBack();
-          fetchRoundRobinGroups();
+          final index =
+              roundRobinGroups.indexWhere((g) => g.id == roundRobinId);
+          if (index != -1) {
+            final group = roundRobinGroups[index];
+            final updatedOfficers = group.officerDetails
+                .where((o) => !officerIds.contains(o.id))
+                .toList();
+            roundRobinGroups[index] =
+                group.copyWith(officerDetails: updatedOfficers);
+          }
           return true;
+          // NavigationService.goBack();
+          // fetchRoundRobinGroups();
+          // return true;
         },
       );
     } catch (e) {
@@ -145,13 +164,13 @@ class RoundRobinController extends GetxController {
   Future<bool> createRoundRobin({
     required String name,
     required String country,
-    List<String> officerIds = const [],
+    List<OfficerModel> officers = const [],
   }) async {
     try {
       final data = {
         "name": name,
         "country": country,
-        "officers": officerIds,
+        "officers": officers.map((o) => o.id).toList(),
       };
 
       final response = await _apiService.postRequest(
@@ -166,10 +185,14 @@ class RoundRobinController extends GetxController {
           return false;
         },
         (data) {
-          fetchRoundRobinGroups();
+          roundRobinGroups.add(RoundRobinGroup.fromJson({
+            "_id": data['id'] ?? '',
+            "name": name,
+            "country": country,
+            "officer_details": officers.map((o) => o.toJson()).toList(),
+          }));
+
           return true;
-          // roundRobinGroups.add(RoundRobinGroup.fromJson(data));
-          // return true;
         },
       );
     } catch (e) {

@@ -1,10 +1,10 @@
-import 'package:overseas_front_end/model/lead/round_robin.dart';
+import 'package:overseas_front_end/model/officer/officer_model.dart';
 
 class RoundRobinGroup {
   final String id;
   final String name;
   final String country;
-  final List<RoundRobinOfficerModel> officerDetails;
+  final List<OfficerModel> officerDetails;
 
   RoundRobinGroup({
     required this.id,
@@ -19,7 +19,7 @@ class RoundRobinGroup {
       name: json['name'] ?? '',
       country: json['country'] ?? '',
       officerDetails: (json['officer_details'] as List<dynamic>?)
-              ?.map((e) => RoundRobinOfficerModel.fromJson(e))
+              ?.map((e) => OfficerModel.fromJson(e))
               .toList() ??
           [],
     );
@@ -28,7 +28,7 @@ class RoundRobinGroup {
     String? id,
     String? name,
     String? country,
-    List<RoundRobinOfficerModel>? officerDetails,
+    List<OfficerModel>? officerDetails,
   }) {
     return RoundRobinGroup(
       id: id ?? this.id,

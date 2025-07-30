@@ -45,15 +45,22 @@ class ApiService extends GetxService {
   }) async {
     try {
       Dio dio = serviceLocator();
+      // 🔹 Clean null values if body is a Map
+      dynamic cleanedBody = body;
+      if (body is Map<String, dynamic>) {
+        cleanedBody = removeNullFields(body);
+      }
+      print("POST Request to $endpoint with body: $cleanedBody");
       final response = await dio.post(
         endpoint,
-        data: body,
+        data: cleanedBody,
         options: await _getOptions(),
       );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
       } else {
-        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+        return Left(Exception("response.data['msg']" ?? 'Unknown error'));
       }
     } on DioException catch (e) {
       return Left(handleApiException(e));
@@ -67,10 +74,14 @@ class ApiService extends GetxService {
     required T Function(dynamic json) fromJson,
   }) async {
     try {
+      dynamic cleanedBody = body;
+      if (body is Map<String, dynamic>) {
+        cleanedBody = removeNullFields(body);
+      }
       Dio dio = serviceLocator();
       final response = await dio.put(
         endpoint,
-        data: body,
+        data: cleanedBody,
         options: await _getOptions(),
       );
       if (response.statusCode == 200) {
@@ -115,10 +126,14 @@ class ApiService extends GetxService {
     required T Function(dynamic json) fromJson,
   }) async {
     try {
+      dynamic cleanedBody = body;
+      if (body is Map<String, dynamic>) {
+        cleanedBody = removeNullFields(body);
+      }
       Dio dio = serviceLocator();
       final response = await dio.patch(
         endpoint,
-        data: body,
+        data: cleanedBody,
         options: await _getOptions(),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -140,6 +155,10 @@ class ApiService extends GetxService {
       },
     );
   }
+}
+
+Map<String, dynamic> removeNullFields(Map<String, dynamic> map) {
+  return Map.from(map)..removeWhere((key, value) => value == null);
 }
 
 // import 'package:dio/dio.dart';

@@ -3,12 +3,9 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/lead/round_robin_controller.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/model/models.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
-import 'package:overseas_front_end/view/widgets/custom_action_button.dart';
-import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
-import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
-import 'package:overseas_front_end/view/widgets/custom_text.dart';
-import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 class AddRoundRobinDialog extends StatefulWidget {
   const AddRoundRobinDialog({super.key, this.roundRobinId});
@@ -23,7 +20,7 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
 
   String _nameController = '';
   String _selectedCountry = 'GCC';
-  List<String> _selectedOfficerIds = [];
+  List<OfficerModel> _selectedOfficerIds = [];
 
   final configController = Get.find<ConfigController>();
   final officersController = Get.find<OfficersController>();
@@ -94,21 +91,17 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
               const SizedBox(height: 16),
 
               /// Officer Multi Select
-              Obx(() {
-                final officers = officersController.filteredOfficersList;
-                return CustomMultiSelectDropdownField(
-                  isRequired: true,
-                  isSplit: true,
-                  label: 'Add Officers',
-                  selectedItems: _selectedOfficerIds,
-                  items: officers.map((e) => "${e.name},${e.id}").toList(),
-                  onChanged: (selectedIds) {
-                    setState(() {
-                      _selectedOfficerIds = selectedIds;
-                    });
-                  },
-                );
-              }),
+              CustomMultiOfficerSelectDropdownField(
+                isRequired: true,
+                label: 'Add Officers',
+                selectedItems: _selectedOfficerIds,
+                items: officersController.filteredOfficersList,
+                onChanged: (selectedIds) {
+                  setState(() {
+                    _selectedOfficerIds = selectedIds;
+                  });
+                },
+              ),
               const SizedBox(height: 16),
 
               /// Action Buttons
@@ -143,19 +136,20 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                                       .createRoundRobin(
                                     name: name,
                                     country: _selectedCountry,
-                                    officerIds: _selectedOfficerIds,
+                                    officers: _selectedOfficerIds,
                                   );
 
                                   if (result) {
                                     CustomSnackBar.showMessage("Success",
-                                        "Round Robin Created Successfully");
+                                        "Round Robin Created Successfully",
+                                        backgroundColor: Colors.green);
                                     Navigator.pop(context);
                                   } else {
                                     CustomSnackBar.showMessage(
-                                      "error",
-                                      roundRobinController.error.value ??
-                                          'Failed to create',
-                                    );
+                                        "error",
+                                        roundRobinController.error.value ??
+                                            'Failed to create',
+                                        backgroundColor: Colors.red);
                                   }
                                 }
                               },

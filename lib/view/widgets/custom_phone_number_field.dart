@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomPhoneField extends StatelessWidget {
   final String label;
@@ -76,6 +77,7 @@ class CustomPhoneField extends StatelessWidget {
             Expanded(
                 child: TextFormField(
               controller: controller,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 fillColor: Colors.white,
                 filled: true,
