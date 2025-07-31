@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../../controller/team_lead/team_lead_controller.dart';
+import '../../../model/officer/officer_model.dart';
 import '../../widgets/widgets.dart';
 import 'widgets/team_lead_display.dart';
 import 'widgets/team_lead_user_list_table.dart';
@@ -17,6 +19,8 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
   String selectedNewTeamLead = '';
   final teamLeadController = Get.put(TeamLeadController());
   final officersController = Get.put(OfficersController());
+  final List<OfficerModel> _selectedOfficers = [];
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -111,25 +115,69 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                   officersController.officersList,
                                 );
 
-                                await showDialog(
+                                showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    content: SizedBox(
-                                      height: 100,
-                                      width: 500,
-                                      child: CustomDropdownField(
-                                        label: "Select Team Lead",
-                                        value: selectedNewTeamLead,
-                                        isSplit: true,
-                                        items: <String>[
-                                          ...officersController.officersList
-                                              .map((e) => "${e.name},${e.id}")
-                                              .toList()
-                                        ],
-                                        onChanged: (p0) {
-                                          selectedNewTeamLead =
-                                              p0?.split(",").last ?? "";
-                                        },
+                                    content: Form(
+                                      key: formKey,
+                                      child: SizedBox(
+                                        height: 200,
+                                        width: 500,
+                                        child: Column(
+                                          children: [
+                                            CustomDropdownField(
+                                              label: "Select Team Lead",
+                                              value: selectedNewTeamLead,
+                                              isSplit: true,
+                                              items: <String>[
+                                                ...officersController
+                                                    .officersList
+                                                    .map((e) =>
+                                                        "${e.name},${e.id}")
+                                                    .toList()
+                                              ],
+                                              onChanged: (p0) {
+                                                selectedNewTeamLead =
+                                                    p0?.split(",").last ?? "";
+                                              },
+                                            ),
+                                            // OfficerSelectDropdown(
+                                            //   label: 'Select Officer',
+                                            //   value: selectedNewTeamLead,
+                                            //   items: <String>[
+                                            //     ...officersController
+                                            //         .officersList
+                                            //         .map((e) =>
+                                            //             "${e.name},${e.id}")
+                                            //         .toList()
+                                            //   ],
+                                            //   onChanged: (value) => {
+                                            //     print(value),
+                                            //     setState(() =>
+                                            //         selectedNewTeamLead =
+                                            //             value ?? '')
+                                            //   },
+                                            //   isRequired: true,
+                                            //   isSplit: true,
+                                            //   prefixIcon: Icons.person_outline,
+                                            //   enableSearch: true,
+                                            // ),
+                                            SizedBox(height: 16),
+                                            CustomMultiOfficerSelectDropdownField(
+                                                label: 'Team Members',
+                                                selectedItems:
+                                                    _selectedOfficers,
+                                                items: officersController
+                                                    .officersList,
+                                                onChanged: (selectedIds) {
+                                                  setState(() {
+                                                    _selectedOfficers.clear();
+                                                    _selectedOfficers
+                                                        .addAll(selectedIds);
+                                                  });
+                                                }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     actions: [
@@ -145,15 +193,23 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                       ),
                                       ElevatedButton(
                                         onPressed: () {
-                                          Navigator.pop(context);
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) =>
-                                                TeamLeadDisplay(
-                                              officerId: "",
-                                              officerSId: selectedNewTeamLead,
-                                            ),
-                                          );
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            if (selectedNewTeamLead.isEmpty ||
+                                                _selectedOfficers.isEmpty) {
+                                              CustomToast.showToast(
+                                                context: context,
+                                                message:
+                                                    "Please select a team lead and at least one officer.",
+                                              );
+                                              return;
+                                            }
+                                            teamLeadController.createOfficer(
+                                              context,
+                                              selectedNewTeamLead,
+                                              _selectedOfficers,
+                                            );
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor:

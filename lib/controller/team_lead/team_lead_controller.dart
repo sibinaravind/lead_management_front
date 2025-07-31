@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/officer/officer_model.dart';
+import '../../view/widgets/custom_toast.dart';
 
 class TeamLeadController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -26,7 +27,6 @@ class TeamLeadController extends GetxController {
         fromJson: (dynamic json) {
           if (json is List) {
             final parsed = json.map((e) => OfficerModel.fromJson(e)).toList();
-            print("Parsed data: $parsed");
             teamLeadListData.assignAll(parsed);
             assignedEmployees.assignAll(parsed);
             remainingEmployees.assignAll(parsed);
@@ -38,8 +38,7 @@ class TeamLeadController extends GetxController {
           }
         },
       );
-      print("hello");
-      print("object: $json");
+
       json.fold(
         (failure) {
           error.value = 'Failed to load lead officers: $failure';
@@ -50,59 +49,83 @@ class TeamLeadController extends GetxController {
         },
       );
     } catch (e) {
-      print("Error: $e");
       error.value = 'Failed to load lead officers: $e';
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// Search filter for employees
-  void filterEmployees(String str) {
-    remainingEmployees.value = allRemainingEmployees
-        .where((element) =>
-            (element.officerId?.toLowerCase().contains(str.toLowerCase()) ??
-                false) ||
-            (element.name?.toLowerCase().contains(str.toLowerCase()) ?? false))
-        .toList();
-  }
-
-  /// Add officer to lead
-  Future<void> addOfficerToLead({
-    required String leadOfficerId,
-    required String officerId,
-    required String staffId,
-  }) async {
+  Future<bool> addOfficerToLead(
+    BuildContext context,
+    String selectedNewTeamLead,
+    List<OfficerModel> officers,
+  ) async {
     isLoading.value = true;
     error.value = null;
-
     try {
+      print(officers);
+      var officer2 = officers;
       final response = await _apiService.patchRequest(
         endpoint: Constant().addOfficerToLead,
         body: {
-          "lead_officer_id": leadOfficerId,
-          "officer": {
-            "officer_id": officerId,
-            "staff_id": staffId,
-            "edit_permission": false
-          }
+          "lead_officer_id": selectedNewTeamLead,
+          "officer": officer2
+              .map((e) => {
+                    "officer_id": e.id,
+                    "staff_id": e.officerId,
+                    "edit_permission": true
+                  })
+              .toList(),
         },
         fromJson: (json) => json,
       );
-      response.fold(
-        (failure) {
-          error.value = 'Failed to add officer: $failure';
-        },
-        (data) {
-          if (data['success'] == true) {
-            // fetchTeamLeadList();
-          } else {
-            error.value = data['message'] ?? 'Failed to add officer';
+
+      // return response.fold(
+      //   (failure) {
+      //     CustomToast.showToast(
+      //       context: context,
+      //       message: 'Error adding officers: $failure',
+      //     );
+      //     error.value = 'Failed to add officers: $failure';
+      //     return false;
+      //   },
+      //   (data) {
+      // Find the lead and add officers if they don't exist
+      print('officers: $officers');
+      teamLeadListData.forEach((lead) {
+        if (lead.id == selectedNewTeamLead) {
+          print("hellp");
+          final existingOfficerIds =
+              lead.officers?.map((o) => o.id).toSet() ?? {};
+          print(existingOfficerIds);
+          print(officers);
+          for (final officer in officers) {
+            print(officer.id);
+            if (!existingOfficerIds.contains(officer.id)) {
+              lead.officers ??= [];
+              lead.officers!.add(officer);
+            }
           }
-        },
+        }
+      });
+
+      teamLeadListData.refresh();
+      Navigator.of(context).pop();
+
+      CustomToast.showToast(
+        context: context,
+        message: 'Officer(s) added successfully!',
       );
+      return true;
+      //   },
+      // );
     } catch (e) {
-      error.value = 'Failed to add officer: $e';
+      error.value = 'Failed to add officers: $e';
+      CustomToast.showToast(
+        context: context,
+        message: 'Error adding officers: $e',
+      );
+      return false;
     } finally {
       isLoading.value = false;
     }
@@ -128,14 +151,24 @@ class TeamLeadController extends GetxController {
       );
       response.fold(
         (failure) {
-          error.value = 'Failed to add officer: $failure';
+          CustomToast.showToast(
+            context: context,
+            message: 'Error Deleting officer: $failure',
+          );
+          error.value = 'Failed to delete officer: $failure';
         },
         (data) {
-          if (data['success'] == true) {
-            // fetchTeamLeadList();
-          } else {
-            error.value = data['message'] ?? 'Failed to add officer';
-          }
+          // fetchTeamLeadList();
+          teamLeadListData.forEach((lead) {
+            if (lead.id == leadOfficerId) {
+              lead.officers?.removeWhere((officer) => officer.id == officerId);
+            }
+          });
+          CustomToast.showToast(
+            context: context,
+            message: 'Officer deleted successfully!',
+          );
+          teamLeadListData.refresh();
         },
       );
     } catch (e) {
@@ -167,17 +200,42 @@ class TeamLeadController extends GetxController {
 
   /// Create officer
   Future<bool> createOfficer(
-    Map<String, dynamic> officer,
+    BuildContext context,
+    String selectedNewTeamLead,
+    List<OfficerModel> officer,
   ) async {
+    print("object");
     isLoading.value = true;
     error.value = null;
     try {
-      final response = await _apiService.postRequest(
-        endpoint: Constant().officerInsert,
-        body: officer,
+      final response = await _apiService.patchRequest(
+        endpoint: Constant().addOfficerToLead,
+        body: {
+          "lead_officer_id": selectedNewTeamLead,
+          "officer": officer
+              .map((e) => {
+                    "officer_id": e.id,
+                    "staff_id": e.officerId,
+                    "edit_permission": true
+                  })
+              .toList(),
+        },
         fromJson: (json) => json,
       );
-      await fetchTeamLeadList();
+      response.fold(
+        (failure) {
+          CustomToast.showToast(
+            context: context,
+            message: 'Error creating officer: $failure',
+          );
+          return false;
+        },
+        (data) async {
+          Navigator.of(context).pop();
+          await fetchTeamLeadList();
+          return true;
+        },
+      );
       return true;
     } catch (e) {
       error.value = 'Error creating officer: $e';
@@ -185,6 +243,16 @@ class TeamLeadController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// Search filter for employees
+  void filterEmployees(String str) {
+    remainingEmployees.value = allRemainingEmployees
+        .where((element) =>
+            (element.officerId?.toLowerCase().contains(str.toLowerCase()) ??
+                false) ||
+            (element.name?.toLowerCase().contains(str.toLowerCase()) ?? false))
+        .toList();
   }
 }
 

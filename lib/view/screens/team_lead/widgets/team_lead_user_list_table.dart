@@ -120,8 +120,7 @@ class TeamLeadListTable extends StatelessWidget {
                                   showDialog(
                                     context: context,
                                     builder: (context) => TeamLeadDisplay(
-                                      officerId: listUser.officerId ?? "",
-                                      officerSId: listUser.id ?? '',
+                                      officerId: listUser.id ?? "",
                                     ),
                                   );
                                 }
