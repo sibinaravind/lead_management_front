@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
-import '../../res/style/colors/colors.dart';
+import '../../utils/style/colors/colors.dart';
 import '../../view/screens/config/config_screen.dart';
 
 class NavigationController extends GetxController {

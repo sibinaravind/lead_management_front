@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/officers_controller/round_robin_controller.dart';
+import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/controller/team_lead/team_lead_controller.dart';
 
 import '../../controller/app_common/bloc/app_user_contoller.dart'
@@ -25,13 +26,14 @@ class GlobalBindings extends Bindings {
   void dependencies() {
     // Get.put(AppUserController());
     Get.lazyPut(() => AppUserController());
-    Get.lazyPut(() => ConfigController());
+    Get.put(ConfigController());
     Get.lazyPut(() => AccessPermissionController());
     Get.lazyPut(() => CampaignController());
     Get.lazyPut(() => LoginController());
     Get.lazyPut(() => RoundRobinController());
     Get.lazyPut(() => OfficersController());
     Get.lazyPut(() => TeamLeadController());
+    Get.lazyPut(() => ProjectController());
 
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());

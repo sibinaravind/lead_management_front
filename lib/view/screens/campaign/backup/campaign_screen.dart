@@ -12,7 +12,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../model/campaign/campaign_model.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 // import '../../widgets/custom_toast.dart';
 // import 'widget/delete_dialogue.dart';
 

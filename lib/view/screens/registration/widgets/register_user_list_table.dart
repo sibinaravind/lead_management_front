@@ -2,7 +2,7 @@
 // import 'package:overseas_front_end/model/client/client_data_model.dart';
 // import 'package:overseas_front_end/model/lead/lead_model.dart';
 
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_text.dart';
 // import '../../leads/flavour/customer_lead_flavour.dart';
 // import '../../leads/widgets/call_record_popup.dart';

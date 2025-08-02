@@ -8,6 +8,7 @@ import '../../../model/officer/officer_model.dart';
 
 class AppUserController extends GetxController {
   OfficerModel? userModel;
+
   var configList = ConfigListModel().obs;
   @override
   void onInit() {

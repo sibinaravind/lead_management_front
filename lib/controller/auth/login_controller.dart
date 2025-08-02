@@ -7,7 +7,7 @@ import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../core/di/service_locator.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/navigation_service.dart';
-import '../../res/style/colors/colors.dart';
+import '../../utils/style/colors/colors.dart';
 import '../../view/widgets/custom_snackbar.dart';
 
 class LoginController extends GetxController {

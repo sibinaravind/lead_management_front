@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_gradient_button.dart';
 
 class CustomCheckDropdown<T> extends FormField<List<T>> {
@@ -178,7 +178,7 @@ class CustomCheckDropdown<T> extends FormField<List<T>> {
 
 
 // import 'package:flutter/material.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/custom_gradient_button.dart';
 
 // class CutomCheckDropdown<T> extends FormField<List<T>> {

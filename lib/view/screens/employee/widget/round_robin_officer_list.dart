@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/screens/employee/widget/officers_delete_dialogue.dart';
 import '../../../../model/officer/officer_model.dart';
-import '../../../../res/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 import '../../config/widget/action_button.dart';
 
 class RoundRobinOfficerList extends StatelessWidget {

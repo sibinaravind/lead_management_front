@@ -4,7 +4,7 @@
 // import 'package:overseas_front_end/controller/app_user_provider.dart';
 // import 'package:overseas_front_end/model/models.dart';
 // import 'package:overseas_front_end/res/constants/enum_class.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // import 'package:provider/provider.dart';
 

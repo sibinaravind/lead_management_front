@@ -5,8 +5,8 @@
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // import 'package:provider/provider.dart';
 // import 'dart:math';
-// import '../../../res/style/colors/colors.dart';
-// import '../../../res/style/colors/dimension.dart';
+// import '../../../utils/style/colors/colors.dart';
+// import '../../../utils/style/colors/dimension.dart';
 // import '../../widgets/custom_date_range_field.dart';
 // import '../../widgets/filter_chip.dart';
 // import 'add_lead_screen.dart';

@@ -4,7 +4,7 @@
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // import '../../../../config/flavour_config.dart';
 // import '../../../../controller/app_common/bloc/app_user_contoller.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 
 // class CustomDrawer extends StatefulWidget {
 //   final bool? ismobile;
@@ -670,7 +670,7 @@
 // // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // // import '../../../../config/flavour_config.dart';
 // // import '../../../../controller/app_common/bloc/app_user_contoller.dart';
-// // import '../../../../res/style/colors/colors.dart';
+// // import '../../../../utils/style/colors/colors.dart';
 
 // // class CustomDrawer extends StatefulWidget {
 // //   final bool? ismobile;

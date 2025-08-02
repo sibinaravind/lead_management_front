@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'custom_text.dart';
 
 class PopupProfileUploadWidget extends StatefulWidget {
-  final String title ;
+  final String title;
   final Uint8List? initialImageBytes;
   final ValueChanged<Uint8List?>? onImageChanged;
 
@@ -54,11 +54,11 @@ class _ProfilePhotoUploadWidgetState extends State<PopupProfileUploadWidget> {
           Center(
             child: Row(
               children: [
-                 Icon(Icons.photo_camera_rounded,
+                Icon(Icons.photo_camera_rounded,
                     size: 18, color: AppColors.violetPrimaryColor),
                 const SizedBox(width: 8),
                 CustomText(
-                  text:widget.title ,
+                  text: widget.title,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                   color: AppColors.primaryColor,
@@ -84,30 +84,30 @@ class _ProfilePhotoUploadWidgetState extends State<PopupProfileUploadWidget> {
             ),
             child: imageBytes != null
                 ? ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.memory(
-                imageBytes!,
-                fit: BoxFit.cover,
-                width: 150,
-                height: 150,
-              ),
-            )
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.memory(
+                      imageBytes!,
+                      fit: BoxFit.cover,
+                      width: 150,
+                      height: 150,
+                    ),
+                  )
                 : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.person_rounded,
-                  size: 50,
-                  color: Colors.grey.shade400,
-                ),
-                const SizedBox(height: 8),
-                CustomText(
-                  text: 'No Photo',
-                  color: Colors.grey.shade600,
-                  fontSize: 12,
-                ),
-              ],
-            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.person_rounded,
+                        size: 50,
+                        color: Colors.grey.shade400,
+                      ),
+                      const SizedBox(height: 8),
+                      CustomText(
+                        text: 'No Photo',
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ],
+                  ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -119,7 +119,7 @@ class _ProfilePhotoUploadWidgetState extends State<PopupProfileUploadWidget> {
                   label: const CustomText(text: 'Upload', fontSize: 12),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    side:  BorderSide(color: AppColors.violetPrimaryColor),
+                    side: BorderSide(color: AppColors.violetPrimaryColor),
                     foregroundColor: AppColors.violetPrimaryColor,
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 
 class CustomTextfieldWithoutLabel extends StatefulWidget {
   final String hint;

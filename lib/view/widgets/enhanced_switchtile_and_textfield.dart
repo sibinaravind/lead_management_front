@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 
 import 'custom_text.dart';
 
@@ -76,7 +76,7 @@ class EnhancedSwitchTileWithButton extends StatelessWidget {
                   label: const CustomText(text: 'Upload', fontSize: 12),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    side:  BorderSide(color: AppColors.violetPrimaryColor),
+                    side: BorderSide(color: AppColors.violetPrimaryColor),
                     foregroundColor: AppColors.violetPrimaryColor,
                   ),
                 ),

@@ -1,7 +1,7 @@
 // // Minimal Client Management Tab
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:provider/provider.dart';
 
 // import '../../../../controller/project/project_provider_controller.dart';

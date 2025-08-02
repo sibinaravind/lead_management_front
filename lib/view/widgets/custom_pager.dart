@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../res/style/colors/colors.dart';
+import '../../utils/style/colors/colors.dart';
 
 class CustomPager extends StatefulWidget {
   final int currentPage;

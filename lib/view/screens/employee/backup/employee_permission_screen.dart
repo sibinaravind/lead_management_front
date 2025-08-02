@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:overseas_front_end/res/style/colors/dimension.dart';
+// import 'package:overseas_front_end/utils/style/colors/dimension.dart';
 // import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 // import 'package:overseas_front_end/view/widgets/custom_textfield.dart';
 // import 'package:overseas_front_end/view/widgets/popup_text_form_filed.dart';

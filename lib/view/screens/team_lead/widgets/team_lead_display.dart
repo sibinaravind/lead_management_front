@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../../../controller/officers_controller/officers_controller.dart';
 import '../../../../controller/team_lead/team_lead_controller.dart';
@@ -106,7 +106,7 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
                             controller.addOfficerToLead(
                               context,
                               widget.officerId,
-                              _selectedOfficers,
+                              List<OfficerModel>.from(_selectedOfficers),
                             );
                             _selectedOfficers.clear();
                           } else {
@@ -311,7 +311,7 @@ class _TeamLeadDisplayState extends State<TeamLeadDisplay> {
 
   Future<void> _showRemoveConfirmation(
       BuildContext context, dynamic officer, String teamOfficerId) async {
-    final confirmed = await showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

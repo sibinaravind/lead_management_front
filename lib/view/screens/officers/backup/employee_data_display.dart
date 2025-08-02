@@ -3,7 +3,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../controller/officers_controller/officers_controller.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 // import '../../widgets/widgets.dart';
 // import 'employee_creation_screen.dart';
 

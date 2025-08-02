@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../utils/style/colors/colors.dart';
 
 // ignore: must_be_immutable
 class FilterButtons extends StatelessWidget {

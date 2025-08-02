@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:overseas_front_end/controller/navigation_controller/navigation_controller.dart';
 import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'dart:io' show Platform;
 import '../../../core/di/service_locator.dart';
 import 'animated_drawer.dart';

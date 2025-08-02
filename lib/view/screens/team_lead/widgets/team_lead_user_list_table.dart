@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/screens/team_lead/widgets/team_lead_display.dart';
 import '../../../../controller/team_lead/team_lead_controller.dart';
 import '../../../widgets/custom_text.dart';

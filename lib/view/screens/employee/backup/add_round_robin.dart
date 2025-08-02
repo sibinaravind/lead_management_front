@@ -6,7 +6,7 @@
 // import '../../../../controller/config/config_provider.dart';
 // import '../../../../controller/lead/round_robin_controller.dart';
 // import '../../../../controller/officers_controller/officers_controller.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_action_button.dart';
 // import '../../../widgets/custom_multi_selection_dropdown_field.dart';
 // import '../../../widgets/custom_text.dart';

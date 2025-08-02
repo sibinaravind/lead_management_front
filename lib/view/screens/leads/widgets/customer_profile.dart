@@ -5,7 +5,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../../controller/lead/lead_provider.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_gradient_button.dart';
 // import '../../../widgets/custom_text.dart';
 // import 'call_history_tab.dart';

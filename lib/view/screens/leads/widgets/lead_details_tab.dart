@@ -4,7 +4,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../../controller/lead/lead_provider.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_text.dart';
 
 // class LeadDetailsTab extends StatelessWidget {

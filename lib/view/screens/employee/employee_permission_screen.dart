@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/res/style/colors/dimension.dart';
 import 'package:overseas_front_end/view/widgets/popup_text_form_filed.dart';
 import 'package:overseas_front_end/view/widgets/custom_shimmer_widget.dart';
 import '../../../controller/permission_controller/access_permission_controller.dart';
 import '../../../core/services/navigation_service.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
+import '../../../utils/style/colors/dimension.dart';
 import '../../widgets/custom_toast.dart';
 
 class AccessPermissionScreen extends StatefulWidget {

@@ -4,11 +4,37 @@ import 'maxima_fields.dart';
 import 'affiniks_fields.dart';
 import 'sejeya_fields.dart';
 
-class CustomerProjectFlavour {
-  static List<Map<String, dynamic>> userTableList() {
+class ProjectFlavour {
+  static List<Map<String, dynamic>> projectTableList() {
     switch (FlavourConfig.partner()) {
       case Partner.affiniks:
         return AffiniksFields().projectTableList();
+      case Partner.partner1:
+        return partner1Fields().userTableList();
+      case Partner.partner2:
+        return MaximaFields().userTableList();
+      default:
+        return [];
+    }
+  }
+
+  static List<Map<String, dynamic>> clientTableList() {
+    switch (FlavourConfig.partner()) {
+      case Partner.affiniks:
+        return AffiniksFields().clientTableList();
+      case Partner.partner1:
+        return partner1Fields().userTableList();
+      case Partner.partner2:
+        return MaximaFields().userTableList();
+      default:
+        return [];
+    }
+  }
+
+  static List<Map<String, dynamic>> vacancyTableList() {
+    switch (FlavourConfig.partner()) {
+      case Partner.affiniks:
+        return AffiniksFields().vacancyTableList();
       case Partner.partner1:
         return partner1Fields().userTableList();
       case Partner.partner2:

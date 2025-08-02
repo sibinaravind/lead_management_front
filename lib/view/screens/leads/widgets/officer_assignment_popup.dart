@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/controller/lead/lead_provider.dart';
 // import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // import 'package:provider/provider.dart';
 

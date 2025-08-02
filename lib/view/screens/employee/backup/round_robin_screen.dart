@@ -8,7 +8,7 @@
 // import 'package:overseas_front_end/view/widgets/custom_popup.dart';
 // import 'package:overseas_front_end/view/widgets/custom_text.dart';
 // import 'package:provider/provider.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 // import '../../widgets/custom_toast.dart';
 
 // class RoundRobinScreen extends StatefulWidget {

@@ -3,8 +3,8 @@
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 // import 'package:provider/provider.dart';
-// import '../../../res/style/colors/colors.dart';
-// import '../../../res/style/colors/dimension.dart';
+// import '../../../utils/style/colors/colors.dart';
+// import '../../../utils/style/colors/dimension.dart';
 // import '../../widgets/custom_date_range_field.dart';
 // import '../../widgets/widgets.dart';
 // import 'widgets/register_user_list_table.dart';

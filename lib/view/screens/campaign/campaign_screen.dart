@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/campaign/campaign_controller.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
-import 'package:overseas_front_end/functions/pick_image.dart';
+import 'package:overseas_front_end/utils/functions/pick_image.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
-import '../../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../widgets/custom_toast.dart';
 import 'widget/delete_dialogue.dart';

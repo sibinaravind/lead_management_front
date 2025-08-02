@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/core/services/api_service.dart';
 import 'package:overseas_front_end/model/campaign/campaign_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';

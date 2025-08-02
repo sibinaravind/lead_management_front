@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:intl/intl.dart';
-
 import '../../../../model/project/client_data_vacancy_model.dart';
 
 class ClientDashboard extends StatefulWidget {
+  const ClientDashboard({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _ClientDashboardState createState() => _ClientDashboardState();
 }
 

@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/view/widgets/custom_text.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 // import 'tabs/acadamic_tab.dart';
 // import 'tabs/document_tab.dart';
 // import 'tabs/eligility_tab.dart';

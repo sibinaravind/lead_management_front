@@ -9,7 +9,7 @@ import 'package:overseas_front_end/view/screens/employee/widget/round_robin_offi
 import 'package:overseas_front_end/view/widgets/custom_button.dart';
 import 'package:overseas_front_end/view/widgets/delete_confirm_dialog.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_toast.dart';
 
 class RoundRobinScreen extends StatefulWidget {

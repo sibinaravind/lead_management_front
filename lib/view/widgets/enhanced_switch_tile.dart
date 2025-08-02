@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 
 import 'custom_text.dart';
 
@@ -9,16 +9,12 @@ class EnhancedSwitchTile extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
-
-
   const EnhancedSwitchTile({
     super.key,
     required this.label,
     required this.icon,
     required this.value,
     required this.onChanged,
-
-
   });
 
   @override
@@ -58,7 +54,6 @@ class EnhancedSwitchTile extends StatelessWidget {
             activeColor: AppColors.violetPrimaryColor,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-
         ],
       ),
     );

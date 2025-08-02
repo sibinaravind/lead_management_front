@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/custom_multi_selection_dropdown_field.dart';
 // import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';

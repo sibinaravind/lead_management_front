@@ -63,13 +63,11 @@ class TeamLeadController extends GetxController {
     isLoading.value = true;
     error.value = null;
     try {
-      print(officers);
-      var officer2 = officers;
       final response = await _apiService.patchRequest(
         endpoint: Constant().addOfficerToLead,
         body: {
           "lead_officer_id": selectedNewTeamLead,
-          "officer": officer2
+          "officer": officers
               .map((e) => {
                     "officer_id": e.id,
                     "staff_id": e.officerId,
@@ -80,27 +78,12 @@ class TeamLeadController extends GetxController {
         fromJson: (json) => json,
       );
 
-      // return response.fold(
-      //   (failure) {
-      //     CustomToast.showToast(
-      //       context: context,
-      //       message: 'Error adding officers: $failure',
-      //     );
-      //     error.value = 'Failed to add officers: $failure';
-      //     return false;
-      //   },
-      //   (data) {
-      // Find the lead and add officers if they don't exist
-      print('officers: $officers');
       teamLeadListData.forEach((lead) {
         if (lead.id == selectedNewTeamLead) {
-          print("hellp");
           final existingOfficerIds =
               lead.officers?.map((o) => o.id).toSet() ?? {};
-          print(existingOfficerIds);
-          print(officers);
+
           for (final officer in officers) {
-            print(officer.id);
             if (!existingOfficerIds.contains(officer.id)) {
               lead.officers ??= [];
               lead.officers!.add(officer);
@@ -108,6 +91,7 @@ class TeamLeadController extends GetxController {
           }
         }
       });
+      officers.clear();
 
       teamLeadListData.refresh();
       Navigator.of(context).pop();

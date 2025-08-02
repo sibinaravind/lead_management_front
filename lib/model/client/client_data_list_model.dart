@@ -1,5 +1,3 @@
-import 'package:overseas_front_end/model/client/client_data_model.dart';
-
 import '../lead/lead_model.dart';
 
 class ClientDataListModel {

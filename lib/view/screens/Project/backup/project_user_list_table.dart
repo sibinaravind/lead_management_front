@@ -1,19 +1,16 @@
 // import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:overseas_front_end/controller/project/project_controller.dart';
 // import 'package:overseas_front_end/model/project/project_model.dart';
-// import 'package:overseas_front_end/view/screens/Project/add_project_vacancy_screen.dart';
-// import 'package:overseas_front_end/view/widgets/custom_popup.dart';
 // import 'package:provider/provider.dart';
-
-// import '../../../../controller/config/config_provider.dart';
-// import '../../../../controller/project/project_provider_controller.dart';
-// import '../../../../model/app_configs/config_model.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_text.dart';
+// import '../../../widgets/delete_confirm_dialog.dart';
 // import '../flavour/customer_project_flavour.dart';
-// import 'project_details_tab.dart';
+// import '../backup/project_details_tab.dart';
 
 // class ProjectUserListTable extends StatelessWidget {
-//   final List<ProjectModel> userlist;
+//   final ProjectModel userlist;
 //   const ProjectUserListTable({super.key, required this.userlist});
 
 //   @override
@@ -21,10 +18,9 @@
 //     final horizontalController = ScrollController();
 //     final verticalController = ScrollController();
 //     final columnsData = CustomerProjectFlavour.userTableList();
+//     final projectController = Get.find<ProjectController>();
 
-//     return Consumer<ProjectProvider>(
-//       builder: (context, provider, child) {
-//         return LayoutBuilder(
+//     return LayoutBuilder(
 //           builder: (context, constraints) {
 //             return Scrollbar(
 //               thumbVisibility: true,
@@ -54,17 +50,13 @@
 //                             ),
 //                           );
 //                         }).toList(),
-//                         rows: provider.filterProjects.map((listUser) {
-//                           return DataRow(
+//                         rows: <DataRow>[
+//                           DataRow(
 //                             color: WidgetStateProperty.resolveWith<Color?>(
 //                                 (_) => Colors.white),
 //                             cells: columnsData.map((column) {
 //                               final extractor = column['extractor'] as Function;
-//                               final value = (column['name'] == 'Offer' ||
-//                                       column['name'] == 'Offer Amount' ||
-//                                       column['name'] == 'Eligibility Date')
-//                                   ? extractor(listUser, null)
-//                                   : extractor(listUser);
+//                               final value =  extractor(listUser);
 
 //                               return DataCell(
 //                                 ConstrainedBox(
@@ -89,9 +81,7 @@
 //                                             color: AppColors.primaryColor,
 //                                           );
 //                                         case 'Status':
-//                                           return Consumer<ConfigProvider>(
-//                                             builder:
-//                                                 (context, configVal, child) =>
+//                                           return 
 //                                                     Container(
 //                                               decoration: BoxDecoration(
 //                                                 borderRadius:
@@ -107,8 +97,8 @@
 //                                                 // fontWeight: FontWeight.w600,
 //                                                 color: AppColors.whiteMainColor,
 //                                               ),
-//                                             ),
-//                                           );
+//                                             );
+                                          
 //                                         case 'Action':
 //                                           return PopupMenuButton<int>(
 //                                               color: Colors.white,
@@ -124,10 +114,11 @@
 //                                                                           "Are you sure?",
 //                                                                       onConfirm:
 //                                                                           () {
-//                                                                         Provider.of<ProjectProvider>(context, listen: false).deleteProject(
-//                                                                             listUser.sId ??
+//                                                                        projectController.deleteProject(
+//                                                                           context,
+//                                                                             l ??
 //                                                                                 '',
-//                                                                             context);
+//                                                                           );
 //                                                                       }),
 //                                                             ),
 //                                                         value: 1,

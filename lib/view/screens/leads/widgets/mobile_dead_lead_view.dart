@@ -4,14 +4,14 @@
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:overseas_front_end/controller/lead/lead_provider.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/custom_text.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:provider/provider.dart';
 
 // import '../../../../controller/config/config_provider.dart';
 // import '../../../../model/app_configs/config_model.dart';
-// import '../../../../res/style/colors/dimension.dart';
+// import '../../../../utils/style/colors/dimension.dart';
 // import '../../../widgets/custom_date_range_field.dart';
 // import '../../../widgets/filter_chip.dart';
 // import '../add_lead_screen.dart';

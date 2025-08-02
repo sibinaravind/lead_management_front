@@ -9,7 +9,7 @@
 // import 'package:provider/provider.dart';
 // import '../../../../controller/project/project_provider_controller.dart';
 // import '../../../../model/project/client_data_vacancy_model.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_gradient_button.dart';
 // import '../../../widgets/custom_pager.dart';
 // import '../../../widgets/custom_popup.dart';

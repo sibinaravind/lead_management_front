@@ -2,7 +2,7 @@
 // import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 // import 'package:provider/provider.dart';
 
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/widgets.dart';
 
 // class AcademicRecord {

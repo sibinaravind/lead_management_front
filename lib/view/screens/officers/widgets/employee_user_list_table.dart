@@ -4,7 +4,7 @@ import 'package:overseas_front_end/controller/officers_controller/officers_contr
 import 'package:overseas_front_end/view/screens/officers/employee_creation_screen.dart';
 
 import '../../../../model/officer/officer_model.dart';
-import '../../../../res/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_toast.dart';
 import '../../../widgets/delete_confirm_dialog.dart';

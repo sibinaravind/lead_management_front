@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../res/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/popup_date_field.dart';
 import '../../../widgets/widgets.dart';
 

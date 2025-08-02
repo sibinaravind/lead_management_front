@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../model/officer/officer_model.dart';
-import '../../../../res/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 import '../../Project/widget/client_detail_tab.dart';
 import '../../officers/widgets/password_reset_dialog.dart';
@@ -269,14 +269,14 @@ class _AppBarContainerState extends State<AppBarContainer> {
                             title: Text(client.name ?? ''),
                             subtitle: Text(client.phone ?? ''),
                             onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return ClientDetailTab(
-                                      client:
-                                          client); // Pass necessary arguments
-                                },
-                              );
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return ClientDetailTab(
+                              //         client:
+                              //             client); // Pass necessary arguments
+                              //   },
+                              // );
                               // ClientDetailTab(
                               //   client:client
                               // );

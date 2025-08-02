@@ -7,7 +7,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../../controller/config/config_provider.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_text.dart';
 // import '../flavour/customer_lead_flavour.dart';
 // import 'call_record_popup.dart';
@@ -342,8 +342,8 @@
 
 // // import 'package:flutter/material.dart';
 // // import 'package:overseas_front_end/model/client/client_lead_model.dart';
-// // import 'package:overseas_front_end/res/style/colors/dimension.dart';
-// // import '../../../../res/style/colors/colors.dart';
+// // import 'package:overseas_front_end/utils/style/colors/dimension.dart';
+// // import '../../../../utils/style/colors/colors.dart';
 // // import '../../../widgets/custom_text.dart';
 // // import '../flavour/customer_lead_flavour.dart';
 

@@ -5,7 +5,7 @@
 // import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 // import 'package:provider/provider.dart';
 // import '../../../../model/officer/officer_model.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../widgets/custom_text.dart';
 // import '../flavour/employee_flavour.dart';
 // import 'team_lead_display.dart';

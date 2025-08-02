@@ -6,7 +6,7 @@
 // import 'package:provider/provider.dart';
 
 // import '../../../model/app_configs/config_model.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 
 // class ConfigScreen extends StatefulWidget {
 //   const ConfigScreen({super.key});

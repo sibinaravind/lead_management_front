@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/res/style/colors/dimension.dart';
+import 'package:overseas_front_end/utils/style/colors/dimension.dart';
 import '../../../controller/auth/login_controller.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_snackbar.dart';
 import '../../widgets/loading_dialog.dart';
 

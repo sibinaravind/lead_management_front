@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:overseas_front_end/model/project/project_model.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 // import 'widget/client_mangement_tab.dart';

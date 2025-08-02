@@ -3,7 +3,7 @@
 // import 'package:overseas_front_end/view/screens/team_lead/widgets/team_lead_user_list_table.dart';
 // import 'package:provider/provider.dart';
 // import '../../../controller/officers_controller/officers_controller.dart';
-// import '../../../res/style/colors/colors.dart';
+// import '../../../utils/style/colors/colors.dart';
 // import '../../widgets/widgets.dart';
 // import 'widgets/team_lead_display.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
 import 'package:overseas_front_end/model/officer/officer_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
@@ -536,7 +536,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
 // import 'package:get/get.dart';
 // import 'package:overseas_front_end/controller/permission_controller/access_permission_controller.dart';
 // import 'package:overseas_front_end/model/officer/officer_model.dart';
-// import 'package:overseas_front_end/res/style/colors/colors.dart';
+// import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
 // import '../../../controller/officers_controller/officers_controller.dart';

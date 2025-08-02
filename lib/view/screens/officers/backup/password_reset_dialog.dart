@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 class PasswordReset extends StatefulWidget {

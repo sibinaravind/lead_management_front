@@ -130,6 +130,7 @@ class ApiService extends GetxService {
       if (body is Map<String, dynamic>) {
         cleanedBody = removeNullFields(body);
       }
+      print(cleanedBody);
       Dio dio = serviceLocator();
       final response = await dio.patch(
         endpoint,
@@ -158,7 +159,13 @@ class ApiService extends GetxService {
 }
 
 Map<String, dynamic> removeNullFields(Map<String, dynamic> map) {
-  return Map.from(map)..removeWhere((key, value) => value == null);
+  // return Map.from(map)
+  //   ..removeWhere((key, value) =>
+  //       value == null ||
+  //       (value is String && value.trim().isEmpty) ||
+  //       (value is Iterable && value.isEmpty) ||
+  //       (value is Map && value.isEmpty));
+  return map;
 }
 
 // import 'package:dio/dio.dart';

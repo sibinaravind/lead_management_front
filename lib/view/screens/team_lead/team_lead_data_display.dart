@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../../controller/team_lead/team_lead_controller.dart';
 import '../../../model/officer/officer_model.dart';
 import '../../widgets/widgets.dart';
-import 'widgets/team_lead_display.dart';
 import 'widgets/team_lead_user_list_table.dart';
 
 class TeamLeadDataDisplay extends StatefulWidget {
@@ -16,10 +15,9 @@ class TeamLeadDataDisplay extends StatefulWidget {
 }
 
 class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
-  String selectedNewTeamLead = '';
   final teamLeadController = Get.put(TeamLeadController());
   final officersController = Get.put(OfficersController());
-  final List<OfficerModel> _selectedOfficers = [];
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -114,7 +112,8 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                   '',
                                   officersController.officersList,
                                 );
-
+                                String selectedNewTeamLead = '';
+                                final List<OfficerModel> _selectedOfficers = [];
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
@@ -125,21 +124,40 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                         width: 500,
                                         child: Column(
                                           children: [
-                                            CustomDropdownField(
-                                              label: "Select Team Lead",
-                                              value: selectedNewTeamLead,
-                                              isSplit: true,
+                                            // CustomDropdownField(
+                                            //   label: "Select Team Lead",
+                                            //   value: selectedNewTeamLead,
+                                            //   isSplit: true,
+                                            //   items: <String>[
+                                            //     ...officersController
+                                            //         .officersList
+                                            //         .map((e) =>
+                                            //             "${e.name},${e.id}")
+                                            //         .toList()
+                                            //   ],
+                                            //   onChanged: (p0) {
+                                            //     selectedNewTeamLead =
+                                            //         p0?.split(",").last ?? "";
+                                            //   },
+                                            // ),
+                                            CustomOfficerDropDown(
+                                              label: 'Select Officer',
+                                              value:
+                                                  selectedNewTeamLead, // from parent state
                                               items: <String>[
                                                 ...officersController
                                                     .officersList
                                                     .map((e) =>
-                                                        "${e.name},${e.id}")
+                                                        "${e.officerId} - ${e.name},${e.id}")
                                                     .toList()
                                               ],
                                               onChanged: (p0) {
                                                 selectedNewTeamLead =
                                                     p0?.split(",").last ?? "";
                                               },
+                                              isRequired: true,
+                                              isSplit: true,
+                                              prefixIcon: Icons.person,
                                             ),
                                             // OfficerSelectDropdown(
                                             //   label: 'Select Officer',

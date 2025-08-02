@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/view/screens/officers/widgets/employee_user_list_table.dart';
 import '../../../controller/officers_controller/officers_controller.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 import '../../widgets/widgets.dart';
 import 'employee_creation_screen.dart';
 

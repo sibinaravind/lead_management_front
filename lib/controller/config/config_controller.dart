@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/model/app_configs/config_list_model.dart';
-import 'package:overseas_front_end/res/style/colors/colors.dart';
+import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';

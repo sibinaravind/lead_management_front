@@ -3,7 +3,6 @@ class ProjectModel {
   String? projectName;
   String? organizationType;
   String? organizationCategory;
-  String? organizationName;
   String? country;
   String? city;
   String? status;
@@ -14,7 +13,6 @@ class ProjectModel {
     this.projectName,
     this.organizationType,
     this.organizationCategory,
-    this.organizationName,
     this.country,
     this.city,
     this.status,
@@ -26,7 +24,6 @@ class ProjectModel {
     projectName = json['project_name'];
     organizationType = json['organization_type'];
     organizationCategory = json['organization_category'];
-    organizationName = json['organization_name'];
     country = json['country'];
     city = json['city'];
     status = json['status'];
@@ -39,7 +36,6 @@ class ProjectModel {
     data['project_name'] = projectName;
     data['organization_type'] = organizationType;
     data['organization_category'] = organizationCategory;
-    data['organization_name'] = organizationName;
     data['country'] = country;
     data['city'] = city;
     data['status'] = status;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:overseas_front_end/view/screens/dashboard/widgets/todays_quotes.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
 
 class DashboardScreen extends StatelessWidget {

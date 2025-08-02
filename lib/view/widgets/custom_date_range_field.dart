@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/widgets/custom_action_button.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../../res/style/colors/colors.dart';
+import '../../../utils/style/colors/colors.dart';
 
 class CustomDateRangeField extends StatefulWidget {
   final String label;

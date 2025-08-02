@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/view/widgets/popup_date_field.dart';
 
-import '../../../../res/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 
 class WorkExperienceTab {

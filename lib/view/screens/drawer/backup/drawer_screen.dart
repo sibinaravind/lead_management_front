@@ -9,7 +9,7 @@
 // import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';
 // import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 // import 'package:provider/provider.dart';
-// import '../../../../res/style/colors/colors.dart';
+// import '../../../../utils/style/colors/colors.dart';
 // import '../../../controller/auth/login_controller.dart';
 // import '../../../model/officer/officer_model.dart';
 // import '../leads/dead_lead_data_display.dart';
