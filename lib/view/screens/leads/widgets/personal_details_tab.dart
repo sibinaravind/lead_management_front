@@ -10,14 +10,14 @@ import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/responsive_grid.dart';
 
-class PersonalDetailsTab extends StatefulWidget {
-  const PersonalDetailsTab({super.key});
+class VacanyDeatilsTab extends StatefulWidget {
+  const VacanyDeatilsTab({super.key});
 
   @override
-  State<PersonalDetailsTab> createState() => _PersonalDetailsTabState();
+  State<VacanyDeatilsTab> createState() => _VacanyDeatilsTabState();
 }
 
-class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
+class _VacanyDeatilsTabState extends State<VacanyDeatilsTab> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();

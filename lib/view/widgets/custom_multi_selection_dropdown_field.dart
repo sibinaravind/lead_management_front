@@ -25,17 +25,38 @@ class CustomMultiSelectDropdownField extends FormField<List<String>> {
                     }
                   : null),
           builder: (FormFieldState<List<String>> state) {
-            return _CustomMultiSelectDropdownFieldBody(
-              label: label,
-              isRequired: isRequired,
-              isSplit: isSplit,
-              items: items,
-              selectedItems: state.value ?? [],
-              onChanged: (values) {
-                state.didChange(values);
-                onChanged(values);
-              },
-              errorText: state.errorText,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: label,
+                        style: const TextStyle(color: Colors.black87),
+                      ),
+                      if (isRequired)
+                        const TextSpan(
+                          text: ' *',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _CustomMultiSelectDropdownFieldBody(
+                  label: label,
+                  isRequired: isRequired,
+                  isSplit: isSplit,
+                  items: items,
+                  selectedItems: state.value ?? [],
+                  onChanged: (values) {
+                    state.didChange(values);
+                    onChanged(values);
+                  },
+                  errorText: state.errorText,
+                ),
+              ],
             );
           },
         );
@@ -478,10 +499,10 @@ class _CustomMultiSelectDropdownFieldBodyState
             scale: _scaleAnimation.value,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: widget.errorText != null
-                      ? Colors.red.withOpacity(0.6)
+                      ? AppColors.redSecondaryColor.withOpacity(0.7)
                       : AppColors.primaryColor.withOpacity(0.5),
                   width: 1.5,
                 ),

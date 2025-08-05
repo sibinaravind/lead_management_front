@@ -47,6 +47,10 @@ class Constant {
   String deleteVacancy = "project/deleteVacancy";
   String vacancyClientList = "project/getClientListOnVacancy";
   String removeClientFromVacancy = "project/removeClient";
+  String getMatchingProfiles = "project/getMatchingProfiles";
+  String addClientToFavourites = "project/addClientToFavourites";
+  String removeClientFromFavourites = "project/removeClientFromFavourites";
+  String getFavouriteClients = "project/getFavouriteClients/";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
@@ -59,6 +63,7 @@ class Constant {
   String addOfficerToLead = 'officer/addOfficerToLead';
   String deleteOfficerFromLead = 'officer/deleteOfficerFromLead';
 
+  String getAllFilterdLeads = 'lead/getAllFilterdLeads';
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
   String updateLead = 'lead/updateLead';

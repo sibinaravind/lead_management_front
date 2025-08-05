@@ -2,10 +2,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:overseas_front_end/utils/style/colors/colors.dart';
-// import 'package:provider/provider.dart';
-
-// import '../../../../controller/project/project_provider_controller.dart';
-// import '../../../widgets/widgets.dart';
+// import '../../../../widgets/widgets.dart';
 
 // class ClientManagementTab extends StatefulWidget {
 //   const ClientManagementTab({super.key});
@@ -20,42 +17,7 @@
 //   final TextEditingController _vacancyController = TextEditingController();
 //   final TextEditingController _commissionController = TextEditingController();
 
-//   List<Map<String, dynamic>> _selectedClients = [
-//     {
-//       'id': '1',
-//       'name': 'Tech Solutions Inc.',
-//       'email': 'contact@techsolutions.com',
-//       'vacancy': '5',
-//       'commission': '15.0',
-//     },
-//     {
-//       'id': '2',
-//       'name': 'Digital Marketing Pro',
-//       'email': 'info@digitalmarketing.com',
-//       'vacancy': '3',
-//       'commission': '12.5',
-//     },
-//   ];
-
-//   // List<Map<String, dynamic>> _allClients = [
-//   //   {
-//   //     'id': '3',
-//   //     'name': 'Global Enterprises',
-//   //     'email': 'hello@globalent.com',
-//   //   },
-//   //   {
-//   //     'id': '4',
-//   //     'name': 'StartUp Ventures',
-//   //     'email': 'contact@startup.com',
-//   //   },
-//   //   {
-//   //     'id': '5',
-//   //     'name': 'Creative Agency',
-//   //     'email': 'info@creative.com',
-//   //   },
-//   // ];
-
-//   // List<Map<String, dynamic>> _filteredClients = [];
+//   List<Map<String, dynamic>> _selectedClients = [];
 
 //   @override
 //   void initState() {

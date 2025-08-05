@@ -8,8 +8,7 @@ import '../../widgets/widgets.dart';
 import 'widget/projec_user_list_table.dart';
 
 class ProjectDataDisplay extends StatefulWidget {
-  ProjectDataDisplay({super.key});
-
+  const ProjectDataDisplay({super.key});
   @override
   State<ProjectDataDisplay> createState() => _ProjectDataDisplayState();
 }

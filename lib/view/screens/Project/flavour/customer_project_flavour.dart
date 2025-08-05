@@ -43,4 +43,30 @@ class ProjectFlavour {
         return [];
     }
   }
+
+  static List<Map<String, dynamic>> matchingList() {
+    switch (FlavourConfig.partner()) {
+      case Partner.affiniks:
+        return AffiniksFields().matchingList();
+      case Partner.partner1:
+        return partner1Fields().userTableList();
+      case Partner.partner2:
+        return MaximaFields().userTableList();
+      default:
+        return [];
+    }
+  }
+
+  static List<Map<String, dynamic>> shortListedList() {
+    switch (FlavourConfig.partner()) {
+      case Partner.affiniks:
+        return AffiniksFields().shortListed();
+      case Partner.partner1:
+        return partner1Fields().userTableList();
+      case Partner.partner2:
+        return MaximaFields().userTableList();
+      default:
+        return [];
+    }
+  }
 }

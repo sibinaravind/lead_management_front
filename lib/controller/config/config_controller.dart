@@ -17,9 +17,10 @@ class ConfigController extends GetxController {
     loadConfigData();
   }
 
-  Future<void> loadConfigData() async {
+  Future<bool> loadConfigData() async {
     // print(configData.value);
-    // if (configData.value.getAllKeys().isNotEmpty) return;
+
+    if (configData.value.id != null) return true;
     isLoading.value = true;
     try {
       var result = await ApiService().getRequest(
@@ -28,12 +29,17 @@ class ConfigController extends GetxController {
       );
 
       result.fold(
-        (failure) => {},
+        (failure) {
+          return false;
+        },
         (data) => configData.value = data,
       );
+      return true;
     } catch (e) {
+      return false;
     } finally {
       isLoading.value = false;
+      return true;
     }
   }
 

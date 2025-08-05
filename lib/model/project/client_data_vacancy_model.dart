@@ -1,11 +1,25 @@
 class VacancyClientDataModel {
-  final ClientInfo? clientInfo;
-  final String? clientId;
+  String? id;
+  String? name;
+  String? email;
+  String? phone;
+  String? address;
+  String? city;
+  String? country;
+  String? status;
+  String? clientId;
   final Map<String, VacancyDetail>? vacancies;
   final List<CommissionHistory>? commissionHistory;
 
   VacancyClientDataModel({
-    this.clientInfo,
+    this.id,
+    this.name,
+    this.email,
+    this.phone,
+    this.address,
+    this.city,
+    this.country,
+    this.status,
     this.clientId,
     this.vacancies,
     this.commissionHistory,
@@ -13,10 +27,15 @@ class VacancyClientDataModel {
 
   factory VacancyClientDataModel.fromJson(Map<String, dynamic> json) {
     return VacancyClientDataModel(
-      clientInfo: json['client_info'] != null
-          ? ClientInfo.fromJson(json['client_info'])
-          : null,
-      clientId: json['client_id'],
+      id: json["client_info"]["_id"],
+      name: json["client_info"]["name"],
+      email: json["client_info"]["email"],
+      phone: json["client_info"]["phone"],
+      address: json["client_info"]["address"],
+      city: json["client_info"]["city"],
+      country: json["client_info"]["country"],
+      status: json["client_info"]["status"],
+      clientId: json["client_id"],
       vacancies: (json['vacancies'] as Map<String, dynamic>?)?.map(
         (key, value) {
           if (value is Map<String, dynamic>) {
@@ -32,41 +51,6 @@ class VacancyClientDataModel {
       commissionHistory: (json['commission_history'] as List<dynamic>?)
           ?.map((e) => CommissionHistory.fromJson(e))
           .toList(),
-    );
-  }
-}
-
-class ClientInfo {
-  final String? id;
-  final String? name;
-  final String? email;
-  final String? phone;
-  final String? address;
-  final String? city;
-  final String? country;
-  final String? status;
-
-  ClientInfo({
-    this.id,
-    this.name,
-    this.email,
-    this.phone,
-    this.address,
-    this.city,
-    this.country,
-    this.status,
-  });
-
-  factory ClientInfo.fromJson(Map<String, dynamic> json) {
-    return ClientInfo(
-      id: json['_id'],
-      name: json['name'],
-      email: json['email'],
-      phone: json['phone'],
-      address: json['address'],
-      city: json['city'],
-      country: json['country'],
-      status: json['status'],
     );
   }
 }

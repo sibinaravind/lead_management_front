@@ -6,18 +6,18 @@ import 'package:overseas_front_end/view/screens/Project/flavour/customer_project
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
+import 'create_edit_vacancy_popup.dart';
+import '../vacancy_details_tab.dart';
 
 class VacancyUserListTable extends StatelessWidget {
   final List<VacancyModel> userlist;
   const VacancyUserListTable({super.key, required this.userlist});
-
   @override
   Widget build(BuildContext context) {
     final _projectController = Get.find<ProjectController>();
     final horizontalController = ScrollController();
     final verticalController = ScrollController();
     final columnsData = ProjectFlavour.vacancyTableList();
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scrollbar(
@@ -87,26 +87,26 @@ class VacancyUserListTable extends StatelessWidget {
                                       return PopupMenuButton(
                                         color: Colors.white,
                                         itemBuilder: (context) => [
-                                          // PopupMenuItem(
-                                          //     onTap: () => showDialog(
-                                          //         context: context,
-                                          //         builder: (context) =>
-                                          //             CreateEditVacancyPopup(
-                                          //               isEditMode: true,
-                                          //               vacancy:value ,
-                                          //             )),
-                                          //     value: 1,
-                                          //     child: const Row(
-                                          //       spacing: 5,
-                                          //       children: [
-                                          //         Icon(
-                                          //           Icons.edit,
-                                          //           color: AppColors
-                                          //               .greenSecondaryColor,
-                                          //         ),
-                                          //         Text("Edit"),
-                                          //       ],
-                                          //     )),
+                                          PopupMenuItem(
+                                              onTap: () => showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      CreateEditVacancyPopup(
+                                                        isEditMode: true,
+                                                        vacancy: value,
+                                                      )),
+                                              value: 1,
+                                              child: const Row(
+                                                spacing: 5,
+                                                children: [
+                                                  Icon(
+                                                    Icons.edit,
+                                                    color: AppColors
+                                                        .greenSecondaryColor,
+                                                  ),
+                                                  Text("Edit"),
+                                                ],
+                                              )),
                                           PopupMenuItem(
                                               onTap: () => showDialog(
                                                     context: context,
@@ -160,14 +160,16 @@ class VacancyUserListTable extends StatelessWidget {
                               ),
                             ),
                             onTap: () {
-                              if (column['name'] == 'Job Title') {
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) => VacancyDetailTab(
-                                //     id: listUser.id ?? '',
-                                //     vacancy: listUser,
-                                //   ),
-                                // );
+                              if (column['name'] == 'Project Name') {
+                                _projectController.selectedVacancyId =
+                                    listUser.id ?? '';
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => VacancyDetailTab(
+                                    id: listUser.id ?? '',
+                                    vacancy: listUser,
+                                  ),
+                                );
                               }
                               // if (column['name'] == 'ID') {
                               //   // showDialog(

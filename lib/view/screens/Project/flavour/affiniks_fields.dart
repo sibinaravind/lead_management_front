@@ -2,6 +2,8 @@ import 'package:overseas_front_end/model/project/client_model.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 
+import '../../../../model/lead/lead_model.dart';
+
 class AffiniksFields {
   List<Map<String, dynamic>> clientTableList() {
     return [
@@ -132,6 +134,62 @@ class AffiniksFields {
         'name': 'Action',
         'extractor': (VacancyModel user) => user,
       },
+    ];
+  }
+
+  List<Map<String, dynamic>> matchingList() {
+    return [
+      {'name': 'ID', 'extractor': (LeadModel user) => user.clientId.toString()},
+      {
+        'name': 'Display Name',
+        'extractor': (LeadModel user) => user.name.toString()
+      },
+      {
+        'name': 'Phone Number',
+        'extractor': (LeadModel user) => user.phone.toString()
+      },
+      {
+        'name': 'Status',
+        'extractor': (LeadModel user) => user.status.toString()
+      },
+      {
+        'name': 'Qualification',
+        'extractor': (LeadModel user) => user.qualification ?? ''
+      },
+      {
+        'name': 'Country Interested',
+        'extractor': (LeadModel user) =>
+            user.countryInterested?.map((e) => e.toString()).join(", ") ?? ''
+      },
+      {'name': 'Action', 'extractor': (LeadModel user) => user.sId.toString()},
+    ];
+  }
+
+  List<Map<String, dynamic>> shortListed() {
+    return [
+      {'name': 'ID', 'extractor': (LeadModel user) => user.clientId.toString()},
+      {
+        'name': 'Display Name',
+        'extractor': (LeadModel user) => user.name.toString()
+      },
+      {
+        'name': 'Phone Number',
+        'extractor': (LeadModel user) => user.phone.toString()
+      },
+      {
+        'name': 'Status',
+        'extractor': (LeadModel user) => user.status.toString()
+      },
+      {
+        'name': 'Qualification',
+        'extractor': (LeadModel user) => user.qualification ?? ''
+      },
+      {
+        'name': 'Country Interested',
+        'extractor': (LeadModel user) =>
+            user.countryInterested?.map((e) => e.toString()).join(", ") ?? ''
+      },
+      {'name': 'Action', 'extractor': (LeadModel user) => user.sId.toString()},
     ];
   }
 
