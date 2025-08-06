@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
-import '../../../../../utils/style/colors/colors.dart';
-import '../../../../widgets/custom_toast.dart';
-import '../matching_user_list_table.dart';
+import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_toast.dart';
+import '../widget/matching_user_list_table.dart';
 
 class MatchingTab extends StatefulWidget {
   const MatchingTab({super.key});

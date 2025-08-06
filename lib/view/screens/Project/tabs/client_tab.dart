@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 
-import '../../../../../model/project/client_data_vacancy_model.dart';
-import '../../../../../utils/style/colors/colors.dart';
+import '../../../../model/project/client_data_vacancy_model.dart';
+import '../../../../utils/style/colors/colors.dart';
 
 class ClientTab extends StatefulWidget {
   final String id;

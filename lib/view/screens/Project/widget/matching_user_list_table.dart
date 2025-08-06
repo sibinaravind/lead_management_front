@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
-
-import '../../../../controller/app_common/bloc/app_user_contoller.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../flavour/customer_project_flavour.dart';
@@ -11,7 +9,7 @@ import '../flavour/customer_project_flavour.dart';
 class MatchingUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;
 
-  MatchingUserListTable({super.key, required this.userlist});
+  const MatchingUserListTable({super.key, required this.userlist});
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,8 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
+import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
+import 'core/services/user_cache_service.dart';
 import 'model/project/vacancy_model.dart';
 import 'view/screens/Project/vacancy_data_display.dart';
 import 'view/screens/Project/vacancy_details_tab.dart';
@@ -22,8 +24,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create a separate navigator key for GoRouter
-    // UserCacheService().saveAuthToken(
-    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZjZWRhOWU5Mjk5ZjM0MjlkNjIzOWEiLCJvZmZpY2VyX2lkIjoiNCIsImRlc2lnbmF0aW9uIjpbIkNPVU5TSUxPUiIsIkFETUlOIl0sImJyYW5jaCI6WyJUU1QxMyJdLCJvZmZpY2VycyI6W3sib2ZmaWNlcl9pZCI6IjY4NmZmMzA3MWRhNWViYmE1YzZjZjBiOSIsInN0YWZmX2lkIjoiMjMiLCJlZGl0X3Blcm1pc3Npb24iOmZhbHNlfSx7Im9mZmljZXJfaWQiOiI2ODdiNWIxYjBhZTY1ZjhjZTlkNDYwMWEiLCJzdGFmZl9pZCI6IjIzIiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg2Y2VkYTllOTI5OWYzNDI5ZDYyMzlhIiwic3RhZmZfaWQiOiI0IiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg3YjY4ZTAwYWU2NWY4Y2U5ZDQ2MDFiIiwic3RhZmZfaWQiOiIxMjEiLCJlZGl0X3Blcm1pc3Npb24iOmZhbHNlfSx7Im9mZmljZXJfaWQiOiI2ODdlM2RiY2NkYjdjNTJjOWQ5OTM1ZWIiLCJzdGFmZl9pZCI6Ijg1IiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg2Y2VkYTllOTI5OWYzNDI5ZDYyMzlhIiwic3RhZmZfaWQiOiI0IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODZkMWVkZGU5Mjk5ZjM0MjlkNjIzYTUiLCJzdGFmZl9pZCI6IjY0IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODdiMzM0NTBhZTY1ZjhjZTlkNDYwMTUiLCJzdGFmZl9pZCI6IjI1IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODdiNWIxYjBhZTY1ZjhjZTlkNDYwMWEiLCJzdGFmZl9pZCI6IjEwMCIsImVkaXRfcGVybWlzc2lvbiI6dHJ1ZX1dLCJpYXQiOjE3NTQzOTM5ODMsImV4cCI6MTc1NDM5NTc4M30.DFUoMTFWgqAV08S9nTEfI4i4VVFxj_hm0b604z2teaQ');
+    UserCacheService().saveAuthToken(
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZjZWRhOWU5Mjk5ZjM0MjlkNjIzOWEiLCJvZmZpY2VyX2lkIjoiNCIsImRlc2lnbmF0aW9uIjpbIkNPVU5TSUxPUiIsIkFETUlOIl0sImJyYW5jaCI6WyJUU1QxMyJdLCJvZmZpY2VycyI6W3sib2ZmaWNlcl9pZCI6IjY4NmZmMzA3MWRhNWViYmE1YzZjZjBiOSIsInN0YWZmX2lkIjoiMjMiLCJlZGl0X3Blcm1pc3Npb24iOmZhbHNlfSx7Im9mZmljZXJfaWQiOiI2ODdiNWIxYjBhZTY1ZjhjZTlkNDYwMWEiLCJzdGFmZl9pZCI6IjIzIiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg2Y2VkYTllOTI5OWYzNDI5ZDYyMzlhIiwic3RhZmZfaWQiOiI0IiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg3YjY4ZTAwYWU2NWY4Y2U5ZDQ2MDFiIiwic3RhZmZfaWQiOiIxMjEiLCJlZGl0X3Blcm1pc3Npb24iOmZhbHNlfSx7Im9mZmljZXJfaWQiOiI2ODdlM2RiY2NkYjdjNTJjOWQ5OTM1ZWIiLCJzdGFmZl9pZCI6Ijg1IiwiZWRpdF9wZXJtaXNzaW9uIjpmYWxzZX0seyJvZmZpY2VyX2lkIjoiNjg2Y2VkYTllOTI5OWYzNDI5ZDYyMzlhIiwic3RhZmZfaWQiOiI0IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODZkMWVkZGU5Mjk5ZjM0MjlkNjIzYTUiLCJzdGFmZl9pZCI6IjY0IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODdiMzM0NTBhZTY1ZjhjZTlkNDYwMTUiLCJzdGFmZl9pZCI6IjI1IiwiZWRpdF9wZXJtaXNzaW9uIjp0cnVlfSx7Im9mZmljZXJfaWQiOiI2ODdiNWIxYjBhZTY1ZjhjZTlkNDYwMWEiLCJzdGFmZl9pZCI6IjEwMCIsImVkaXRfcGVybWlzc2lvbiI6dHJ1ZX1dLCJpYXQiOjE3NTQ0NjU5MDYsImV4cCI6MTc1NDQ2NzcwNn0.vXpF291lBByUtS3my-AOhkr79JXneSIJWBugLSl7U8o');
     final GoRouter router = GoRouter(
       navigatorKey: routerNavigatorKey, // Use separate key for GoRouter
       // redirect: (context, state) {
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          builder: (context, state) => VacancyDataDisplay(),
+          builder: (context, state) => LeadDataDisplay(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

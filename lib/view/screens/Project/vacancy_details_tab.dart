@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/tabs/matching_tab.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/tabs/short_list_tab.dart';
+import 'package:overseas_front_end/view/screens/Project/tabs/matching_tab.dart';
+import 'package:overseas_front_end/view/screens/Project/tabs/short_list_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_info_chip.dart';
 import '../../widgets/custom_text.dart';
-import 'widget/tabs/client_tab.dart';
-import 'widget/tabs/project_tab.dart';
+import 'tabs/client_tab.dart';
+import 'tabs/project_tab.dart';
 
 class VacancyDetailTab extends StatefulWidget {
   final VacancyModel vacancy;

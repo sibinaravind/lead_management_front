@@ -1,33 +1,111 @@
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
+// import 'package:overseas_front_end/controller/config/config_provider.dart';
+// import 'package:overseas_front_end/controller/lead/lead_provider.dart';
+// import 'package:overseas_front_end/controller/registration/registration_controller.dart';
 // import 'package:overseas_front_end/utils/style/colors/colors.dart';
 // import 'package:overseas_front_end/view/widgets/widgets.dart';
+// import 'package:provider/provider.dart';
+
 // import '../../widgets/custom_toast.dart';
 
-// class AddLeadScreen extends StatefulWidget {
-//   const AddLeadScreen({super.key});
+// class EditLeadScreen extends StatefulWidget {
+//   const EditLeadScreen(
+//       {super.key,
+//       required this.selectedService,
+//       required this.selectedCountry,
+//       required this.selectedBranch,
+//       required this.selectedGender,
+//       required this.selectedMaritalStatus,
+//       required this.selectedLeadSource,
+//       required this.selectedLeadCategory,
+//       required this.selectedStatus,
+//       required this.selectedServiceType,
+//       required this.selectedQualification,
+//       required this.selectedDistrict,
+//       required this.selectedAgent,
+//       required this.sendGreetings,
+//       required this.sendEmail,
+//       required this.sendWhatsapp,
+//       required this.nameStr,
+//       required this.mobileStr,
+//       required this.waMobileStr,
+//       required this.emailStr,
+//       required this.leadDateStr,
+//       required this.mobileOptionalStr,
+//       required this.locationStr,
+//       required this.qualificationStr,
+//       required this.courseNameStr,
+//       required this.remarksStr,
+//       required this.dobStr,
+//       required this.cityStr,
+//       required this.stateStr,
+//       required this.countryStr,
+//       required this.selectedCountries,
+//       this.selectedSpecialized,
+//       this.leadId,
+//       required this.altMobileStr,
+//       this.selectedCountryPhoneCode,
+//       required this.isRegistration});
 
+//   final String selectedService;
+//   final String selectedCountry;
+//   final String selectedBranch;
+//   final String selectedGender;
+//   final String selectedMaritalStatus;
+//   final String selectedLeadSource;
+//   final String selectedLeadCategory;
+//   final String selectedStatus;
+//   final String selectedServiceType;
+//   final String selectedQualification;
+//   final String selectedDistrict;
+//   final String selectedAgent;
+//   final bool sendGreetings;
+//   final bool sendEmail;
+//   final bool sendWhatsapp;
+//   // final bool visibility;
+//   final String nameStr;
+//   final String mobileStr;
+//   final String altMobileStr;
+//   final String waMobileStr;
+//   final String emailStr;
+//   final String leadDateStr;
+//   final String mobileOptionalStr;
+//   final String locationStr;
+//   final String qualificationStr;
+//   final String courseNameStr;
+//   final String remarksStr;
+//   final String dobStr;
+//   final String cityStr;
+//   final String stateStr;
+//   final String countryStr;
+//   final List<String> selectedCountries;
+//   final List<String>? selectedSpecialized;
+//   final String? leadId;
+//   final String? selectedCountryPhoneCode;
+//   final bool isRegistration;
 //   @override
-//   State<AddLeadScreen> createState() => _AddLeadScreenState();
+//   State<EditLeadScreen> createState() => _EditLeadScreenState();
 // }
 
-// class _AddLeadScreenState extends State<AddLeadScreen>
+// class _EditLeadScreenState extends State<EditLeadScreen>
 //     with TickerProviderStateMixin {
 //   final _formKey = GlobalKey<FormState>();
-//   // Form fields
-//   String? _selectedService = 'MIGRATION';
-//   String? _selectedCountry = '+91';
-//   String? _selectedBranch = 'AFFINIKIS';
-//   String? _selectedGender;
-//   String? _selectedMaritalStatus;
 
+//   // Form fields
+//   String? _selectedService;
 //   String? _selectedPhone;
-//   String? _selectedAltPhone;
-//   String? _selectedWAPhone;
+//   // String? _selectedAltPhone;
+//   // String? _selectedWAPhone;
 
 //   String? _selectedPhoneCtry;
 //   String? _selectedAltPhoneCtry;
 //   String? _selectedWAPhoneCtry;
+
+//   String? _selectedCountry;
+//   String? _selectedBranch;
+//   String? _selectedGender;
+//   String? _selectedMaritalStatus;
 
 //   String? _selectedLeadSource;
 //   String? _selectedLeadCategory;
@@ -65,17 +143,57 @@
 
 //   final _countryController = TextEditingController();
 
-//   List<String> selectedCountries = [];
+//   List<String> _selectedCountries = [];
 
 //   List<String>? _selectedSpecialized;
 
 //   @override
 //   void initState() {
-//     super.initState();
-//     _selectedPhoneCtry = "";
-//     _selectedAltPhoneCtry = "";
-//     _selectedWAPhoneCtry = "";
+//     _selectedAgent = widget.selectedAgent;
+//     _selectedService = widget.selectedService;
+//     _selectedCountry = null;
+//     _selectedBranch = widget.selectedBranch;
+//     _selectedGender = widget.selectedGender;
+//     _selectedMaritalStatus = widget.selectedMaritalStatus;
+//     _selectedLeadSource = widget.selectedLeadSource;
+//     _selectedLeadCategory = widget.selectedLeadCategory;
+//     _selectedStatus = widget.selectedStatus;
+//     _selectedServiceType = widget.selectedServiceType;
+//     _selectedQualification = widget.selectedQualification;
+//     _selectedDistrict = widget.selectedDistrict;
+//     _nameController.text = widget.nameStr;
+//     _mobileController.text = widget.mobileStr;
+//     _waMobileController.text = widget.waMobileStr;
+//     _emailController.text = widget.emailStr;
+//     _leadDateController.text = widget.leadDateStr;
+//     _mobileOptionalController.text = widget.mobileOptionalStr;
+//     _locationController.text = widget.locationStr;
+//     _qualificationController.text = widget.qualificationStr;
+//     _courseNameController.text = widget.courseNameStr;
+//     _remarksController.text = widget.remarksStr;
+//     _dobController.text = widget.dobStr;
+//     _cityController.text = widget.cityStr;
+//     _stateController.text = widget.stateStr;
+//     _countryController.text = widget.countryStr;
+//     _sendGreetings = widget.sendGreetings;
+//     _sendEmail = widget.sendEmail;
+//     _sendWhatsapp = widget.sendWhatsapp;
+//     _selectedSpecialized = widget.selectedSpecialized;
+//     _selectedCountries = widget.selectedCountries;
+//     _selectedPhone = widget.mobileStr;
+//     _waMobileController.text = widget.waMobileStr.split(" ").last;
+//     _mobileOptionalController.text = widget.altMobileStr.split(" ").last;
+//     _selectedPhoneCtry = widget.selectedCountryPhoneCode;
+//     _selectedAltPhoneCtry = widget.altMobileStr.split(" ").first;
+//     _selectedWAPhoneCtry = widget.waMobileStr.split(" ").first;
+//     _selectedPhoneCtry ??= "";
+//     _selectedAltPhoneCtry ??= "";
+//     _selectedWAPhoneCtry ??= "";
 
+//     // print("=====> ${_selectedCountries.toString()}");
+//     print("=====> ${_selectedPhone.toString()}");
+
+//     super.initState();
 //     _leadDateController.text = DateFormat("dd/MM/yyyy").format(DateTime.now());
 //   }
 
@@ -174,7 +292,7 @@
 //                             mainAxisAlignment: MainAxisAlignment.center,
 //                             children: [
 //                               CustomText(
-//                                 text: 'Add New Lead',
+//                                 text: 'Edit New Lead',
 //                                 fontSize: 20,
 //                                 fontWeight: FontWeight.bold,
 //                                 color: Colors.white,
@@ -220,8 +338,11 @@
 //                                       child: Scrollbar(
 //                                         thumbVisibility: true,
 //                                         child: SingleChildScrollView(
-//                                             padding: const EdgeInsets.all(24),
-//                                             child: LayoutBuilder(
+//                                           padding: const EdgeInsets.all(24),
+//                                           child: Consumer<ConfigProvider>(
+//                                               builder: (context, configProvider,
+//                                                   child) {
+//                                             return LayoutBuilder(
 //                                               builder: (context, constraints) {
 //                                                 final availableWidth =
 //                                                     constraints.maxWidth;
@@ -238,60 +359,60 @@
 //                                                   crossAxisAlignment:
 //                                                       CrossAxisAlignment.start,
 //                                                   children: [
-//                                                     const SectionTitle(
-//                                                         title:
-//                                                             'Lead Information',
-//                                                         icon: Icons
-//                                                             .info_outline_rounded),
-//                                                     const SizedBox(height: 16),
-//                                                     ResponsiveGrid(
-//                                                         columns: columnsCount,
-//                                                         children: [
-//                                                           CustomDropdownField(
-//                                                             label: 'Service',
-//                                                             value:
-//                                                                 _selectedService,
-//                                                             items: configProvider
-//                                                                     .configModelList
-//                                                                     ?.serviceType
-//                                                                     ?.map((e) =>
-//                                                                         e.name ??
-//                                                                         "")
-//                                                                     .toList() ??
-//                                                                 [],
-//                                                             onChanged: (val) =>
-//                                                                 setState(() =>
-//                                                                     _selectedService =
-//                                                                         val),
-//                                                             isRequired: true,
-//                                                           ),
-//                                                           CustomDropdownField(
-//                                                             label: 'Branch',
-//                                                             value:
-//                                                                 _selectedBranch,
-//                                                             items: configProvider
-//                                                                     .configModelList
-//                                                                     ?.branch
-//                                                                     ?.map((e) =>
-//                                                                         e.name ??
-//                                                                         "")
-//                                                                     .toList() ??
-//                                                                 [],
-//                                                             onChanged: (val) =>
-//                                                                 setState(() =>
-//                                                                     _selectedBranch =
-//                                                                         val),
-//                                                             isRequired: true,
-//                                                           ),
-//                                                           CustomTextFormField(
-//                                                             label: 'Lead Date',
-//                                                             controller:
-//                                                                 _leadDateController,
-//                                                             readOnly: true,
-//                                                             isdate: true,
-//                                                           ),
-//                                                         ]),
-//                                                     const SizedBox(height: 32),
+//                                                     // const SectionTitle(
+//                                                     //     title:
+//                                                     //         'Lead Information',
+//                                                     //     icon: Icons
+//                                                     //         .info_outline_rounded),
+//                                                     // const SizedBox(height: 16),
+//                                                     // ResponsiveGrid(
+//                                                     //     columns: columnsCount,
+//                                                     //     children: [
+//                                                     //       CustomDropdownField(
+//                                                     //         label: 'Service',
+//                                                     //         value:
+//                                                     //             _selectedService,
+//                                                     //         items: configProvider
+//                                                     //                 .configModelList
+//                                                     //                 ?.serviceType
+//                                                     //                 ?.map((e) =>
+//                                                     //                     e.name ??
+//                                                     //                     "")
+//                                                     //                 .toList() ??
+//                                                     //             [],
+//                                                     //         onChanged: (val) =>
+//                                                     //             setState(() =>
+//                                                     //                 _selectedService =
+//                                                     //                     val),
+//                                                     //         isRequired: true,
+//                                                     //       ),
+//                                                     //       CustomDropdownField(
+//                                                     //         label: 'Branch',
+//                                                     //         value:
+//                                                     //             _selectedBranch,
+//                                                     //         items: configProvider
+//                                                     //                 .configModelList
+//                                                     //                 ?.branch
+//                                                     //                 ?.map((e) =>
+//                                                     //                     e.name ??
+//                                                     //                     "")
+//                                                     //                 .toList() ??
+//                                                     //             [],
+//                                                     //         onChanged: (val) =>
+//                                                     //             setState(() =>
+//                                                     //                 _selectedBranch =
+//                                                     //                     val),
+//                                                     //         isRequired: true,
+//                                                     //       ),
+//                                                     //       CustomTextFormField(
+//                                                     //         label: 'Lead Date',
+//                                                     //         controller:
+//                                                     //             _leadDateController,
+//                                                     //         readOnly: true,
+//                                                     //         isdate: true,
+//                                                     //       ),
+//                                                     //     ]),
+//                                                     // const SizedBox(height: 32),
 //                                                     const SectionTitle(
 //                                                         title:
 //                                                             'Personal Details',
@@ -389,9 +510,10 @@
 //                                                                     )
 //                                                                     .toList() ??
 //                                                                 [],
-//                                                             values: [],
+//                                                             values:
+//                                                                 _selectedCountries,
 //                                                             onChanged: (value) {
-//                                                               selectedCountries =
+//                                                               _selectedCountries =
 //                                                                   value.cast<
 //                                                                       String>();
 //                                                             },
@@ -412,7 +534,9 @@
 //                                                                     _selectedSpecialized =
 //                                                                         val.cast<
 //                                                                             String>()),
-//                                                             values: [],
+//                                                             values:
+//                                                                 _selectedSpecialized ??
+//                                                                     [],
 //                                                           ),
 //                                                           CustomDropdownField(
 //                                                             label:
@@ -490,7 +614,7 @@
 //                                                             label:
 //                                                                 'Service Type',
 //                                                             value:
-//                                                                 _selectedStatus,
+//                                                                 _selectedServiceType,
 //                                                             items: configProvider
 //                                                                     .configModelList
 //                                                                     ?.serviceType
@@ -501,7 +625,7 @@
 //                                                                 [],
 //                                                             onChanged: (val) =>
 //                                                                 setState(() =>
-//                                                                     _selectedStatus =
+//                                                                     _selectedServiceType =
 //                                                                         val),
 //                                                           ),
 //                                                           CustomDropdownField(
@@ -521,7 +645,7 @@
 //                                                                 [],
 //                                                             onChanged: (val) =>
 //                                                                 setState(() =>
-//                                                                     _selectedServiceType =
+//                                                                     _selectedStatus =
 //                                                                         val),
 //                                                           ),
 //                                                         ]),
@@ -667,7 +791,9 @@
 //                                                   ],
 //                                                 );
 //                                               },
-//                                             )),
+//                                             );
+//                                           }),
+//                                         ),
 //                                       ),
 //                                     ),
 //                                     Row(
@@ -721,72 +847,157 @@
 //                                                 Color(0xFFE100FF)
 //                                               ],
 //                                             ),
-//                                             onPressed: () async {
-//                                               if (_formKey.currentState!
-//                                                   .validate()) {
-//                                                 var completed = await Provider.of<LeadProvider>(context, listen: false).addLead(
-//                                                     countryPhoneCode:
-//                                                         _selectedPhoneCtry ??
-//                                                             '',
-//                                                     context,
-//                                                     name: _nameController.text
-//                                                         .trim(),
-//                                                     email: _emailController.text
-//                                                         .trim(),
-//                                                     phone:
-//                                                         "${_mobileController.text.trim()}",
-//                                                     alternatePhone:
-//                                                         "$_selectedAltPhoneCtry ${_mobileOptionalController.text.trim()}"
+//                                             onPressed: () {
+//                                               if ((_formKey.currentState
+//                                                       ?.validate()) ??
+//                                                   false) {
+//                                                 widget.isRegistration
+//                                                     ? Provider.of<RegistrationController>(
+//                                                             context,
+//                                                             listen: false)
+//                                                         .editRegistration(
+//                                                             context,
+//                                                             {
+//                                                               "name":
+//                                                                   _nameController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "email":
+//                                                                   _emailController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "email_password":
+//                                                                   "",
+//                                                               "phone":
+//                                                                   _mobileController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "gender":
+//                                                                   _selectedGender ??
+//                                                                       "",
+//                                                               "country_code":
+//                                                                   _selectedPhoneCtry ??
+//                                                                       '',
+//                                                               "alternate_phone":
+//                                                                   _mobileOptionalController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "emergency_contact":
+//                                                                   "",
+//                                                               "whatsapp":
+//                                                                   _waMobileController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "address":
+//                                                                   _locationController
+//                                                                       .text
+//                                                                       .trim(),
+//                                                               "city": "",
+//                                                               "state": "",
+//                                                               "country": "",
+//                                                               "matrial_status":
+//                                                                   _selectedMaritalStatus ??
+//                                                                       '',
+//                                                               "dob":
+//                                                                   _dobController
+//                                                                       .text,
+//                                                               "birth_place": "",
+//                                                               "birth_country":
+//                                                                   "",
+//                                                               "marital_status":
+//                                                                   _selectedMaritalStatus ??
+//                                                                       '',
+//                                                               "religion": "",
+//                                                               "passport_number":
+//                                                                   "",
+//                                                               "passport_expiry_date":
+//                                                                   "",
+//                                                               "profession": "",
+//                                                               "specialized_in":
+//                                                                   _selectedSpecialized ??
+//                                                                       [],
+//                                                               "job_interests":
+//                                                                   [],
+//                                                               "country_interested":
+//                                                                   _selectedCountries ??
+//                                                                       [],
+//                                                               "expected_salary":
+//                                                                   0,
+//                                                               "skills": [],
+//                                                               "on_call_communication":
+//                                                                   true,
+//                                                               "on_whatsapp_communication":
+//                                                                   _sendWhatsapp,
+//                                                               "on_email_communication":
+//                                                                   _sendEmail,
+//                                                               "note":
+//                                                                   _remarksController
+//                                                                       .text
+//                                                                       .trim()
+//                                                             },
+//                                                             clientId:
+//                                                                 widget.leadId ??
+//                                                                     '')
+//                                                     : Provider.of<LeadProvider>(context, listen: false).updateLead(
+//                                                         countryPhoneCode:
+//                                                             _selectedPhoneCtry ??
+//                                                                 '',
+//                                                         context,
+//                                                         name: _nameController.text
 //                                                             .trim(),
-//                                                     whatsapp:
-//                                                         "$_selectedWAPhoneCtry ${_waMobileController.text.trim()}"
+//                                                         email: _emailController
+//                                                             .text
 //                                                             .trim(),
-//                                                     gender:
-//                                                         _selectedGender ?? "",
-//                                                     dob: _dobController.text
-//                                                             .trim() ??
-//                                                         "",
-//                                                     matrialStatus:
-//                                                         _selectedMaritalStatus ??
-//                                                             '',
-//                                                     address: _locationController.text
-//                                                         .trim(),
-//                                                     city: "",
-//                                                     state: "",
-//                                                     country: "",
-//                                                     jobInterests: [],
-//                                                     countryInterested:
-//                                                         selectedCountries ?? [],
-//                                                     expectedSalary: 0,
-//                                                     qualification:
-//                                                         _selectedQualification ?? "",
-//                                                     university: "",
-//                                                     passingYear: "",
-//                                                     experience: 0,
-//                                                     skills: [],
-//                                                     profession: "",
-//                                                     specializedIn: _selectedSpecialized ?? [],
-//                                                     leadSource: _selectedLeadSource ?? "",
-//                                                     comment: _remarksController.text.trim(),
-//                                                     onCallCommunication: true,
-//                                                     onWhatsappCommunication: _sendWhatsapp,
-//                                                     onEmailCommunication: _sendEmail,
-//                                                     status: _selectedLeadCategory ?? "",
-//                                                     serviceType: _selectedService ?? "",
-//                                                     branchName: _selectedBranch ?? "");
-//                                                 if (completed) {
-//                                                   CustomToast.showToast(
-//                                                       context: context,
-//                                                       message:
-//                                                           'Lead saved successfully');
-//                                                   // Save lead logic
-//                                                   // ScaffoldMessenger.of(context)
-//                                                   //     .showSnackBar(
-//                                                   //   const SnackBar(
-//                                                   //       content: Text(
-//                                                   //           'Lead saved successfully')),
-//                                                   // );
-//                                                 }
+//                                                         phone:
+//                                                             "${_mobileController.text.trim()}",
+//                                                         alternatePhone:
+//                                                             "$_selectedPhoneCtry ${_mobileOptionalController.text.trim()}"
+//                                                                 .trim(),
+//                                                         whatsapp:
+//                                                             "$_selectedPhoneCtry ${_waMobileController.text.trim()}"
+//                                                                 .trim(),
+//                                                         gender:
+//                                                             _selectedGender ??
+//                                                                 "",
+//                                                         dob:
+//                                                             _dobController.text,
+//                                                         matrialStatus:
+//                                                             _selectedMaritalStatus ??
+//                                                                 '',
+//                                                         address: _locationController.text.trim(),
+//                                                         city: "",
+//                                                         state: "",
+//                                                         country: "",
+//                                                         jobInterests: [],
+//                                                         countryInterested: _selectedCountries ?? [],
+//                                                         expectedSalary: 0,
+//                                                         qualification: _selectedQualification ?? "",
+//                                                         university: "",
+//                                                         passingYear: "",
+//                                                         experience: 0,
+//                                                         skills: [],
+//                                                         profession: "",
+//                                                         specializedIn: _selectedSpecialized ?? [],
+//                                                         leadSource: _selectedLeadSource ?? "",
+//                                                         comment: _remarksController.text.trim(),
+//                                                         onCallCommunication: true,
+//                                                         onWhatsappCommunication: _sendWhatsapp,
+//                                                         onEmailCommunication: _sendEmail,
+//                                                         status: _selectedStatus ?? "",
+//                                                         serviceType: _selectedService ?? "",
+//                                                         branchName: _selectedBranch ?? "",
+//                                                         leadId: '${widget.leadId ?? ""}');
+//                                                 // Save lead logic
+//                                                 CustomToast.showToast(
+//                                                     context: context,
+//                                                     message:
+//                                                         'Lead saved successfully');
+//                                                 // ScaffoldMessenger.of(context)
+//                                                 //     .showSnackBar(
+//                                                 //   const SnackBar(
+//                                                 //       content: Text(
+//                                                 //           'Lead saved successfully')),
+//                                                 // );
 //                                                 Navigator.pop(context);
 //                                               }
 //                                             },

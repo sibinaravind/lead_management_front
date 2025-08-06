@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
-import '../../../../../utils/style/colors/colors.dart';
-import '../shortlist_user_list_table.dart';
+import '../../../../utils/style/colors/colors.dart';
+import '../widget/shortlist_user_list_table.dart';
 
 class ShortListedtab extends StatefulWidget {
   const ShortListedtab({super.key});

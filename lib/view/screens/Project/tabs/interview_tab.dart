@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../../../utils/style/colors/colors.dart';
+import '../../../../utils/style/colors/colors.dart';
 
 class InterviewTab extends StatelessWidget {
   InterviewTab({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../model/project/vacancy_model.dart';
-import '../../../../../utils/style/colors/colors.dart';
-import '../../../../widgets/custom_text.dart';
+import '../../../../model/project/vacancy_model.dart';
+import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_text.dart';
 
 class ProjectTab extends StatelessWidget {
   final VacancyModel? data;

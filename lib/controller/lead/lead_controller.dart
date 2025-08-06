@@ -4,7 +4,7 @@ import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/lead/lead_list_model.dart';
 
-class ProjectController extends GetxController {
+class LeadController extends GetxController {
   final ApiService _apiService = ApiService();
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
