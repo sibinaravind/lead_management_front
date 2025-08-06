@@ -32,8 +32,10 @@ class LeadModel {
   String? assignedTo;
   String? branch;
   String? recruiterId;
-  String? createdAt;
-  String? updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? officerStaffId;
+  String? officerName;
 
   LeadModel({
     this.sId,
@@ -71,6 +73,8 @@ class LeadModel {
     this.recruiterId,
     this.createdAt,
     this.updatedAt,
+    this.officerStaffId,
+    this.officerName,
   });
 
   LeadModel.fromJson(Map<String, dynamic> json) {
@@ -106,9 +110,16 @@ class LeadModel {
     serviceType = json['service_type'];
     assignedTo = json['assigned_to'];
     branch = json['branch'];
+
     recruiterId = json['recruiter_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    createdAt = json['created_at'] != null && json['created_at'] is String
+        ? DateTime.tryParse(json['created_at'])
+        : null;
+    updatedAt = json['updated_at'] != null && json['updated_at'] is String
+        ? DateTime.tryParse(json['updated_at'])
+        : null;
+    officerStaffId = json['officer_staff_id'];
+    officerName = json['officer_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -148,6 +159,8 @@ class LeadModel {
       'recruiter_id': recruiterId,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'officer_staff_id': officerStaffId,
+      'officer_name': officerName,
     };
   }
 }

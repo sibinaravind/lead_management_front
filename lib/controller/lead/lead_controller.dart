@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
+import '../../model/lead/call_event_model.dart';
 import '../../model/lead/lead_list_model.dart';
+import '../../model/lead/lead_model.dart';
 
 class LeadController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -10,7 +13,10 @@ class LeadController extends GetxController {
   RxBool isLoading = false.obs;
 
   Map<String, dynamic> filter = {};
+  RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
   String? selectedVacancyId;
+  Rx<LeadModel> leadDetails = LeadModel().obs;
+  String currentClientId = "";
 
   Future<void> fetchMatchingClients(
       {Map<String, dynamic>? filterSelected}) async {
@@ -33,6 +39,54 @@ class LeadController extends GetxController {
       throw Exception('Error fetching clients: $e');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> getLeadDetails(context, String leadId) async {
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: "${Constant().getLeadDetail}/$leadId",
+          fromJson: (json) => LeadModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load lead details");
+        },
+        (loadedLeadDetails) {
+          leadDetails.value = loadedLeadDetails;
+          currentClientId = loadedLeadDetails.sId ?? '';
+          fetchCallEvents(context);
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching lead details: $e',
+      );
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<void> fetchCallEvents(context) async {
+    try {
+      final response = await _apiService.getRequest(
+        endpoint: "${Constant().callEventList}/$currentClientId",
+        fromJson: (json) =>
+            json['data'].map((e) => CallEventModel.fromJson(e)).toList(),
+      );
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load call events");
+        },
+        (callEventsList) {
+          callEvents.value = callEventsList;
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching call events: $e',
+      );
     }
   }
 }

@@ -36,7 +36,7 @@ class _CustomDateRangeFieldState extends State<CustomDateRangeField> {
             builder: (context, setState) {
               return SizedBox(
                 width: 350,
-                height: 350,
+                height: 400,
                 child: TableCalendar(
                   firstDay: DateTime.utc(2000, 1, 1),
                   lastDay: DateTime.now(),

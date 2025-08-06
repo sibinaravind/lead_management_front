@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:url_strategy/url_strategy.dart';
 import 'config/flavour_config.dart';
 import 'core/di/service_locator.dart';
 import 'core/flavor/flavor_config.dart';
@@ -31,7 +31,7 @@ Future<void> main() async {
   );
   WidgetsFlutterBinding.ensureInitialized();
   // await dotenv.load();
-  // setPathUrlStrategy();
+  setPathUrlStrategy();
   await setupServiceLocator();
   await requestCallPermissions();
   if (!kIsWeb) {

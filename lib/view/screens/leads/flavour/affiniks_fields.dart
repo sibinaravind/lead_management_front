@@ -1,4 +1,5 @@
 import 'package:overseas_front_end/model/lead/lead_model.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 
 class AffiniksFields {
   List<Map<String, dynamic>> userTableList() {
@@ -21,8 +22,12 @@ class AffiniksFields {
         'extractor': (LeadModel user) => user.leadSource.toString()
       },
       {
-        'name': 'Service Type',
-        'extractor': (LeadModel user) => user.serviceType.toString()
+        'name': 'Officer',
+        'extractor': (LeadModel user) => user.officerName.toString()
+      },
+      {
+        'name': 'Created Date',
+        'extractor': (LeadModel user) => formatDatetoString(user.createdAt)
       },
       {
         'name': 'Action',

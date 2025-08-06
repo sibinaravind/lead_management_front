@@ -2,25 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_controller.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
+import '../../../utils/style/colors/colors.dart';
+import '../../../utils/style/colors/dimension.dart';
 import '../../widgets/custom_toast.dart';
+import '../../widgets/customer_filter_chip.dart';
+import 'add_lead_screen.dart';
+import 'widgets/bulk_lead.dart';
 import 'widgets/lead_user_list_table.dart';
 
 class LeadDataDisplay extends StatefulWidget {
   const LeadDataDisplay({super.key});
-
   @override
   State<LeadDataDisplay> createState() => _LeadDataDisplayState();
 }
 
 class _LeadDataDisplayState extends State<LeadDataDisplay> {
   final leadController = Get.find<LeadController>();
+  final officersController = Get.find<OfficersController>();
   final configController = Get.find<ConfigController>();
 
   var filterOptions = <String, List<String>>{};
   var selectedFilters = <String, dynamic>{}.obs;
   final isFilterActive = false.obs;
   final showFilters = false.obs;
+  String selectedFilter = '';
 
   int page = 1;
   int limit = 10;
@@ -31,14 +38,16 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await fetchConfig();
+
       fetchData();
     });
   }
 
   Future<void> fetchConfig() async {
     await configController.loadConfigData();
+    await Get.find<OfficersController>().fetchOfficersList();
     filterOptions = {
-      'Qualification': configController.configData.value.program
+      'Status': configController.configData.value.clientStatus
               ?.map((item) => "${item.name}")
               .toList() ??
           [],
@@ -46,8 +55,8 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
               ?.map((item) => "${item.name}")
               .toList() ??
           [],
-      'Specialization': configController.configData.value.specialized
-              ?.map((item) => "${item.name}")
+      'Officers': officersController.officersList.value
+              .map((item) => "${item.name}")
               .toList() ??
           [],
     };
@@ -60,6 +69,9 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
       "limit": limit.toString(),
     };
 
+    if (selectedFilter.isNotEmpty) {
+      params["filterCategory"] = selectedFilter;
+    }
     if (searchController.text.trim().isNotEmpty) {
       params["searchString"] = searchController.text.trim();
     }
@@ -67,14 +79,20 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     selectedFilters.forEach((key, value) {
       if (value != null && value.toString().isNotEmpty) {
         switch (key) {
-          case "Qualification":
-            params["qualifications"] = value;
+          case "Status":
+            params["status"] = value;
+            break;
+          case "Officers":
+            params["employee"] = value;
             break;
           case "Country":
             params["country"] = value;
             break;
-          case "Specialization":
-            params["specialization"] = value;
+          case "startDate":
+            params["startDate"] = value;
+            break;
+          case "endDate":
+            params["endDate"] = value;
             break;
         }
       }
@@ -95,7 +113,16 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
     showFilters.value = false;
   }
 
+  void cleardata() {
+    selectedFilter = '';
+    isFilterActive.value = false;
+    selectedFilters.clear();
+    searchController.clear();
+    page = 1;
+  }
+
   void resetFilters() {
+    selectedFilter = '';
     isFilterActive.value = false;
     selectedFilters.clear();
     searchController.clear();
@@ -106,10 +133,315 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                decoration: BoxDecoration(
+                  gradient: AppColors.blackGradient,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryColor.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.analytics_outlined,
+                        color: AppColors.textWhiteColour,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: "Lead Management Dashboard",
+                            color: AppColors.textWhiteColour,
+                            fontSize: Dimension().isMobile(context) ? 13 : 19,
+                            maxLines: 2,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.orangeGradient,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                AppColors.orangeSecondaryColor.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const BulkLeadScreen(),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                CustomText(
+                                  text: 'Bulk Lead',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.buttonGraidentColour,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                AppColors.violetPrimaryColor.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const AddLeadScreen(),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                CustomText(
+                                  text: 'New Lead',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.only(
+                    top: 6, bottom: 8, left: 15, right: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            CustomFilterChip(
+                              icon: Icons.all_inclusive,
+                              text: 'All Leads',
+                              count: 128,
+                              color: AppColors.primaryColor,
+                              isSelected: selectedFilter == '',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = '';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.fiber_new,
+                              text: 'New',
+                              count: 10,
+                              color: AppColors.blueSecondaryColor,
+                              isSelected: selectedFilter == 'NEW',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'NEW';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.today,
+                              text: 'Today',
+                              count: 24,
+                              color: AppColors.greenSecondaryColor,
+                              isSelected: selectedFilter == 'TODAY',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'TODAY';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.today,
+                              text: 'Tommorrow',
+                              count: 24,
+                              color: AppColors.orangeSecondaryColor,
+                              isSelected: selectedFilter == 'TOMORROW',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'TOMORROW';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.schedule,
+                              text: 'Pending',
+                              count: 8,
+                              color: AppColors.redSecondaryColor,
+                              isSelected: selectedFilter == 'PENDING',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'PENDING';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.history,
+                              text: 'Upcoming',
+                              count: 156,
+                              color: AppColors.skyBlueSecondaryColor,
+                              isSelected: selectedFilter == 'UPCOMING',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'UPCOMING';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            // _buildFilterChip(
+                            //   icon: Icons.history,
+                            //   text: 'Converted',
+                            //   count: 156,
+                            //   color: AppColors.viloletSecondaryColor,
+                            //   isSelected: selectedFilter == 'converted',
+                            //   onTap: () {
+                            //     setState(() {
+                            //       selectedFilter = 'converted';
+                            //     });
+                            //   },
+                            // ),
+                            CustomFilterChip(
+                              icon: Icons.trending_up,
+                              text: 'UnAssigned',
+                              count: 15,
+                              color: AppColors.textGrayColour,
+                              isSelected: selectedFilter == 'UNASSIGNED',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'UNASSIGNED';
+                                });
+                                fetchData();
+                              },
+                            ),
+                            CustomFilterChip(
+                              icon: Icons.history,
+                              text: 'History',
+                              count: 156,
+                              color: AppColors.skyBlueSecondaryColor,
+                              isSelected: selectedFilter == 'HISTORY',
+                              onTap: () {
+                                cleardata();
+                                setState(() {
+                                  selectedFilter = 'HISTORY';
+                                });
+                                fetchData();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,6 +472,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                     onFilterChange: (newFilters) {
                       selectedFilters.value = newFilters;
                     },
+                    dateFilter: true,
                     onApply: () {
                       if (selectedFilters.isEmpty &&
                           searchController.text.trim().isEmpty) {

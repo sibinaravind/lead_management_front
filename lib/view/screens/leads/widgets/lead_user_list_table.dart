@@ -5,6 +5,8 @@ import '../../../../utils/functions/get_colour_based_on_status.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../flavour/customer_lead_flavour.dart';
+import 'call_record_popup.dart';
+import 'customer_profile.dart';
 
 class LeadUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;
@@ -98,17 +100,15 @@ class LeadUserListTable extends StatelessWidget {
                                     case 'Action':
                                       return TextButton(
                                           onPressed: () {
-                                            // showDialog(
-                                            //   context: context,
-                                            //   builder: (context) =>
-                                            //       CallRecordPopup(
-                                            //           clientName:
-                                            //               listUser.name ??
-                                            //                   '',
-                                            //           clientId:
-                                            //               listUser.sId ??
-                                            //                   ""),
-                                            // );
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CallRecordPopup(
+                                                      clientName:
+                                                          listUser.name ?? '',
+                                                      clientId:
+                                                          listUser.sId ?? ""),
+                                            );
                                           },
                                           child: CustomText(
                                             text: "Feedback",
@@ -137,13 +137,12 @@ class LeadUserListTable extends StatelessWidget {
                             ),
                             onTap: () {
                               if (column['name'] == 'ID') {
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context) =>
-                                // CustomerProfileScreen(
-                                //     isRegistration: false,
-                                //     clientId: listUser.clientId ?? '',
-                                //     leadId: listUser.sId ?? ""));
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => CustomerProfileScreen(
+                                        isRegistration: false,
+                                        clientId: listUser.clientId ?? '',
+                                        leadId: listUser.sId ?? ""));
                               }
                             },
                           );

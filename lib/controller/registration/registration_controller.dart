@@ -1,4 +1,49 @@
+import 'package:get/get.dart';
+
+import '../../core/services/api_service.dart';
+import '../../core/shared/constants.dart';
+import '../../model/lead/call_event_model.dart';
+import '../../model/lead/lead_list_model.dart';
+import '../../model/lead/lead_model.dart';
+
+class RegistrationController extends GetxController {
+  final ApiService _apiService = ApiService();
+  Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
+  RxBool isLoading = false.obs;
+
+  Map<String, dynamic> filter = {};
+  RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
+  String? selectedVacancyId;
+  Rx<LeadModel> leadDetails = LeadModel().obs;
+  String currentClientId = "";
+
+  Future<void> fetchMatchingClients(
+      {Map<String, dynamic>? filterSelected}) async {
+    filter = filterSelected ?? {};
+    isLoading.value = true;
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: Constant().getIncompleteList,
+          params: filter,
+          fromJson: (json) => LeadListModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load clients");
+        },
+        (loadedClients) {
+          customerMatchingList.value = loadedClients;
+        },
+      );
+    } catch (e) {
+      throw Exception('Error fetching clients: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+
 // import 'package:flutter/widgets.dart';
+
 // import 'package:overseas_front_end/model/lead/lead_model.dart';
 
 // import '../../core/services/api_service.dart';
