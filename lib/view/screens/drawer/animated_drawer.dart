@@ -213,6 +213,12 @@ class _AnimatedDrawerState extends State<AnimatedDrawer>
                             ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
+                                  .navigationSections['project']!,
+                              mainTab: 'project',
+                              delay: 100,
+                            ),
+                            _buildAnimatedExpansionTile(
+                              section: navigationController
                                   .navigationSections['application']!,
                               mainTab: 'application',
                               delay: 300,

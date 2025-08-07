@@ -18,9 +18,9 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _officerIdController =
-      TextEditingController(text: "64");
+      TextEditingController(text: "4");
   final TextEditingController _passwordController =
-      TextEditingController(text: "Aswin123@");
+      TextEditingController(text: "Sibin@123");
   bool _obscurePassword = true;
 
   @override

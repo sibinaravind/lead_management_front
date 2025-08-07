@@ -124,8 +124,8 @@ class LeadModel {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': sId,
-      'client_id': clientId,
+      // '_id': sId,
+      // 'client_id': clientId,
       'name': name,
       'email': email,
       'phone': phone,
@@ -154,13 +154,13 @@ class LeadModel {
       'on_email_communication': onEmailCommunication,
       'status': status,
       'service_type': serviceType,
-      'assigned_to': assignedTo,
+      'officer_id': assignedTo,
       'branch': branch,
-      'recruiter_id': recruiterId,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'officer_staff_id': officerStaffId,
-      'officer_name': officerName,
+      // 'recruiter_id': recruiterId,
+      // 'created_at': createdAt,
+      // 'updated_at': updatedAt,
+      // 'officer_staff_id': officerStaffId,
+      // 'officer_name': officerName,
     };
   }
 }

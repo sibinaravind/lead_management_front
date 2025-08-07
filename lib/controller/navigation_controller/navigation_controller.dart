@@ -1,10 +1,20 @@
 // Updated Navigation Controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/model/access_permissions/access_permissions.dart';
+import 'package:overseas_front_end/view/screens/Project/client_data_display.dart';
+import 'package:overseas_front_end/view/screens/Project/project_data_display.dart';
+import 'package:overseas_front_end/view/screens/Project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
+import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';
+import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import '../../utils/style/colors/colors.dart';
 import '../../view/screens/config/config_screen.dart';
+import '../../view/screens/employee/employee_permission_screen.dart';
+import '../../view/screens/employee/round_robin_screen.dart';
+import '../../view/screens/leads/lead_data_display.dart';
+import '../../view/screens/officers/employee_data_display.dart';
 
 class NavigationController extends GetxController {
   var currentMainTab =
@@ -39,11 +49,10 @@ class NavigationController extends GetxController {
       color: AppColors.violetPrimaryColor,
       items: [
         NavigationItem(
-          label: 'Lead',
-          route: 'lead',
-          icon: Icons.follow_the_signs_rounded,
-          // screen: LeadDataDisplay()
-        ),
+            label: 'Lead',
+            route: 'lead',
+            icon: Icons.follow_the_signs_rounded,
+            screen: LeadDataDisplay()),
         NavigationItem(
           label: 'CRE Followup',
           route: 'cre_followup',
@@ -62,10 +71,10 @@ class NavigationController extends GetxController {
       color: AppColors.greenSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Registration Pending',
-          route: 'registration_pending',
-          icon: Icons.pending_actions_rounded,
-        ),
+            label: 'Registration Pending',
+            route: 'registration_pending',
+            icon: Icons.pending_actions_rounded,
+            screen: RegisterDataDisplay()),
         NavigationItem(
           label: 'Registration Completed',
           route: 'registration_completed',
@@ -82,11 +91,22 @@ class NavigationController extends GetxController {
           label: 'Projects',
           route: 'projects',
           icon: Icons.folder_outlined,
+          screen:
+              ProjectDataDisplay(), // Placeholder, replace with actual screen
         ),
         NavigationItem(
           label: 'Client',
           route: 'client',
           icon: Icons.account_circle_outlined,
+          screen:
+              ClientDataDisplay(), // Placeholder, replace with actual screen
+        ),
+        NavigationItem(
+          label: 'Vacancies',
+          route: 'vacancies',
+          icon: Icons.work_outline_rounded,
+          screen:
+              VacancyDataDisplay(), // Placeholder, replace with actual screen
         ),
       ],
     ),
@@ -105,26 +125,26 @@ class NavigationController extends GetxController {
           route: 'application_pending',
           icon: Icons.hourglass_empty_rounded,
         ),
-        NavigationItem(
-          label: 'Offer Letter Apply',
-          route: 'offer_letter_apply',
-          icon: Icons.mail_outline_rounded,
-        ),
-        NavigationItem(
-          label: 'Offer Letter Waiting',
-          route: 'offer_letter_waiting',
-          icon: Icons.timer_rounded,
-        ),
-        NavigationItem(
-          label: 'Offer Letter',
-          route: 'offer_letter',
-          icon: Icons.description_rounded,
-        ),
-        NavigationItem(
-          label: 'Application Schedule',
-          route: 'application_schedule',
-          icon: Icons.calendar_month_rounded,
-        ),
+        // NavigationItem(
+        //   label: 'Offer Letter Apply',
+        //   route: 'offer_letter_apply',
+        //   icon: Icons.mail_outline_rounded,
+        // ),
+        // NavigationItem(
+        //   label: 'Offer Letter Waiting',
+        //   route: 'offer_letter_waiting',
+        //   icon: Icons.timer_rounded,
+        // ),
+        // NavigationItem(
+        //   label: 'Offer Letter',
+        //   route: 'offer_letter',
+        //   icon: Icons.description_rounded,
+        // ),
+        // NavigationItem(
+        //   label: 'Application Schedule',
+        //   route: 'application_schedule',
+        //   icon: Icons.calendar_month_rounded,
+        // ),
       ],
     ),
     'visa': NavigationSection(
@@ -172,21 +192,28 @@ class NavigationController extends GetxController {
           label: 'Employee',
           route: 'employee',
           icon: Icons.person_outline_rounded,
-        ),
-        NavigationItem(
-          label: 'Employee Permission',
-          route: 'employee_permission',
-          icon: Icons.person_outline_rounded,
+          screen:
+              EmployeeDataDisplay(), // Placeholder, replace with actual screen
         ),
         NavigationItem(
           label: 'Team Lead',
           route: 'team_lead',
           icon: Icons.settings,
+          screen:
+              TeamLeadDataDisplay(), // Placeholder, replace with actual screen
+        ),
+        NavigationItem(
+          label: 'Employee Permission',
+          route: 'employee_permission',
+          icon: Icons.person_outline_rounded,
+          screen:
+              AccessPermissionScreen(), // Placeholder, replace with actual screen
         ),
         NavigationItem(
           label: 'Round Robin',
           route: 'round_robin',
           icon: Icons.settings,
+          screen: RoundRobinScreen(), // Placeholder, replace with actual screen
         ),
       ],
     ),

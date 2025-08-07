@@ -52,10 +52,13 @@ class LeadController extends GetxController {
         (createdLead) {
           leads.sId = createdLead;
           if (selectedFilter.value == '' || selectedFilter.value == 'NEW') {
-            customerMatchingList.value.leads?.add(createdLead);
+            customerMatchingList.value.leads?.add(leads);
+            refresh();
           }
+          Navigator.of(context).pop();
           CustomSnackBar.showMessage("Success", "Lead created successfully",
               backgroundColor: Colors.green);
+
           return true;
         },
       );

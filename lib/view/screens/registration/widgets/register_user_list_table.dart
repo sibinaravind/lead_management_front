@@ -6,6 +6,7 @@ import '../../../widgets/custom_text.dart';
 import '../../leads/flavour/customer_lead_flavour.dart';
 import '../../leads/widgets/call_record_popup.dart';
 import '../../cutsomer_profile/customer_profile.dart';
+import '../registeration_add.dart';
 
 class RegisterUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;
@@ -100,14 +101,14 @@ class RegisterUserListTable extends StatelessWidget {
                                             icon: Icon(
                                                 Icons.app_registration_rounded),
                                             onPressed: () {
-                                              // showDialog(
-                                              //   context: context,
-                                              //   builder: (context) =>
-                                              //       RegistrationAdd(
-                                              //     name: listUser.name ?? '',
-                                              //     id: listUser.sId ?? '',
-                                              //   ),
-                                              // );
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    RegistrationAdd(
+                                                  name: listUser.name ?? '',
+                                                  id: listUser.sId ?? '',
+                                                ),
+                                              );
                                             },
                                           ),
                                           PopupMenuButton<int>(

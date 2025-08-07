@@ -312,8 +312,8 @@ class _CustomOfficerDropDownState extends State<CustomOfficerDropDown> {
                   text: widget.label,
                   style: const TextStyle(
                     color: AppColors.primaryColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
                   ),
                 ),
                 if (widget.isRequired)
@@ -345,16 +345,17 @@ class _CustomOfficerDropDownState extends State<CustomOfficerDropDown> {
             child: Focus(
               focusNode: _focusNode,
               child: Container(
+                height: 50,
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: _isDropdownOpen
                         ? AppColors.blueSecondaryColor
-                        : AppColors.textGrayColour.withOpacity(0.3),
+                        : AppColors.blackMainColor.withOpacity(0.7),
                     width: _isDropdownOpen ? 2 : 1,
                   ),
                   boxShadow: [
@@ -392,28 +393,29 @@ class _CustomOfficerDropDownState extends State<CustomOfficerDropDown> {
                         text: displayValue ??
                             widget.hintText ??
                             'Choose an officer...',
-                        color: displayValue != null
-                            ? AppColors.primaryColor
-                            : AppColors.textGrayColour,
-                        fontSize: 16,
+                        // color: displayValue != null
+                        //     ? AppColors.primaryColor
+                        //     : AppColors.textGrayColour,
+                        fontSize: 14,
                         fontWeight: displayValue != null
                             ? FontWeight.w500
                             : FontWeight.w400,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: AppColors.textGrayColour.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Icon(
-                        _isDropdownOpen
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        color: AppColors.textGrayColour,
-                        size: 20,
-                      ),
+                    // Container(
+                    //   padding: const EdgeInsets.all(4),
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.textGrayColour.withOpacity(0.1),
+                    //     borderRadius: BorderRadius.circular(6),
+                    //   ),
+                    //   child:
+                    Icon(
+                      _isDropdownOpen
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: AppColors.textGrayColour,
+                      size: 20,
+                      // ),
                     ),
                   ],
                 ),

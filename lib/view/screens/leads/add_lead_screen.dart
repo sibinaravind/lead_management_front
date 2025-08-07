@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
+import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../controller/lead/lead_controller.dart';
@@ -15,8 +17,10 @@ class AddLeadScreen extends StatefulWidget {
 
 class _AddLeadScreenState extends State<AddLeadScreen> {
   final configController = Get.find<ConfigController>();
+  final officersController = Get.find<OfficersController>();
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
+
   // Form controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
@@ -34,9 +38,10 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _skillController = TextEditingController();
 
   // Form values
-  final String? _selectedService = 'MIGRATION';
+  String? _selectedService = 'MIGRATION';
   String? _selectedGender;
   String? _selectedMaritalStatus;
   String? _selectedPhoneCtry = "+91";
@@ -44,10 +49,12 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
   String? _selectedWAPhoneCtry = "+91";
   String? _selectedLeadSource;
   String? _selectedQualification;
+  String? _selectedCourse;
   String? _selectedAgent;
+  bool _onCallCommunication = false;
   List<String> selectedCountries = [];
   List<String>? _selectedSpecialized;
-
+  String? _selectedProfession;
   // Preferences
   bool _sendGreetings = true;
   bool _sendEmail = false;
@@ -57,6 +64,12 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
   void initState() {
     super.initState();
     _leadDateController.text = DateFormat("dd/MM/yyyy").format(DateTime.now());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Focus on the name field when the dialog opens
+      await officersController.fetchOfficersList();
+      FocusScope.of(context).requestFocus(FocusNode());
+    });
   }
 
   @override
@@ -253,9 +266,28 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                                     val),
                                                         isRequired: true,
                                                       ),
+                                                      CustomDropdownField(
+                                                        label: 'Job Category',
+                                                        isRequired: true,
+                                                        value:
+                                                            _selectedLeadSource,
+                                                        items: configController
+                                                                .configData
+                                                                .value
+                                                                .jobCategory
+                                                                ?.map((e) =>
+                                                                    e.name ??
+                                                                    "")
+                                                                .toList() ??
+                                                            [],
+                                                        onChanged: (val) =>
+                                                            setState(() =>
+                                                                _selectedProfession =
+                                                                    val),
+                                                      ),
                                                       CustomCheckDropdown(
                                                         label:
-                                                            " Country Interested",
+                                                            "Country Interested",
                                                         items: configController
                                                                 .configData
                                                                 .value
@@ -271,24 +303,6 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                               value.cast<
                                                                   String>();
                                                         },
-                                                      ),
-                                                      CustomCheckDropdown(
-                                                        label: 'Job Category',
-                                                        items: configController
-                                                                .configData
-                                                                .value
-                                                                .jobCategory
-                                                                ?.map((e) =>
-                                                                    e.name ??
-                                                                    "")
-                                                                .toList() ??
-                                                            [],
-                                                        onChanged: (val) =>
-                                                            setState(() =>
-                                                                _selectedSpecialized =
-                                                                    val.cast<
-                                                                        String>()),
-                                                        values: [],
                                                       ),
                                                       CustomDropdownField(
                                                         label: 'Lead Source',
@@ -307,6 +321,27 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                             setState(() =>
                                                                 _selectedLeadSource =
                                                                     val),
+                                                      ),
+                                                      CustomOfficerDropDown(
+                                                        label: 'Assigned To',
+                                                        value: _selectedAgent,
+                                                        items:
+                                                            officersController
+                                                                .officersList
+                                                                .map((e) =>
+                                                                    e.name ??
+                                                                    "")
+                                                                .toList(),
+                                                        onChanged: (p0) {
+                                                          _selectedAgent = p0
+                                                                  ?.split(",")
+                                                                  .last ??
+                                                              "";
+                                                        },
+                                                        // isRequired: true,
+                                                        isSplit: true,
+                                                        // prefixIcon:
+                                                        //     Icons.person,
                                                       ),
                                                     ],
                                                   ),
@@ -338,6 +373,11 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                                           String>()),
                                                           values: [],
                                                         ),
+                                                        CustomTextFormField(
+                                                          controller:
+                                                              _skillController,
+                                                          label: 'Skills',
+                                                        ),
                                                         CustomDropdownField(
                                                           label: 'Education',
                                                           value:
@@ -363,7 +403,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                           label:
                                                               'Education Program',
                                                           value:
-                                                              _selectedQualification,
+                                                              _selectedCourse,
                                                           items: configController
                                                                   .configData
                                                                   .value
@@ -376,7 +416,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                           onChanged:
                                                               (String? val) {
                                                             setState(() {
-                                                              _selectedQualification =
+                                                              _selectedCourse =
                                                                   val;
                                                             });
                                                           },
@@ -414,6 +454,23 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                         label: 'DOB',
                                                         controller:
                                                             _dobController,
+                                                        endDate: DateTime.now()
+                                                            .subtract(
+                                                          const Duration(
+                                                              days: 365 * 18),
+                                                        ),
+                                                        // initialDate:
+                                                        //     DateTime.now()
+                                                        //         .subtract(
+                                                        //   const Duration(
+                                                        //       days: 365 * 18),
+                                                        // ),
+                                                        isRequired: false,
+                                                        onChanged:
+                                                            (formattedDate) {
+                                                          _dobController.text =
+                                                              formattedDate;
+                                                        },
                                                       ),
                                                       CustomPhoneField(
                                                         label:
@@ -468,7 +525,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                     columns: columnsCount,
                                                     children: [
                                                       CustomTextFormField(
-                                                        label: 'Location',
+                                                        label: 'Address',
                                                         controller:
                                                             _locationController,
                                                       ),
@@ -486,19 +543,6 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                         label: 'Country',
                                                         controller:
                                                             _countryController,
-                                                      ),
-                                                      CustomDropdownField(
-                                                        label: 'Assigned To',
-                                                        value: _selectedAgent,
-                                                        items: const [
-                                                          'Agent 1',
-                                                          'Agent 2',
-                                                          'Agent 3'
-                                                        ],
-                                                        onChanged: (val) =>
-                                                            setState(() =>
-                                                                _selectedAgent =
-                                                                    val),
                                                       ),
                                                     ],
                                                   ),
@@ -623,11 +667,20 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                           .text
                                                           .trim(),
                                                       alternatePhone:
-                                                          "$_selectedAltPhoneCtry ${_mobileOptionalController.text.trim()}"
-                                                              .trim(),
-                                                      whatsapp:
-                                                          "$_selectedWAPhoneCtry ${_waMobileController.text.trim()}"
-                                                              .trim(),
+                                                          _mobileOptionalController
+                                                                      .text
+                                                                      .trim() !=
+                                                                  ""
+                                                              ? "$_selectedAltPhoneCtry ${_mobileOptionalController.text.trim()}"
+                                                                  .trim()
+                                                              : "",
+                                                      whatsapp: _waMobileController
+                                                                  .text
+                                                                  .trim() !=
+                                                              ""
+                                                          ? "$_selectedWAPhoneCtry ${_waMobileController.text.trim()}"
+                                                              .trim()
+                                                          : "",
                                                       gender:
                                                           _selectedGender ?? "",
                                                       dob: _dobController.text
@@ -640,36 +693,54 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                           _locationController
                                                               .text
                                                               .trim(),
-                                                      city: "",
-                                                      state: "",
-                                                      country: "",
+                                                      city: _cityController.text
+                                                          .trim(),
+                                                      state: _stateController
+                                                          .text
+                                                          .trim(),
+                                                      country:
+                                                          _countryController
+                                                              .text
+                                                              .trim(),
                                                       jobInterests: [],
                                                       countryInterested:
                                                           selectedCountries ??
                                                               [],
                                                       expectedSalary: 0,
                                                       qualification:
-                                                          _selectedQualification ??
-                                                              "",
+                                                          _selectedCourse ?? "",
                                                       experience: 0,
-                                                      skills: [],
-                                                      profession: "",
+                                                      skills: _skillController
+                                                                  .text !=
+                                                              ''
+                                                          ? [
+                                                              _skillController
+                                                                  .text
+                                                                  .trim()
+                                                            ]
+                                                          : [],
+                                                      profession:
+                                                          _selectedProfession,
                                                       specializedIn:
                                                           _selectedSpecialized ??
                                                               [],
                                                       leadSource:
                                                           _selectedLeadSource ??
                                                               "",
-                                                      onCallCommunication: true,
+                                                      onCallCommunication:
+                                                          _onCallCommunication,
                                                       onWhatsappCommunication:
                                                           _sendWhatsapp,
                                                       onEmailCommunication:
                                                           _sendEmail,
-                                                      status: "",
+                                                      status: "HOT",
                                                       serviceType:
                                                           _selectedService ??
                                                               "",
-                                                      branch: "",
+                                                      branch: "AFFINIX",
+                                                      note: _remarksController
+                                                          .text
+                                                          .trim(),
                                                     ),
                                                   );
                                                 }
@@ -795,13 +866,14 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                             Column(
                                               children: [
                                                 EnhancedSwitchTile(
-                                                  label: 'Send Greetings',
-                                                  icon:
-                                                      Icons.celebration_rounded,
-                                                  value: _sendGreetings,
+                                                  label:
+                                                      'On call Communication',
+                                                  icon: Icons.call,
+                                                  value: _onCallCommunication,
                                                   onChanged: (val) => setState(
                                                       () =>
-                                                          _sendGreetings = val),
+                                                          _onCallCommunication =
+                                                              val),
                                                 ),
                                                 const SizedBox(height: 12),
                                                 EnhancedSwitchTile(

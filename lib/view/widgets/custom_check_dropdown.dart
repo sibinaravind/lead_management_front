@@ -160,11 +160,7 @@ class CustomCheckDropdown<T> extends FormField<List<T>> {
                     child: Text(
                       (state.value == null || state.value!.isEmpty)
                           ? 'Select'
-                          : state.value!.length == items.length
-                              ? 'All'
-                              : state.value!
-                                  .map((e) => e.toString())
-                                  .join(', '),
+                          : state.value!.map((e) => e.toString()).join(', '),
                       style: const TextStyle(color: Colors.black87),
                     ),
                   ),

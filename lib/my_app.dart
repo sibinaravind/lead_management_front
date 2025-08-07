@@ -6,6 +6,7 @@ import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
 import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
+import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       // }, // Uncomment if you want to prpoerp logout //test
       routes: [
         GoRoute(
-          path: '/login', //test move to /
+          path: '/', //test move to /
           builder: (context, state) => LoginScreen(),
         ),
         GoRoute(
@@ -50,11 +51,11 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          builder: (context, state) => AddLeadScreen(),
+          builder: (context, state) => RegisterDataDisplay(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
-      initialLocation: '/test',
+      initialLocation: '/',
     );
     // Initialize the navigation service with the router
     NavigationService.initialize(router);

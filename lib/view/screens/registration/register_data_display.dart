@@ -127,166 +127,170 @@ class _RegisterDataDisplayState extends State<RegisterDataDisplay> {
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                decoration: BoxDecoration(
-                  gradient: AppColors.blackGradient,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryColor.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.analytics_outlined,
-                        color: AppColors.textWhiteColour,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 24),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: "Registration Management Dashboard",
-                            color: AppColors.textWhiteColour,
-                            fontSize: Dimension().isMobile(context) ? 13 : 19,
-                            maxLines: 2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SearchBarWidget(
-                    controller: searchController,
-                    onSearch: () {
-                      page = 1;
-                      fetchData();
-                    },
-                  ),
-                  Obx(() => FilterToggleButtonsWidget(
-                        isFilterActive: isFilterActive.value,
-                        onReset: () {
-                          if (isFilterActive.value ||
-                              searchController.text.isNotEmpty) {
-                            resetFilters();
-                          }
-                        },
-                        onToggle: () => showFilters.value = !showFilters.value,
-                      )),
-                ],
-              ),
-              Obx(() => FilterPanelWidget(
-                    showFilters: showFilters.value,
-                    filterOptions: filterOptions,
-                    selectedFilters: selectedFilters,
-                    onFilterChange: (newFilters) {
-                      selectedFilters.value = newFilters;
-                    },
-                    dateFilter: true,
-                    onApply: () {
-                      if (selectedFilters.isEmpty &&
-                          searchController.text.trim().isEmpty) {
-                        CustomToast.showToast(
-                          context: context,
-                          message:
-                              "Please select at least one filter or enter a search term",
-                        );
-                        return;
-                      }
-                      applyFilters();
-                    },
-                    onClose: () => showFilters.value = false,
-                  )),
-
-              // 📊 Leads table + Pagination
-              Obx(() {
-                final customerList =
-                    registrationController.customerMatchingList.value.leads;
-
-                if (customerList == null || customerList.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: CustomText(text: "No matching leads found"),
-                  );
-                }
-
-                return Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(top: 12),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    gradient: AppColors.blackGradient,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: AppColors.primaryColor.withOpacity(0.3),
                         blurRadius: 20,
-                        offset: const Offset(0, 4),
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
-                  child: Column(
+                  child: Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                        child: RegisterUserListTable(
-                          userlist: registrationController
-                                  .customerMatchingList.value.leads ??
-                              [],
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.analytics_outlined,
+                          color: AppColors.textWhiteColour,
+                          size: 20,
                         ),
                       ),
-                      PaginationFooterWidget(
-                        currentPage: page,
-                        totalPages: registrationController
-                                .customerMatchingList.value.totalPages ??
-                            1,
-                        totalItems: registrationController
-                                .customerMatchingList.value.totalMatch ??
-                            0,
-                        onPageSelected: (newPage) {
-                          if (page != newPage) {
-                            setState(() {
-                              page = newPage;
-                            });
-                            fetchData();
-                          }
-                        },
-                      )
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: "Registration Management Dashboard",
+                              color: AppColors.textWhiteColour,
+                              fontSize: Dimension().isMobile(context) ? 13 : 19,
+                              maxLines: 2,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                );
-              }),
-            ],
+                ),
+
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SearchBarWidget(
+                      controller: searchController,
+                      onSearch: () {
+                        page = 1;
+                        fetchData();
+                      },
+                    ),
+                    Obx(() => FilterToggleButtonsWidget(
+                          isFilterActive: isFilterActive.value,
+                          onReset: () {
+                            if (isFilterActive.value ||
+                                searchController.text.isNotEmpty) {
+                              resetFilters();
+                            }
+                          },
+                          onToggle: () =>
+                              showFilters.value = !showFilters.value,
+                        )),
+                  ],
+                ),
+                Obx(() => FilterPanelWidget(
+                      showFilters: showFilters.value,
+                      filterOptions: filterOptions,
+                      selectedFilters: selectedFilters,
+                      onFilterChange: (newFilters) {
+                        selectedFilters.value = newFilters;
+                      },
+                      dateFilter: true,
+                      onApply: () {
+                        if (selectedFilters.isEmpty &&
+                            searchController.text.trim().isEmpty) {
+                          CustomToast.showToast(
+                            context: context,
+                            message:
+                                "Please select at least one filter or enter a search term",
+                          );
+                          return;
+                        }
+                        applyFilters();
+                      },
+                      onClose: () => showFilters.value = false,
+                    )),
+
+                // 📊 Leads table + Pagination
+                Obx(() {
+                  final customerList =
+                      registrationController.customerMatchingList.value.leads;
+
+                  if (customerList == null || customerList.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CustomText(text: "No matching leads found"),
+                    );
+                  }
+
+                  return Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(top: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 20,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16)),
+                          child: RegisterUserListTable(
+                            userlist: registrationController
+                                    .customerMatchingList.value.leads ??
+                                [],
+                          ),
+                        ),
+                        PaginationFooterWidget(
+                          currentPage: page,
+                          totalPages: registrationController
+                                  .customerMatchingList.value.totalPages ??
+                              1,
+                          totalItems: registrationController
+                                  .customerMatchingList.value.totalMatch ??
+                              0,
+                          onPageSelected: (newPage) {
+                            if (page != newPage) {
+                              setState(() {
+                                page = newPage;
+                              });
+                              fetchData();
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
