@@ -1,67 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/model/lead/lead_model.dart';
-import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
+import '../../model/lead/call_event_model.dart';
 import '../../model/lead/lead_list_model.dart';
+import '../../model/lead/lead_model.dart';
+import '../../view/widgets/custom_snackbar.dart';
 
-class LeadController extends GetxController {
+class CustomerProfileController extends GetxController {
   final ApiService _apiService = ApiService();
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
-  RxString selectedFilter = ''.obs;
-  Map<String, dynamic> filter = {};
 
-  Future<void> fetchMatchingClients(
-      {Map<String, dynamic>? filterSelected}) async {
-    filter = filterSelected ?? {};
-    isLoading.value = true;
+  Map<String, dynamic> filter = {};
+  RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
+  Rx<LeadModel> leadDetails = LeadModel().obs;
+  String currentClientId = "";
+
+  Future<void> getLeadDetails(context, String leadId) async {
     try {
       final response = await _apiService.getRequest(
-          endpoint: Constant().getAllFilterdLeads,
-          params: filter,
-          fromJson: (json) => LeadListModel.fromJson(json));
+          endpoint: "${Constant().getLeadDetail}/$leadId",
+          fromJson: (json) => LeadModel.fromJson(json));
       response.fold(
         (failure) {
-          throw Exception("Failed to load clients");
+          throw Exception("Failed to load lead details");
         },
-        (loadedClients) {
-          customerMatchingList.value = loadedClients;
+        (loadedLeadDetails) {
+          leadDetails.value = loadedLeadDetails;
+          currentClientId = loadedLeadDetails.sId ?? '';
+          refresh();
         },
       );
     } catch (e) {
-      throw Exception('Error fetching clients: $e');
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching lead details: $e',
+      );
     } finally {
-      isLoading.value = false;
+      // notifyListeners();
     }
   }
 
-  Future<bool> createLead(BuildContext context, LeadModel leads) async {
+  Future<void> fetchCallEvents(context) async {
+    try {
+      final response = await _apiService.getRequest(
+        endpoint: "${Constant().callEventList}/$currentClientId",
+        fromJson: (json) {
+          if (json is List && json.isNotEmpty) {
+            return json.map((e) => CallEventModel.fromJson(e)).toList();
+          }
+          return <CallEventModel>[];
+        },
+      );
+
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load call events");
+        },
+        (callEventsList) {
+          callEvents.value = callEventsList;
+          refresh();
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching call events: $e',
+      );
+    }
+  }
+
+  Future<bool> callRecordInsert(
+      {required CallEventModel log, required BuildContext context}) async {
     try {
       final response = await _apiService.postRequest(
-        endpoint: Constant().addLead,
-        body: leads.toJson(),
+        endpoint: Constant().addFeedback,
+        body: log.toJson(),
         fromJson: (json) => json,
       );
       return response.fold(
         (failure) {
           throw Exception("Failed to create Lead: $failure");
         },
-        (createdLead) {
-          leads.sId = createdLead;
-          if (selectedFilter.value == '' || selectedFilter.value == 'NEW') {
-            customerMatchingList.value.leads?.add(createdLead);
-          }
+        (data) {
+          Navigator.pop(context);
           CustomSnackBar.showMessage("Success", "Lead created successfully",
               backgroundColor: Colors.green);
           return true;
         },
       );
     } catch (e) {
-      CustomSnackBar.showMessage("Error", "Failed to create Lead: $e",
-          backgroundColor: Colors.red);
+      CustomToast.showToast(
+          context: context, message: "Failed to create Call Log: $e");
       return false;
     } finally {
       isLoading.value = false;

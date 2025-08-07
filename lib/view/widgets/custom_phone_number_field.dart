@@ -56,13 +56,16 @@ class CustomPhoneField extends StatelessWidget {
                   child: DropdownButton<String>(
                     isExpanded: true,
                     dropdownColor: Colors.white,
-                    value: selectedCountry,
+                    value: ['+91', '+1', '+44', '+61', '+971']
+                            .contains(selectedCountry)
+                        ? selectedCountry
+                        : null,
                     padding: const EdgeInsets.symmetric(),
-                    items: ['+91', '+1', '+44', '+61', '+971', '']
-                        .map((String item) {
+                    items:
+                        ['+91', '+1', '+44', '+61', '+971'].map((String item) {
                       return DropdownMenuItem<String>(
                         value: item,
-                        child: Text('$item'),
+                        child: Text(item),
                       );
                     }).toList(),
                     onChanged: onCountryChanged,

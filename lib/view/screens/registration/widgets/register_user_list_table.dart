@@ -5,7 +5,7 @@ import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../leads/flavour/customer_lead_flavour.dart';
 import '../../leads/widgets/call_record_popup.dart';
-import '../../leads/widgets/customer_profile.dart';
+import '../../cutsomer_profile/customer_profile.dart';
 
 class RegisterUserListTable extends StatelessWidget {
   final List<LeadModel> userlist;

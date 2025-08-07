@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
-import 'package:intl/intl.dart';
+import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_controller.dart';
-import 'package:overseas_front_end/view/screens/leads/backup/edit_lead_screen.dart';
-import 'package:overseas_front_end/view/screens/leads/widgets/lead_details_tab.dart';
-import '../../../../utils/style/colors/colors.dart';
-import '../../../widgets/custom_gradient_button.dart';
-import '../../../widgets/custom_text.dart';
-import 'call_history_tab.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
+import '../../../utils/style/colors/colors.dart';
+import '../../widgets/custom_text.dart';
+import 'widgets/call_history_tab.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
   const CustomerProfileScreen(
@@ -27,7 +24,7 @@ class CustomerProfileScreen extends StatefulWidget {
 
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   int _selectedTabIndex = 0;
-  final leadController = Get.find<LeadController>();
+  final profile_controller = Get.find<CustomerProfileController>();
   List<Map<String, dynamic>> _tabs = [
     // {
     //   'icon': Icons.person_outline,
@@ -93,7 +90,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       },
     ];
     // Initialize the first tab as selected
-    leadController.getLeadDetails(context, widget.leadId);
+    profile_controller.getLeadDetails(context, widget.leadId);
   }
 
   @override
@@ -181,33 +178,35 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               ),
                               const SizedBox(width: 16),
                               Expanded(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        CustomText(
-                                          text: leadController
-                                                  .leadDetails?.value.name ??
-                                              'N/A',
-                                          fontSize: isSmallScreen ? 20 : 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.textWhiteColour,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        CustomText(
-                                          text: leadController.leadDetails
-                                                  ?.value.clientId ??
-                                              'N/A',
-                                          fontSize: 14,
-                                          color: AppColors.textGrayColour,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                child: Obx(
+                                  () => Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          CustomText(
+                                            text: profile_controller
+                                                    .leadDetails?.value.name ??
+                                                'N/A',
+                                            fontSize: isSmallScreen ? 20 : 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.textWhiteColour,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          CustomText(
+                                            text: profile_controller.leadDetails
+                                                    ?.value.clientId ??
+                                                'N/A',
+                                            fontSize: 14,
+                                            color: AppColors.textGrayColour,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -227,19 +226,21 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                       children: [
                         _buildInfoChip(
                             Icons.phone,
-                            leadController.leadDetails?.value.phone ?? 'N/A',
+                            profile_controller.leadDetails?.value.phone ??
+                                'N/A',
                             AppColors.blueSecondaryColor),
                         _buildInfoChip(
                             Icons.email,
-                            leadController.leadDetails?.value.email ?? 'N/A',
+                            profile_controller.leadDetails?.value.email ??
+                                'N/A',
                             AppColors.greenSecondaryColor),
                         _buildInfoChip(
                             Icons.person_outline,
-                            'Counselor: ${leadController.leadDetails?.value.assignedTo ?? 'N/A'}',
+                            'Counselor: ${profile_controller.leadDetails?.value.assignedTo ?? 'N/A'}',
                             AppColors.viloletSecondaryColor),
                         _buildInfoChip(
                             Icons.location_on,
-                            'Location: ${leadController.leadDetails?.value.address ?? 'N/A'}',
+                            'Location: ${profile_controller.leadDetails?.value.address ?? 'N/A'}',
                             AppColors.orangeSecondaryColor),
                       ],
                     ),

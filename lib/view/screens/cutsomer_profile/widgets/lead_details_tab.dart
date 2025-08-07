@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../../controller/lead/lead_controller.dart';
+import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 
@@ -10,10 +10,8 @@ class LeadDetailsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LeadController controller = Get.find<LeadController>();
-
     return SingleChildScrollView(
-      child: GetBuilder<LeadController>(
+      child: GetBuilder<CustomerProfileController>(
         builder: (controller) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -21,7 +19,7 @@ class LeadDetailsTab extends StatelessWidget {
             const SizedBox(height: 16),
             _buildDetailCard([
               _buildDetailRow(
-                  'Name', controller.leadDetails?.value.name ?? 'N/A',
+                  'Name', controller.leadDetails.value.name ?? 'N/A',
                   color: AppColors.orangeSecondaryColor),
               _buildDetailRow(
                   'Gender', controller.leadDetails?.value.gender ?? 'N/A',

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:overseas_front_end/view/screens/leads/add_lead_screen.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
@@ -19,6 +20,29 @@ class RegistrationController extends GetxController {
 
   Future<void> fetchMatchingClients(
       {Map<String, dynamic>? filterSelected}) async {
+    filter = filterSelected ?? {};
+    isLoading.value = true;
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: Constant().getIncompleteList,
+          params: filter,
+          fromJson: (json) => LeadListModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load clients");
+        },
+        (loadedClients) {
+          customerMatchingList.value = loadedClients;
+        },
+      );
+    } catch (e) {
+      throw Exception('Error fetching clients: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> addLeadScreen({Map<String, dynamic>? filterSelected}) async {
     filter = filterSelected ?? {};
     isLoading.value = true;
     try {

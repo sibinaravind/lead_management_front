@@ -27,7 +27,6 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   var selectedFilters = <String, dynamic>{}.obs;
   final isFilterActive = false.obs;
   final showFilters = false.obs;
-  String selectedFilter = '';
 
   int page = 1;
   int limit = 10;
@@ -69,8 +68,8 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
       "limit": limit.toString(),
     };
 
-    if (selectedFilter.isNotEmpty) {
-      params["filterCategory"] = selectedFilter;
+    if (leadController.selectedFilter.isNotEmpty) {
+      params["filterCategory"] = leadController.selectedFilter.value;
     }
     if (searchController.text.trim().isNotEmpty) {
       params["searchString"] = searchController.text.trim();
@@ -114,7 +113,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   }
 
   void cleardata() {
-    selectedFilter = '';
+    leadController.selectedFilter.value = '';
     isFilterActive.value = false;
     selectedFilters.clear();
     searchController.clear();
@@ -122,7 +121,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   }
 
   void resetFilters() {
-    selectedFilter = '';
+    leadController.selectedFilter.value = '';
     isFilterActive.value = false;
     selectedFilters.clear();
     searchController.clear();
@@ -316,11 +315,12 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'All Leads',
                               count: 128,
                               color: AppColors.primaryColor,
-                              isSelected: selectedFilter == '',
+                              isSelected:
+                                  leadController.selectedFilter.value == '',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = '';
+                                  leadController.selectedFilter.value = '';
                                 });
                                 fetchData();
                               },
@@ -330,11 +330,12 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'New',
                               count: 10,
                               color: AppColors.blueSecondaryColor,
-                              isSelected: selectedFilter == 'NEW',
+                              isSelected:
+                                  leadController.selectedFilter.value == 'NEW',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'NEW';
+                                  leadController.selectedFilter.value = 'NEW';
                                 });
                                 fetchData();
                               },
@@ -344,11 +345,12 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'Today',
                               count: 24,
                               color: AppColors.greenSecondaryColor,
-                              isSelected: selectedFilter == 'TODAY',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'TODAY',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'TODAY';
+                                  leadController.selectedFilter.value = 'TODAY';
                                 });
                                 fetchData();
                               },
@@ -358,11 +360,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'Tommorrow',
                               count: 24,
                               color: AppColors.orangeSecondaryColor,
-                              isSelected: selectedFilter == 'TOMORROW',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'TOMORROW',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'TOMORROW';
+                                  leadController.selectedFilter.value =
+                                      'TOMORROW';
                                 });
                                 fetchData();
                               },
@@ -372,11 +376,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'Pending',
                               count: 8,
                               color: AppColors.redSecondaryColor,
-                              isSelected: selectedFilter == 'PENDING',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'PENDING',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'PENDING';
+                                  leadController.selectedFilter.value =
+                                      'PENDING';
                                 });
                                 fetchData();
                               },
@@ -386,11 +392,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'Upcoming',
                               count: 156,
                               color: AppColors.skyBlueSecondaryColor,
-                              isSelected: selectedFilter == 'UPCOMING',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'UPCOMING',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'UPCOMING';
+                                  leadController.selectedFilter.value =
+                                      'UPCOMING';
                                 });
                                 fetchData();
                               },
@@ -412,11 +420,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'UnAssigned',
                               count: 15,
                               color: AppColors.textGrayColour,
-                              isSelected: selectedFilter == 'UNASSIGNED',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'UNASSIGNED',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'UNASSIGNED';
+                                  leadController.selectedFilter.value =
+                                      'UNASSIGNED';
                                 });
                                 fetchData();
                               },
@@ -426,11 +436,13 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                               text: 'History',
                               count: 156,
                               color: AppColors.skyBlueSecondaryColor,
-                              isSelected: selectedFilter == 'HISTORY',
+                              isSelected: leadController.selectedFilter.value ==
+                                  'HISTORY',
                               onTap: () {
                                 cleardata();
                                 setState(() {
-                                  selectedFilter = 'HISTORY';
+                                  leadController.selectedFilter.value =
+                                      'HISTORY';
                                 });
                                 fetchData();
                               },

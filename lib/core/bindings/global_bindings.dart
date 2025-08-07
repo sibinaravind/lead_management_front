@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/auth/login_controller.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
+import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_controller.dart';
 import 'package:overseas_front_end/controller/officers_controller/round_robin_controller.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
@@ -38,6 +39,7 @@ class GlobalBindings extends Bindings {
     Get.lazyPut(() => TeamLeadController());
     Get.lazyPut(() => ProjectController());
     Get.lazyPut(() => LeadController());
+    Get.lazyPut(() => CustomerProfileController());
 
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());

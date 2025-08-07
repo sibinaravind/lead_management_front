@@ -11,6 +11,7 @@ class CallEventModel {
   String? callType;
   String? callStatus;
   String? createdAt;
+  String? clientStatus;
   OfficerModel? officer;
 
   CallEventModel({
@@ -25,6 +26,7 @@ class CallEventModel {
     this.callStatus,
     this.createdAt,
     this.officer,
+    this.clientStatus,
   });
 
   CallEventModel.fromJson(Map<String, dynamic> json) {
@@ -39,14 +41,14 @@ class CallEventModel {
     callType = json['call_type'];
     callStatus = json['call_status'];
     createdAt = json['created_at'];
+    clientStatus = json['client_status'];
     officer =
         json['officer'] != null ? OfficerModel.fromJson(json['officer']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['_id'] = sId;
-    data['type'] = type;
+    // data['type'] = type;
     data['client_id'] = clientId;
     data['duration'] = duration;
     data['next_schedule'] = nextSchedule;
@@ -55,10 +57,7 @@ class CallEventModel {
     data['comment'] = comment;
     data['call_type'] = callType;
     data['call_status'] = callStatus;
-    data['created_at'] = createdAt;
-    if (officer != null) {
-      data['officer'] = officer!.toJson();
-    }
+    data['client_status'] = clientStatus;
     return data;
   }
 }

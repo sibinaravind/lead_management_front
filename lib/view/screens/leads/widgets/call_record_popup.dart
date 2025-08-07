@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
+import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
+import '../../../../model/lead/call_event_model.dart';
+
 class CallRecordPopup extends StatefulWidget {
-  const CallRecordPopup(
-      {super.key, required this.clientId, required this.clientName});
+  const CallRecordPopup({
+    super.key,
+    required this.clientId,
+    required this.clientName,
+  });
 
   final String clientId;
   final String clientName;
@@ -20,78 +27,58 @@ class CallRecordPopup extends StatefulWidget {
 class _CallRecordPopupState extends State<CallRecordPopup>
     with TickerProviderStateMixin {
   final configController = Get.find<ConfigController>();
+  final customerController = Get.find<CustomerProfileController>();
   final _formKey = GlobalKey<FormState>();
 
-  List<dynamic>? _selectedBranch;
   String? _selectedCallType;
   String? _selectedCallStatus;
   String? _selectedLeadStatus;
-  List<dynamic>? _selectedDesignation;
-  String? _selectedNationality = 'India';
-  String? _selectedMaritalStatus;
-  String? _selectedGender;
-  Uint8List? imageBytes;
-  final int minutes = 0;
-  final int seconds = 0;
 
-  // Phone/Tele codes
-  String? _mobileTeleCode = '+91';
-  String? _whatsmobileTeleCode = '+91';
-  String? _alterselectedTeleCode = '+91';
-  String? _emerselectedTeleCode = '+91';
-
-  // Controllers
-  final TextEditingController _joiningDateController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _callDurationController = TextEditingController();
   final TextEditingController _feedbackController = TextEditingController();
-  final TextEditingController _middleNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _whatsmobileController = TextEditingController();
-  final TextEditingController _alternatePhoneController =
-      TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _emergencyContactController =
-      TextEditingController();
-  final TextEditingController _emergencycontactPersonNumberController =
-      TextEditingController();
-  final TextEditingController _emergencycontactPersonRelationshipController =
-      TextEditingController();
-  final TextEditingController _address = TextEditingController();
-  final TextEditingController _city = TextEditingController();
-  final TextEditingController _state = TextEditingController();
-  final TextEditingController _pin = TextEditingController();
+  final TextEditingController _nextScheduleController = TextEditingController();
 
-  var _nextScheduleController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _joiningDateController.text = DateTime.now().toString().substring(0, 10);
-  }
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
-    _joiningDateController.dispose();
-    _codeController.dispose();
     _callDurationController.dispose();
     _feedbackController.dispose();
-    _middleNameController.dispose();
-    _lastNameController.dispose();
-    _dobController.dispose();
-    _mobileController.dispose();
-    _whatsmobileController.dispose();
-    _emailController.dispose();
-    _emergencyContactController.dispose();
-    _emergencycontactPersonNumberController.dispose();
-    _emergencycontactPersonRelationshipController.dispose();
-    _address.dispose();
-    _city.dispose();
-    _state.dispose();
-    _pin.dispose();
+    _nextScheduleController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _handleSave() {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final scheduleParts = _nextScheduleController.text.trim().split(" ");
+    final scheduleDate = scheduleParts.isNotEmpty ? scheduleParts.first : '';
+    final scheduleTime = scheduleParts.length > 1
+        ? DateFormat("HH:mm")
+            .format(DateTime.tryParse(scheduleParts.last) ?? DateTime.now())
+        : '';
+
+    final durationText = _callDurationController.text.trim();
+    final durationSeconds = durationText.contains(":")
+        ? ((int.tryParse(durationText.split(":").first) ?? 0) * 60) +
+            (int.tryParse(durationText.split(":").last) ?? 0)
+        : int.tryParse(durationText) ?? 0;
+
+    final model = CallEventModel(
+      clientId: widget.clientId,
+      nextSchedule: scheduleDate,
+      nextScheduleTime: scheduleTime,
+      duration: durationSeconds,
+      comment: _feedbackController.text.trim(),
+      callType: _selectedCallType,
+      callStatus: _selectedCallStatus,
+      clientStatus: _selectedLeadStatus,
+    );
+
+    customerController.callRecordInsert(context: context, log: model);
+
+    // showLoaderDialog(context);
   }
 
   @override
@@ -109,7 +96,7 @@ class _CallRecordPopupState extends State<CallRecordPopup>
             dialogWidth = maxWidth * 0.72;
           } else if (maxWidth > 1000) {
             dialogWidth = maxWidth * 0.9;
-          } else if (maxWidth > 600) {
+          } else {
             dialogWidth = maxWidth * 0.95;
           }
 
@@ -117,18 +104,12 @@ class _CallRecordPopupState extends State<CallRecordPopup>
             child: Container(
               width: dialogWidth,
               height: maxHeight * 0.9,
-              constraints: const BoxConstraints(
-                minWidth: 320,
-                maxWidth: 1600,
-                minHeight: 500,
-              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primaryColor.withOpacity(0.15),
-                    spreadRadius: 0,
                     blurRadius: 40,
                     offset: const Offset(0, 20),
                   ),
@@ -136,46 +117,33 @@ class _CallRecordPopupState extends State<CallRecordPopup>
               ),
               child: Column(
                 children: [
+                  // Header
                   Container(
                     height: 80,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                         colors: [
                           AppColors.primaryColor,
                           AppColors.primaryColor.withOpacity(0.9),
                         ],
                       ),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
                       ),
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.person_add_alt_1_rounded,
-                            size: 22,
-                            color: Colors.white,
-                          ),
-                        ),
+                        const Icon(Icons.person_add_alt_1_rounded,
+                            size: 28, color: Colors.white),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
                               CustomText(
-                                text: 'Call Followup ',
+                                text: 'Call Followup',
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -188,276 +156,156 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
                         IconButton(
                           icon: const Icon(Icons.close_rounded,
                               color: Colors.white, size: 24),
-                          onPressed: () => Navigator.of(context).pop(),
-                          tooltip: 'Close',
+                          onPressed: () => Navigator.pop(context),
                         ),
                       ],
                     ),
                   ),
+
+                  // Form Body
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Form(
                         key: _formKey,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border:
-                                      Border.all(color: Colors.grey.shade200),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _scrollController,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    controller: _scrollController,
+                                    padding: const EdgeInsets.all(24),
+                                    child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        int columns = 1;
+                                        if (constraints.maxWidth > 1000) {
+                                          columns = 3;
+                                        } else if (constraints.maxWidth > 600) {
+                                          columns = 2;
+                                        }
+
+                                        return ResponsiveGrid(
+                                          columns: columns,
+                                          children: [
+                                            CustomDropdownField(
+                                              label: 'Call Type',
+                                              value: _selectedCallType,
+                                              items: configController
+                                                      .configData.value.callType
+                                                      ?.map((e) => e.name ?? "")
+                                                      .toList() ??
+                                                  [],
+                                              onChanged: (val) => setState(() {
+                                                _selectedCallType = val;
+                                              }),
+                                              isRequired: true,
+                                            ),
+                                            CustomDropdownField(
+                                              label: 'Call Status',
+                                              value: _selectedCallStatus,
+                                              items: configController.configData
+                                                      .value.callStatus
+                                                      ?.map((e) => e.name ?? "")
+                                                      .toList() ??
+                                                  [],
+                                              onChanged: (val) => setState(() {
+                                                _selectedCallStatus = val;
+                                              }),
+                                              isRequired: true,
+                                            ),
+                                            CustomDropdownField(
+                                              label: 'Lead Status',
+                                              value: _selectedLeadStatus,
+                                              items: configController.configData
+                                                      .value.clientStatus
+                                                      ?.map((e) => e.name ?? "")
+                                                      .toList() ??
+                                                  [],
+                                              onChanged: (val) => setState(() {
+                                                _selectedLeadStatus = val;
+                                              }),
+                                              isRequired: true,
+                                            ),
+                                            CustomDateField(
+                                              isTimeRequired: true,
+                                              label: 'Next Schedule',
+                                              initialDate: DateTime.now(),
+                                              controller:
+                                                  _nextScheduleController,
+                                            ),
+                                            CustomTextFormField(
+                                              label: 'Call Duration',
+                                              hintText: 'mm:ss',
+                                              controller:
+                                                  _callDurationController,
+                                              isRequired: true,
+                                              inputFormatters: [
+                                                DurationInputFormatter(
+                                                    allowHours: true),
+                                                LengthLimitingTextInputFormatter(
+                                                    8),
+                                              ],
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                            CustomTextFormField(
+                                              label: 'Feedback',
+                                              controller: _feedbackController,
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
-                                child: Column(
+                              ),
+
+                              // Buttons
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
                                   children: [
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .68,
-                                      child: Scrollbar(
-                                        thumbVisibility: true,
-                                        child: SingleChildScrollView(
-                                          padding: const EdgeInsets.all(24),
-                                          child: LayoutBuilder(
-                                            builder: (context, constraints) {
-                                              final availableWidth =
-                                                  constraints.maxWidth;
-                                              int columnsCount = 1;
-
-                                              if (availableWidth > 1000) {
-                                                columnsCount = 3;
-                                              } else if (availableWidth > 600) {
-                                                columnsCount = 2;
-                                              }
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  ResponsiveGrid(
-                                                      columns: columnsCount,
-                                                      children: [
-                                                        CustomDropdownField(
-                                                          label: 'Call Type',
-                                                          value:
-                                                              _selectedCallType,
-                                                          items: configController
-                                                                  .configData
-                                                                  .value
-                                                                  .callType
-                                                                  ?.map((e) =>
-                                                                      e.name ??
-                                                                      "")
-                                                                  .toList() ??
-                                                              [],
-                                                          onChanged: (val) =>
-                                                              setState(() =>
-                                                                  _selectedCallType =
-                                                                      val),
-                                                          isRequired: true,
-                                                        ),
-                                                        CustomDropdownField(
-                                                          label: 'Call Status',
-                                                          value:
-                                                              _selectedCallStatus,
-                                                          items: configController
-                                                                  .configData
-                                                                  .value
-                                                                  .callStatus
-                                                                  ?.map((e) =>
-                                                                      e.name ??
-                                                                      "")
-                                                                  .toList() ??
-                                                              [],
-                                                          onChanged: (val) =>
-                                                              setState(() =>
-                                                                  _selectedCallStatus =
-                                                                      val),
-                                                          isRequired: true,
-                                                        ),
-                                                        CustomDropdownField(
-                                                          label: 'Lead Status',
-                                                          value:
-                                                              _selectedLeadStatus,
-                                                          items: configController
-                                                                  .configData
-                                                                  .value
-                                                                  .clientStatus
-                                                                  ?.map((e) =>
-                                                                      e.name ??
-                                                                      "")
-                                                                  .toList() ??
-                                                              [],
-                                                          onChanged: (val) =>
-                                                              setState(() =>
-                                                                  _selectedLeadStatus =
-                                                                      val),
-                                                          isRequired: true,
-                                                        ),
-
-                                                        CustomDateField(
-                                                          isTimeRequired: true,
-                                                          label:
-                                                              "Next Schedule",
-                                                          controller:
-                                                              _nextScheduleController,
-                                                        ),
-
-                                                        CustomTextFormField(
-                                                          label:
-                                                              'Call Duration',
-                                                          hintText: 'mm:ss',
-                                                          controller:
-                                                              _callDurationController,
-                                                          isRequired: true,
-                                                          inputFormatters: [
-                                                            DurationInputFormatter(
-                                                                allowHours:
-                                                                    true),
-                                                            LengthLimitingTextInputFormatter(
-                                                                8),
-                                                          ],
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                        ),
-
-                                                        // CustomDateField(controller: , label: '',isRequired: ,),
-                                                        CustomTextFormField(
-                                                          label: 'Feedback',
-                                                          controller:
-                                                              _feedbackController,
-                                                        ),
-                                                      ]),
-                                                  const SizedBox(
-                                                    height: 32,
-                                                  )
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ),
+                                    Expanded(
+                                      child: CustomActionButton(
+                                        text: 'Cancel',
+                                        icon: Icons.close_rounded,
+                                        textColor: Colors.grey,
+                                        borderColor: Colors.grey.shade300,
+                                        onPressed: () => Navigator.pop(context),
                                       ),
                                     ),
+                                    const SizedBox(width: 16),
                                     Expanded(
-                                      child: Row(
-                                        children: [
-                                          // Expanded(
-                                          //   child: CustomActionButton(
-                                          //     text: 'Reset',
-                                          //     icon: Icons.refresh_rounded,
-                                          //     onPressed: () {
-                                          //       // Your reset logic
-                                          //     },
-                                          //     borderColor: Colors.grey.shade300,
-                                          //   ),
-                                          // ),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            child: CustomActionButton(
-                                              text: 'Cancel',
-                                              icon: Icons.close_rounded,
-                                              textColor: Colors.grey,
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              borderColor: Colors.grey.shade300,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            flex: 2,
-                                            child: CustomActionButton(
-                                              text: 'Save Feedback',
-                                              icon: Icons.save_rounded,
-                                              isFilled: true,
-                                              gradient: const LinearGradient(
-                                                colors: [
-                                                  Color(0xFF7F00FF),
-                                                  Color(0xFFE100FF)
-                                                ],
-                                              ),
-                                              onPressed: () {
-                                                if (_formKey.currentState
-                                                        ?.validate() ??
-                                                    false) {
-                                                  // Provider.of<LeadProvider>(
-                                                  //   listen: false,
-                                                  //   context,
-                                                  // ).addFeedback(context,
-                                                  //     nextScheduleTime: DateFormat("HH:mm").format(
-                                                  //         DateTime.tryParse(_nextScheduleController.text.trim().split(" ").last) ??
-                                                  //             DateTime.now()),
-                                                  //     clientId: widget.clientId,
-                                                  //     duration: _callDurationController.text
-                                                  //             .contains(":")
-                                                  //         ? (((int.tryParse(_callDurationController.text.trim().split(":").first ?? "0") ?? 0) * 60) +
-                                                  //                 (int.tryParse(_callDurationController.text.trim().split(":").last) ??
-                                                  //                     0))
-                                                  //             .toString()
-                                                  //         : _callDurationController
-                                                  //             .text
-                                                  //             .trim(),
-                                                  //     nextScheduleDate:
-                                                  //         _nextScheduleController
-                                                  //             .text
-                                                  //             .trim()
-                                                  //             .split(" ")
-                                                  //             .first,
-                                                  //     clientStatus:
-                                                  //         _selectedLeadStatus ?? '',
-                                                  //     comment: _feedbackController.text.trim(),
-                                                  //     callType: _selectedCallType ?? '',
-                                                  //     callStatus: _selectedCallStatus ?? '');
-                                                  // Navigator.pop(context);
-                                                  // showLoaderDialog(context);
-                                                  // officerController
-                                                  //     .addOfficer(OfficerModel(
-                                                  //   branch:
-                                                  //       _selectedBranch ?? [],
-                                                  //   designation:
-                                                  //       _selectedDesignation ??
-                                                  //           [],
-                                                  //   joiningDate:
-                                                  //       _joiningDateController
-                                                  //           .text,
-                                                  //   // salutation:
-                                                  //   //     _selectedSalutation,
-                                                  //   // firstName:
-                                                  //   //     _firstNameController.text,
-                                                  //   middleName:
-                                                  //       _middleNameController
-                                                  //           .text,
-                                                  //   lastName:
-                                                  //       _lastNameController
-                                                  //           .text,
-                                                  //   dob: _dobController.text,
-                                                  //   address: _address.text,
-                                                  //   city: _city.text,
-                                                  //   state: _state.text,
-                                                  //   alternatePhone:
-                                                  //       _alterselectedTeleCode
-                                                  //               .toString() +
-                                                  //           _alternatePhoneController
-                                                  //               .text,
-                                                  // ));
-                                                }
-                                              },
-                                            ),
-                                          ),
-                                        ],
+                                      flex: 2,
+                                      child: CustomActionButton(
+                                        text: 'Save Feedback',
+                                        icon: Icons.save_rounded,
+                                        isFilled: true,
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF7F00FF),
+                                            Color(0xFFE100FF)
+                                          ],
+                                        ),
+                                        onPressed: _handleSave,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -483,17 +331,11 @@ class DurationInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final text = newValue.text;
-
-    // Allow only digits and colon
     final filtered = text.replaceAll(RegExp(r'[^0-9:]'), '');
-
-    // Optionally limit to `hh:mm:ss` or `mm:ss`
     final parts = filtered.split(':');
     if (parts.length > (allowHours ? 3 : 2)) {
       return oldValue; // Prevent too many colons
     }
-
-    // Prevent parts from being too long (e.g., mm or ss > 2 digits)
     for (final part in parts) {
       if (part.length > 2) return oldValue;
     }
