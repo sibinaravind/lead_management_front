@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:overseas_front_end/utils/functions/format_date.dart';
 
+import '../../../../controller/config/config_controller.dart';
+import '../../../../controller/registration/registration_controller.dart';
 import '../../../../model/lead/exam_record_model.dart';
 import '../../../../model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_toast.dart';
 import '../../../widgets/popup_date_field.dart';
 import '../../../widgets/widgets.dart';
 
 class EligibilityTab extends StatefulWidget {
-  LeadModel? leadModel;
-  EligibilityTab({super.key, this.leadModel});
+  final LeadModel? leadModel;
+  const EligibilityTab({super.key, this.leadModel});
 
   @override
   State<EligibilityTab> createState() => _AcadamicTabState();
 }
 
 class _AcadamicTabState extends State<EligibilityTab> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<ExamRecordModel> _records = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _records.addAll(widget.leadModel?.examRecords ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +70,7 @@ class _AcadamicTabState extends State<EligibilityTab> {
                                 text: 'status', fontWeight: FontWeight.bold)),
                       ),
                       Expanded(
-                          flex: 3,
+                          flex: 2,
                           child: CustomText(
                               text: 'Validity Date',
                               fontWeight: FontWeight.bold)),
@@ -110,13 +120,11 @@ class _AcadamicTabState extends State<EligibilityTab> {
                               flex: 2,
                               child: CustomText(
                                   text:
-                                      formatDatetoString(record.validityDate) ??
-                                          '')),
+                                      formatDatetoString(record.validityDate))),
                           Expanded(
                               flex: 2,
                               child: CustomText(
-                                  text: formatDatetoString(record.examDate) ??
-                                      '')),
+                                  text: formatDatetoString(record.examDate))),
                           Expanded(
                               flex: 2,
                               child: CustomText(text: record.grade ?? '')),
@@ -172,16 +180,37 @@ class _AcadamicTabState extends State<EligibilityTab> {
                     onPressed: () => Navigator.pop(context),
                     child: const CustomText(text: 'Cancel')),
                 const SizedBox(width: 16),
-                CustomButton(
-                  text: 'Save',
-                  width: 100,
-                  onTap: () {
-                    if (_formKey.currentState?.validate() ?? true) {
-                      // Save form data and records
-                      Navigator.pop(context);
-                    }
-                  },
-                )
+                if (_records.isNotEmpty)
+                  CustomButton(
+                    text: 'Save',
+                    width: 100,
+                    onTap: () async {
+                      showLoaderDialog(context);
+                      bool result = await Get.find<RegistrationController>()
+                          .updateExamRecords(
+                        data: _records,
+                        customerId: widget.leadModel?.sId ?? '',
+                      );
+
+                      if (result) {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.green,
+                          message: 'Personal details Successfully updated ',
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.red,
+                          message:
+                              Get.find<RegistrationController>().errorMessage ??
+                                  'Failed to update personal details',
+                        );
+                      }
+                    },
+                  )
               ],
             ),
           ),
@@ -192,312 +221,267 @@ class _AcadamicTabState extends State<EligibilityTab> {
 
   void _showRecordDialog({ExamRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
-    // final qualificationController = TextEditingController(
-    //   text: recordToEdit?.qualification ?? '',
-    // );
-
-    final examName = TextEditingController(
+    final examNameController = TextEditingController(
       text: recordToEdit?.exam ?? '',
     );
-    // final status = TextEditingController(
-    //   text: recordToEdit?.status ?? '',
-    // );
-    final validDate = TextEditingController(
+    final statusController = TextEditingController(
+      text: recordToEdit?.status ?? '',
+    );
+    final validDateController = TextEditingController(
       text: formatDatetoString(recordToEdit?.validityDate),
     );
-    final examDate = TextEditingController(
+    final examDateController = TextEditingController(
       text: formatDatetoString(recordToEdit?.examDate),
     );
-    final grade = TextEditingController(
+    final gradeController = TextEditingController(
       text: recordToEdit?.grade ?? '',
     );
     final dialogFormKey = GlobalKey<FormState>();
-    String? exam = 'HRD';
-    String? status = 'HRD';
 
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 8,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          constraints: const BoxConstraints(maxWidth: 500),
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with icon and title
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        isEditing ? Icons.edit : Icons.add,
-                        color: AppColors.primaryColor,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: isEditing
-                                ? 'Edit Exam Record'
-                                : 'Add Exam Record',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          const SizedBox(height: 4),
-                          CustomText(
-                            text: isEditing
-                                ? 'Update your Exam information'
-                                : 'Enter your Exam details',
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Form content with enhanced styling
-                Form(
-                  key: dialogFormKey,
-                  child: Column(
+      builder: (context) => StatefulBuilder(
+        // Added StatefulBuilder here
+        builder: (dialogContext, setDialogState) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 8,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            constraints: const BoxConstraints(maxWidth: 500),
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with icon and title
+                  Row(
                     children: [
-                      PopupDropDownField(
-                        label: 'Exam',
-                        value: exam,
-                        items: const [
-                          'Data flow',
-                          'Prometric',
-                          'HRD',
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            exam = value;
-                          });
-                        },
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          isEditing ? Icons.edit : Icons.add,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
                       ),
-                      PopupDropDownField(
-                        label: 'Status',
-                        value: status,
-                        items: const [
-                          'Pass',
-                          'Failed',
-                          'Applied for Exam',
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            status = value;
-                          });
-                        },
-                      ),
-                      PopupDateField(
-                          label: "Validity Date", controller: validDate),
-                      const SizedBox(height: 16),
-                      PopupDateField(label: "Exam Date", controller: examDate),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: Expanded(
-                              child: Expanded(
-                                child: PopupTextField(
-                                  requiredField: false,
-                                  label: 'Grade',
-                                  controller: grade,
-                                  icon: Icons.grade,
-                                  hint: 'e.g., 8.5',
-                                ),
-                              ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: isEditing
+                                  ? 'Edit Exam Record'
+                                  : 'Add Exam Record',
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          // const SizedBox(width: 16),
-                          // Expanded(
-                          //   child: _buildStyledTextFormField(
-                          //     label: 'Grade/CGPA',
-                          //     controller: gradeController,
-                          //     icon: Icons.grade,
-                          //     hint: 'e.g., 8.5',
-                          //   ),
-                          // ),
-                          // const SizedBox(width: 16),
-                          //
-                          // Expanded(
-                          //   child: _buildStyledTextFormField(
-                          //     label: 'Percentage',
-                          //     controller: percentageController,
-                          //     icon: Icons.percent,
-                          //     hint: 'e.g., 85',
-                          //   ),
-                          // ),
-                        ],
+                            const SizedBox(height: 4),
+                            CustomText(
+                              text: isEditing
+                                  ? 'Update your Exam information'
+                                  : 'Enter your Exam details',
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
-                // Action buttons with enhanced styling
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: CustomText(
-                        text: 'Cancel',
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = ExamRecordModel(
-                            exam: exam.toString(),
-                            validityDate: formatStringToDate(validDate.text),
-                            examDate: formatStringToDate(examDate.text),
-                            status: status.toString(),
-                            grade: grade.text,
-                          );
-                          setState(() {
-                            if (isEditing && editIndex != null) {
-                              _records[editIndex] = newRecord;
-                            } else {
-                              _records.add(newRecord);
-                            }
-                          });
-                          Navigator.pop(context);
+                  // Form content with enhanced styling
+                  Form(
+                    key: dialogFormKey,
+                    child: Column(
+                      children: [
+                        PopupDropDownField(
+                          icon: Icons.school,
+                          label: 'Qualification',
+                          isRequired: true,
+                          value: examNameController.text,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .test
+                                  ?.map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            // setDialogState(() {
+                            // Use setDialogState instead of setState
+                            examNameController.text = value ?? '';
+                            // Clear course when qualification changes
 
-                          // Show success message
-                          CustomSnackBar.show(
-                              context,
-                              isEditing
-                                  ? 'Academic record updated successfully!'
-                                  : 'Academic record added successfully!');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                            // });
+                          },
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 16),
+                        PopupDropDownField(
+                          icon: Icons.check_circle,
+                          label: 'Status',
+                          isRequired: true,
+                          value: statusController.text,
+                          items: const [
+                            'PASS',
+                            'FAILED',
+                            'APPLIED',
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              statusController.text = value ?? '';
+                            });
+                            setDialogState(() {
+                              statusController.text = value ?? '';
+                              // Update validity date based on status
+                              // updateValidityDate(
+                              //     value ?? '', examNameController.text);
+                            });
+                          },
                         ),
-                        elevation: 2,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isEditing ? Icons.update : Icons.add,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 8),
-                          CustomText(
-                            text: isEditing ? 'Update' : 'Add Record',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
+                        const SizedBox(height: 16),
+                        if (statusController.text == 'PASS')
+                          Column(
+                            children: [
+                              PopupDateField(
+                                key: ValueKey(statusController.text),
+                                isRequired: true,
+                                controller: validDateController,
+                                label: "Validity Date",
+                                onChanged: (value) {
+                                  setState(() {
+                                    validDateController.text = value;
+                                  });
+                                },
+                                firstDate: DateTime.now()
+                                    .subtract(const Duration(days: 365 * 2)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 365 * 10)),
+                              ),
+                              const SizedBox(height: 16),
+                              PopupTextField(
+                                requiredField: true,
+                                label: 'Grade',
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(5),
+                                ],
+                                controller: gradeController,
+                                icon: Icons.grade,
+                                hint: 'e.g., 8.5',
+                              ),
+                            ],
+                          )
+                        else
+                          PopupDateField(
+                              key: ValueKey(statusController.text),
+                              // isRequired: true,
+                              label: "Exam Date",
+                              firstDate: DateTime.now()
+                                  .subtract(const Duration(days: 365 * 10)),
+                              lastDate: DateTime.now()
+                                  .add(const Duration(days: 365 * 10)),
+                              controller: examDateController),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Action buttons with enhanced styling
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: CustomText(
+                          text: 'Cancel',
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (dialogFormKey.currentState!.validate()) {
+                            final newRecord = ExamRecordModel(
+                              exam: examNameController.text,
+                              validityDate:
+                                  formatStringToDate(validDateController.text),
+                              examDate:
+                                  formatStringToDate(examDateController.text),
+                              status: statusController.text,
+                              grade: gradeController.text,
+                            );
+                            setState(() {
+                              if (isEditing && editIndex != null) {
+                                _records[editIndex] = newRecord;
+                              } else {
+                                _records.add(newRecord);
+                              }
+                            });
+                            Navigator.pop(context);
+
+                            // Show success message
+                            CustomSnackBar.show(
+                                context,
+                                isEditing
+                                    ? 'Academic record updated successfully!'
+                                    : 'Academic record added successfully!');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isEditing ? Icons.update : Icons.add,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              text: isEditing ? 'Update' : 'Add Record',
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildStyledTextFormField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-    required String hint,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(
-              icon,
-              color: AppColors.primaryColor,
-              size: 20,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.primaryColor, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-            filled: true,
-            fillColor: Colors.grey[50],
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-          ),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return '$label is required';
-            }
-            return null;
-          },
-        ),
-      ],
     );
   }
 

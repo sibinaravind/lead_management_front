@@ -1,3 +1,5 @@
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+
 class ExamRecordModel {
   String? exam;
   String? status;
@@ -34,8 +36,8 @@ class ExamRecordModel {
     return {
       'exam': exam,
       'status': status,
-      'validity_date': validityDate?.toIso8601String(),
-      'exam_date': examDate?.toIso8601String(),
+      'validity_date': formatDatetoString(validityDate),
+      'exam_date': formatDatetoString(examDate),
       'grade': grade,
       'score': score,
     };

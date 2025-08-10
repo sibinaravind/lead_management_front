@@ -1,11 +1,15 @@
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
+import '../../model/lead/academic_record_model.dart';
 import '../../model/lead/call_event_model.dart';
+import '../../model/lead/exam_record_model.dart';
 import '../../model/lead/lead_list_model.dart';
 import '../../model/lead/lead_model.dart';
+import '../../model/lead/travel_record_model.dart';
+import '../../model/lead/work_record_model.dart';
+import '../../view/widgets/custom_toast.dart';
 
 class RegistrationController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -43,6 +47,32 @@ class RegistrationController extends GetxController {
     }
   }
 
+  Future<void> getCustomerDetails(context, String leadId) async {
+    try {
+      leadDetails.value = LeadModel();
+      final response = await _apiService.getRequest(
+          endpoint: "${Constant().getLeadDetail}/$leadId",
+          fromJson: (json) => LeadModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedLeadDetails) {
+          leadDetails.value = loadedLeadDetails;
+          currentClientId = loadedLeadDetails.sId ?? '';
+          refresh();
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error : $e',
+      );
+    } finally {
+      // notifyListeners();
+    }
+  }
+
   Future<bool> updatePersonalDetails(
       {required LeadModel lead, required String customerId}) async {
     try {
@@ -52,16 +82,143 @@ class RegistrationController extends GetxController {
           fromJson: (json) => json);
       response.fold(
         (failure) {
-          throw Exception("Failed to load clients");
+          throw Exception(failure);
         },
         (loadedClients) {
+          leadDetails.value.name = lead.name;
+          leadDetails.value.lastName = lead.lastName;
+          leadDetails.value.email = lead.email;
+          leadDetails.value.emailPassword = lead.emailPassword;
+          leadDetails.value.phone = lead.phone;
+          leadDetails.value.countryCode = lead.countryCode;
+          leadDetails.value.emergencyContact = lead.emergencyContact;
+          leadDetails.value.alternatePhone = lead.alternatePhone;
+          leadDetails.value.whatsapp = lead.whatsapp;
+          leadDetails.value.gender = lead.gender;
+          leadDetails.value.dob = lead.dob;
+          leadDetails.value.maritalStatus = lead.maritalStatus;
+          leadDetails.value.country = lead.country;
+          leadDetails.value.address = lead.address;
+          leadDetails.value.birthPlace = lead.birthPlace;
+          leadDetails.value.birthCountry = lead.birthCountry;
+          leadDetails.value.religion = lead.religion;
+          leadDetails.value.passportNumber = lead.passportNumber;
+          leadDetails.value.passportExpiryDate = lead.passportExpiryDate;
+          leadDetails.value.note = lead.note;
+          leadDetails.value.onCallCommunication = lead.onCallCommunication;
+          leadDetails.value.onWhatsappCommunication =
+              lead.onWhatsappCommunication;
+          leadDetails.value.onEmailCommunication = lead.onEmailCommunication;
+          leadDetails.value.countryInterested = lead.countryInterested;
+          // Add more fields as needed based on your LeadModel
+
+          return true;
+        },
+      );
+    } catch (e) {
+      errorMessage = 'Error : $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
+    }
+    return true;
+  }
+
+  Future<bool> updateAcademicDetails(
+      {required List<AcademicRecordModel> data,
+      required String customerId}) async {
+    try {
+      final response = await _apiService.postRequest(
+          endpoint: '${Constant().updateAcademicRecords}/$customerId',
+          body: data.map((e) => e.toJson()).toList(),
+          fromJson: (json) => json);
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          leadDetails.value.academicRecords = data;
           // customerMatchingList.value = loadedClients;
           return true;
         },
       );
     } catch (e) {
-      print('Error updating personal details: $e');
-      errorMessage = 'Error fetching clients: $e';
+      errorMessage = 'Error : $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
+    }
+    return true;
+  }
+
+  Future<bool> updateExamRecords(
+      {required List<ExamRecordModel> data, required String customerId}) async {
+    try {
+      final response = await _apiService.postRequest(
+          endpoint: '${Constant().updateExamRecords}/$customerId',
+          body: data.map((e) => e.toJson()).toList(),
+          fromJson: (json) => json);
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          leadDetails.value.examRecords = data;
+          // customerMatchingList.value = loadedClients;
+          return true;
+        },
+      );
+    } catch (e) {
+      errorMessage = ': $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
+    }
+    return true;
+  }
+
+  Future<bool> updateWorkRecords(
+      {required List<WorkRecordModel> data, required String customerId}) async {
+    try {
+      final response = await _apiService.postRequest(
+          endpoint: '${Constant().updateWorkRecords}/$customerId',
+          body: data.map((e) => e.toJson()).toList(),
+          fromJson: (json) => json);
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          leadDetails.value.workRecords = data;
+          // customerMatchingList.value = loadedClients;
+          return true;
+        },
+      );
+    } catch (e) {
+      errorMessage = 'Error : $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
+    }
+    return true;
+  }
+
+  Future<bool> updateTravelHistory(
+      {required List<TravelRecordModel> data,
+      required String customerId}) async {
+    try {
+      final response = await _apiService.postRequest(
+          endpoint: '${Constant().updateTravelHistory}/$customerId',
+          body: data.map((e) => e.toJson()).toList(),
+          fromJson: (json) => json);
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          leadDetails.value.travelRecords = data;
+          // customerMatchingList.value = loadedClients;
+          return true;
+        },
+      );
+    } catch (e) {
+      errorMessage = 'Error : $e';
       return false;
       // throw Exception('Error fetching clients: $e');
     }

@@ -40,7 +40,7 @@ class CustomDateFieldWithoutLabel extends StatelessWidget {
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+          borderSide: BorderSide(color: Colors.deepPurple, width: 2),
         ),
       ),
       validator: isRequired

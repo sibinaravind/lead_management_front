@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/model/lead/lead_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
-import '../../../controller/customer_profile/customer_profile_controller.dart';
+import '../../../controller/registration/registration_controller.dart';
 import '../../../utils/style/colors/colors.dart';
 import 'tabs/acadamic_tab.dart';
 import 'tabs/document_tab.dart';
 import 'tabs/eligility_tab.dart';
+import 'tabs/personal_details_tab.dart';
 import 'tabs/travel_details.dart';
 import 'tabs/work_experience_tab.dart';
 
 class RegistrationAdd extends StatefulWidget {
-  const RegistrationAdd({super.key, required this.lead});
-  final LeadModel lead;
+  const RegistrationAdd({super.key, required this.leadid});
+  final String leadid;
 
   @override
   State<RegistrationAdd> createState() => _RegistrationFormState();
@@ -21,7 +21,7 @@ class RegistrationAdd extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationAdd>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final _customerProfileController = Get.find<CustomerProfileController>();
+  final _registrationController = Get.find<RegistrationController>();
   late ScrollController tabScrollController;
   String? contactCountryCode = '';
 
@@ -35,7 +35,7 @@ class _RegistrationFormState extends State<RegistrationAdd>
   }
 
   void _fetchLeadDetails() async {
-    await _customerProfileController.getLeadDetails(context, widget.lead.sId!);
+    await _registrationController.getCustomerDetails(context, widget.leadid);
   }
 
   @override
@@ -202,46 +202,53 @@ class _RegistrationFormState extends State<RegistrationAdd>
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: widget.lead.name ?? 'N/A',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: Colors.grey.shade800,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.phone,
-                                            size: 14,
-                                            color: Colors.grey.shade500),
-                                        const SizedBox(width: 6),
-                                        CustomText(
-                                          text:
-                                              '${widget.lead.countryCode ?? ''} ${widget.lead.phone ?? ''}',
-                                          fontSize: 13,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.email,
-                                            size: 14,
-                                            color: Colors.grey.shade500),
-                                        const SizedBox(width: 6),
-                                        CustomText(
-                                          text: widget.lead.email ?? 'N/A',
-                                          fontSize: 13,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              Obx(
+                                () => Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: _registrationController
+                                                .leadDetails.value.name ??
+                                            'N/A',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: Colors.grey.shade800,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.phone,
+                                              size: 14,
+                                              color: Colors.grey.shade500),
+                                          const SizedBox(width: 6),
+                                          CustomText(
+                                            text:
+                                                '${_registrationController.leadDetails.value.countryCode ?? ''} ${_registrationController.leadDetails.value.phone ?? ''}',
+                                            fontSize: 13,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.email,
+                                              size: 14,
+                                              color: Colors.grey.shade500),
+                                          const SizedBox(width: 6),
+                                          CustomText(
+                                            text: _registrationController
+                                                    .leadDetails.value.email ??
+                                                'N/A',
+                                            fontSize: 13,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Container(
@@ -358,14 +365,14 @@ class _RegistrationFormState extends State<RegistrationAdd>
                         Expanded(
                           child: Obx(() {
                             final lead =
-                                _customerProfileController.leadDetails.value;
+                                _registrationController.leadDetails.value;
 
                             return TabBarView(
                               controller: _tabController,
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 if (lead != null && lead.clientId != null) ...[
-                                  // PersonalDetailsTab(leadModel: lead),
+                                  PersonalDetailsTab(leadModel: lead),
                                   AcadamicTab(leadModel: lead),
                                   EligibilityTab(leadModel: lead),
                                   WorkExperience(leadModel: lead),

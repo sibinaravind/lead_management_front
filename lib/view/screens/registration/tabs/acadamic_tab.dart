@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
+import '../../../../controller/registration/registration_controller.dart';
 import '../../../../model/lead/academic_record_model.dart';
 import '../../../../model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_toast.dart';
 import '../../../widgets/widgets.dart';
 
 // ignore: must_be_immutable
@@ -193,22 +196,47 @@ class _AcadamicTabState extends State<AcadamicTab> {
                     onPressed: () => Navigator.pop(context),
                     child: const CustomText(text: 'Cancel')),
                 const SizedBox(width: 16),
-                CustomButton(
-                  text: 'Save',
-                  width: 100,
-                  onTap: () {
-                    // if (_formKey.currentState?.validate() ?? true) {
-                    //   // Save form data and records
-                    //   Provider.of<RegistrationController>(context,
-                    //           listen: false)
-                    //       .addAcademicRecords(context,
-                    //           educationList:
-                    //               _records.map((e) => e.toJson()).toList(),
-                    //           leadId: widget.id);
-                    //   Navigator.pop(context);
-                    // }
-                  },
-                )
+                if (_records.isNotEmpty)
+                  CustomButton(
+                    text: 'Save',
+                    width: 100,
+                    onTap: () async {
+                      showLoaderDialog(context);
+                      bool result = await Get.find<RegistrationController>()
+                          .updateAcademicDetails(
+                        data: _records,
+                        customerId: widget.leadModel?.sId ?? '',
+                      );
+
+                      if (result) {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.green,
+                          message: 'Personal details Successfully updated ',
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.red,
+                          message:
+                              Get.find<RegistrationController>().errorMessage ??
+                                  'Failed to update personal details',
+                        );
+                      }
+                      // if (_formKey.currentState?.validate() ?? true) {
+                      // Save form data and records
+                      // Provider.of<RegistrationController>(context,
+                      //         listen: false)
+                      //     .addAcademicRecords(context,
+                      //         educationList:
+                      //             _records.map((e) => e.toJson()).toList(),
+                      //         leadId: widget.id);
+                      // Navigator.pop(context);
+                      // }
+                    },
+                  )
               ],
             ),
           ),
@@ -219,7 +247,8 @@ class _AcadamicTabState extends State<AcadamicTab> {
 
   void _showRecordDialog({AcademicRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
-    String qualification = '';
+
+    // Controllers
     final qualificationController = TextEditingController(
       text: recordToEdit?.qualification ?? '',
     );
@@ -233,10 +262,10 @@ class _AcadamicTabState extends State<AcadamicTab> {
       text: recordToEdit?.university ?? '',
     );
     final startYearController = TextEditingController(
-      text: recordToEdit?.startYear.toString() ?? '',
+      text: recordToEdit?.startYear?.toString() ?? '',
     );
     final endYearController = TextEditingController(
-      text: recordToEdit?.endYear.toString() ?? '',
+      text: recordToEdit?.endYear?.toString() ?? '',
     );
     final gradeController = TextEditingController(
       text: recordToEdit?.grade ?? '',
@@ -244,310 +273,352 @@ class _AcadamicTabState extends State<AcadamicTab> {
     final percentageController = TextEditingController(
       text: recordToEdit?.percentage?.toString() ?? '',
     );
+
     final dialogFormKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 8,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          constraints: const BoxConstraints(maxWidth: 500),
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with icon and title
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        isEditing ? Icons.edit : Icons.add,
-                        color: AppColors.primaryColor,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: isEditing
-                                ? 'Edit Academic Record'
-                                : 'Add Academic Record',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          const SizedBox(height: 4),
-                          CustomText(
-                            text: isEditing
-                                ? 'Update your academic information'
-                                : 'Enter your academic details',
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Form content with enhanced styling
-                Form(
-                  key: dialogFormKey,
-                  child: Column(
+      builder: (context) => StatefulBuilder(
+        // Added StatefulBuilder here
+        builder: (dialogContext, setDialogState) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 8,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            constraints: const BoxConstraints(maxWidth: 500),
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with icon and title
+                  Row(
                     children: [
-                      PopupDropDownField(
-                        label: 'Qualification',
-                        value: qualificationController.text,
-                        items: Get.find<ConfigController>()
-                                .configData
-                                .value
-                                .programType
-                                ?.map((e) => e.name ?? "")
-                                .toList() ??
-                            [],
-                        onChanged: (value) {
-                          setState(() {
-                            qualification = value ?? '';
-                            qualificationController.text = value ?? '';
-                          });
-                        },
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          isEditing ? Icons.edit : Icons.add,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      // PopupDropDownField(
-                      //   label: 'Course',
-                      //   value: courseController.text,
-                      //   items: Get.find<ConfigController>()
-                      //           .configData
-                      //           .value
-                      //           .program
-                      //           ?.where((e) {
-                      //             print(
-                      //                 'qualificationController: ${qualification}');
-                      //             return e.program ==
-                      //                 qualificationController.text;
-                      //           })
-                      //           .map((e) => e.name ?? "")
-                      //           .toList() ??
-                      //       [],
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       courseController.text = value ?? '';
-                      //     });
-                      //   },
-                      // ),
-
-                      const SizedBox(height: 16),
-                      PopupTextField(
-                        requiredField: true,
-                        label: 'Institution',
-                        controller: institutionController,
-                        icon: Icons.business,
-                        hint: 'e.g., School of Technology',
-                      ),
-                      const SizedBox(height: 16),
-                      PopupTextField(
-                        requiredField: true,
-                        label: 'University',
-                        controller: universityController,
-                        icon: Icons.school,
-                        hint: 'e.g., Affinix of Technology',
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: PopupTextField(
-                              requiredField: true,
-                              label: 'Start Year',
-                              controller: startYearController,
-                              icon: Icons.calendar_today,
-                              hint: 'e.g., 2020',
-                              customValidator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Start Year is required';
-                                }
-                                final year = int.tryParse(value);
-                                final currentYear = DateTime.now().year;
-                                final minYear = currentYear - 40;
-                                final maxYear = currentYear + 5;
-                                if (year == null) {
-                                  return 'Year must be a valid number';
-                                }
-                                if (value.length != 4) {
-                                  return 'Year must be 4 digits';
-                                }
-                                if (year < minYear || year > maxYear) {
-                                  return 'Year must be a valid';
-                                }
-                                return null;
-                              },
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: isEditing
+                                  ? 'Edit Academic Record'
+                                  : 'Add Academic Record',
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: PopupTextField(
-                              requiredField: true,
-                              label: 'End Year',
-                              controller: endYearController,
-                              icon: Icons.calendar_today,
-                              customValidator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'End Year is required';
-                                }
-                                final endYear = int.tryParse(value);
-                                final startYear =
-                                    int.tryParse(startYearController.text);
-                                final currentYear = DateTime.now().year;
-                                final minYear = currentYear - 40;
-                                final maxYear = currentYear + 5;
-                                if (endYear == null) {
-                                  return 'Year must be a valid number';
-                                }
-                                if (value.length != 4) {
-                                  return 'Year must be 4 digits';
-                                }
-                                if (endYear < minYear || endYear > maxYear) {
-                                  return 'Year must be a valid';
-                                }
-                                if (startYear != null && endYear <= startYear) {
-                                  return 'End Year must be after Start Year';
-                                }
-                                return null;
-                              },
-                              hint: 'e.g., 2023',
+                            const SizedBox(height: 4),
+                            CustomText(
+                              text: isEditing
+                                  ? 'Update your academic information'
+                                  : 'Enter your academic details',
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: PopupTextField(
-                              requiredField: false,
-                              label: 'Grade/CGPA',
-                              controller: gradeController,
-                              icon: Icons.grade,
-                              hint: 'e.g., A+ / 8.5',
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: PopupTextField(
-                              requiredField: false,
-                              label: 'Percentage',
-                              controller: percentageController,
-                              icon: Icons.percent,
-                              hint: 'e.g., 85',
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
-                // Action buttons with enhanced styling
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                  // Form content with enhanced styling
+                  Form(
+                    key: dialogFormKey,
+                    child: Column(
+                      children: [
+                        PopupDropDownField(
+                          icon: Icons.school_outlined,
+                          label: 'Qualification',
+                          value: qualificationController.text,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .programType
+                                  ?.map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            setDialogState(() {
+                              // Use setDialogState instead of setState
+                              qualificationController.text = value ?? '';
+                              // Clear course when qualification changes
+                              courseController.text = '';
+                            });
+                          },
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 16),
+                        PopupDropDownField(
+                          icon: Icons.school,
+                          key: ValueKey(qualificationController
+                              .text), // Add key to force rebuild
+                          label: 'Course',
+                          value: courseController.text,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .program
+                                  ?.where((e) {
+                                    return e.program ==
+                                        qualificationController.text;
+                                  })
+                                  .map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            setDialogState(() {
+                              // Use setDialogState instead of setState
+                              courseController.text = value ?? '';
+                            });
+                          },
                         ),
-                      ),
-                      child: CustomText(
-                        text: 'Cancel',
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
+                        const SizedBox(height: 16),
+                        PopupTextField(
+                          requiredField: true,
+                          label: 'Institution',
+                          controller: institutionController,
+                          icon: Icons.business,
+                          hint: 'e.g., School of Technology',
+                        ),
+                        const SizedBox(height: 16),
+                        PopupTextField(
+                          requiredField: true,
+                          label: 'University',
+                          controller: universityController,
+                          icon: Icons.school,
+                          hint: 'e.g., Affinix of Technology',
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: PopupTextField(
+                                requiredField: true,
+                                label: 'Start Year',
+                                controller: startYearController,
+                                icon: Icons.calendar_today,
+                                hint: 'e.g., 2020',
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                customValidator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Start Year is required';
+                                  }
+                                  final year = int.tryParse(value);
+                                  final currentYear = DateTime.now().year;
+                                  final minYear = currentYear - 40;
+                                  final maxYear = currentYear + 5;
+                                  if (year == null) {
+                                    return 'Year must be a valid number';
+                                  }
+                                  if (value.length != 4) {
+                                    return 'Year must be 4 digits';
+                                  }
+                                  if (year < minYear || year > maxYear) {
+                                    return 'Year must be a valid';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: PopupTextField(
+                                requiredField: true,
+                                label: 'End Year',
+                                controller: endYearController,
+                                icon: Icons.calendar_today,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                customValidator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'End Year is required';
+                                  }
+                                  final endYear = int.tryParse(value);
+                                  final startYear =
+                                      int.tryParse(startYearController.text);
+                                  final currentYear = DateTime.now().year;
+                                  final minYear = currentYear - 40;
+                                  final maxYear = currentYear + 5;
+                                  if (endYear == null) {
+                                    return 'Year must be a valid number';
+                                  }
+                                  if (value.length != 4) {
+                                    return 'Year must be 4 digits';
+                                  }
+                                  if (endYear < minYear || endYear > maxYear) {
+                                    return 'Year must be a valid';
+                                  }
+                                  if (startYear != null &&
+                                      endYear < startYear) {
+                                    return 'End Year must be after Start Year';
+                                  }
+                                  return null;
+                                },
+                                hint: 'e.g., 2023',
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: PopupTextField(
+                                requiredField: false,
+                                label: 'Grade/CGPA',
+                                controller: gradeController,
+                                icon: Icons.grade,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                hint: 'e.g., A+ / 8.5',
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: PopupTextField(
+                                requiredField: false,
+                                label: 'Percentage',
+                                controller: percentageController,
+                                icon: Icons.percent,
+                                hint: 'e.g., 85',
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d*\.?\d{0,2}')),
+                                  LengthLimitingTextInputFormatter(5),
+                                ],
+                                customValidator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return null; // Not required
+                                  }
+                                  final intValue = double.tryParse(value);
+                                  if (intValue == null) {
+                                    return 'Percentage must be an integer';
+                                  }
+                                  if (intValue < 0 || intValue > 99) {
+                                    return 'Percentage must be less than 100';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = AcademicRecordModel(
-                            percentage: double.parse(percentageController.text),
-                            qualification: qualificationController.text,
-                            course: courseController.text,
-                            institution: institutionController.text.trim(),
-                            startYear:
-                                int.parse(startYearController.text.trim()),
-                            endYear: int.parse(endYearController.text.trim()),
-                            grade: gradeController.text.trim(),
-                          );
-                          setState(() {
-                            if (isEditing && editIndex != null) {
-                              _records[editIndex] = newRecord;
-                            } else {
-                              _records.add(newRecord);
-                            }
-                          });
-                          Navigator.pop(context);
+                  ),
+                  const SizedBox(height: 32),
 
-                          // Show success message
-                          CustomSnackBar.show(
-                              context,
-                              isEditing
-                                  ? 'Academic record updated successfully!'
-                                  : 'Academic record added successfully!');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isEditing ? Icons.update : Icons.add,
-                            size: 18,
+                  // Action buttons with enhanced styling
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
                           ),
-                          const SizedBox(width: 8),
-                          CustomText(
-                            text: isEditing ? 'Update' : 'Add Record',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        ],
+                        ),
+                        child: CustomText(
+                          text: 'Cancel',
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (dialogFormKey.currentState!.validate()) {
+                            final newRecord = AcademicRecordModel(
+                              percentage: percentageController.text.isNotEmpty
+                                  ? double.tryParse(percentageController.text)
+                                  : null,
+                              qualification: qualificationController.text,
+                              course: courseController.text,
+                              institution: institutionController.text.trim(),
+                              university: universityController.text.trim(),
+                              startYear:
+                                  int.tryParse(startYearController.text.trim()),
+                              endYear:
+                                  int.tryParse(endYearController.text.trim()),
+                              grade: gradeController.text.trim(),
+                            );
+                            setState(() {
+                              if (isEditing && editIndex != null) {
+                                _records[editIndex] = newRecord;
+                              } else {
+                                _records.add(newRecord);
+                              }
+                            });
+                            Navigator.pop(context);
+
+                            // Show success message
+                            CustomSnackBar.show(
+                                context,
+                                isEditing
+                                    ? 'Academic record updated successfully!'
+                                    : 'Academic record added successfully!');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isEditing ? Icons.update : Icons.add,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              text: isEditing ? 'Update' : 'Add Record',
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

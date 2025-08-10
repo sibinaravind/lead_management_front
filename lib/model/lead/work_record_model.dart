@@ -1,3 +1,5 @@
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+
 class WorkRecordModel {
   String? position;
   String? department;
@@ -35,8 +37,8 @@ class WorkRecordModel {
       'department': department,
       'organization': organization,
       'country': country,
-      'from_date': fromDate?.toIso8601String(),
-      'to_date': toDate?.toIso8601String(),
+      'from_date': formatDatetoString(fromDate),
+      'to_date': formatDatetoString(toDate),
     };
   }
 }

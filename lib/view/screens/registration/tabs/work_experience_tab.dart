@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/widgets/popup_date_field.dart';
 
+import '../../../../controller/config/config_controller.dart';
+import '../../../../controller/registration/registration_controller.dart';
 import '../../../../model/lead/lead_model.dart';
 import '../../../../model/lead/work_record_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_toast.dart';
 import '../../../widgets/widgets.dart';
 
 class WorkExperience extends StatefulWidget {
@@ -16,8 +20,13 @@ class WorkExperience extends StatefulWidget {
 }
 
 class _AcadamicTabState extends State<WorkExperience> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<WorkRecordModel> _records = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _records.addAll(widget.leadModel.workRecords ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +35,9 @@ class _AcadamicTabState extends State<WorkExperience> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Academic Records List
           const CustomText(
-              text: 'Eligibility Records',
-              fontSize: 16,
-              fontWeight: FontWeight.bold),
-
+              text: 'Work Records', fontSize: 16, fontWeight: FontWeight.bold),
           const SizedBox(height: 16),
-
-          // Academic Records Table
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
@@ -61,10 +64,14 @@ class _AcadamicTabState extends State<WorkExperience> {
                                 fontWeight: FontWeight.bold)),
                       ),
                       Expanded(
-                          flex: 3,
+                          flex: 2,
                           child: CustomText(
                               text: 'Organisation',
                               fontWeight: FontWeight.bold)),
+                      Expanded(
+                          flex: 2,
+                          child: CustomText(
+                              text: 'Country', fontWeight: FontWeight.bold)),
                       Expanded(
                           flex: 2,
                           child: CustomText(
@@ -114,6 +121,9 @@ class _AcadamicTabState extends State<WorkExperience> {
                                   CustomText(text: record.organization ?? '')),
                           Expanded(
                               flex: 2,
+                              child: CustomText(text: record.country ?? '')),
+                          Expanded(
+                              flex: 2,
                               child: CustomText(
                                   text: formatDatetoString(record.fromDate))),
                           Expanded(
@@ -151,7 +161,6 @@ class _AcadamicTabState extends State<WorkExperience> {
             ),
           ),
           const SizedBox(height: 16),
-
           ElevatedButton(
               onPressed: () => _showRecordDialog(),
               style: ElevatedButton.styleFrom(
@@ -162,7 +171,6 @@ class _AcadamicTabState extends State<WorkExperience> {
                 text: 'Add Experience',
                 color: AppColors.textWhiteColour,
               )),
-
           Container(
             padding: const EdgeInsets.symmetric(vertical: 30.0),
             child: Row(
@@ -172,16 +180,37 @@ class _AcadamicTabState extends State<WorkExperience> {
                     onPressed: () => Navigator.pop(context),
                     child: const CustomText(text: 'Cancel')),
                 const SizedBox(width: 16),
-                CustomButton(
-                  text: 'Save',
-                  width: 100,
-                  onTap: () {
-                    if (_formKey.currentState?.validate() ?? true) {
-                      // Save form data and records
-                      Navigator.pop(context);
-                    }
-                  },
-                )
+                if (_records.isNotEmpty)
+                  CustomButton(
+                    text: 'Save',
+                    width: 100,
+                    onTap: () async {
+                      showLoaderDialog(context);
+                      bool result = await Get.find<RegistrationController>()
+                          .updateWorkRecords(
+                        data: _records,
+                        customerId: widget.leadModel.sId ?? '',
+                      );
+
+                      if (result) {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.green,
+                          message: 'Personal details Successfully updated ',
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.red,
+                          message:
+                              Get.find<RegistrationController>().errorMessage ??
+                                  'Failed to update personal details',
+                        );
+                      }
+                    },
+                  )
               ],
             ),
           ),
@@ -192,21 +221,17 @@ class _AcadamicTabState extends State<WorkExperience> {
 
   void _showRecordDialog({WorkRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
-    // final qualificationController = TextEditingController(
-    //   text: recordToEdit?.qualification ?? '',
-    // );
-
     final position = TextEditingController(
       text: recordToEdit?.position ?? '',
     );
-    // final status = TextEditingController(
-    //   text: recordToEdit?.status ?? '',
-    // );
     final departments = TextEditingController(
       text: recordToEdit?.department ?? '',
     );
     final organisation = TextEditingController(
       text: recordToEdit?.organization ?? '',
+    );
+    final country = TextEditingController(
+      text: recordToEdit?.country ?? '',
     );
     final fromDate = TextEditingController(
       text: formatDatetoString(recordToEdit?.fromDate) ?? '',
@@ -219,256 +244,297 @@ class _AcadamicTabState extends State<WorkExperience> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 8,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          constraints: const BoxConstraints(maxWidth: 500),
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with icon and title
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        isEditing ? Icons.edit : Icons.add,
-                        color: AppColors.primaryColor,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: isEditing
-                                ? 'Edit Exam Record'
-                                : 'Add Exam Record',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          const SizedBox(height: 4),
-                          CustomText(
-                            text: isEditing
-                                ? 'Update your Exam information'
-                                : 'Enter your Exam details',
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Form content with enhanced styling
-                Form(
-                  key: dialogFormKey,
-                  child: Column(
+      builder: (context) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 8,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            constraints: const BoxConstraints(maxWidth: 500),
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with icon and title - FIXED
+                  Row(
                     children: [
-                      // _buildStyledTextFormField(label: '', controller: position, icon:, hint: ''),
-                      PopupTextField(
-                        requiredField: false,
-                        controller: position,
-                        icon: Icons.work,
-                        label: 'Position',
-                        hint: 'Nurce,Dr, etc',
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          isEditing ? Icons.edit : Icons.add,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      PopupTextField(
-                        requiredField: false,
-                        controller: departments,
-                        icon: Icons.cast_for_education,
-                        label: 'Departments',
-                        hint: 'Cardilogey, Neurology, etc.',
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: isEditing
+                                  ? 'Edit Work Record' // FIXED: Changed from "Exam Record"
+                                  : 'Add Work Record', // FIXED: Changed from "Exam Record"
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            const SizedBox(height: 4),
+                            CustomText(
+                              text: isEditing
+                                  ? 'Update your work experience' // FIXED: Changed from "Exam information"
+                                  : 'Enter your work experience', // FIXED: Changed from "Exam details"
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      PopupTextField(
-                        requiredField: false,
-                        controller: organisation,
-                        icon: Icons.business,
-                        label: 'Organization',
-                        hint: 'Aegis Health, Apollo Hospital, etc.',
-                      ),
-                      const SizedBox(height: 16),
-
-                      const SizedBox(height: 16),
-
-                      Row(
-                        // spacing: 10,
-                        children: [
-                          Expanded(
-                              child: PopupDateField(
-                                  label: "From Date", controller: fromDate)),
-                          Expanded(
-                              child: PopupDateField(
-                                  label: "To Date", controller: toDate)),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
                     ],
                   ),
-                ),
-                const SizedBox(height: 32),
+                  const SizedBox(height: 24),
+                  Form(
+                    key: dialogFormKey,
+                    child: Column(
+                      children: [
+                        PopupDropDownField(
+                          label: 'Job Title',
+                          icon: Icons.work,
+                          isRequired: true,
+                          value: position.text,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .jobCategory
+                                  ?.map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            setDialogState(() {
+                              position.text = value ?? '';
 
-                // Action buttons with enhanced styling
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                              departments.text = '';
+                            });
+                          },
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 16),
+                        PopupDropDownField(
+                          key: ValueKey(position.text),
+                          label: 'Specialization',
+                          isRequired: true,
+                          value: departments.text,
+                          icon: Icons.category,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .specialized
+                                  ?.where((e) {
+                                    return e.category?.toLowerCase() ==
+                                        position.text.trim().toLowerCase();
+                                  })
+                                  .map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            setDialogState(() {
+                              departments.text = value ?? '';
+                            });
+                          },
                         ),
-                      ),
-                      child: CustomText(
-                        text: 'Cancel',
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = WorkRecordModel(
-                            position: position.text,
-                            department: departments.text,
-                            fromDate: formatStringToDate(fromDate.text),
-                            toDate: formatStringToDate(toDate.text),
-                            organization: organisation.text,
-                          );
-                          setState(() {
-                            if (isEditing && editIndex != null) {
-                              _records[editIndex] = newRecord;
-                            } else {
-                              _records.add(newRecord);
-                            }
-                          });
-                          Navigator.pop(context);
+                        const SizedBox(height: 16),
+                        PopupTextField(
+                          requiredField: true,
+                          controller: organisation,
+                          icon: Icons.business,
+                          label: 'Organization',
+                          hint: 'Aegis Health, Apollo Hospital, etc.',
+                        ),
+                        const SizedBox(height: 16),
 
-                          // Show success message
-                          CustomSnackBar.show(
-                              context,
-                              isEditing
-                                  ? 'Academic record updated successfully!'
-                                  : 'Academic record added successfully!');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                        PopupDropDownField(
+                          // key: ValueKey(position.text),
+                          label: 'Country',
+                          isRequired: true,
+                          value: country.text,
+                          icon: Icons.location_on,
+                          items: Get.find<ConfigController>()
+                                  .configData
+                                  .value
+                                  .country
+                                  ?.map((e) => e.name ?? "")
+                                  .toList() ??
+                              [],
+                          onChanged: (value) {
+                            setDialogState(() {
+                              country.text = value ?? '';
+                            });
+                          },
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 16),
+                        // REMOVED: Duplicate SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: PopupDateField(
+                                isRequired: true,
+                                label: "From Date",
+                                controller: fromDate,
+                                firstDate: DateTime.now().subtract(
+                                    const Duration(
+                                        days: 365 * 50)), // 50 years ago
+                                lastDate: DateTime.now(),
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    fromDate.text = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                                width:
+                                    16), // FIXED: Increased width for better spacing
+                            Expanded(
+                              child: PopupDateField(
+                                isRequired:
+                                    false, // To Date can be optional for current jobs
+                                label: "To Date",
+                                controller: toDate,
+                                firstDate: DateTime.now()
+                                    .subtract(const Duration(days: 365 * 50)),
+                                lastDate: DateTime.now().add(const Duration(
+                                    days:
+                                        365)), // Allow future dates for notice periods
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    toDate.text = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        elevation: 2,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isEditing ? Icons.update : Icons.add,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 8),
-                          CustomText(
-                            text: isEditing ? 'Update' : 'Add Record',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
+                        const SizedBox(height: 16),
+
+                        // Optional: Add current job checkbox
+                        // Row(
+                        //   children: [
+                        //     Checkbox(
+                        //       value: toDate.text.isEmpty,
+                        //       onChanged: (bool? value) {
+                        //         setDialogState(() {
+                        //           if (value == true) {
+                        //             toDate.text = '';
+                        //           }
+                        //         });
+                        //       },
+                        //     ),
+                        //     const SizedBox(width: 8),
+                        //     const CustomText(
+                        //       text: 'Currently working here',
+                        //       fontSize: 14,
+                        //     ),
+                        //   ],
+                        // ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Action buttons with enhanced styling
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: CustomText(
+                          text: 'Cancel',
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (dialogFormKey.currentState!.validate()) {
+                            final newRecord = WorkRecordModel(
+                              position: position.text,
+                              department: departments.text,
+                              fromDate: formatStringToDate(fromDate.text),
+                              toDate: toDate.text.isNotEmpty
+                                  ? formatStringToDate(toDate.text)
+                                  : null, // FIXED: Handle empty toDate
+                              organization: organisation.text,
+                              country: country.text,
+                            );
+                            setState(() {
+                              if (isEditing && editIndex != null) {
+                                _records[editIndex] = newRecord;
+                              } else {
+                                _records.add(newRecord);
+                              }
+                            });
+                            Navigator.pop(context);
+
+                            // Show success message - FIXED: Updated message
+                            CustomSnackBar.show(
+                                context,
+                                isEditing
+                                    ? 'Work record updated successfully!'
+                                    : 'Work record added successfully!');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isEditing ? Icons.update : Icons.add,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              text: isEditing ? 'Update' : 'Add Record',
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildStyledTextFormField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-    required String hint,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(
-              icon,
-              color: AppColors.primaryColor,
-              size: 20,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.primaryColor, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-            filled: true,
-            fillColor: Colors.grey[50],
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-          ),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return '$label is required';
-            }
-            return null;
-          },
-        ),
-      ],
     );
   }
 

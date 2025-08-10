@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../utils/style/colors/colors.dart';
 import 'custom_text.dart';
 
@@ -10,6 +11,7 @@ class PopupTextField extends StatelessWidget {
   final bool requiredField;
   final String? Function(String?)? customValidator;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final bool obscureText;
   final int? maxLines;
   final int? minLines;
@@ -23,6 +25,7 @@ class PopupTextField extends StatelessWidget {
     this.requiredField = false,
     this.customValidator,
     this.keyboardType,
+    this.inputFormatters = const [],
     this.obscureText = false,
     this.maxLines = 1,
     this.minLines,
@@ -62,6 +65,7 @@ class PopupTextField extends StatelessWidget {
           obscureText: obscureText,
           maxLines: maxLines,
           minLines: minLines,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(

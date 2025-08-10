@@ -85,6 +85,7 @@ class Constant {
   String updateAcademicRecords = 'customer/register/update_academic_records';
   String updateTravelHistory = 'customer/register/travel_history_records';
   String updateExamRecords = 'customer/register/update_exam_records';
+  String updateWorkRecords = 'customer/register/work_history_records';
   String setRequiredDocuments = 'customer/register/setRequiredDocuments';
   String updateClientRequiredDocuments =
       'customer/register/updateClientRequiredDocuments';

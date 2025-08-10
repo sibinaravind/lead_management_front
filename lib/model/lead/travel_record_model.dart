@@ -1,3 +1,5 @@
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+
 class TravelRecordModel {
   String? country;
   String? visaType;
@@ -33,9 +35,9 @@ class TravelRecordModel {
     return {
       'country': country,
       'visa_type': visaType,
-      'departure_date': departureDate?.toIso8601String(),
-      'return_date': returnDate?.toIso8601String(),
-      'visa_valid_date': visaValidDate?.toIso8601String(),
+      'departure_date': formatDatetoString(departureDate),
+      'return_date': formatDatetoString(returnDate),
+      'visa_valid_date': formatDatetoString(visaValidDate),
     };
   }
 }

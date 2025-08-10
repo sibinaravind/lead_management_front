@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'custom_text.dart';
 
 class PopupDateField extends StatelessWidget {
   final String label;
@@ -25,24 +26,27 @@ class PopupDateField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: label,
-                style: const TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
+        Row(
+          children: [
+            CustomText(
+              text: label,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+            if (isRequired)
+              const Padding(
+                padding: EdgeInsets.only(left: 4),
+                child: Text(
+                  '*',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (isRequired)
-                const TextSpan(
-                  text: ' *',
-                  style: TextStyle(color: Colors.red),
-                ),
-            ],
-          ),
+          ],
         ),
         const SizedBox(height: 8),
         TextFormField(
@@ -61,7 +65,7 @@ class PopupDateField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+              borderSide: BorderSide(color: Colors.deepPurple, width: 2),
             ),
             suffixIcon: const Icon(Icons.calendar_today, size: 20),
             contentPadding: const EdgeInsets.symmetric(
@@ -101,7 +105,7 @@ class PopupDateField extends StatelessWidget {
 
             if (date != null) {
               final formattedDate =
-                  "${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}";
+                  "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
               controller.text = formattedDate;
               onChanged?.call(formattedDate);
             }

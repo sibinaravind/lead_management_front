@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
 import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/widgets/popup_date_field.dart';
 
+import '../../../../controller/config/config_controller.dart';
+import '../../../../controller/registration/registration_controller.dart';
 import '../../../../model/lead/travel_record_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_toast.dart';
 import '../../../widgets/widgets.dart';
 
 class TravelDetails extends StatefulWidget {
@@ -16,8 +20,13 @@ class TravelDetails extends StatefulWidget {
 }
 
 class _AcadamicTabState extends State<TravelDetails> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<TravelRecordModel> _records = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _records.addAll(widget.leadModel.travelRecords ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +70,7 @@ class _AcadamicTabState extends State<TravelDetails> {
                                 fontWeight: FontWeight.bold)),
                       ),
                       Expanded(
-                          flex: 3,
+                          flex: 2,
                           child: CustomText(
                               text: 'Departure Date',
                               fontWeight: FontWeight.bold)),
@@ -70,10 +79,15 @@ class _AcadamicTabState extends State<TravelDetails> {
                           child: CustomText(
                               text: 'Return Date',
                               fontWeight: FontWeight.bold)),
+                      Expanded(
+                          flex: 2,
+                          child: CustomText(
+                              text: 'Visa Valid Date',
+                              fontWeight: FontWeight.bold)),
                       SizedBox(
                           width: 100,
                           child: CustomText(
-                              text: 'Validity', fontWeight: FontWeight.bold)),
+                              text: 'Actions', fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -170,16 +184,37 @@ class _AcadamicTabState extends State<TravelDetails> {
                     onPressed: () => Navigator.pop(context),
                     child: const CustomText(text: 'Cancel')),
                 const SizedBox(width: 16),
-                CustomButton(
-                  text: 'Save',
-                  width: 100,
-                  onTap: () {
-                    if (_formKey.currentState?.validate() ?? true) {
-                      // Save form data and records
-                      Navigator.pop(context);
-                    }
-                  },
-                )
+                if (_records.isNotEmpty)
+                  CustomButton(
+                    text: 'Save',
+                    width: 100,
+                    onTap: () async {
+                      showLoaderDialog(context);
+                      bool result = await Get.find<RegistrationController>()
+                          .updateTravelHistory(
+                        data: _records,
+                        customerId: widget.leadModel.sId ?? '',
+                      );
+
+                      if (result) {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.green,
+                          message: 'Personal details Successfully updated ',
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        CustomToast.showToast(
+                          context: context,
+                          backgroundColor: Colors.red,
+                          message:
+                              Get.find<RegistrationController>().errorMessage ??
+                                  'Failed to update personal details',
+                        );
+                      }
+                    },
+                  )
               ],
             ),
           ),
@@ -190,8 +225,13 @@ class _AcadamicTabState extends State<TravelDetails> {
 
   void _showRecordDialog({TravelRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
-    String? country = 'Choose ...';
-    String? visaCategory = 'Choose ...';
+
+    final country = TextEditingController(
+      text: recordToEdit?.country ?? 'Choose ...',
+    );
+    final visaCategory = TextEditingController(
+      text: recordToEdit?.visaType ?? 'Choose ...',
+    );
 
     final departureController = TextEditingController(
       text: formatDatetoString(recordToEdit?.departureDate),
@@ -271,31 +311,37 @@ class _AcadamicTabState extends State<TravelDetails> {
                     children: [
                       // _buildStyledTextFormField(label: '', controller: position, icon:, hint: ''),
                       PopupDropDownField(
+                          isRequired: true,
+                          icon: Icons.location_on,
                           label: 'Country',
-                          value: country,
-                          items: const [
-                            'India',
-                            'USA',
-                            'UK',
-                            'Australia',
-                            'Canada',
-                            'Other'
+                          value: country.text,
+                          items: [
+                            ...(Get.find<ConfigController>()
+                                    .configData
+                                    .value
+                                    .country
+                                    ?.map((e) => e.name ?? "")
+                                    .toList() ??
+                                []),
+                            'Others',
                           ],
                           onChanged: (value) {
-                            country = value;
+                            country.text = value ?? '';
                           }),
                       const SizedBox(height: 16),
                       PopupDropDownField(
+                          isRequired: true,
+                          icon: Icons.card_travel,
                           label: 'Visa Category',
-                          value: visaCategory,
+                          value: visaCategory.text,
                           items: const [
-                            'Company Visa',
-                            'Students visa',
-                            'Direct',
-                            'Business'
+                            'COMPANY VISA',
+                            'STUDENT VISA',
+                            'DIRECT',
+                            'BUSINESS'
                           ],
                           onChanged: (value) {
-                            visaCategory = value;
+                            visaCategory.text = value ?? '';
                           }),
                       const SizedBox(height: 16),
                       Row(
@@ -303,25 +349,40 @@ class _AcadamicTabState extends State<TravelDetails> {
                         children: [
                           Expanded(
                             child: PopupDateField(
-                                label: "Departure Date",
-                                controller: departureController),
+                              label: "Departure Date",
+                              controller: departureController,
+                              onChanged: (formattedDate) {
+                                setState(() {
+                                  departureController.text = formattedDate;
+                                });
+                              },
+                            ),
                           ),
+                          SizedBox(width: 12),
                           Expanded(
                             child: PopupDateField(
-                                label: "Return Date",
-                                controller: returnController),
+                              label: "Return Date",
+                              controller: returnController,
+                              onChanged: (formattedDate) {
+                                setState(() {
+                                  returnController.text = formattedDate;
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
 
                       const SizedBox(height: 16),
-                      PopupTextField(
-                          requiredField: true,
-                          label: "Validity",
-                          controller: validityController,
-                          icon: Icons.verified_outlined,
-                          hint: 'Validity Details'),
-                      const SizedBox(height: 16),
+                      PopupDateField(
+                        controller: validityController,
+                        label: "Validity Date",
+                        onChanged: (value) {
+                          setState(() {
+                            validityController.text = value;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -353,8 +414,8 @@ class _AcadamicTabState extends State<TravelDetails> {
                       onPressed: () {
                         if (dialogFormKey.currentState!.validate()) {
                           final newRecord = TravelRecordModel(
-                              country: country.toString(),
-                              visaType: visaCategory.toString(),
+                              country: country.text,
+                              visaType: visaCategory.text,
                               departureDate:
                                   formatStringToDate(departureController.text),
                               returnDate:

@@ -3,21 +3,21 @@ String formatDatetoString(DateTime? selectedDate) {
   final year = selectedDate.year.toString().padLeft(4, '0');
   final month = selectedDate.month.toString().padLeft(2, '0');
   final day = selectedDate.day.toString().padLeft(2, '0');
-  return '$year-$month-$day';
+  return '$day/$month/$year';
 }
 
 DateTime? formatStringToDate(String dateString) {
   if (dateString.isEmpty) return null;
 
   try {
-    final parts = dateString.split('-');
+    final parts = dateString.split('/');
     if (parts.length != 3) return null;
 
     final year = int.parse(parts[0]);
     final month = int.parse(parts[1]);
     final day = int.parse(parts[2]);
 
-    return DateTime(year, month, day);
+    return DateTime(day, month, year);
   } catch (e) {
     return null;
   }
@@ -38,6 +38,6 @@ String getRelativeDayString(DateTime date) {
     final year = date.year.toString().padLeft(4, '0');
     final month = date.month.toString().padLeft(2, '0');
     final day = date.day.toString().padLeft(2, '0');
-    return '$year-$month-$day';
+    return '$day/$month/$year';
   }
 }

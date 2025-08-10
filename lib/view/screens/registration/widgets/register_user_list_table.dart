@@ -105,7 +105,7 @@ class RegisterUserListTable extends StatelessWidget {
                                                 context: context,
                                                 builder: (context) =>
                                                     RegistrationAdd(
-                                                  lead: listUser,
+                                                  leadid: listUser.sId ?? '',
                                                 ),
                                               );
                                             },
