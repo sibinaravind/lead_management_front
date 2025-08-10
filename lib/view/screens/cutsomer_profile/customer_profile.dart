@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/controller/lead/lead_controller.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
@@ -102,8 +103,9 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.9,
-          maxWidth:
-              MediaQuery.of(context).size.width > 600 ? 1200 : double.infinity,
+          maxWidth: MediaQuery.of(context).size.width > 600
+              ? MediaQuery.of(context).size.width * 0.95
+              : double.infinity,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/widgets/popup_date_field.dart';
 
+import '../../../../model/lead/lead_model.dart';
+import '../../../../model/lead/work_record_model.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 
-class WorkExperienceTab {
-  final String position;
-  final String department;
-  final String fromDate;
-  final String toDate;
-  final String organization;
-
-  WorkExperienceTab({
-    required this.position,
-    required this.department,
-    required this.fromDate,
-    required this.toDate,
-    required this.organization,
-  });
-}
-
 class WorkExperience extends StatefulWidget {
-  const WorkExperience({super.key});
+  final LeadModel leadModel;
+  const WorkExperience({super.key, required this.leadModel});
 
   @override
   State<WorkExperience> createState() => _AcadamicTabState();
@@ -29,7 +17,7 @@ class WorkExperience extends StatefulWidget {
 
 class _AcadamicTabState extends State<WorkExperience> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<WorkExperienceTab> _records = [];
+  final List<WorkRecordModel> _records = [];
 
   @override
   Widget build(BuildContext context) {
@@ -116,18 +104,22 @@ class _AcadamicTabState extends State<WorkExperience> {
                         children: [
                           Expanded(
                               flex: 3,
-                              child: CustomText(text: record.position)),
+                              child: CustomText(text: record.position ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.department)),
+                              child: CustomText(text: record.department ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.organization)),
+                              child:
+                                  CustomText(text: record.organization ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.fromDate)),
+                              child: CustomText(
+                                  text: formatDatetoString(record.fromDate))),
                           Expanded(
-                              flex: 2, child: CustomText(text: record.toDate)),
+                              flex: 2,
+                              child: CustomText(
+                                  text: formatDatetoString(record.toDate))),
                           SizedBox(
                             width: 100,
                             child: Row(
@@ -198,7 +190,7 @@ class _AcadamicTabState extends State<WorkExperience> {
     );
   }
 
-  void _showRecordDialog({WorkExperienceTab? recordToEdit, int? editIndex}) {
+  void _showRecordDialog({WorkRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
     // final qualificationController = TextEditingController(
     //   text: recordToEdit?.qualification ?? '',
@@ -217,10 +209,10 @@ class _AcadamicTabState extends State<WorkExperience> {
       text: recordToEdit?.organization ?? '',
     );
     final fromDate = TextEditingController(
-      text: recordToEdit?.fromDate ?? '',
+      text: formatDatetoString(recordToEdit?.fromDate) ?? '',
     );
     final toDate = TextEditingController(
-      text: recordToEdit?.toDate ?? '',
+      text: formatDatetoString(recordToEdit?.toDate) ?? '',
     );
     final dialogFormKey = GlobalKey<FormState>();
 
@@ -358,11 +350,11 @@ class _AcadamicTabState extends State<WorkExperience> {
                     ElevatedButton(
                       onPressed: () {
                         if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = WorkExperienceTab(
+                          final newRecord = WorkRecordModel(
                             position: position.text,
                             department: departments.text,
-                            fromDate: fromDate.text,
-                            toDate: toDate.text,
+                            fromDate: formatStringToDate(fromDate.text),
+                            toDate: formatStringToDate(toDate.text),
                             organization: organisation.text,
                           );
                           setState(() {
@@ -529,13 +521,13 @@ class _AcadamicTabState extends State<WorkExperience> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: record.position,
+                    text: record.position ?? '',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 4),
                   CustomText(
-                    text: record.department,
+                    text: record.department ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
@@ -545,12 +537,12 @@ class _AcadamicTabState extends State<WorkExperience> {
                     fontSize: 12,
                   ),
                   CustomText(
-                    text: record.fromDate,
+                    text: formatDatetoString(record.fromDate) ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: record.toDate,
+                    text: formatDatetoString(record.toDate) ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),

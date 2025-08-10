@@ -14,14 +14,14 @@ class CallHistoryTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final profileController = Get.find<CustomerProfileController>();
     profileController.fetchCallEvents(context);
-    return SingleChildScrollView(
-      child: Container(
-        height: double.infinity,
-        constraints: BoxConstraints(
-          maxHeight: 800,
-        ),
-        child: Obx(
-          () => Column(
+    return Container(
+      height: double.infinity,
+      constraints: BoxConstraints(
+        maxHeight: 800,
+      ),
+      child: Obx(
+        () => SingleChildScrollView(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Section Header

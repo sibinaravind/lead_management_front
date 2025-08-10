@@ -22,23 +22,23 @@ class LeadDetailsTab extends StatelessWidget {
                   'Name', controller.leadDetails.value.name ?? 'N/A',
                   color: AppColors.orangeSecondaryColor),
               _buildDetailRow(
-                  'Gender', controller.leadDetails?.value.gender ?? 'N/A',
+                  'Gender', controller.leadDetails.value.gender ?? 'N/A',
                   color: AppColors.redSecondaryColor),
               _buildDetailRow(
-                  'Contact No.', controller.leadDetails?.value.phone ?? 'N/A',
+                  'Contact No.', controller.leadDetails.value.phone ?? 'N/A',
                   color: AppColors.orangeSecondaryColor),
               _buildDetailRow('Alternative No.',
-                  controller.leadDetails?.value.alternatePhone ?? 'N/A'),
+                  controller.leadDetails.value.alternatePhone ?? 'N/A'),
               _buildDetailRow(
-                  'Email', controller.leadDetails?.value.email ?? 'N/A',
+                  'Email', controller.leadDetails.value.email ?? 'N/A',
                   color: AppColors.greenSecondaryColor),
               _buildDetailRow(
                 'Address',
-                controller.leadDetails?.value.address ?? 'N/A',
+                controller.leadDetails.value.address ?? 'N/A',
               ),
               _buildDetailRow(
                 'City',
-                controller.leadDetails?.value.city ?? 'N/A',
+                controller.leadDetails.value.city ?? 'N/A',
               ),
               _buildDetailRow(
                   'Dob',

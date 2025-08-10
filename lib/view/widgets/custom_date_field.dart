@@ -60,7 +60,14 @@ class CustomDateField extends StatelessWidget {
         onTap: () async {
           final date = await showDatePicker(
             context: context,
-            initialDate: initialDate ?? endDate ?? DateTime.now(),
+            initialDate: controller.text.isNotEmpty
+                ? DateTime.tryParse(controller.text
+                    .split(' ')
+                    .first
+                    .split('/')
+                    .reversed
+                    .join('-'))
+                : initialDate ?? endDate ?? DateTime.now(),
             firstDate: initialDate ?? DateTime(1950),
             lastDate: endDate ?? DateTime(2050),
           );
@@ -74,7 +81,7 @@ class CustomDateField extends StatelessWidget {
 
           if (date != null) {
             final formattedDate =
-                "${date.day}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().padLeft(2, '0')} ${isTimeRequired ? time?.format(context) : ""}";
+                "${date.day}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().padLeft(2, '0')}${isTimeRequired ? " ${time?.format(context)}" : ""}";
             controller.text = formattedDate;
             onChanged?.call(formattedDate);
           }

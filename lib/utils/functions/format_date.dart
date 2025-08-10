@@ -6,6 +6,23 @@ String formatDatetoString(DateTime? selectedDate) {
   return '$year-$month-$day';
 }
 
+DateTime? formatStringToDate(String dateString) {
+  if (dateString.isEmpty) return null;
+
+  try {
+    final parts = dateString.split('-');
+    if (parts.length != 3) return null;
+
+    final year = int.parse(parts[0]);
+    final month = int.parse(parts[1]);
+    final day = int.parse(parts[2]);
+
+    return DateTime(year, month, day);
+  } catch (e) {
+    return null;
+  }
+}
+
 String getRelativeDayString(DateTime date) {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);

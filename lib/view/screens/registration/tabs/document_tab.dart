@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:overseas_front_end/view/widgets/popup_profile_upload_widget.dart';
 
+import '../../../../model/lead/lead_model.dart';
 import '../../../widgets/enhanced_switchtile_and_textfield.dart';
 
 class DocumentTab extends StatefulWidget {
-  const DocumentTab({super.key});
+  LeadModel? leadModel;
+  DocumentTab({super.key, this.leadModel});
 
   @override
   State<DocumentTab> createState() => _DocumentTabState();

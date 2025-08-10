@@ -4,7 +4,7 @@ class CallEventModel {
   String? sId;
   String? type;
   String? clientId;
-  int? duration;
+  dynamic duration;
   String? nextSchedule;
   String? nextScheduleTime;
   String? comment;

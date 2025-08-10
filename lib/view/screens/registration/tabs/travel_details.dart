@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/lead/lead_model.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/widgets/popup_date_field.dart';
 
+import '../../../../model/lead/travel_record_model.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 
-class TravelDetailsTab {
-  final String country;
-  final String visaCategory;
-  final String departure;
-  final String returnDate;
-  final String validity;
-
-  TravelDetailsTab({
-    required this.country,
-    required this.visaCategory,
-    required this.departure,
-    required this.returnDate,
-    required this.validity,
-  });
-}
-
 class TravelDetails extends StatefulWidget {
-  const TravelDetails({super.key});
+  final LeadModel leadModel;
+  const TravelDetails({super.key, required this.leadModel});
 
   @override
   State<TravelDetails> createState() => _AcadamicTabState();
@@ -29,7 +17,7 @@ class TravelDetails extends StatefulWidget {
 
 class _AcadamicTabState extends State<TravelDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<TravelDetailsTab> _records = [];
+  final List<TravelRecordModel> _records = [];
 
   @override
   Widget build(BuildContext context) {
@@ -111,19 +99,25 @@ class _AcadamicTabState extends State<TravelDetails> {
                       child: Row(
                         children: [
                           Expanded(
-                              flex: 3, child: CustomText(text: record.country)),
+                              flex: 3,
+                              child: CustomText(text: record.country ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.visaCategory)),
+                              child: CustomText(text: record.visaType ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.departure)),
+                              child: CustomText(
+                                  text: formatDatetoString(
+                                      record.departureDate))),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.returnDate)),
+                              child: CustomText(
+                                  text: formatDatetoString(record.returnDate))),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.validity)),
+                              child: CustomText(
+                                  text: formatDatetoString(
+                                      record.visaValidDate))),
                           SizedBox(
                             width: 100,
                             child: Row(
@@ -194,19 +188,19 @@ class _AcadamicTabState extends State<TravelDetails> {
     );
   }
 
-  void _showRecordDialog({TravelDetailsTab? recordToEdit, int? editIndex}) {
+  void _showRecordDialog({TravelRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
     String? country = 'Choose ...';
     String? visaCategory = 'Choose ...';
 
     final departureController = TextEditingController(
-      text: recordToEdit?.departure ?? '',
+      text: formatDatetoString(recordToEdit?.departureDate),
     );
     final returnController = TextEditingController(
-      text: recordToEdit?.returnDate ?? '',
+      text: formatDatetoString(recordToEdit?.returnDate),
     );
     final validityController = TextEditingController(
-      text: recordToEdit?.validity ?? '',
+      text: formatDatetoString(recordToEdit?.visaValidDate),
     );
 
     final dialogFormKey = GlobalKey<FormState>();
@@ -358,12 +352,15 @@ class _AcadamicTabState extends State<TravelDetails> {
                     ElevatedButton(
                       onPressed: () {
                         if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = TravelDetailsTab(
+                          final newRecord = TravelRecordModel(
                               country: country.toString(),
-                              visaCategory: visaCategory.toString(),
-                              departure: departureController.text,
-                              returnDate: returnController.text,
-                              validity: validityController.text);
+                              visaType: visaCategory.toString(),
+                              departureDate:
+                                  formatStringToDate(departureController.text),
+                              returnDate:
+                                  formatStringToDate(returnController.text),
+                              visaValidDate:
+                                  formatStringToDate(validityController.text));
                           setState(() {
                             if (isEditing && editIndex != null) {
                               _records[editIndex] = newRecord;
@@ -468,28 +465,28 @@ class _AcadamicTabState extends State<TravelDetails> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: record.country,
+                    text: record.country ?? '',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 4),
                   CustomText(
-                    text: record.visaCategory,
+                    text: record.visaType ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: '${record.departure}',
+                    text: formatDatetoString(record.visaValidDate),
                     color: Colors.grey[600],
                     fontSize: 12,
                   ),
                   CustomText(
-                    text: record.returnDate,
+                    text: formatDatetoString(record.returnDate),
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: record.validity,
+                    text: formatDatetoString(record.visaValidDate),
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),

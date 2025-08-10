@@ -1,5 +1,5 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/view/screens/leads/add_lead_screen.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
@@ -11,6 +11,7 @@ class RegistrationController extends GetxController {
   final ApiService _apiService = ApiService();
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
+  String? errorMessage;
 
   Map<String, dynamic> filter = {};
   RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
@@ -42,27 +43,29 @@ class RegistrationController extends GetxController {
     }
   }
 
-  Future<void> addLeadScreen({Map<String, dynamic>? filterSelected}) async {
-    filter = filterSelected ?? {};
-    isLoading.value = true;
+  Future<bool> updatePersonalDetails(
+      {required LeadModel lead, required String customerId}) async {
     try {
-      final response = await _apiService.getRequest(
-          endpoint: Constant().getIncompleteList,
-          params: filter,
-          fromJson: (json) => LeadListModel.fromJson(json));
+      final response = await _apiService.patchRequest(
+          endpoint: '${Constant().updatePersonalDetails}/$customerId',
+          body: lead.toPersonalDetailsJson(),
+          fromJson: (json) => json);
       response.fold(
         (failure) {
           throw Exception("Failed to load clients");
         },
         (loadedClients) {
-          customerMatchingList.value = loadedClients;
+          // customerMatchingList.value = loadedClients;
+          return true;
         },
       );
     } catch (e) {
-      throw Exception('Error fetching clients: $e');
-    } finally {
-      isLoading.value = false;
+      print('Error updating personal details: $e');
+      errorMessage = 'Error fetching clients: $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
     }
+    return true;
   }
 }
 

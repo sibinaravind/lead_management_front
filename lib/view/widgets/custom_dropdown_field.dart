@@ -15,18 +15,25 @@ class CustomDropdownField extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
-    this.isRequired = false, this.isSplit = false,
+    this.isRequired = false,
+    this.isSplit = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Include "Choose..." as the first item if not already present
-    final dropdownItems = (items.contains('Choose...') ||
-            (value != null && items.contains(value)))
-        ? items
-        : ['Choose...'] + items;
+    // Case-insensitive check for "Choose..."
+    bool hasChoose = items.any((item) => item.toLowerCase() == 'choose...');
+    bool hasValue = value != null &&
+        items.any((item) => item.toLowerCase() == value!.toLowerCase());
 
-    final selectedValue = dropdownItems.contains(value) ? value : 'Choose...';
+    final dropdownItems =
+        (hasChoose || hasValue) ? items : ['Choose...'] + items;
+
+    // Match selected value ignoring case
+    final selectedValue = dropdownItems.firstWhere(
+      (item) => value != null && item.toLowerCase() == value!.toLowerCase(),
+      orElse: () => 'Choose...',
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -54,62 +61,36 @@ class CustomDropdownField extends StatelessWidget {
                 maxWidth: constraints.maxWidth,
                 minWidth: 100,
               ),
-              // child: DropdownButtonFormField<String>(
-              //   value: selectedValue,
-              //   isExpanded: true,
-              //   decoration: const InputDecoration(
-              //     fillColor: Colors.white,
-              //     filled: true,
-              //     border: OutlineInputBorder(),
-              //     contentPadding:
-              //         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              //   ),
-              //   dropdownColor: Colors.white,
-              //   items: dropdownItems.map((String item) {
-              //     return DropdownMenuItem<String>(
-              //       value: item,
-              //       child: CustomText(text: isSplit ? item.split(',')[0] : item),
-              //     );
-              //   }).toList(),
-              //   onChanged: onChanged,
-              //   validator: isRequired
-              //       ? (value) {
-              //           if (value == null ||
-              //               value.isEmpty ||
-              //               value == 'Choose...') {
-              //             return 'This field is required';
-              //           }
-              //           return null;
-              //         }
-              //       : null,
-              // ),
-              child:   DropdownButtonFormField<String>(
-                  value: selectedValue,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                  dropdownColor: Colors.white,
-                  items: dropdownItems.map((String item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: CustomText(text: isSplit ? item.split(',')[0] : item),
-                    );
-                  }).toList(),
-                  onChanged: onChanged,
-                  validator: isRequired
-                      ? (value) {
-                    if (value == null || value.isEmpty || value == 'Choose...') {
-                      return 'This field is required';
-                    }
-                    return null;
-                  }
-                      : null,
-                )
-
+              child: DropdownButtonFormField<String>(
+                value: selectedValue,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                ),
+                dropdownColor: Colors.white,
+                items: dropdownItems.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child:
+                        CustomText(text: isSplit ? item.split(',')[0] : item),
+                  );
+                }).toList(),
+                onChanged: onChanged,
+                validator: isRequired
+                    ? (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.toLowerCase() == 'choose...') {
+                          return 'This field is required';
+                        }
+                        return null;
+                      }
+                    : null,
+              ),
             ),
           ],
         );

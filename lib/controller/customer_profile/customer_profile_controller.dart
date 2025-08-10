@@ -21,6 +21,7 @@ class CustomerProfileController extends GetxController {
 
   Future<void> getLeadDetails(context, String leadId) async {
     try {
+      leadDetails.value = LeadModel();
       final response = await _apiService.getRequest(
           endpoint: "${Constant().getLeadDetail}/$leadId",
           fromJson: (json) => LeadModel.fromJson(json));

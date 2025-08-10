@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../utils/style/colors/colors.dart';
+
 class CustomTextFormField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
@@ -61,8 +63,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.deepPurple,
+            colorScheme: ColorScheme.light(
+              primary: AppColors.primaryColor,
               onPrimary: Colors.white,
               surface: Colors.white,
               onSurface: Colors.black,

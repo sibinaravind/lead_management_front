@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 
+import '../../../../model/lead/exam_record_model.dart';
+import '../../../../model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/popup_date_field.dart';
 import '../../../widgets/widgets.dart';
 
-class Eligibility {
-  final String examName;
-  final String validityDate;
-  final String examDate;
-  final String status;
-  final String grade;
-
-  Eligibility({
-    required this.examName,
-    required this.validityDate,
-    required this.examDate,
-    required this.status,
-    required this.grade,
-  });
-}
-
 class EligibilityTab extends StatefulWidget {
-  const EligibilityTab({super.key});
+  LeadModel? leadModel;
+  EligibilityTab({super.key, this.leadModel});
 
   @override
   State<EligibilityTab> createState() => _AcadamicTabState();
@@ -29,7 +17,7 @@ class EligibilityTab extends StatefulWidget {
 
 class _AcadamicTabState extends State<EligibilityTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<Eligibility> _records = [];
+  final List<ExamRecordModel> _records = [];
 
   @override
   Widget build(BuildContext context) {
@@ -114,17 +102,24 @@ class _AcadamicTabState extends State<EligibilityTab> {
                         children: [
                           Expanded(
                               flex: 3,
-                              child: CustomText(text: record.examName)),
-                          Expanded(
-                              flex: 2, child: CustomText(text: record.status)),
+                              child: CustomText(text: record.exam ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.validityDate)),
+                              child: CustomText(text: record.status ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.examDate)),
+                              child: CustomText(
+                                  text:
+                                      formatDatetoString(record.validityDate) ??
+                                          '')),
                           Expanded(
-                              flex: 2, child: CustomText(text: record.grade)),
+                              flex: 2,
+                              child: CustomText(
+                                  text: formatDatetoString(record.examDate) ??
+                                      '')),
+                          Expanded(
+                              flex: 2,
+                              child: CustomText(text: record.grade ?? '')),
                           SizedBox(
                             width: 100,
                             child: Row(
@@ -195,26 +190,26 @@ class _AcadamicTabState extends State<EligibilityTab> {
     );
   }
 
-  void _showRecordDialog({Eligibility? recordToEdit, int? editIndex}) {
+  void _showRecordDialog({ExamRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
     // final qualificationController = TextEditingController(
     //   text: recordToEdit?.qualification ?? '',
     // );
 
     final examName = TextEditingController(
-      text: recordToEdit?.examDate ?? '',
+      text: recordToEdit?.exam ?? '',
     );
     // final status = TextEditingController(
     //   text: recordToEdit?.status ?? '',
     // );
     final validDate = TextEditingController(
-      text: recordToEdit?.validityDate ?? '',
+      text: formatDatetoString(recordToEdit?.validityDate),
     );
     final examDate = TextEditingController(
-      text: recordToEdit?.validityDate ?? '',
+      text: formatDatetoString(recordToEdit?.examDate),
     );
     final grade = TextEditingController(
-      text: recordToEdit?.validityDate ?? '',
+      text: recordToEdit?.grade ?? '',
     );
     final dialogFormKey = GlobalKey<FormState>();
     String? exam = 'HRD';
@@ -384,10 +379,10 @@ class _AcadamicTabState extends State<EligibilityTab> {
                     ElevatedButton(
                       onPressed: () {
                         if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = Eligibility(
-                            examName: exam.toString(),
-                            validityDate: validDate.text,
-                            examDate: examDate.text,
+                          final newRecord = ExamRecordModel(
+                            exam: exam.toString(),
+                            validityDate: formatStringToDate(validDate.text),
+                            examDate: formatStringToDate(examDate.text),
                             status: status.toString(),
                             grade: grade.text,
                           );
@@ -555,28 +550,28 @@ class _AcadamicTabState extends State<EligibilityTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: record.examName,
+                    text: record.exam ?? '',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 4),
                   CustomText(
-                    text: record.status,
+                    text: record.status ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: '${record.validityDate}',
+                    text: formatDatetoString(record.validityDate),
                     color: Colors.grey[600],
                     fontSize: 12,
                   ),
                   CustomText(
-                    text: record.examDate,
+                    text: formatDatetoString(record.examDate),
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: record.grade,
+                    text: record.grade ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),

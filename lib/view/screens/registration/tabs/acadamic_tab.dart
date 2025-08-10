@@ -1,76 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:overseas_front_end/controller/registration/registration_controller.dart';
-// import 'package:provider/provider.dart';
-
+import 'package:get/get.dart';
+import 'package:overseas_front_end/controller/config/config_controller.dart';
+import '../../../../model/lead/academic_record_model.dart';
+import '../../../../model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
 
-class AcademicRecord {
-  final String qualification;
-  final String institution;
-  final String year;
-  final String grade;
-  final String percentage;
-
-  AcademicRecord({
-    required this.qualification,
-    required this.institution,
-    required this.year,
-    required this.grade,
-    required this.percentage,
-  });
-
-  factory AcademicRecord.fromJson(Map<String, dynamic> json) {
-    return AcademicRecord(
-      qualification: json['qualification'] ?? '',
-      institution: json['institution'] ?? '',
-      year: json['year'] ?? '',
-      grade: json['grade'] ?? '',
-      percentage: json['percentage'] ?? '',
-    );
-  }
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'qualification': qualification,
-      'institution': institution,
-      'year': year,
-      'grade': grade,
-      'percentage': percentage,
-    };
-  }
-
-  // Copy with method for creating modified copies
-  AcademicRecord copyWith({
-    String? qualification,
-    String? institution,
-    String? year,
-    String? grade,
-    String? percentage,
-  }) {
-    return AcademicRecord(
-      qualification: qualification ?? this.qualification,
-      institution: institution ?? this.institution,
-      year: year ?? this.year,
-      grade: grade ?? this.grade,
-      percentage: percentage ?? this.percentage,
-    );
-  }
-}
-
+// ignore: must_be_immutable
 class AcadamicTab extends StatefulWidget {
-  const AcadamicTab({super.key, required this.id});
-
-  final String id;
-
+  LeadModel? leadModel;
+  AcadamicTab({super.key, this.leadModel});
   @override
   State<AcadamicTab> createState() => _AcadamicTabState();
 }
 
 class _AcadamicTabState extends State<AcadamicTab> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<AcademicRecord> _records = [];
+  final List<AcademicRecordModel> _records = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _records.addAll(widget.leadModel?.academicRecords ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +60,16 @@ class _AcadamicTabState extends State<AcadamicTab> {
                       Expanded(
                           flex: 3,
                           child: CustomText(
+                              text: 'Course', fontWeight: FontWeight.bold)),
+                      Expanded(
+                          flex: 3,
+                          child: CustomText(
                               text: 'Institution',
                               fontWeight: FontWeight.bold)),
+                      Expanded(
+                          flex: 3,
+                          child: CustomText(
+                              text: 'University', fontWeight: FontWeight.bold)),
                       Expanded(
                           flex: 2,
                           child: CustomText(
@@ -157,17 +116,31 @@ class _AcadamicTabState extends State<AcadamicTab> {
                         children: [
                           Expanded(
                               flex: 3,
-                              child: CustomText(text: record.qualification)),
+                              child:
+                                  CustomText(text: record.qualification ?? '')),
                           Expanded(
                               flex: 3,
-                              child: CustomText(text: record.institution)),
+                              child: CustomText(text: record.course ?? '')),
                           Expanded(
-                              flex: 2, child: CustomText(text: record.year)),
+                              flex: 3,
+                              child:
+                                  CustomText(text: record.institution ?? '')),
                           Expanded(
-                              flex: 2, child: CustomText(text: record.grade)),
+                              flex: 3,
+                              child: CustomText(
+                                  text: record.university?.toString() ?? '')),
                           Expanded(
                               flex: 2,
-                              child: CustomText(text: record.percentage)),
+                              child: CustomText(
+                                  text:
+                                      '${record.startYear?.toString() ?? ''} - ${record.endYear?.toString() ?? ''}')),
+                          Expanded(
+                              flex: 2,
+                              child: CustomText(text: record.grade ?? '')),
+                          Expanded(
+                              flex: 2,
+                              child: CustomText(
+                                  text: record.percentage?.toString() ?? '')),
                           SizedBox(
                             width: 100,
                             child: Row(
@@ -244,25 +217,34 @@ class _AcadamicTabState extends State<AcadamicTab> {
     );
   }
 
-  void _showRecordDialog({AcademicRecord? recordToEdit, int? editIndex}) {
+  void _showRecordDialog({AcademicRecordModel? recordToEdit, int? editIndex}) {
     final isEditing = recordToEdit != null;
-    // final qualificationController = TextEditingController(
-    //   text: recordToEdit?.qualification ?? '',
-    // );
+    String qualification = '';
+    final qualificationController = TextEditingController(
+      text: recordToEdit?.qualification ?? '',
+    );
+    final courseController = TextEditingController(
+      text: recordToEdit?.course ?? '',
+    );
     final institutionController = TextEditingController(
       text: recordToEdit?.institution ?? '',
     );
-    final yearController = TextEditingController(
-      text: recordToEdit?.year ?? '',
+    final universityController = TextEditingController(
+      text: recordToEdit?.university ?? '',
+    );
+    final startYearController = TextEditingController(
+      text: recordToEdit?.startYear.toString() ?? '',
+    );
+    final endYearController = TextEditingController(
+      text: recordToEdit?.endYear.toString() ?? '',
     );
     final gradeController = TextEditingController(
       text: recordToEdit?.grade ?? '',
     );
     final percentageController = TextEditingController(
-      text: recordToEdit?.grade ?? '',
+      text: recordToEdit?.percentage?.toString() ?? '',
     );
     final dialogFormKey = GlobalKey<FormState>();
-    String? qualification = 'MSc';
 
     showDialog(
       context: context,
@@ -330,27 +312,60 @@ class _AcadamicTabState extends State<AcadamicTab> {
                     children: [
                       PopupDropDownField(
                         label: 'Qualification',
-                        value: qualification,
-                        items: const ['MSc', 'MCA', 'BSc', 'BCA', 'MA', 'BA'],
+                        value: qualificationController.text,
+                        items: Get.find<ConfigController>()
+                                .configData
+                                .value
+                                .programType
+                                ?.map((e) => e.name ?? "")
+                                .toList() ??
+                            [],
                         onChanged: (value) {
                           setState(() {
-                            qualification = value;
+                            qualification = value ?? '';
+                            qualificationController.text = value ?? '';
                           });
                         },
                       ),
-                      // PopupTextField(
-                      //   label: 'Qualification',
-                      //   controller: qualificationController,
-                      //   icon: Icons.school,
-                      //   hint: 'e.g., Bachelor of Engineering',
+                      const SizedBox(height: 16),
+                      // PopupDropDownField(
+                      //   label: 'Course',
+                      //   value: courseController.text,
+                      //   items: Get.find<ConfigController>()
+                      //           .configData
+                      //           .value
+                      //           .program
+                      //           ?.where((e) {
+                      //             print(
+                      //                 'qualificationController: ${qualification}');
+                      //             return e.program ==
+                      //                 qualificationController.text;
+                      //           })
+                      //           .map((e) => e.name ?? "")
+                      //           .toList() ??
+                      //       [],
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       courseController.text = value ?? '';
+                      //     });
+                      //   },
                       // ),
+
                       const SizedBox(height: 16),
                       PopupTextField(
-                        requiredField: false,
+                        requiredField: true,
                         label: 'Institution',
                         controller: institutionController,
                         icon: Icons.business,
-                        hint: 'e.g., University of Technology',
+                        hint: 'e.g., School of Technology',
+                      ),
+                      const SizedBox(height: 16),
+                      PopupTextField(
+                        requiredField: true,
+                        label: 'University',
+                        controller: universityController,
+                        icon: Icons.school,
+                        hint: 'e.g., Affinix of Technology',
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -358,21 +373,79 @@ class _AcadamicTabState extends State<AcadamicTab> {
                         children: [
                           Expanded(
                             child: PopupTextField(
-                              requiredField: false,
-                              label: 'Year',
-                              controller: yearController,
+                              requiredField: true,
+                              label: 'Start Year',
+                              controller: startYearController,
                               icon: Icons.calendar_today,
+                              hint: 'e.g., 2020',
+                              customValidator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Start Year is required';
+                                }
+                                final year = int.tryParse(value);
+                                final currentYear = DateTime.now().year;
+                                final minYear = currentYear - 40;
+                                final maxYear = currentYear + 5;
+                                if (year == null) {
+                                  return 'Year must be a valid number';
+                                }
+                                if (value.length != 4) {
+                                  return 'Year must be 4 digits';
+                                }
+                                if (year < minYear || year > maxYear) {
+                                  return 'Year must be a valid';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: PopupTextField(
+                              requiredField: true,
+                              label: 'End Year',
+                              controller: endYearController,
+                              icon: Icons.calendar_today,
+                              customValidator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'End Year is required';
+                                }
+                                final endYear = int.tryParse(value);
+                                final startYear =
+                                    int.tryParse(startYearController.text);
+                                final currentYear = DateTime.now().year;
+                                final minYear = currentYear - 40;
+                                final maxYear = currentYear + 5;
+                                if (endYear == null) {
+                                  return 'Year must be a valid number';
+                                }
+                                if (value.length != 4) {
+                                  return 'Year must be 4 digits';
+                                }
+                                if (endYear < minYear || endYear > maxYear) {
+                                  return 'Year must be a valid';
+                                }
+                                if (startYear != null && endYear <= startYear) {
+                                  return 'End Year must be after Start Year';
+                                }
+                                return null;
+                              },
                               hint: 'e.g., 2023',
                             ),
                           ),
                           const SizedBox(width: 16),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
                           Expanded(
                             child: PopupTextField(
                               requiredField: false,
                               label: 'Grade/CGPA',
                               controller: gradeController,
                               icon: Icons.grade,
-                              hint: 'e.g., 8.5',
+                              hint: 'e.g., A+ / 8.5',
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -417,11 +490,14 @@ class _AcadamicTabState extends State<AcadamicTab> {
                     ElevatedButton(
                       onPressed: () {
                         if (dialogFormKey.currentState!.validate()) {
-                          final newRecord = AcademicRecord(
-                            percentage: percentageController.text.trim(),
-                            qualification: qualification ?? '',
+                          final newRecord = AcademicRecordModel(
+                            percentage: double.parse(percentageController.text),
+                            qualification: qualificationController.text,
+                            course: courseController.text,
                             institution: institutionController.text.trim(),
-                            year: yearController.text.trim(),
+                            startYear:
+                                int.parse(startYearController.text.trim()),
+                            endYear: int.parse(endYearController.text.trim()),
                             grade: gradeController.text.trim(),
                           );
                           setState(() {
@@ -528,18 +604,19 @@ class _AcadamicTabState extends State<AcadamicTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: record.qualification,
+                    text: record.qualification ?? '',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 4),
                   CustomText(
-                    text: record.institution,
+                    text: record.institution ?? '',
                     color: Colors.grey[700],
                     fontSize: 13,
                   ),
                   CustomText(
-                    text: '${record.year} • Grade: ${record.grade}',
+                    text:
+                        '${record.startYear} - ${record.endYear}  • Grade: ${record.grade ?? ''}',
                     color: Colors.grey[600],
                     fontSize: 12,
                   ),

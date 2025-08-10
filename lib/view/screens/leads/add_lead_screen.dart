@@ -56,7 +56,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
   List<String>? _selectedSpecialized;
   String? _selectedProfession;
   // Preferences
-  bool _sendGreetings = true;
+  bool _phoneCommunication = true;
   bool _sendEmail = false;
   bool _sendWhatsapp = false;
 
@@ -560,20 +560,19 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                       children: [
                                                         EnhancedSwitchTile(
                                                           label:
-                                                              'Send Greetings',
+                                                              ' Phone Communication',
                                                           icon: Icons
-                                                              .celebration_rounded,
-                                                          value: _sendGreetings,
+                                                              .phone_rounded,
+                                                          value:
+                                                              _phoneCommunication,
                                                           onChanged: (val) =>
                                                               setState(() =>
-                                                                  _sendGreetings =
+                                                                  _phoneCommunication =
                                                                       val),
                                                         ),
-                                                        const SizedBox(
-                                                            height: 12),
                                                         EnhancedSwitchTile(
                                                           label:
-                                                              'Send Email Updates',
+                                                              'Email Communication',
                                                           icon: Icons
                                                               .email_rounded,
                                                           value: _sendEmail,
@@ -582,8 +581,6 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                                   _sendEmail =
                                                                       val),
                                                         ),
-                                                        const SizedBox(
-                                                            height: 12),
                                                         EnhancedSwitchTile(
                                                           label:
                                                               'WhatsApp Communication',

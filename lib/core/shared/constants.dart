@@ -5,7 +5,7 @@ class Constant {
   String get featureBaseUrl {
     switch (FlavourConfig.partner()) {
       case Partner.affiniks:
-        return 'http://localhost:3000/'; //'http://52.66.252.146:3000/';
+        return 'http://localhost:3000/'; // 'https://api-3tqsqkjuba-uc.a.run.app/'; //'http://52.66.252.146:3000/';
       case Partner.partner1:
         return '';
       case Partner.partner2:
@@ -74,13 +74,18 @@ class Constant {
   String addFeedback = 'customer/logCallEvent';
   String getIncompleteList = 'customer/register/incompleteList';
 
-  String editRegistration = 'customer/register/update_basic_info';
-  String updateAcademicRecords = 'customer/register/update_academic_records';
-
   // String editConfig = customer/register/incompleteList lead/getAllDeadLeads customer/register/update_academic_records 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';
   String accessPermissionsDelete = 'config/delete_accesspermission';
   String accessPermissionsAdd = 'config/insert_accesspermission';
+
+  String updatePersonalDetails = 'customer/register/update_basic_info';
+  String updateAcademicRecords = 'customer/register/update_academic_records';
+  String updateTravelHistory = 'customer/register/travel_history_records';
+  String updateExamRecords = 'customer/register/update_exam_records';
+  String setRequiredDocuments = 'customer/register/setRequiredDocuments';
+  String updateClientRequiredDocuments =
+      'customer/register/updateClientRequiredDocuments';
 }
