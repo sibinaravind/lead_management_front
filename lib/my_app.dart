@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:overseas_front_end/model/lead/lead_model.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
 import 'view/screens/cutsomer_profile/customer_activity_journey.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
@@ -51,9 +50,9 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/test',
-          // builder: (context, state) =>
-          //     RegistrationAdd(leadid: "6878fe2a3e1c829a55bcebec"),
-          builder: (context, state) => CustomerJourneyScreen(),
+          builder: (context, state) => Scaffold(
+              body: RegistrationAdd(leadid: "6878fe2a3e1c829a55bcebec")),
+          // builder: (context, state) => CustomerJourneyScreen(),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

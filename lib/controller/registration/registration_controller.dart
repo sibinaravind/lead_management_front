@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 
 import '../../core/services/api_service.dart';
+import '../../core/services/optimized_http_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/lead/academic_record_model.dart';
 import '../../model/lead/call_event_model.dart';
+import '../../model/lead/document_record_model.dart';
 import '../../model/lead/exam_record_model.dart';
 import '../../model/lead/lead_list_model.dart';
 import '../../model/lead/lead_model.dart';
@@ -223,6 +225,66 @@ class RegistrationController extends GetxController {
       // throw Exception('Error fetching clients: $e');
     }
     return true;
+  }
+
+  Future<bool> setRequiredDocuments({
+    required List<DocumentRecordModel> data,
+  }) async {
+    try {
+      final response = await _apiService.postRequest(
+          endpoint: '${Constant().setRequiredDocuments}/$currentClientId',
+          body: data.map((e) => e.toJson()).toList(),
+          fromJson: (json) => json);
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          leadDetails.value.documents = data;
+          // customerMatchingList.value = loadedClients;
+          return true;
+        },
+      );
+    } catch (e) {
+      errorMessage = 'Error : $e';
+      return false;
+      // throw Exception('Error fetching clients: $e');
+    }
+    return true;
+  }
+
+  Future<String> updateClientRequiredDocuments({
+    required String docType,
+    required String base64String,
+  }) async {
+    try {
+      print("📤 Uploading document => $docType");
+
+      final response = await OptimizedHttpService().postDocumentUpload(
+        endpoint:
+            '${Constant().updateClientRequiredDocuments}/$currentClientId',
+        body: {"doc_type": docType, "base64": base64String},
+        fromJson: (json) => json,
+      );
+
+      print("📥 Raw API response: $response");
+
+      // Ensure fold result is actually returned
+      return response.fold(
+        (failure) {
+          return "false";
+        },
+        (loadedClients) {
+          // If your API returns the filePath, pass that instead of just "true"
+          return loadedClients["file_path"];
+        },
+      );
+    } catch (e, st) {
+      print("🔥 Exception during upload: $e");
+      print(st);
+      errorMessage = 'Error : $e';
+      return "false";
+    }
   }
 }
 

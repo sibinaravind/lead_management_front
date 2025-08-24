@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/utils/functions/split_phone_number.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../../../controller/config/config_controller.dart';
@@ -108,7 +105,6 @@ class _PersonalDetailsTabState extends State<PersonalDetailsTab> {
     _sendWhatsapp = model.onWhatsappCommunication ?? false;
     _remarksController.text = model.note ?? '';
     _nationality = model.country;
-    print(selectedCountry);
   }
 
   @override

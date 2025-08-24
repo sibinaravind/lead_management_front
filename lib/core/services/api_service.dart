@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:http/http.dart' as http;
 import 'package:overseas_front_end/core/di/service_locator.dart';
 import 'package:overseas_front_end/core/services/user_cache_service.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
@@ -28,6 +31,7 @@ class ApiService extends GetxService {
         options: await _getOptions(),
       );
       if (response.statusCode == 200) {
+        print(response.data["data"]);
         return Right(fromJson(response.data["data"]));
       } else {
         throw Left(Exception(response.data['msg'] ?? 'Unknown error'));
@@ -46,24 +50,28 @@ class ApiService extends GetxService {
     try {
       Dio dio = serviceLocator();
       // 🔹 Clean null values if body is a Map
-      dynamic cleanedBody = body;
-      if (body is Map<String, dynamic>) {
-        cleanedBody = removeNullFields(body);
-      }
-      print("POST Request to $endpoint with body: $cleanedBody");
+      // dynamic cleanedBody = body;
+      // if (body is Map<String, dynamic>) {
+      //   cleanedBody = removeNullFields(body);
+      // }
+      // print("POST Request to $endpoint with body: $cleanedBody");
       final response = await dio.post(
         endpoint,
-        data: cleanedBody,
+        data: body,
         options: await _getOptions(),
       );
-
+      print("🔥 DioException: $response");
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
       } else {
         return Left(Exception("response.data['msg']" ?? 'Unknown error'));
       }
     } on DioException catch (e) {
+      print("🔥 DioException: $e");
       return Left(handleApiException(e));
+    } catch (e) {
+      print("🔥 Exception: $e");
+      return Left(Exception(e));
     }
   }
 
@@ -144,6 +152,48 @@ class ApiService extends GetxService {
       }
     } on DioException catch (e) {
       return Left(handleApiException(e));
+    }
+  }
+
+  Future<Either<Exception, T>> postHttpRequest<T>({
+    required String endpoint,
+    required dynamic body,
+    required T Function(dynamic json) fromJson,
+  }) async {
+    try {
+      print("📤 POST to $endpoint with body: $body");
+
+      final response = await http.post(
+        Uri.parse(endpoint),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          'Authorization': await UserCacheService().getAuthToken() ?? ''
+        },
+        body: jsonEncode(body),
+      );
+
+      print("📥 Response status: ${response.statusCode}");
+      print("📥 Response body: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.body.isEmpty) {
+          return Left(Exception("Empty success response"));
+        }
+        final decoded = jsonDecode(response.body);
+        final data = decoded["data"];
+        return Right(fromJson(data));
+      } else {
+        if (response.body.isEmpty) {
+          return Left(Exception("Server error ${response.statusCode}"));
+        }
+        final decoded = jsonDecode(response.body);
+        return Left(Exception(decoded["msg"] ?? "Unknown error"));
+      }
+    } catch (e, st) {
+      print("🔥 Exception: $e");
+      print(st);
+      return Left(Exception(e.toString()));
     }
   }
 

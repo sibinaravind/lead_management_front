@@ -26,8 +26,8 @@ class DocumentRecordModel {
     return {
       'doc_type': docType,
       'required': required,
-      'file_path': filePath,
-      'uploaded_at': uploadedAt?.toIso8601String(),
+      // 'file_path': filePath,
+      // 'uploaded_at': uploadedAt?.toIso8601String(),
     };
   }
 }

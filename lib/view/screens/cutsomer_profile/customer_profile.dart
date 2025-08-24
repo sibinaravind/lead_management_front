@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
-import 'package:overseas_front_end/controller/lead/lead_controller.dart';
-import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';

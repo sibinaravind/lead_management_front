@@ -58,6 +58,12 @@ dependencies:
   go_router: ^13.0.1
   get: ^4.7.2
   url_strategy: ^0.3.0
+  flutter_pdfview: ^1.4.1+1
+  http: ^1.5.0
+  webview_flutter: ^4.13.0
+  syncfusion_flutter_pdfviewer: ^30.2.6
+  printing: ^5.14.2
+  pdf: ^3.11.3
   
 dev_dependencies:
   flutter_test:
