@@ -121,7 +121,27 @@ class _AddEditDialogState extends State<AddEditDialog> {
                       CustomActionButton(
                         text: 'Done',
                         icon: Icons.check,
-                        onPressed: _saveItem,
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            for (String field in _fields) {
+                              if (_controllers[field] != null) {
+                                if (!['status', 'program', 'category']
+                                    .contains(field)) {
+                                  _formData[field] = _controllers[field]!.text;
+                                }
+                              }
+                            }
+                            if (_controllers['name'] != null &&
+                                _formData['name'] != null) {
+                              _controllers['name']!.text =
+                                  _formData['name'].toString().toUpperCase();
+                              _formData['name'] =
+                                  _formData['name'].toString().toUpperCase();
+                            }
+                            _formData['status'] ??= 'ACTIVE';
+                            widget.onSave(_formData);
+                          }
+                        },
                         isFilled: true,
                         gradient: AppColors.blackGradient,
                       )
@@ -452,24 +472,6 @@ class _AddEditDialogState extends State<AddEditDialog> {
         return 'Phone';
       default:
         return field.replaceAll('_', ' ').toUpperCase();
-    }
-  }
-
-  void _saveItem() {
-    if (_formKey.currentState!.validate()) {
-      for (String field in _fields) {
-        if (_controllers[field] != null) {
-          if (!['status', 'program', 'category'].contains(field)) {
-            _formData[field] = _controllers[field]!.text;
-          }
-        }
-      }
-      if (_controllers['name'] != null && _formData['name'] != null) {
-        _controllers['name']!.text = _formData['name'].toString().toUpperCase();
-        _formData['name'] = _formData['name'].toString().toUpperCase();
-      }
-      _formData['status'] ??= 'ACTIVE';
-      widget.onSave(_formData);
     }
   }
 }

@@ -61,6 +61,7 @@ class ConfigController extends GetxController {
           endpoint: Constant().editConfigList,
           body: {"field": category, "action": "insert", "value": newItemData},
           fromJson: (json) => json);
+      NavigationService.goBack();
       result.fold(
         (failure) {
           CustomSnackBar.showMessage("Error", "Failed to add item",
@@ -99,6 +100,7 @@ class ConfigController extends GetxController {
         },
         fromJson: (json) => json,
       );
+      NavigationService.goBack();
       result.fold(
         (failure) {
           CustomSnackBar.showMessage("Error", "Failed to update item",
@@ -135,6 +137,7 @@ class ConfigController extends GetxController {
         },
         fromJson: (json) => json,
       );
+      NavigationService.goBack();
       result.fold(
         (failure) {
           CustomSnackBar.showMessage("Error", "Failed to update item",

@@ -78,6 +78,7 @@ class CampaignController extends GetxController {
       response.fold(
         (failure) {
           error?.value = 'Failed to delete campaign:';
+          NavigationService.goBack();
           CustomSnackBar.showMessage(
             "Error",
             "Failed to delete campaign",
@@ -85,6 +86,7 @@ class CampaignController extends GetxController {
           );
         },
         (data) {
+          NavigationService.goBack();
           NavigationService.goBack();
           CustomSnackBar.showMessage(
             "Success",

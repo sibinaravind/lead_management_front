@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/view/widgets/loading_dialog.dart';
 
 import '../../../../controller/campaign/campaign_controller.dart';
 import '../../../../core/services/navigation_service.dart';
@@ -24,12 +25,14 @@ void showDeleteCampaignDialog(BuildContext context, String name, String id) {
         ),
         ElevatedButton(
           onPressed: () async {
+            showLoaderDialog(context);
             await controller.deleteCampaign(context, id);
             NavigationService.goBack(); // close dialog
-            CustomToast.showToast(
-              context: context,
-              message: '$name deleted successfully',
-            );
+
+            // CustomToast.showToast(
+            //   context: context,
+            //   message: '$name deleted successfully',
+            // );
           },
           style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
           child: CustomText(text: 'Delete', color: Colors.white),

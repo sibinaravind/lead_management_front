@@ -7,6 +7,7 @@ import 'package:overseas_front_end/core/shared/constants.dart';
 import 'package:overseas_front_end/utils/functions/pick_image.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 
+import '../../../model/campaign/campaign_model.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../widgets/custom_toast.dart';
@@ -36,7 +37,6 @@ class CampaignScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isTablet = screenWidth > 600;
     final isDesktop = screenWidth > 1000;
 
     return Scaffold(
@@ -58,13 +58,11 @@ class CampaignScreen extends StatelessWidget {
         if (controller.isLoading.value) {
           return _buildShimmerGrid(context);
         }
-
         final campaigns = controller.campaignList;
 
         if (campaigns.isEmpty) {
           return _buildEmptyState(context);
         }
-
         return RefreshIndicator(
           onRefresh: () async {
             await controller.getCampaignList();
@@ -217,7 +215,7 @@ class CampaignScreen extends StatelessWidget {
   }
 
   Widget _buildCampaignCard(
-      BuildContext context, dynamic campaign, bool isDesktop) {
+      BuildContext context, CampaignModel campaign, bool isDesktop) {
     return Card(
       elevation: 2,
       shadowColor: Colors.black.withOpacity(0.1),
@@ -335,7 +333,7 @@ class CampaignScreen extends StatelessWidget {
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  campaign.startDate ?? 'No date',
+                                  campaign.startDate?.substring(0, 10) ?? '',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey[600],
@@ -369,7 +367,7 @@ class CampaignScreen extends StatelessWidget {
                         ),
                         IconButton(
                           icon: Icon(
-                            Icons.delete_outline,
+                            Icons.delete,
                             color: Colors.red.shade400,
                             size: 20,
                           ),
@@ -377,7 +375,7 @@ class CampaignScreen extends StatelessWidget {
                             showDeleteCampaignDialog(
                               context,
                               campaign.title ?? '',
-                              campaign?.sId ?? '',
+                              campaign.sId ?? '',
                             );
                           },
                           padding: EdgeInsets.zero,
@@ -617,6 +615,7 @@ class CampaignScreen extends StatelessWidget {
                                       'Please fill all fields and upload an image',
                                 );
                               } else {
+                                showLoaderDialog(context);
                                 final success =
                                     await controller.addCampaign(context);
                                 if (success) {
@@ -625,10 +624,10 @@ class CampaignScreen extends StatelessWidget {
                                   controller.startDateController.clear();
                                   controller.file64 = null;
                                   NavigationService.goBack();
-                                  CustomToast.showToast(
-                                    context: context,
-                                    message: 'Campaign created successfully!',
-                                  );
+                                  // CustomToast.showToast(
+                                  //   context: context,
+                                  //   message: 'Campaign created successfully!',
+                                  // );
                                 }
                               }
                             },

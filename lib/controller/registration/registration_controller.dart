@@ -280,8 +280,8 @@ class RegistrationController extends GetxController {
         },
       );
     } catch (e, st) {
-      print("🔥 Exception during upload: $e");
-      print(st);
+      // print("🔥 Exception during upload: $e");
+      // print(st);
       errorMessage = 'Error : $e';
       return "false";
     }

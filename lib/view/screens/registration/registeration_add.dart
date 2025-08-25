@@ -372,11 +372,11 @@ class _RegistrationFormState extends State<RegistrationAdd>
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 if (lead != null && lead.clientId != null) ...[
-                                  // PersonalDetailsTab(leadModel: lead),
-                                  // AcadamicTab(leadModel: lead),
-                                  // EligibilityTab(leadModel: lead),
-                                  // WorkExperience(leadModel: lead),
-                                  // TravelDetails(leadModel: lead),
+                                  PersonalDetailsTab(leadModel: lead),
+                                  AcadamicTab(leadModel: lead),
+                                  EligibilityTab(leadModel: lead),
+                                  WorkExperience(leadModel: lead),
+                                  TravelDetails(leadModel: lead),
                                   DocumentTab(leadModel: lead),
                                   // DocumentUploadPage()
                                 ] else ...[

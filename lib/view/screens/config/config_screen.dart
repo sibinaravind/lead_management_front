@@ -5,6 +5,7 @@ import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import '../../../controller/config/config_controller.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../../model/app_configs/config_model.dart';
+import '../../widgets/loading_dialog.dart';
 import 'widget/action_button.dart';
 import 'widget/add_edit_dialog.dart';
 
@@ -237,6 +238,12 @@ class ConfigScreen extends StatelessWidget {
     if (item.province != null && item.province!.isNotEmpty) {
       parts.add('Province: ${item.province}');
     }
+    if (item.phone != null && item.phone!.isNotEmpty) {
+      parts.add('Phone: ${item.phone}');
+    }
+    if (item.address != null && item.address!.isNotEmpty) {
+      parts.add('Address: ${item.address}');
+    }
 
     return parts.join(' • ');
   }
@@ -301,6 +308,7 @@ class ConfigScreen extends StatelessWidget {
         category: category,
         item: item != null ? controller.configModelToMap(item) : null,
         onSave: (data) {
+          showLoaderDialog(context);
           if (item == null) {
             controller.addItem(category, data);
           } else {
@@ -376,6 +384,8 @@ class ConfigScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
+              showLoaderDialog(context);
+
               controller.deleteItem(category, item.id!);
             },
             style: ElevatedButton.styleFrom(

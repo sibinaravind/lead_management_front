@@ -30,8 +30,8 @@ class ApiService extends GetxService {
         queryParameters: params,
         options: await _getOptions(),
       );
+      print(response.data["data"]);
       if (response.statusCode == 200) {
-        print(response.data["data"]);
         return Right(fromJson(response.data["data"]));
       } else {
         throw Left(Exception(response.data['msg'] ?? 'Unknown error'));

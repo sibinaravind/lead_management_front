@@ -8,7 +8,6 @@ import '../../widgets/loading_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _ResponsiveLoginScreenState();
 }
