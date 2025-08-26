@@ -12,7 +12,6 @@ class OfficerModel {
   String? token;
   List<OfficerModel>? officers;
   String? password;
-  String? staffId;
 
   OfficerModel({
     this.id,
@@ -28,7 +27,6 @@ class OfficerModel {
     this.token,
     this.officers,
     this.password,
-    this.staffId,
   });
 
   factory OfficerModel.fromJson(Map<String, dynamic> json) {
@@ -52,13 +50,12 @@ class OfficerModel {
               .toList()
           : null,
       password: json["password"],
-      staffId: json["staff_id"],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "_id": id,
+      // "_id": id,
       "officer_id": officerId,
       "name": name,
       "status": status,
@@ -67,11 +64,10 @@ class OfficerModel {
       "company_phone_number": companyPhoneNumber,
       "designation": designation,
       "branch": branch,
-      "created_at": createdAt,
-      "token": token,
-      "officers": officers?.map((v) => v.toJson()).toList(),
+      // "created_at": createdAt,
+      // "token": token,
+      // "officers": officers?.map((v) => v.toJson()).toList(),
       "password": password,
-      "staff_id": staffId,
     };
   }
 
@@ -92,20 +88,18 @@ class OfficerModel {
     String? staffId,
   }) {
     return OfficerModel(
-      id: id ?? this.id,
-      officerId: officerId ?? this.officerId,
-      name: name ?? this.name,
-      status: status ?? this.status,
-      phone: phone ?? this.phone,
-      gender: gender ?? this.gender,
-      companyPhoneNumber: companyPhoneNumber ?? this.companyPhoneNumber,
-      designation: designation ?? this.designation,
-      branch: branch ?? this.branch,
-      createdAt: createdAt ?? this.createdAt,
-      token: token ?? this.token,
-      officers: officers ?? this.officers,
-      password: password ?? this.password,
-      staffId: staffId ?? this.staffId,
-    );
+        id: id ?? this.id,
+        officerId: officerId ?? this.officerId,
+        name: name ?? this.name,
+        status: status ?? this.status,
+        phone: phone ?? this.phone,
+        gender: gender ?? this.gender,
+        companyPhoneNumber: companyPhoneNumber ?? this.companyPhoneNumber,
+        designation: designation ?? this.designation,
+        branch: branch ?? this.branch,
+        createdAt: createdAt ?? this.createdAt,
+        token: token ?? this.token,
+        officers: officers ?? this.officers,
+        password: password ?? this.password);
   }
 }

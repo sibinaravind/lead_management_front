@@ -50,14 +50,14 @@ class ApiService extends GetxService {
     try {
       Dio dio = serviceLocator();
       // 🔹 Clean null values if body is a Map
-      // dynamic cleanedBody = body;
-      // if (body is Map<String, dynamic>) {
-      //   cleanedBody = removeNullFields(body);
-      // }
-      // print("POST Request to $endpoint with body: $cleanedBody");
+      dynamic cleanedBody = body;
+      if (body is Map<String, dynamic>) {
+        cleanedBody = removeNullFields(body);
+      }
+      print("POST Request to $endpoint with body: $cleanedBody");
       final response = await dio.post(
         endpoint,
-        data: body,
+        data: cleanedBody,
         options: await _getOptions(),
       );
       print("🔥 DioException: $response");
@@ -209,13 +209,13 @@ class ApiService extends GetxService {
 }
 
 Map<String, dynamic> removeNullFields(Map<String, dynamic> map) {
-  // return Map.from(map)
-  //   ..removeWhere((key, value) =>
-  //       value == null ||
-  //       (value is String && value.trim().isEmpty) ||
-  //       (value is Iterable && value.isEmpty) ||
-  //       (value is Map && value.isEmpty));
-  return map;
+  return Map.from(map)
+    ..removeWhere((key, value) =>
+        value == null ||
+        (value is String && value.trim().isEmpty) ||
+        (value is Iterable && value.isEmpty) ||
+        (value is Map && value.isEmpty));
+  // return map;
 }
 
 // import 'package:dio/dio.dart';

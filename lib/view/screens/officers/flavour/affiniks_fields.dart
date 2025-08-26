@@ -20,6 +20,10 @@ class AffiniksFields {
         'extractor': (OfficerModel user) => user.companyPhoneNumber.toString()
       },
       {
+        'name': 'Status',
+        'extractor': (OfficerModel user) => user.status.toString()
+      },
+      {
         'name': 'Designation',
         // 'extractor': (OfficersModel user) => user.designation.toString()
         'extractor': (OfficerModel user) =>

@@ -241,10 +241,12 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
 
   Future<void> _resetPasswordAsAdmin() async {
     try {
+      showLoaderDialog(context);
       var result = await Get.find<OfficersController>().resetOfficerPassword(
         widget.officerId,
         _newPasswordController.text,
       );
+      Navigator.pop(context);
       if (!result) {
         throw Exception();
       } else {

@@ -7,6 +7,7 @@ import '../../../core/services/navigation_service.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../../utils/style/colors/dimension.dart';
 import '../../widgets/custom_toast.dart';
+import '../../widgets/loading_dialog.dart';
 
 class AccessPermissionScreen extends StatefulWidget {
   const AccessPermissionScreen({super.key});
@@ -129,12 +130,14 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
             permissions[role]![permission]!;
       }
     });
+    showLoaderDialog(context);
     final success = await controller.patchAccessPermissions(
       category: role.toUpperCase(),
       updatedFields: [
         {"field": permission, "value": permissions[role]![permission]}
       ],
     );
+    Navigator.pop(context);
     if (!success) {
       // Revert the toggle on failure
       setState(() {
@@ -409,6 +412,7 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
       return;
     }
     NavigationService.goBack(); // Close dialog
+    showLoaderDialog(context);
     final defaultPermissions = {
       "view_all_leads": false,
       "edit_lead": false,
@@ -434,7 +438,9 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
     }
   }
 
-  void _onDeleteRole(String role) {
+  void _onDeleteRole(
+    String role,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -448,8 +454,10 @@ class _AccessPermissionScreenState extends State<AccessPermissionScreen> {
           TextButton(
             onPressed: () async {
               NavigationService.goBack();
+              showLoaderDialog(context);
               final success =
                   await controller.deleteAccessPermission(role.toUpperCase());
+              NavigationService.goBack();
               if (success) {
                 _buildPermissionsFromController();
               }

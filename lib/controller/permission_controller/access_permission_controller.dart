@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../core/services/api_service.dart';
+import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/access_permissions/access_permissions.dart';
 
@@ -160,6 +161,7 @@ class AccessPermissionController extends GetxController {
       (exception) {
         _error.value = 'Failed to add permission: ${exception.toString()}';
         success = false;
+        NavigationService.goBack();
       },
       (response) {
         _permissions.add(EmployeePermissionModel(
@@ -168,7 +170,7 @@ class AccessPermissionController extends GetxController {
         ));
         success = true;
         clearError();
-
+        NavigationService.goBack();
         // Show success snackbar
         CustomSnackBar.showMessage(
           'Success',

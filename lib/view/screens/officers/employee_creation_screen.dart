@@ -484,8 +484,9 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       designation: designation,
       password: _passwordController.text,
     );
-
+    showLoaderDialog(context);
     final success = await officersController.createOfficer(officer);
+    Navigator.pop(context);
     if (success) {
       Navigator.pop(context);
       CustomSnackBar.show(context, "Employee created successfully");
@@ -515,8 +516,10 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
     final officerId = widget.officer?.id;
 
     if (officerId != null) {
+      showLoaderDialog(context);
       bool success =
           await officersController.updateOfficer(officerId, updatedData);
+      Navigator.pop(context);
       if (success) {
         Navigator.pop(context);
         CustomSnackBar.show(context, "Employee updated successfully");

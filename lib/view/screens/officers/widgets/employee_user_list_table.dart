@@ -72,22 +72,21 @@ class EmployeeListTable extends StatelessWidget {
                                                     BorderRadius.circular(10),
 
                                                 ///---- status---------
-                                                // color: getColorBasedOnStatus(
-                                                //     Dimension.mobile ?? ''),
+                                                color: getColorBasedOnStatus(
+                                                    listUser.status ?? ''),
                                               ),
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 6),
                                               child: CustomText(
-                                                text: getTextBasedOnStatus(
-                                                    listUser.status ?? ''),
+                                                text: listUser.status ?? '',
                                                 // text: getTextBasedOnStatus(
                                                 //     listUser.mobile ?? ''),
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 12,
-                                                // color: getColorBasedOnStatus(
-                                                //         listUser.mobile ?? '')
-                                                //     .withOpacity(1.0),
+                                                color: getColorBasedOnStatus(
+                                                        listUser.status ?? '')
+                                                    .withOpacity(1.0),
                                               ),
                                             );
                                           case 'Phone Number':
@@ -536,30 +535,12 @@ class EmployeeListTable extends StatelessWidget {
 
 Color getColorBasedOnStatus(String status) {
   switch (status.toLowerCase()) {
-    case 'blocked':
+    case 'inactive':
       return Colors.red.withOpacity(0.1);
-    case 'unblocked' || 'reviewed':
+    case 'active' || 'reviewed':
       return Colors.green.withOpacity(0.1);
-    case 'on_hold':
-      return Colors.orange.withOpacity(0.1);
+
     default:
       return Colors.grey.withOpacity(0.1);
-  }
-}
-
-String getTextBasedOnStatus(String status) {
-  switch (status.toLowerCase()) {
-    case 'blocked':
-      return 'Blocked';
-    case 'unblocked':
-      return 'UnBlocked';
-    case 'on_hold':
-      return 'On Hold';
-    case 'not_reviewed':
-      return 'Not Reviewed';
-    case 'reviewed':
-      return 'Reviewed';
-    default:
-      return status;
   }
 }
