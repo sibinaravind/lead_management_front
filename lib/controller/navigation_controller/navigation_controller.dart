@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/model/access_permissions/access_permissions.dart';
-import 'package:overseas_front_end/view/screens/Project/client_data_display.dart';
-import 'package:overseas_front_end/view/screens/Project/project_data_display.dart';
-import 'package:overseas_front_end/view/screens/Project/vacancy_data_display.dart';
+import 'package:overseas_front_end/view/screens/project/client_data_display.dart';
+import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
+import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
 import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';

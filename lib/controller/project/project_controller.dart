@@ -27,8 +27,7 @@ class ProjectController extends GetxController {
   RxList<ProjectModel> projects = <ProjectModel>[].obs;
   RxList<ProjectModel> filteredProjects = <ProjectModel>[].obs;
 
-  RxList<VacancyClientDataModel> vacanciesClientList =
-      <VacancyClientDataModel>[].obs;
+  var vacanciesClientList = <VacancyClientDataModel>[].obs;
   RxList<VacancyModel> vacancies = <VacancyModel>[].obs;
 
   RxList<VacancyModel> filteredVacancies = <VacancyModel>[].obs;
@@ -71,10 +70,7 @@ class ProjectController extends GetxController {
     required BuildContext context,
   }) async {
     isLoading.value = true;
-    final body = client.toJson()
-      ..remove('_id')
-      ..remove('created_at');
-
+    final body = client.toJson();
     try {
       var response = await _apiService.postRequest(
           endpoint: Constant().addClient, body: body, fromJson: (json) => json);
@@ -89,8 +85,10 @@ class ProjectController extends GetxController {
         },
         (data) {
           client.sId = data;
+
+          // filteredClients.insert(filteredClients.length, client);
           clients.insert(clients.length, client);
-          filteredClients.insert(filteredClients.length, client);
+          filteredClients.refresh();
           CustomToast.showToast(
               context: context, message: 'Client created successfully');
           Navigator.of(context).pop();
@@ -164,8 +162,8 @@ class ProjectController extends GetxController {
       }, (response) {
         //   if (response['success'] == true) {
         clients.removeWhere((element) => element.sId == clientId);
-        filteredClients = clients;
-        filteredClients.refresh();
+        filteredClients.removeWhere((element) => element.sId == clientId);
+
         CustomToast.showToast(
             context: context, message: "deleted successfully");
         return true;
@@ -289,7 +287,6 @@ class ProjectController extends GetxController {
           ..remove('created_at'),
         fromJson: (json) => json,
       );
-
       return response.fold(
         (failure) {
           CustomToast.showToast(
@@ -499,7 +496,7 @@ class ProjectController extends GetxController {
           // editedVacnacy.jobTitle = vacancy['job_title'];
 
           editedVacnacy.jobCategory = vacancy['job_category'];
-
+          editedVacnacy.experience = vacancy['experience'];
           editedVacnacy.status = vacancy['status'];
           editedVacnacy.qualifications =
               List<String>.from(vacancy['qualifications'] ?? []);

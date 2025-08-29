@@ -5,10 +5,10 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
-import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
+import 'view/screens/project/widget/edit_vacany_client_list.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -47,15 +47,53 @@ class MyApp extends StatelessWidget {
             return MainLayoutScreen(mainTab: mainTab, subTab: subTab);
           },
         ),
+        // GoRoute(
+        //   path: '/test',
+        //   builder: (context, state) => VacancyDetailTab(
+        //     vacancy: VacancyModel.fromJson({
+        //       "_id": "68764a2f4eadcf60814e94c5",
+        //       "job_title": "Nurse for Saudi",
+        //       "job_category": "Nurse",
+        //       "qualifications": ["BSC", "GNM"],
+        //       "experience": "2",
+        //       "salary_from": 60000,
+        //       "salary_to": 6000879,
+        //       "lastdatetoapply": "27/08/2025",
+        //       "description": "nurse with",
+        //       "country": "US",
+        //       "city": "Bangalore",
+        //       "status": "ACTIVE",
+        //       "project": {
+        //         "_id": "6871fce9deb23f3a0f52cebc",
+        //         "project_name": "SAUDI mooh1",
+        //         "organization_type": "GOV",
+        //         "organization_category": "Hospital",
+        //         "organization_name": "proyasis",
+        //         "country": "QATAR",
+        //         "city": "riyadh"
+        //       },
+        //       "specialization_totals": [
+        //         {"specialization": "OT", "count": 10, "target_cv": 20},
+        //         {"specialization": "GENERAL", "count": 100, "target_cv": 250}
+        //       ],
+        //       "total_vacancies": 110,
+        //       "total_target_cv": 270
+        //     }),
+        //     id: '68764a2f4eadcf60814e94c5',
+        //   ),
+        //   // builder: (context, state) => CustomerJourneyScreen(),
+        // ),
         GoRoute(
-          path: '/test',
-          builder: (context, state) => DashboardScreen(),
-          // builder: (context, state) => CustomerJourneyScreen(),
+          path: '/test', //test move to /
+          builder: (context, state) => EditVacancyClientList(
+            id: '68764a2f4eadcf60814e94c5',
+            specializedSelection: "DOCTOR",
+          ),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
-      initialLocation: '/dashboard/dashboard/overview',
-      // initialLocation: '/test',
+      // initialLocation: '/dashboard/dashboard/overview',
+      initialLocation: '/test',
     );
     // Initialize the navigation service with the router
     NavigationService.initialize(router);

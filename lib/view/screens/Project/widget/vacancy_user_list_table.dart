@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
-import 'package:overseas_front_end/view/screens/Project/flavour/customer_project_flavour.dart';
+import 'package:overseas_front_end/view/screens/project/flavour/customer_project_flavour.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../utils/style/colors/colors.dart';
-import '../../../widgets/custom_text.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
 import 'create_edit_vacancy_popup.dart';
 import '../vacancy_details_tab.dart';
@@ -117,12 +117,16 @@ class VacancyUserListTable extends StatelessWidget {
                                                                 "Are you sure?",
                                                             onConfirm: () {
                                                               Future.microtask(
-                                                                  () {
-                                                                _projectController
+                                                                  () async {
+                                                                showLoaderDialog(
+                                                                    context);
+                                                                await _projectController
                                                                     .deleteVacancy(
                                                                         context,
                                                                         listUser.id ??
                                                                             '');
+                                                                Navigator.pop(
+                                                                    context);
                                                               });
                                                               // Provider.of<ProjectProvider>(context, listen: false).deleteVacancy(context,listUser.id ??'');
                                                             }),

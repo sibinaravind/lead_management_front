@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../model/project/client_model.dart';
 import '../../../../utils/style/colors/colors.dart';
-import '../../../widgets/custom_text.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
 import '../flavour/customer_project_flavour.dart';
 
@@ -134,11 +134,16 @@ class ClientUserListTable extends StatelessWidget {
                                                                   message:
                                                                       "Are you sure?",
                                                                   onConfirm:
-                                                                      () {
-                                                                    projectController.deleteClient(
+                                                                      () async {
+                                                                    showLoaderDialog(
+                                                                        context);
+                                                                    await projectController.deleteClient(
                                                                         context,
                                                                         listUser.sId ??
                                                                             '');
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
                                                                   }),
                                                         ),
                                                     value: 1,

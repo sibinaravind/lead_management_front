@@ -132,12 +132,15 @@ class _AddRoundRobinDialogState extends State<AddRoundRobinDialog> {
                                         false) &&
                                     _selectedOfficerIds.isNotEmpty) {
                                   final name = _nameController.trim();
+                                  showLoaderDialog(context);
                                   bool result = await roundRobinController
                                       .createRoundRobin(
                                     name: name,
                                     country: _selectedCountry,
                                     officers: _selectedOfficerIds,
                                   );
+
+                                  Navigator.pop(context);
 
                                   if (result) {
                                     CustomSnackBar.showMessage("Success",

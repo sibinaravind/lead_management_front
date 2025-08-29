@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/project/project_model.dart';
-import 'package:overseas_front_end/view/screens/Project/flavour/customer_project_flavour.dart';
+import 'package:overseas_front_end/view/screens/project/flavour/customer_project_flavour.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
@@ -120,12 +121,14 @@ class ProjectUserListTable extends StatelessWidget {
                                                   DeleteConfirmationDialog(
                                                 title: "Delete",
                                                 message: "Are you sure?",
-                                                onConfirm: () {
-                                                  projectController
+                                                onConfirm: () async {
+                                                  showLoaderDialog(context);
+                                                  await projectController
                                                       .deleteProject(
                                                     context,
                                                     listUser.sId ?? '',
                                                   );
+                                                  Navigator.of(context).pop();
                                                 },
                                               ),
                                             ),

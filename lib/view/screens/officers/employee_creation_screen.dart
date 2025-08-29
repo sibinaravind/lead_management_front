@@ -511,6 +511,7 @@ class _EmployeeCreationScreenState extends State<EmployeeCreationScreen>
       designation: designation,
       id: widget.officer?.id,
       officerId: officerIdController.text,
+      branch: widget.officer?.branch,
     );
 
     final officerId = widget.officer?.id;

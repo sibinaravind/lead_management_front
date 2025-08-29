@@ -45,37 +45,37 @@ class _AddEditProjectState extends State<AddEditProject> {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(8),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxWidth = constraints.maxWidth;
-          // final maxHeight = constraints.maxHeight;
-          double dialogWidth = maxWidth;
-          if (maxWidth > 1400) {
-            dialogWidth = maxWidth * 0.72;
-          } else if (maxWidth > 1000) {
-            dialogWidth = maxWidth * 0.9;
-          } else if (maxWidth > 600) {
-            dialogWidth = maxWidth * 0.95;
-          }
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 1000),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = constraints.maxWidth;
+            // final maxHeight = constraints.maxHeight;
+            double dialogWidth = maxWidth;
+            if (maxWidth > 1400) {
+              dialogWidth = maxWidth * 0.72;
+            } else if (maxWidth > 1000) {
+              dialogWidth = maxWidth * 0.9;
+            } else if (maxWidth > 600) {
+              dialogWidth = maxWidth * 0.95;
+            }
 
-          return Padding(
-              padding:
-                  const EdgeInsets.only(left: 12, right: 0, top: 2, bottom: 5),
-              child: Form(
-                key: _formKey,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
-                        ),
-                        child: Scrollbar(
-                          thumbVisibility: true,
+            return Padding(
+                padding: const EdgeInsets.only(
+                    left: 12, right: 0, top: 2, bottom: 5),
+                child: Form(
+                  key: _formKey,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
                           child: SingleChildScrollView(
                             padding: const EdgeInsets.all(24),
                             child: LayoutBuilder(
@@ -145,6 +145,7 @@ class _AddEditProjectState extends State<AddEditProject> {
                                               .whereType<String>()
                                               .toList(),
                                           label: 'Country',
+                                          isRequired: true,
                                           value: _selectedCountry,
                                           onChanged: (value) {
                                             _selectedCountry = value ?? '';
@@ -197,9 +198,12 @@ class _AddEditProjectState extends State<AddEditProject> {
                                                 if (_formKey.currentState!
                                                     .validate()) {
                                                   if (widget.isEditMode) {
+                                                    showLoaderDialog(context);
                                                     await projectController
                                                         .editProject(
                                                       project: ProjectModel(
+                                                        sId:
+                                                            widget.project?.sId,
                                                         status:
                                                             _selectedStatus ??
                                                                 'ACTIVE',
@@ -226,7 +230,9 @@ class _AddEditProjectState extends State<AddEditProject> {
                                                           widget.project?.sId ??
                                                               '',
                                                     );
+                                                    Navigator.pop(context);
                                                   } else {
+                                                    showLoaderDialog(context);
                                                     await projectController
                                                         .createProject(
                                                       context: context,
@@ -251,6 +257,7 @@ class _AddEditProjectState extends State<AddEditProject> {
                                                                 ?.trim(),
                                                       ),
                                                     );
+                                                    Navigator.pop(context);
                                                   }
                                                 }
                                               },
@@ -266,12 +273,12 @@ class _AddEditProjectState extends State<AddEditProject> {
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 24),
-                  ],
-                ),
-              ));
-        },
+                      const SizedBox(width: 24),
+                    ],
+                  ),
+                ));
+          },
+        ),
       ),
     );
   }

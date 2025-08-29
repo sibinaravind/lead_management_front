@@ -9,6 +9,7 @@ import 'package:overseas_front_end/view/screens/employee/widget/round_robin_offi
 import 'package:overseas_front_end/view/widgets/custom_button.dart';
 import 'package:overseas_front_end/view/widgets/delete_confirm_dialog.dart';
 import 'package:overseas_front_end/view/widgets/custom_text.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_toast.dart';
 
@@ -159,9 +160,11 @@ class _RoundRobinScreenState extends State<RoundRobinScreen> {
                                           title: "Delete",
                                           message: 'You want to delete',
                                           onConfirm: () async {
+                                            showLoaderDialog(context);
                                             final success = await controller
                                                 .deleteRoundRobin(
                                                     group.id ?? '');
+                                            Navigator.pop(context);
                                             if (success) {
                                               CustomToast.showToast(
                                                   context: context,

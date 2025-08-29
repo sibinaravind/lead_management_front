@@ -40,7 +40,7 @@ class ClientModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
+    // data['_id'] = this.sId;
     data['name'] = this.name;
     data['email'] = this.email;
     data['phone'] = this.phone;
@@ -50,7 +50,7 @@ class ClientModel {
     data['state'] = this.state;
     data['country'] = this.country;
     data['status'] = this.status;
-    data['created_at'] = this.createdAt;
+    // data['created_at'] = this.createdAt;
     return data;
   }
 }

@@ -372,10 +372,13 @@ class _AddClientScreenState extends State<AddClientScreen>
                                               onPressed: () async {
                                                 if (_formKey.currentState!
                                                     .validate()) {
+                                                  showLoaderDialog(context);
                                                   if (widget.isEdit) {
                                                     await _projectController
                                                         .editClient(
                                                       client: ClientModel(
+                                                        sId: widget
+                                                            .clientList!.sId!,
                                                         status:
                                                             _statusSelection ??
                                                                 '',
@@ -409,7 +412,7 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                       context: context,
                                                     );
                                                   } else {
-                                                    _projectController
+                                                    await _projectController
                                                         .createClient(
                                                       context: context,
                                                       client: ClientModel(
@@ -441,6 +444,7 @@ class _AddClientScreenState extends State<AddClientScreen>
                                                       ),
                                                     );
                                                   }
+                                                  Navigator.of(context).pop();
                                                 }
                                               },
                                             ),

@@ -30,7 +30,6 @@ class ApiService extends GetxService {
         queryParameters: params,
         options: await _getOptions(),
       );
-      print(response.data["data"]);
       if (response.statusCode == 200) {
         return Right(fromJson(response.data["data"]));
       } else {
@@ -209,13 +208,13 @@ class ApiService extends GetxService {
 }
 
 Map<String, dynamic> removeNullFields(Map<String, dynamic> map) {
-  return Map.from(map)
-    ..removeWhere((key, value) =>
-        value == null ||
-        (value is String && value.trim().isEmpty) ||
-        (value is Iterable && value.isEmpty) ||
-        (value is Map && value.isEmpty));
-  // return map;
+  // return Map.from(map)
+  //   ..removeWhere((key, value) =>
+  //       value == null ||
+  //       (value is String && value.trim().isEmpty) ||
+  //       (value is Iterable && value.isEmpty) ||
+  //       (value is Map && value.isEmpty));
+  return map;
 }
 
 // import 'package:dio/dio.dart';

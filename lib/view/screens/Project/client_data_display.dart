@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:overseas_front_end/view/screens/project/widget/add_client_screen.dart';
 import '../../../controller/project/project_controller.dart';
 import '../../../utils/style/colors/colors.dart';

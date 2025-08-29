@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/add_edit_project.dart';
+import 'package:overseas_front_end/view/screens/project/widget/add_edit_project.dart';
 import '../../../controller/project/project_controller.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../../utils/style/colors/dimension.dart';

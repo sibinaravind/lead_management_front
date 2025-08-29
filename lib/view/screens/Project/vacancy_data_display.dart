@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
-import 'package:overseas_front_end/view/screens/Project/widget/create_edit_vacancy_popup.dart';
+import 'package:overseas_front_end/view/screens/project/widget/create_edit_vacancy_popup.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../../utils/style/colors/dimension.dart';
 import '../../widgets/custom_toast.dart';

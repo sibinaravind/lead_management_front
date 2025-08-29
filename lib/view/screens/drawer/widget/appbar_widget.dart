@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../model/officer/officer_model.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/widgets.dart';
-import '../../Project/widget/client_detail_tab.dart';
+import '../../project/widget/client_detail_tab.dart';
 import '../../officers/widgets/password_reset_dialog.dart';
 
 class AppBarContainer extends StatefulWidget {
