@@ -7,6 +7,7 @@ import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../controller/config/config_controller.dart';
 import '../../../widgets/custom_toast.dart';
+import '../../../widgets/delete_confirm_dialog.dart';
 
 class EditVacancyClientList extends StatefulWidget {
   final String id;
@@ -43,6 +44,7 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
   }
 
   Future<void> _initializeFields() async {
+    print("specializedSelection: $specializedSelection");
     await _projectController
         .fetchVacancyClient(widget.id)
         .then((value) {})
@@ -269,10 +271,34 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
                                               icon: const Icon(Icons.delete,
                                                   color: Colors.red),
                                               onPressed: () {
-                                                setState(() {
-                                                  _selectedClients
-                                                      .removeAt(index);
-                                                });
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (_) =>
+                                                        DeleteConfirmationDialog(
+                                                          title: "Delete",
+                                                          message:
+                                                              'You want to delete the Client?',
+                                                          onConfirm: () async {
+                                                            showLoaderDialog(
+                                                                context);
+                                                            // Navigator.pop(
+                                                            //     context);
+                                                            _projectController
+                                                                .removeClientFromVacancy(
+                                                                    widget.id,
+                                                                    _selectedClients[
+                                                                            index]
+                                                                        [
+                                                                        'client_id']);
+                                                            Navigator.pop(
+                                                                context);
+                                                            setState(() {
+                                                              _selectedClients
+                                                                  .removeAt(
+                                                                      index);
+                                                            });
+                                                          },
+                                                        ));
                                               },
                                             ),
                                           ],
@@ -662,6 +688,7 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
     Map<String, dynamic>? clientData,
     int? index,
   }) {
+    print(index);
     _vacancyController.clear();
     _targetCvController.clear();
     _commissionController.clear();
@@ -898,36 +925,34 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
                                       MediaQuery.of(context).size.width * 0.3,
                                   minHeight: 50,
                                 ),
-                                child: Flexible(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            specializedSelection = spec['name'];
-                                            _vacancyController.text =
-                                                spec['count'].toString();
-                                            _targetCvController.text =
-                                                spec['target_cv'].toString();
-                                            // addedSpecializations.removeWhere(
-                                            //     (s) => s['name'] == spec['name']);
-                                          });
-                                        },
-                                        icon: const Icon(Icons.edit,
-                                            color: Colors.blue),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete,
-                                            color: Colors.red),
-                                        onPressed: () {
-                                          setState(() {
-                                            addedSpecializations.remove(spec);
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          specializedSelection = spec['name'];
+                                          _vacancyController.text =
+                                              spec['count'].toString();
+                                          _targetCvController.text =
+                                              spec['target_cv'].toString();
+                                          // addedSpecializations.removeWhere(
+                                          //     (s) => s['name'] == spec['name']);
+                                        });
+                                      },
+                                      icon: const Icon(Icons.edit,
+                                          color: Colors.blue),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.red),
+                                      onPressed: () {
+                                        setState(() {
+                                          addedSpecializations.remove(spec);
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                             )),
@@ -982,16 +1007,12 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
                             };
 
                             if (isEditing && index != null) {
-                              // Update existing client
-                              print("hello");
-                              setState(() {
-                                _selectedClients[index] = {
-                                  'client_id': client.sId ?? '',
-                                  'commission':
-                                      double.parse(_commissionController.text),
-                                  'vacancies': vacanciesMap,
-                                };
-                              });
+                              _editClientWithVacancies(
+                                client.sId ?? '',
+                                double.parse(_commissionController.text),
+                                vacanciesMap,
+                                index,
+                              );
                             } else {
                               // Add new client
 
@@ -1000,6 +1021,7 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
                                 double.parse(_commissionController.text),
                                 vacanciesMap,
                               );
+                              setState(() {});
                             }
 
                             Navigator.pop(context); // Close details dialog
@@ -1024,14 +1046,39 @@ class _ProjectClientManagementScreenState extends State<EditVacancyClientList>
     );
   }
 
-  void _addClientWithVacancies(
-      String clientId, double commission, Map<String, dynamic> vacancies) {
+  Future<void> _addClientWithVacancies(String clientId, double commission,
+      Map<String, dynamic> vacancies) async {
+    Navigator.pop(context);
+    showLoaderDialog(context);
+    await _projectController.addClientToVacancy(widget.id, {
+      'client_id': clientId,
+      'commission': commission,
+      'vacancies': vacancies.isNotEmpty ? vacancies : {},
+    });
+
+    _selectedClients.add({
+      'client_id': clientId,
+      'commission': commission,
+      'vacancies': vacancies.isNotEmpty ? vacancies : {},
+    });
+    setState(() {});
+  }
+
+  Future<void> _editClientWithVacancies(String clientId, double commission,
+      Map<String, dynamic> vacancies, int index) async {
+    showLoaderDialog(context);
+    await _projectController.editClientInVacancy(widget.id, {
+      'client_id': clientId,
+      'commission': commission,
+      'vacancies': vacancies.isNotEmpty ? vacancies : {},
+    });
+    Navigator.pop(context);
     setState(() {
-      _selectedClients.add({
+      _selectedClients[index] = {
         'client_id': clientId,
         'commission': commission,
         'vacancies': vacancies.isNotEmpty ? vacancies : {},
-      });
+      };
     });
   }
 }

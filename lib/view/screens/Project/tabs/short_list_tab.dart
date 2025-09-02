@@ -98,9 +98,51 @@ class _ShortListedtabState extends State<ShortListedtab> {
             ),
             Obx(() {
               final customerList = projectController.favouriteClients;
-              if (customerList.isEmpty) {
-                return const SizedBox(
-                  height: double.maxFinite,
+              if (customerList == null || customerList.isEmpty) {
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    height: 400,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 20,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.star_border_rounded,
+                          size: 80,
+                          color: AppColors.textGrayColour.withOpacity(0.6),
+                        ),
+                        const SizedBox(height: 20),
+                        const CustomText(
+                          text: "No Shortlisted Clients",
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 10),
+                        const CustomText(
+                          text: "You haven't shortlisted any clients yet.",
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 5),
+                        const CustomText(
+                          text: "They will appear here once added.",
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               }
               return Container(

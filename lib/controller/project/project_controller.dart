@@ -595,7 +595,6 @@ class ProjectController extends GetxController {
 
   // Fetch clients for a specific vacancy
   Future<bool> fetchVacancyClient(String id) async {
-    isLoading.value = true;
     try {
       final response = await _apiService.getRequest(
         endpoint: '${Constant().vacancyClientList}/$id',
@@ -629,6 +628,56 @@ class ProjectController extends GetxController {
       };
       final response = await _apiService.deleteRequest(
         endpoint: Constant().removeClientFromVacancy,
+        body: data,
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) => false,
+        (data) => true,
+      );
+    } catch (ex) {
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> addClientToVacancy(
+      String vacancyId, Map<String, dynamic> clientData) async {
+    isLoading.value = true;
+    try {
+      Map<String, dynamic> data = {
+        "clients": [
+          clientData,
+        ],
+      };
+      final response = await _apiService.postRequest(
+        endpoint: "${Constant().addClientToVacancy}$vacancyId",
+        body: data,
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) => false,
+        (data) => true,
+      );
+    } catch (ex) {
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> editClientInVacancy(
+      String vacancyId, Map<String, dynamic> clientData) async {
+    isLoading.value = true;
+    try {
+      Map<String, dynamic> data = {
+        "clients": [
+          clientData,
+        ],
+      };
+      final response = await _apiService.patchRequest(
+        endpoint: "${Constant().editClientInVacancy}$vacancyId",
         body: data,
         fromJson: (json) => json,
       );

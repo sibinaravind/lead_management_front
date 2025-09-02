@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/project/vacancy_model.dart';
 import 'package:overseas_front_end/view/screens/project/flavour/customer_project_flavour.dart';
+import 'package:overseas_front_end/view/screens/project/widget/edit_vacany_client_list.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
@@ -104,7 +105,30 @@ class VacancyUserListTable extends StatelessWidget {
                                                     color: AppColors
                                                         .greenSecondaryColor,
                                                   ),
-                                                  Text("Edit"),
+                                                  Text(" Vacancy Edit"),
+                                                ],
+                                              )),
+                                          PopupMenuItem(
+                                              onTap: () => showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      EditVacancyClientList(
+                                                        id: listUser.id ?? '',
+                                                        specializedSelection:
+                                                            listUser.jobCategory
+                                                                    ?.toUpperCase() ??
+                                                                '',
+                                                      )),
+                                              value: 1,
+                                              child: const Row(
+                                                spacing: 5,
+                                                children: [
+                                                  Icon(
+                                                    Icons.edit,
+                                                    color: AppColors
+                                                        .greenSecondaryColor,
+                                                  ),
+                                                  Text("Clients Edit"),
                                                 ],
                                               )),
                                           PopupMenuItem(

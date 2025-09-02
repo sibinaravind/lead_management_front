@@ -92,8 +92,8 @@ class MyApp extends StatelessWidget {
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
-      // initialLocation: '/dashboard/dashboard/overview',
-      initialLocation: '/test',
+      initialLocation: '/dashboard/dashboard/overview',
+      // initialLocation: '/test',
     );
     // Initialize the navigation service with the router
     NavigationService.initialize(router);

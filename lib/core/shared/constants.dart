@@ -47,6 +47,8 @@ class Constant {
   String deleteVacancy = "project/deleteVacancy";
   String vacancyClientList = "project/getClientListOnVacancy";
   String removeClientFromVacancy = "project/removeClient";
+  String addClientToVacancy = "project/insertClient/";
+  String editClientInVacancy = "project/editClientInVacancy/";
   String getMatchingProfiles = "project/getMatchingProfiles";
   String addClientToFavourites = "project/addClientToFavourites";
   String removeClientFromFavourites = "project/removeClientFromFavourites";

@@ -1421,14 +1421,20 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
 
                             if (isEditing && index != null) {
                               // Update existing client
-                              setState(() {
-                                _selectedClients[index] = {
-                                  'client_id': client.sId ?? '',
-                                  'commission':
-                                      double.parse(_commissionController.text),
-                                  'vacancies': vacanciesMap,
-                                };
-                              });
+                              // setState(() {
+                              //   _selectedClients[index] = {
+                              //     'client_id': client.sId ?? '',
+                              //     'commission':
+                              //         double.parse(_commissionController.text),
+                              //     'vacancies': vacanciesMap,
+                              //   };
+                              // });
+                              _editClientWithVacancies(
+                                client.sId ?? '',
+                                double.parse(_commissionController.text),
+                                vacanciesMap,
+                                index,
+                              );
                             } else {
                               // Add new client
                               _addClientWithVacancies(
@@ -1467,6 +1473,17 @@ class _ProjectClientManagementScreenState extends State<CreateEditVacancyPopup>
         'commission': commission,
         'vacancies': vacancies.isNotEmpty ? vacancies : {},
       });
+    });
+  }
+
+  void _editClientWithVacancies(String clientId, double commission,
+      Map<String, dynamic> vacancies, int index) {
+    setState(() {
+      _selectedClients[index] = {
+        'client_id': clientId,
+        'commission': commission,
+        'vacancies': vacancies.isNotEmpty ? vacancies : {},
+      };
     });
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 import '../../../../model/project/client_data_vacancy_model.dart';
 import '../../../../utils/style/colors/colors.dart';
@@ -96,6 +98,30 @@ class _ClientTabState extends State<ClientTab> {
                                       fontSize: 14.0,
                                       color: AppColors.greenSecondaryColor),
                                 ),
+                              );
+                            }).toList() ??
+                            [],
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Commission',
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 8.0),
+                        ...client.commissionHistory?.map((commission) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 4.0),
+                                child: CustomRichText(sections: [
+                                  RichTextSection(
+                                    text: 'Amount: ${commission.value}',
+                                    fontSize: 15,
+                                    color: const Color.fromRGBO(239, 68, 68, 1),
+                                  ),
+                                  RichTextSection(
+                                    text:
+                                        ' | Date: ${formatDatetoString(commission.updatedAt)}',
+                                  ),
+                                ]),
                               );
                             }).toList() ??
                             [],
