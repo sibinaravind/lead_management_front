@@ -73,6 +73,8 @@ class Constant {
   String getDeadLeads = 'lead/getAllDeadLeads';
   String restoreDeadLead = 'lead/restoreClientFromDead';
 
+  String getCustomerInteraction = 'customer/getCustomerInteraction/';
+
   String addFeedback = 'customer/logCallEvent';
   String getIncompleteList = 'customer/register/incompleteList';
 

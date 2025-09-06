@@ -10,15 +10,18 @@ class ProjectTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const double tabletBreakpoint = 600;
-        if (constraints.maxWidth > tabletBreakpoint) {
-          return _buildTabletLayout(context);
-        } else {
-          return _buildMobileLayout(context);
-        }
-      },
+    return Align(
+      alignment: Alignment.topCenter,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const double tabletBreakpoint = 600;
+          if (constraints.maxWidth > tabletBreakpoint) {
+            return _buildTabletLayout(context);
+          } else {
+            return _buildMobileLayout(context);
+          }
+        },
+      ),
     );
   }
 

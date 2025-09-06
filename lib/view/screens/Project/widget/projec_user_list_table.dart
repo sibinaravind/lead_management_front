@@ -5,7 +5,6 @@ import 'package:overseas_front_end/model/project/project_model.dart';
 import 'package:overseas_front_end/view/screens/project/flavour/customer_project_flavour.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../utils/style/colors/colors.dart';
-import '../../../widgets/custom_text.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
 import 'add_edit_project.dart';
 

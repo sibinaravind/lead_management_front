@@ -4,18 +4,23 @@ import 'package:overseas_front_end/controller/customer_profile/customer_profile_
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
+import 'widgets/academic_record_tab.dart';
 import 'widgets/call_history_tab.dart';
+import 'widgets/customer_activity_journey.dart';
+import 'widgets/document_tab.dart';
+import 'widgets/exam_record_tab.dart';
+import 'widgets/travel_record_tab.dart';
+import 'widgets/work_record_tab.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
-  const CustomerProfileScreen(
-      {super.key,
-      required this.leadId,
-      required this.clientId,
-      required this.isRegistration});
+  const CustomerProfileScreen({
+    super.key,
+    required this.leadId,
+    required this.clientId,
+  });
 
   final String leadId;
   final String clientId;
-  final bool isRegistration;
 
   @override
   State<CustomerProfileScreen> createState() => _CustomerProfileScreenState();
@@ -24,72 +29,93 @@ class CustomerProfileScreen extends StatefulWidget {
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   int _selectedTabIndex = 0;
   final profile_controller = Get.find<CustomerProfileController>();
-  List<Map<String, dynamic>> _tabs = [
-    // {
-    //   'icon': Icons.person_outline,
-    //   'label': 'Eligibility',
-    //   'widget': const EligibilityTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.school_outlined,
-    //   'label': 'Education',
-    //   'widget': const AcademicTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.work,
-    //   'label': 'Work Experience',
-    //   'widget': const JobDetailsTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.airplanemode_on,
-    //   'label': 'Travel Details',
-    //   'widget': const JobDetailsTab(),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.document_scanner,
-    //   'label': 'Documents',
-    //   'widget': DocumentsTab(
-    //     size: 600,
-    //     documents: [
-    //       DocumentItem(name: "Passport", path: "path/to/passport.pdf"),
-    //       DocumentItem(name: "SSLC Certificate", path: ''),
-    //       DocumentItem(name: "Degree Certificate", path: "path/to/degree.pdf"),
-
-    //     ],
-    //   ),
-    //   'completed': true,
-    // },
-    // {
-    //   'icon': Icons.history,
-    //   'label': 'Candidate Activity',
-    //   'widget': const CandidateHistory(),
-    //   'completed': true,
-    // },
-  ];
+  List<Map<String, dynamic>> _tabs = [];
 
   @override
   initState() {
     super.initState();
-    _tabs = [
-      {
-        'icon': Icons.assignment_outlined,
-        'label': 'Candidate Details',
-        'widget': const LeadDetailsTab(),
-        'completed': true,
-      },
-      {
-        'icon': Icons.call_outlined,
-        'label': 'Call History',
-        'widget': CallHistoryTab(clientId: widget.clientId),
-        'completed': true,
-      },
-    ];
+
     // Initialize the first tab as selected
-    profile_controller.getLeadDetails(context, widget.leadId);
+    Future<void> _initializeTabs() async {
+      await profile_controller.getLeadDetails(context, widget.leadId);
+
+      _tabs = [
+        {
+          'icon': Icons.assignment_outlined,
+          'label': 'Candidate Details',
+          'widget': const LeadDetailsTab(),
+          'completed': true,
+        },
+        {
+          'icon': Icons.call_outlined,
+          'label': 'Call History',
+          'widget': CallHistoryTab(clientId: widget.clientId),
+          'completed': true,
+        },
+        if (profile_controller.leadDetails.value.academicRecords != null)
+          {
+            'icon': Icons.school_outlined,
+            'label': 'Education',
+            'widget': AcademicRecordsTab(
+                records:
+                    profile_controller.leadDetails.value.academicRecords ?? []),
+            'completed': true,
+          },
+        if (profile_controller.leadDetails.value.examRecords != null)
+          {
+            'icon': Icons.school_outlined,
+            'label': 'Exams',
+            'widget': ExamRecordsTab(
+                records:
+                    profile_controller.leadDetails.value.examRecords ?? []),
+            'completed': true,
+          },
+        if (profile_controller.leadDetails.value.workRecords != null)
+          {
+            'icon': Icons.work,
+            'label': 'Work Experience',
+            'widget': WorkRecordsTab(
+              records: profile_controller.leadDetails.value.workRecords ?? [],
+              firstJobDate: null,
+              jobGapMonths: null,
+            ),
+            'completed': true,
+          },
+        if (profile_controller.leadDetails.value.travelRecords != null)
+          {
+            'icon': Icons.airplanemode_on,
+            'label': 'Travel Details',
+            'widget': TravelRecordsTab(
+              records: profile_controller.leadDetails.value.travelRecords ?? [],
+            ),
+            'completed': true,
+          },
+        if (profile_controller.leadDetails.value.documents != null)
+          {
+            'icon': Icons.document_scanner,
+            'label': 'Documents',
+            'widget': DocumentsTab(
+              documents: profile_controller.leadDetails.value.documents ?? [],
+            ),
+            'completed': true,
+          },
+        {
+          'icon': Icons.history,
+          'label': 'Candidate Activity',
+          'widget': CustomerJourneyStages(
+            leadid: widget.leadId,
+          ),
+          'completed': true,
+        },
+      ];
+    }
+
+    // In initState:
+    @override
+    initState() {
+      super.initState();
+      _initializeTabs();
+    }
   }
 
   @override

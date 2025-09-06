@@ -1,175 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
-class AppColors {
-  static const Color primaryColor = Color(0xFF222B45); // Deep Blue
-
-  static const LinearGradient buttonGraidentColour = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF6366F1), // Indigo 500
-      Color(0xFF8B5CF6), // Violet 500
-    ],
-  );
-
-  static const LinearGradient heroGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF1E293B),
-      Color(0xFF222B45),
-      Color(0xFF3B82F6),
-    ],
-  );
-
-  static const LinearGradient orangeGradient = LinearGradient(
-    colors: [
-      Color.fromARGB(255, 247, 184, 75),
-      Color(0xFFF59E0B),
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient backgroundGraident = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFF8FAFC),
-      Color(0xFFEFF6FF),
-      Color(0xFFF1F5F9),
-    ],
-  );
-
-  static LinearGradient blackGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      AppColors.primaryColor,
-      AppColors.primaryColor.withOpacity(0.8),
-    ],
-  );
-
-  static LinearGradient redGradient = const LinearGradient(
-    colors: [
-      Color.fromARGB(255, 196, 84, 84),
-      Color.fromARGB(255, 162, 13, 13),
-    ],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
-  );
-
-  static LinearGradient greenGradient = const LinearGradient(
-    colors: [
-      Color.fromARGB(255, 10, 185, 129),
-      Color.fromARGB(255, 0, 128, 64),
-    ],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
-  );
-
-  static const LinearGradient pinkGradient = LinearGradient(
-    colors: [
-      Color(0xFFEC4899),
-      Color(0xFFD81B60),
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient blueGradient = LinearGradient(
-    colors: [
-      Color(0xFF3B82F6),
-      Color(0xFF1E40AF),
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static Color get violetPrimaryColor => Color(0xFF6366F1);
-
-  static List<Color> roleColors = [
-    Color(0xFF3B82F6),
-    Color(0xFF10B981),
-    Color(0xFF8B5CF6),
-    Color(0xFFF59E0B),
-    Color(0xFFEF4444),
-    Color(0xFFEC4899),
-    Color(0xFF06B6D4),
-    Color(0xFF6366F1),
-    Color(0xFFEC4899),
-    Color(0xFF06B6D4),
-  ];
-}
-
-class CustomerJourneyData {
-  final String id;
-  final String type;
-  final String clientId;
-  final DateTime createdAt;
-  final String comment;
-  final Officer officer;
-
-  CustomerJourneyData({
-    required this.id,
-    required this.type,
-    required this.clientId,
-    required this.createdAt,
-    required this.comment,
-    required this.officer,
-  });
-
-  factory CustomerJourneyData.fromJson(dynamic json) {
-    final Map<String, dynamic> data = Map<String, dynamic>.from(json);
-    return CustomerJourneyData(
-      id: data['_id'] ?? '',
-      type: data['type'] ?? '',
-      clientId: data['client_id'] ?? '',
-      createdAt: DateTime.parse(
-          data['created_at'] ?? DateTime.now().toIso8601String()),
-      comment: data['comment'] ?? '',
-      officer: Officer.fromJson(data['officer'] ?? {}),
-    );
-  }
-}
-
-class Officer {
-  final String id;
-  final String name;
-  final String phone;
-  final String officerId;
-  final List<String> designation;
-
-  Officer({
-    required this.id,
-    required this.name,
-    required this.phone,
-    required this.officerId,
-    required this.designation,
-  });
-
-  factory Officer.fromJson(dynamic json) {
-    final Map<String, dynamic> data = Map<String, dynamic>.from(json);
-    return Officer(
-      id: data['_id'] ?? '',
-      name: data['name'] ?? '',
-      phone: data['phone'] ?? '',
-      officerId: data['officer_id'] ?? '',
-      designation: List<String>.from(data['designation'] ?? []),
-    );
-  }
-}
+import '../../../../controller/customer_profile/customer_profile_controller.dart';
+import '../../../../model/lead/customer_journeydata.dart';
+import '../../../../utils/style/colors/colors.dart';
 
 class CustomerJourneyStages extends StatelessWidget {
-  final List<CustomerJourneyData> journeyData;
-
+  final String leadid;
   const CustomerJourneyStages({
-    Key? key,
-    required this.journeyData,
-  }) : super(key: key);
+    required this.leadid,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Sample data for demonstration
+
+    final profile_controller = Get.find<CustomerProfileController>();
+    profile_controller.getCustomerJourneyStages(context, leadid);
     return Container(
       decoration: BoxDecoration(
         gradient: AppColors.backgroundGraident,
@@ -188,13 +37,27 @@ class CustomerJourneyStages extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          ...journeyData.asMap().entries.map((entry) {
-            int index = entry.key;
-            CustomerJourneyData data = entry.value;
-            bool isLast = index == journeyData.length - 1;
+          if (profile_controller.customerJourneyStages.isEmpty) ...[
+            ListView.builder(
+                itemBuilder: (context, index) {
+                  return CustomShimmerWidget();
+                },
+                itemCount: 3,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics()),
+          ] else ...[
+            ...profile_controller.customerJourneyStages
+                .asMap()
+                .entries
+                .map((entry) {
+              int index = entry.key;
+              CustomerJourneyData data = entry.value;
+              bool isLast =
+                  index == profile_controller.customerJourneyStages.length - 1;
 
-            return _buildStageItem(data, index, isLast);
-          }).toList(),
+              return _buildStageItem(data, index, isLast);
+            }).toList(),
+          ]
         ],
       ),
     );
@@ -303,7 +166,7 @@ class CustomerJourneyStages extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(height: 8),
-                if (data.officer.name.isNotEmpty)
+                if (data.officer.name?.isNotEmpty ?? false)
                   Row(
                     children: [
                       Container(
@@ -325,16 +188,16 @@ class CustomerJourneyStages extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              data.officer.name,
+                              data.officer.name ?? '',
                               style: TextStyle(
                                 color: AppColors.primaryColor,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            if (data.officer.designation.isNotEmpty)
+                            if (data.officer.designation?.isNotEmpty ?? false)
                               Text(
-                                data.officer.designation.join(', '),
+                                data.officer.designation?.join(', ') ?? '',
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                   fontSize: 11,
@@ -415,106 +278,5 @@ class CustomerJourneyStages extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-  }
-}
-
-// Usage Example
-class CustomerJourneyScreen extends StatelessWidget {
-  const CustomerJourneyScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Your JSON data
-    final Map<String, dynamic> jsonData = {
-      "success": true,
-      "data": [
-        {
-          "_id": "6878fe523e1c829a55bcebef",
-          "type": "customer_created",
-          "client_id": "6878fe523e1c829a55bcebee",
-          "created_at": "2025-07-17T13:44:50.597Z",
-          "comment": "Looking for remote opportunities",
-          "officer": {
-            "_id": "686d1edde9299f3429d623a5",
-            "name": "Mr Aswin",
-            "phone": "+1234568881",
-            "officer_id": "64",
-            "designation": ["COUNSILOR"]
-          }
-        },
-        {
-          "_id": "68792fe82e03cb8ceca5457b",
-          "type": "assign_officer",
-          "client_id": "6878fe523e1c829a55bcebee",
-          "created_at": "2025-07-17T17:16:24.923Z",
-          "comment": "tsting",
-          "officer": {
-            "_id": "686d1edde9299f3429d623a5",
-            "name": "Mr Aswin",
-            "phone": "+1234568881",
-            "officer_id": "64",
-            "designation": ["COUNSILOR"]
-          }
-        },
-        {
-          "_id": "68792fff2e03cb8ceca5457c",
-          "type": "status_update",
-          "client_id": "6878fe523e1c829a55bcebee",
-          "created_at": "2025-07-17T17:16:47.970Z",
-          "comment": "cmd",
-          "officer": {
-            "_id": "686ceda9e9299f3429d6239a",
-            "name": "Mr Sibin James",
-            "phone": "+91 3456789344",
-            "officer_id": "4",
-            "designation": ["COUNSILOR", "ADMIN"]
-          }
-        },
-        {
-          "_id": "687930c52e03cb8ceca5457f",
-          "type": "status_update",
-          "client_id": "6878fe523e1c829a55bcebee",
-          "created_at": "2025-07-17T17:20:05.818Z",
-          "comment": "cmd",
-          "officer": {
-            "_id": "686ceda9e9299f3429d6239a",
-            "name": "Mr Sibin James",
-            "phone": "+91 3456789344",
-            "officer_id": "4",
-            "designation": ["COUNSILOR", "ADMIN"]
-          }
-        },
-        {
-          "_id": "687ba45e30cc9a790f7fd0fb",
-          "type": "client_restored",
-          "client_id": "6878fe523e1c829a55bcebee",
-          "created_at": "2025-07-19T13:57:50.274Z",
-          "comment": "yes",
-          "officer": {}
-        }
-      ]
-    };
-
-    // Parse the data
-    final List<CustomerJourneyData> journeyData = (jsonData['data'] as List)
-        .map((item) => CustomerJourneyData.fromJson(item))
-        .toList();
-
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Customer Journey'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.heroGradient,
-          ),
-        ),
-        foregroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: CustomerJourneyStages(journeyData: journeyData),
-      ),
-    );
   }
 }

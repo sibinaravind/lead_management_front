@@ -165,7 +165,7 @@ class RegisterUserListTable extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (context) => CustomerProfileScreen(
-                                    isRegistration: true,
+                                    // isRegistration: true,
                                     clientId: listUser.clientId ?? "",
                                     leadId: listUser.sId ?? "",
                                   ),

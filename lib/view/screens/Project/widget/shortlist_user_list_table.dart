@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/project/project_controller.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
+import '../../../../utils/functions/get_colour_based_on_status.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/custom_text.dart';
+import '../../cutsomer_profile/customer_profile.dart';
 import '../flavour/customer_project_flavour.dart';
 
 class ShortlistUserListTable extends StatelessWidget {
@@ -13,7 +15,7 @@ class ShortlistUserListTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final horizontalController = ScrollController();
     final verticalController = ScrollController();
-    var columnsData = ProjectFlavour.matchingList();
+    var columnsData = ProjectFlavour.shortListedList();
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scrollbar(
@@ -66,7 +68,8 @@ class ShortlistUserListTable extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           color: getColorBasedOnStatus(value)
-                                              .withOpacity(0.5),
+                                                  ?.withOpacity(0.5) ??
+                                              Colors.white,
                                         ),
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 10),
@@ -124,11 +127,25 @@ class ShortlistUserListTable extends StatelessWidget {
                                               ]);
 
                                     case 'ID':
-                                      return CustomText(
-                                        text: value,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.orangeSecondaryColor,
+                                      return GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CustomerProfileScreen(
+                                                      // isRegistration: false,
+                                                      clientId:
+                                                          listUser.clientId ??
+                                                              '',
+                                                      leadId:
+                                                          listUser.sId ?? ""));
+                                        },
+                                        child: CustomText(
+                                          text: value,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.orangeSecondaryColor,
+                                        ),
                                       );
                                     default:
                                       return CustomText(
@@ -162,25 +179,6 @@ class ShortlistUserListTable extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-Color getColorBasedOnStatus(String status) {
-  switch (status.toLowerCase()) {
-    case 'hotlead':
-      return AppColors.greenSecondaryColor;
-    case 'noteligible' || 'closed':
-      return AppColors.redSecondaryColor;
-    case 'registered' || 'qualified':
-      return AppColors.blueSecondaryColor;
-    case 'interview':
-      return AppColors.pinkSecondaryColor;
-    case 'onHold':
-      return AppColors.orangeSecondaryColor;
-    case 'blocked':
-      return Colors.red.withOpacity(0.1);
-    default:
-      return Colors.grey.withOpacity(0.1);
   }
 }
 

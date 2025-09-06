@@ -5,6 +5,7 @@ import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/lead/call_event_model.dart';
+import '../../model/lead/customer_journeydata.dart';
 import '../../model/lead/lead_list_model.dart';
 import '../../model/lead/lead_model.dart';
 import '../../view/widgets/custom_snackbar.dart';
@@ -17,6 +18,7 @@ class CustomerProfileController extends GetxController {
   Map<String, dynamic> filter = {};
   RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
   Rx<LeadModel> leadDetails = LeadModel().obs;
+  var customerJourneyStages = <CustomerJourneyData>[].obs;
   String currentClientId = "";
 
   Future<void> getLeadDetails(context, String leadId) async {
@@ -32,6 +34,37 @@ class CustomerProfileController extends GetxController {
         (loadedLeadDetails) {
           leadDetails.value = loadedLeadDetails;
           currentClientId = loadedLeadDetails.sId ?? '';
+          refresh();
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching lead details: $e',
+      );
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<void> getCustomerJourneyStages(context, String leadId) async {
+    try {
+      final response = await _apiService.getRequest(
+        endpoint: "${Constant().getCustomerInteraction}/$leadId",
+        fromJson: (json) {
+          if (json is List && json.isNotEmpty) {
+            return json.map((e) => CustomerJourneyData.fromJson(e)).toList();
+          }
+          return <CustomerJourneyData>[];
+        },
+      );
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load lead details");
+        },
+        (loadedLeadDetails) {
+          customerJourneyStages.value = loadedLeadDetails;
+
           refresh();
         },
       );

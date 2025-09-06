@@ -49,7 +49,10 @@ class _VacancyDetailTabState extends State<VacancyDetailTab> {
       {
         'icon': Icons.account_box,
         'label': 'Matching',
-        'widget': MatchingTab(),
+        'widget': MatchingTab(
+          qualification: widget.vacancy.qualifications?[0],
+          country: widget.vacancy.country,
+        ),
         'completed': false,
       },
       {

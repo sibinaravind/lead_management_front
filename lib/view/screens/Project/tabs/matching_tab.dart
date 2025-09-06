@@ -10,7 +10,9 @@ import '../../../widgets/custom_toast.dart';
 import '../widget/matching_user_list_table.dart';
 
 class MatchingTab extends StatefulWidget {
-  const MatchingTab({super.key});
+  final String? qualification;
+  final String? country;
+  const MatchingTab({super.key, this.qualification, this.country});
 
   @override
   State<MatchingTab> createState() => _MatchingTabState();
@@ -46,6 +48,10 @@ class _MatchingTabState extends State<MatchingTab> {
               ?.map((item) => "${item.name}")
               .toList() ??
           [],
+      'Status': configController.configData.value.clientStatus
+              ?.map((item) => "${item.name}")
+              .toList() ??
+          [],
       'Country': configController.configData.value.country
               ?.map((item) => "${item.name}")
               .toList() ??
@@ -54,7 +60,17 @@ class _MatchingTabState extends State<MatchingTab> {
               ?.map((item) => "${item.name}")
               .toList() ??
           [],
+      'Experience': List.generate(10, (index) => (index + 1).toString()),
     };
+
+    selectedFilters = {
+      if (widget.qualification != null) "Qualification": widget.qualification,
+      if (widget.country != null) "Country": widget.country,
+    }.obs;
+    if (selectedFilters.isNotEmpty) {
+      isFilterActive.value = true;
+      showFilters.value = true;
+    }
     setState(() {});
   }
 
@@ -81,6 +97,12 @@ class _MatchingTabState extends State<MatchingTab> {
           case "Specialization":
             params["specialization"] = value;
             break;
+          case "Experience":
+            params["totalexperience"] = value;
+            break;
+          case "Status":
+            params["status"] = value;
+            break;
         }
       }
     });
@@ -89,9 +111,12 @@ class _MatchingTabState extends State<MatchingTab> {
   }
 
   /// Fetches matching clients with current filters/pagination
-  void fetchData() {
+  void fetchData() async {
     final params = buildQueryParams();
-    projectController.fetchMatchingClients(filterSelected: params);
+    showLoaderDialog(context);
+    await projectController.fetchMatchingClients(filterSelected: params);
+
+    Navigator.of(context).pop();
   }
 
   void applyFilters() {
@@ -123,11 +148,49 @@ class _MatchingTabState extends State<MatchingTab> {
                   projectController.customerMatchingList.value.leads;
 
               if (customerList == null || customerList.isEmpty) {
-                return SizedBox(
-                  height: double.maxFinite,
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: CustomText(text: "No matching leads found"),
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    height: 400,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black.withOpacity(0.2),
+                      //     blurRadius: 20,
+                      //     offset: const Offset(0, 4),
+                      //   ),
+                      // ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.star_border_rounded,
+                          size: 80,
+                          color: AppColors.textGrayColour.withOpacity(0.6),
+                        ),
+                        const SizedBox(height: 20),
+                        const CustomText(
+                          text: "No Matching Clients",
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 10),
+                        const CustomText(
+                          text: "You haven't matched any clients yet.",
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 5),
+                        const CustomText(
+                          text: "They will appear here once added.",
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
@@ -338,6 +401,13 @@ class _MatchingTabState extends State<MatchingTab> {
                   children: [
                     if (filterOptions != null)
                       ...filterOptions.keys.map((category) {
+                        final options =
+                            filterOptions[category]?.toSet().toList() ?? [];
+                        final selectedValue =
+                            options.contains(selectedFilters[category])
+                                ? selectedFilters[category]
+                                : null;
+
                         return SizedBox(
                           width: 180,
                           height: 50,
@@ -363,16 +433,15 @@ class _MatchingTabState extends State<MatchingTab> {
                                       fontSize: 14,
                                     ),
                                     isExpanded: true,
-                                    value: selectedFilters[category],
-                                    items: filterOptions[category]
-                                        ?.toSet()
-                                        .map((option) =>
-                                            DropdownMenuItem<String>(
-                                              value: option,
-                                              child: CustomText(
-                                                  text: option, fontSize: 14),
-                                            ))
-                                        .toList(),
+                                    value:
+                                        selectedValue, // ✅ Only valid if in options
+                                    items: options.map((option) {
+                                      return DropdownMenuItem<String>(
+                                        value: option,
+                                        child: CustomText(
+                                            text: option, fontSize: 14),
+                                      );
+                                    }).toList(),
                                     onChanged: (value) {
                                       if (value != null) {
                                         selectedFilters[category] = value;

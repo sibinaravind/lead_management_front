@@ -13,10 +13,10 @@ Color? getColorBasedOnStatus(String status) {
           ?.firstWhere(
             (element) =>
                 element.name?.toLowerCase() == status.toString().toLowerCase(),
-            orElse: () => ConfigModel(colour: "0Xffffffff"),
+            orElse: () => ConfigModel(colour: "0XFFBDBDBD"),
           )
           .colour ??
-      "0Xffffffff";
+      "0XFFBDBDBD";
   return hexToColorWithAlpha(value);
 }
 

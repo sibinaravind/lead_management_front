@@ -5,6 +5,8 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
+import 'package:overseas_front_end/view/screens/project/vacancy_details_tab.dart';
+import 'model/project/vacancy_model.dart' show VacancyModel;
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
       // }, // Uncomment if you want to prpoerp logout //test
       routes: [
         GoRoute(
-          path: '/', //test move to /
+          path: '/login', //test move to /
           builder: (context, state) => LoginScreen(),
         ),
         GoRoute(
@@ -85,10 +87,8 @@ class MyApp extends StatelessWidget {
         // ),
         GoRoute(
           path: '/test', //test move to /
-          builder: (context, state) => EditVacancyClientList(
-            id: '68764a2f4eadcf60814e94c5',
-            specializedSelection: "DOCTOR",
-          ),
+          builder: (context, state) => VacancyDetailTab(
+              id: '68764a2f4eadcf60814e94c5', vacancy: VacancyModel()),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

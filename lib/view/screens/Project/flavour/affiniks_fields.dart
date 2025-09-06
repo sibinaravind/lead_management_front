@@ -157,6 +157,10 @@ class AffiniksFields {
         'extractor': (LeadModel user) => user.qualification ?? ''
       },
       {
+        'name': 'Experience',
+        'extractor': (LeadModel user) => user.experience.toString() ?? ''
+      },
+      {
         'name': 'Country Interested',
         'extractor': (LeadModel user) =>
             user.countryInterested?.map((e) => e.toString()).join(", ") ?? ''
