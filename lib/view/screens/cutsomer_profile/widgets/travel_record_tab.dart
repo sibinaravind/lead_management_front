@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/lead/travel_record_model.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 
 import '../../../widgets/custom_text.dart';
+import 'info_item_card.dart';
 
 class TravelRecordsTab extends StatelessWidget {
-  final List<dynamic> records;
+  final List<TravelRecordModel> records;
 
   const TravelRecordsTab({super.key, required this.records});
 
@@ -26,8 +29,10 @@ class TravelRecordsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildTravelCard(dynamic record) {
-    final isActive = record['return_date'] == null;
+  Widget _buildTravelCard(TravelRecordModel record) {
+    final isActive = record.returnDate == null ||
+        (record.returnDate != null &&
+            record.returnDate!.isAfter(DateTime.now()));
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -69,7 +74,7 @@ class TravelRecordsTab extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: CustomText(
-                  text: record['country'] ?? 'N/A',
+                  text: record.country ?? 'N/A',
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF202124),
@@ -101,70 +106,41 @@ class TravelRecordsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoGrid([
-            {'label': 'Visa Type', 'value': record['visa_type'] ?? 'N/A'},
-            {
-              'label': 'Departure',
-              'value': _formatDate(record['departure_date'])
-            },
-            {
-              'label': 'Return',
-              'value': record['return_date'] != null
-                  ? _formatDate(record['return_date'])
-                  : 'Currently there'
-            },
-            {
-              'label': 'Visa Valid Until',
-              'value': _formatDate(record['visa_valid_date'])
-            },
-          ]),
+          Wrap(
+            spacing: 20,
+            runSpacing: 12,
+            children: [
+              InfoItemCard(
+                label: 'Visa Type',
+                value: record.visaType ?? 'N/A',
+                icon: Icons.card_travel,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Departure',
+                value: formatDatetoString(record.departureDate),
+                icon: Icons.flight_takeoff,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Return',
+                value: record.returnDate != null
+                    ? formatDatetoString(record.returnDate)
+                    : 'Currently there',
+                icon: Icons.flight_land,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Visa Valid Until',
+                value: formatDatetoString(record.visaValidDate),
+                icon: Icons.event_available,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
         ],
       ),
     );
-  }
-
-  Widget _buildInfoGrid(List<Map<String, String>> items) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 2.5,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 8,
-      children: items
-          .map((item) => _buildInfoItem(item['label']!, item['value']!))
-          .toList(),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 12,
-          color: const Color(0xFF5F6368),
-        ),
-        const SizedBox(height: 4),
-        CustomText(
-          text: value,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF202124),
-          maxLines: 1,
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(String? dateStr) {
-    if (dateStr == null) return 'N/A';
-    try {
-      final date = DateTime.parse(dateStr);
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return dateStr;
-    }
   }
 }

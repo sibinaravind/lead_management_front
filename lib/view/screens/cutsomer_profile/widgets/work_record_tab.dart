@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/lead/work_record_model.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/info_item_card.dart';
+import 'package:overseas_front_end/view/screens/registration/tabs/work_experience_tab.dart';
 
 import '../../../widgets/custom_text.dart';
 
 class WorkRecordsTab extends StatelessWidget {
-  final List<dynamic> records;
+  final List<WorkRecordModel> records;
   final String? firstJobDate;
   final int? jobGapMonths;
 
@@ -65,7 +69,7 @@ class WorkRecordsTab extends StatelessWidget {
                       color: Color(0xFF1976D2), size: 20),
                   const SizedBox(width: 8),
                   CustomText(
-                    text: 'First Job Date: ${_formatDate(firstJobDate!)}',
+                    text: 'First Job Date: $firstJobDate',
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF1976D2),
@@ -80,7 +84,7 @@ class WorkRecordsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkCard(dynamic record) {
+  Widget _buildWorkCard(WorkRecordModel record) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
@@ -118,13 +122,13 @@ class WorkRecordsTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: record['position'] ?? 'N/A',
+                      text: record.position ?? 'N/A',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF202124),
                     ),
                     CustomText(
-                      text: record['organization'] ?? 'N/A',
+                      text: record.organization ?? 'N/A',
                       fontSize: 14,
                       color: const Color(0xFF5F6368),
                     ),
@@ -138,7 +142,7 @@ class WorkRecordsTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: CustomText(
-                  text: record['country'] ?? 'N/A',
+                  text: record.country ?? 'N/A',
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF1976D2),
@@ -147,60 +151,27 @@ class WorkRecordsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoGrid([
-            {'label': 'Department', 'value': record['department'] ?? 'N/A'},
-            {
-              'label': 'Duration',
-              'value':
-                  '${_formatDate(record['from_date'])} - ${_formatDate(record['to_date'])}'
-            },
-          ]),
+          Wrap(
+            spacing: 20,
+            runSpacing: 12,
+            children: [
+              InfoItemCard(
+                label: 'Department',
+                value: record.department ?? 'N/A',
+                icon: Icons.apartment,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Duration',
+                value:
+                    '${formatDatetoString(record.fromDate)} - ${formatDatetoString(record.toDate)}',
+                icon: Icons.access_time,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+            ],
+          ),
         ],
       ),
     );
-  }
-
-  Widget _buildInfoGrid(List<Map<String, String>> items) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 1,
-      childAspectRatio: 6,
-      mainAxisSpacing: 8,
-      children: items
-          .map((item) => _buildInfoItem(item['label']!, item['value']!))
-          .toList(),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 12,
-          color: const Color(0xFF5F6368),
-        ),
-        const SizedBox(height: 4),
-        CustomText(
-          text: value,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF202124),
-          maxLines: 1,
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(String? dateStr) {
-    if (dateStr == null) return 'N/A';
-    try {
-      final date = DateTime.parse(dateStr);
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return dateStr;
-    }
   }
 }

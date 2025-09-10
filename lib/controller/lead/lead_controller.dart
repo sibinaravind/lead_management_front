@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/model/lead/count_model.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
 import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 
@@ -13,6 +14,7 @@ class LeadController extends GetxController {
   RxBool isLoading = false.obs;
   RxString selectedFilter = ''.obs;
   Map<String, dynamic> filter = {};
+  Rx<CountModel> leadCount = CountModel().obs;
 
   Future<void> fetchMatchingClients(
       {Map<String, dynamic>? filterSelected}) async {
@@ -38,11 +40,56 @@ class LeadController extends GetxController {
     }
   }
 
+  Future<void> fetchMatchingHistoricalClients(
+      {Map<String, dynamic>? filterSelected}) async {
+    filter = filterSelected ?? {};
+    isLoading.value = true;
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: Constant().getAllFilterdHistory,
+          params: filter,
+          fromJson: (json) => LeadListModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load clients");
+        },
+        (loadedClients) {
+          customerMatchingList.value = loadedClients;
+        },
+      );
+    } catch (e) {
+      throw Exception('Error fetching clients: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> getLeadCount({String? category, String? employeeid}) async {
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: Constant().getLeadCount,
+          params: filter,
+          fromJson: (json) => CountModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load clients");
+        },
+        (loadedClients) {
+          leadCount.value = loadedClients;
+        },
+      );
+    } catch (e) {
+      throw Exception('Error fetching clients: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<bool> createLead(BuildContext context, LeadModel leads) async {
     try {
       final response = await _apiService.postRequest(
         endpoint: Constant().addLead,
-        body: leads.toJson(),
+        body: leads.toJson()..removeWhere((key, value) => value == null),
         fromJson: (json) => json,
       );
       return response.fold(

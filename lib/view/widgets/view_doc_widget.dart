@@ -104,6 +104,7 @@ class _ViewDocWidgetState extends State<ViewDocWidget> {
   }
 
   Future<void> _loadBinaryFile() async {
+    print('Loading binary file from ${widget.fileUrl}');
     final response = await http.get(Uri.parse(widget.fileUrl));
 
     if (response.statusCode != 200) {

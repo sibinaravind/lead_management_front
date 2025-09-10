@@ -66,6 +66,8 @@ class Constant {
   String deleteOfficerFromLead = 'officer/deleteOfficerFromLead';
 
   String getAllFilterdLeads = 'lead/getAllFilterdLeads';
+  String getAllFilterdHistory = 'lead/getAllFilterdHistory';
+  String getLeadCount = 'lead/getLeadCount';
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
   String updateLead = 'lead/updateLead';

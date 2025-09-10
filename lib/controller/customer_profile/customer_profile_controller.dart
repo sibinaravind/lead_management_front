@@ -22,6 +22,7 @@ class CustomerProfileController extends GetxController {
   String currentClientId = "";
 
   Future<void> getLeadDetails(context, String leadId) async {
+    print("hello");
     try {
       leadDetails.value = LeadModel();
       final response = await _apiService.getRequest(

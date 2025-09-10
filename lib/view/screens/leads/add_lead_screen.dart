@@ -647,7 +647,9 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                               onPressed: () async {
                                                 if (_formKey.currentState!
                                                     .validate()) {
-                                                  Get.find<LeadController>()
+                                                  showLoaderDialog(context);
+                                                  await Get.find<
+                                                          LeadController>()
                                                       .createLead(
                                                     context,
                                                     LeadModel(
@@ -740,6 +742,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                                                     ),
                                                   );
                                                 }
+                                                Navigator.pop(context);
                                               },
                                             ),
                                           ),

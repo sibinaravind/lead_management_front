@@ -16,7 +16,6 @@ class CustomerJourneyStages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Sample data for demonstration
-
     final profile_controller = Get.find<CustomerProfileController>();
     profile_controller.getCustomerJourneyStages(context, leadid);
     return Container(
@@ -25,40 +24,38 @@ class CustomerJourneyStages extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Customer Journey',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
-            ),
-          ),
-          const SizedBox(height: 20),
-          if (profile_controller.customerJourneyStages.isEmpty) ...[
-            ListView.builder(
-                itemBuilder: (context, index) {
-                  return CustomShimmerWidget();
-                },
-                itemCount: 3,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics()),
-          ] else ...[
-            ...profile_controller.customerJourneyStages
-                .asMap()
-                .entries
-                .map((entry) {
-              int index = entry.key;
-              CustomerJourneyData data = entry.value;
-              bool isLast =
-                  index == profile_controller.customerJourneyStages.length - 1;
+      child: Obx(
+        () => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (profile_controller.customerJourneyStages.isEmpty) ...[
+                ListView.builder(
+                  itemBuilder: (context, index) {
+                    return CustomShimmerWidget(
+                      height: 50,
+                    );
+                  },
+                  itemCount: 3,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                ),
+              ] else ...[
+                ...profile_controller.customerJourneyStages
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                  int index = entry.key;
+                  CustomerJourneyData data = entry.value;
+                  bool isLast = index ==
+                      profile_controller.customerJourneyStages.length - 1;
 
-              return _buildStageItem(data, index, isLast);
-            }).toList(),
-          ]
-        ],
+                  return _buildStageItem(data, index, isLast);
+                }).toList(),
+              ]
+            ],
+          ),
+        ),
       ),
     );
   }

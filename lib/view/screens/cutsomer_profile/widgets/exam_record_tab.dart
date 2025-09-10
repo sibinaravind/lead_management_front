@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:overseas_front_end/model/lead/exam_record_model.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/info_item_card.dart';
 
 import '../../../widgets/custom_text.dart';
 
 class ExamRecordsTab extends StatelessWidget {
-  final List<dynamic> records;
+  final List<ExamRecordModel> records;
 
   const ExamRecordsTab({super.key, required this.records});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomText(
-            text: 'Exam Records',
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF202124),
-          ),
-          const SizedBox(height: 16),
-          ...records.map((record) => _buildExamCard(record)).toList(),
-        ],
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomText(
+              text: 'Exam Records',
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF202124),
+            ),
+            const SizedBox(height: 16),
+            ...records.map((record) => _buildExamCard(record)).toList(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildExamCard(dynamic record) {
-    final isPassed = record['status']?.toString().toUpperCase() == 'PASS';
+  Widget _buildExamCard(ExamRecordModel record) {
+    final isPassed = record.status?.toString().toUpperCase() == 'PASS';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -69,7 +75,7 @@ class ExamRecordsTab extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: CustomText(
-                  text: record['exam'] ?? 'N/A',
+                  text: record.exam ?? 'N/A',
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF202124),
@@ -85,7 +91,7 @@ class ExamRecordsTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: CustomText(
-                  text: record['status'] ?? 'N/A',
+                  text: record.status ?? 'N/A',
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: isPassed
@@ -96,62 +102,44 @@ class ExamRecordsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoGrid([
-            {'label': 'Grade', 'value': record['grade'] ?? 'N/A'},
-            {'label': 'Score', 'value': record['score']?.toString() ?? 'N/A'},
-            {'label': 'Exam Date', 'value': _formatDate(record['exam_date'])},
-            {
-              'label': 'Valid Until',
-              'value': _formatDate(record['validity_date'])
-            },
-          ]),
+          Wrap(
+            spacing: 20,
+            runSpacing: 12,
+            children: [
+              InfoItemCard(
+                label: 'Exam Type',
+                value: record.exam ?? 'N/A',
+                icon: Icons.pie_chart,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Grade',
+                value: record.grade ?? 'N/A',
+                icon: Icons.grade,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Score',
+                value: record.score?.toString() ?? 'N/A',
+                icon: Icons.score,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Exam Date',
+                value: formatDatetoString(record.examDate),
+                icon: Icons.calendar_today,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+              InfoItemCard(
+                label: 'Valid Until',
+                value: formatDatetoString(record.validityDate),
+                icon: Icons.event_available,
+                accentColor: const Color(0xFF3B82F6),
+              ),
+            ],
+          )
         ],
       ),
     );
-  }
-
-  Widget _buildInfoGrid(List<Map<String, String>> items) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 2.5,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 8,
-      children: items
-          .map((item) => _buildInfoItem(item['label']!, item['value']!))
-          .toList(),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 12,
-          color: const Color(0xFF5F6368),
-        ),
-        const SizedBox(height: 4),
-        CustomText(
-          text: value,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF202124),
-          maxLines: 1,
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(String? dateStr) {
-    if (dateStr == null) return 'N/A';
-    try {
-      final date = DateTime.parse(dateStr);
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return dateStr;
-    }
   }
 }

@@ -22,7 +22,6 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
   final leadController = Get.find<LeadController>();
   final officersController = Get.find<OfficersController>();
   final configController = Get.find<ConfigController>();
-
   var filterOptions = <String, List<String>>{};
   var selectedFilters = <String, dynamic>{}.obs;
   final isFilterActive = false.obs;
@@ -44,6 +43,7 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
 
   Future<void> fetchConfig() async {
     await configController.loadConfigData();
+    leadController.getLeadCount();
     await Get.find<OfficersController>().fetchOfficersList();
     filterOptions = {
       'Status': configController.configData.value.clientStatus
@@ -102,6 +102,10 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
 
   void fetchData() {
     final params = buildQueryParams();
+    if (leadController.selectedFilter.value == 'HISTORY') {
+      leadController.fetchMatchingHistoricalClients(filterSelected: params);
+      return;
+    }
     leadController.fetchMatchingClients(filterSelected: params);
   }
 
@@ -310,154 +314,171 @@ class _LeadDataDisplayState extends State<LeadDataDisplay> {
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              CustomFilterChip(
-                                icon: Icons.all_inclusive,
-                                text: 'All Leads',
-                                count: 128,
-                                color: AppColors.primaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value == '',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value = '';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.fiber_new,
-                                text: 'New',
-                                count: 10,
-                                color: AppColors.blueSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'NEW',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value = 'NEW';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.today,
-                                text: 'Today',
-                                count: 24,
-                                color: AppColors.greenSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'TODAY',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'TODAY';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.today,
-                                text: 'Tommorrow',
-                                count: 24,
-                                color: AppColors.orangeSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'TOMORROW',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'TOMORROW';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.schedule,
-                                text: 'Pending',
-                                count: 8,
-                                color: AppColors.redSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'PENDING',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'PENDING';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.history,
-                                text: 'Upcoming',
-                                count: 156,
-                                color: AppColors.skyBlueSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'UPCOMING',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'UPCOMING';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              // _buildFilterChip(
-                              //   icon: Icons.history,
-                              //   text: 'Converted',
-                              //   count: 156,
-                              //   color: AppColors.viloletSecondaryColor,
-                              //   isSelected: selectedFilter == 'converted',
-                              //   onTap: () {
-                              //     setState(() {
-                              //       selectedFilter = 'converted';
-                              //     });
-                              //   },
-                              // ),
-                              CustomFilterChip(
-                                icon: Icons.trending_up,
-                                text: 'UnAssigned',
-                                count: 15,
-                                color: AppColors.textGrayColour,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'UNASSIGNED',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'UNASSIGNED';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                              CustomFilterChip(
-                                icon: Icons.history,
-                                text: 'History',
-                                count: 156,
-                                color: AppColors.skyBlueSecondaryColor,
-                                isSelected:
-                                    leadController.selectedFilter.value ==
-                                        'HISTORY',
-                                onTap: () {
-                                  cleardata();
-                                  setState(() {
-                                    leadController.selectedFilter.value =
-                                        'HISTORY';
-                                  });
-                                  fetchData();
-                                },
-                              ),
-                            ],
+                          child: Obx(
+                            () => Row(
+                              children: [
+                                CustomFilterChip(
+                                  icon: Icons.all_inclusive,
+                                  text: 'All Leads',
+                                  count:
+                                      leadController.leadCount.value.total ?? 0,
+                                  color: AppColors.primaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value == '',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value = '';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.fiber_new,
+                                  text: 'New',
+                                  count: leadController
+                                          .leadCount.value.countModelNew ??
+                                      0,
+                                  color: AppColors.blueSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'NEW',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'NEW';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.today,
+                                  text: 'Today',
+                                  count:
+                                      leadController.leadCount.value.today ?? 0,
+                                  color: AppColors.greenSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'TODAY',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'TODAY';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.today,
+                                  text: 'Tommorrow',
+                                  count:
+                                      leadController.leadCount.value.tomorrow ??
+                                          0,
+                                  color: AppColors.orangeSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'TOMORROW',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'TOMORROW';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.schedule,
+                                  text: 'Pending',
+                                  count:
+                                      leadController.leadCount.value.pending ??
+                                          0,
+                                  color: AppColors.redSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'PENDING',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'PENDING';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.history,
+                                  text: 'Upcoming',
+                                  count:
+                                      leadController.leadCount.value.upcoming ??
+                                          0,
+                                  color: AppColors.skyBlueSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'UPCOMING',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'UPCOMING';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                // _buildFilterChip(
+                                //   icon: Icons.history,
+                                //   text: 'Converted',
+                                //   count: 156,
+                                //   color: AppColors.viloletSecondaryColor,
+                                //   isSelected: selectedFilter == 'converted',
+                                //   onTap: () {
+                                //     setState(() {
+                                //       selectedFilter = 'converted';
+                                //     });
+                                //   },
+                                // ),
+                                CustomFilterChip(
+                                  icon: Icons.trending_up,
+                                  text: 'UnAssigned',
+                                  count: leadController
+                                          .leadCount.value.unassigned ??
+                                      0,
+                                  color: AppColors.textGrayColour,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'UNASSIGNED',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'UNASSIGNED';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                                CustomFilterChip(
+                                  icon: Icons.history,
+                                  text: 'History',
+                                  count:
+                                      leadController.leadCount.value.history ??
+                                          0,
+                                  color: AppColors.skyBlueSecondaryColor,
+                                  isSelected:
+                                      leadController.selectedFilter.value ==
+                                          'HISTORY',
+                                  onTap: () {
+                                    cleardata();
+                                    setState(() {
+                                      leadController.selectedFilter.value =
+                                          'HISTORY';
+                                    });
+                                    fetchData();
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

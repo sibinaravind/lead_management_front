@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
+import '../../../../model/lead/academic_record_model.dart';
 import '../../../widgets/custom_text.dart';
+import 'info_item_card.dart';
 
 class AcademicRecordsTab extends StatelessWidget {
-  final List<dynamic> records;
+  final List<AcademicRecordModel> records;
 
   const AcademicRecordsTab({super.key, required this.records});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomText(
-            text: 'Academic Records',
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF202124),
-          ),
-          const SizedBox(height: 16),
-          ...records.map((record) => _buildAcademicCard(record)).toList(),
-        ],
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomText(
+              text: 'Academic Records',
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF202124),
+            ),
+            const SizedBox(height: 16),
+            ...records.map((record) => _buildAcademicCard(record)).toList(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAcademicCard(dynamic record) {
+  Widget _buildAcademicCard(AcademicRecordModel record) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16, left: 10, right: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.grey,
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -62,13 +66,13 @@ class AcademicRecordsTab extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: CustomText(
-                  text: record['qualification'] ?? 'N/A',
+                  text: record.qualification ?? 'N/A',
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF202124),
                 ),
               ),
-              if (record['grade'] != null)
+              if (record.grade != null)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -79,7 +83,7 @@ class AcademicRecordsTab extends StatelessWidget {
                         color: const Color(0xFF34A853).withOpacity(0.3)),
                   ),
                   child: CustomText(
-                    text: 'Grade ${record['grade']}',
+                    text: 'Grade ${record.grade}',
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF34A853),
@@ -88,58 +92,36 @@ class AcademicRecordsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoGrid([
-            {'label': 'Institution', 'value': record['institution'] ?? 'N/A'},
-            {'label': 'University', 'value': record['university'] ?? 'N/A'},
-            {
-              'label': 'Duration',
-              'value':
-                  '${record['start_year'] ?? 'N/A'} - ${record['end_year'] ?? 'N/A'}'
-            },
-            {
-              'label': 'Percentage',
-              'value': record['percentage'] != null
-                  ? '${record['percentage']}%'
-                  : 'N/A'
-            },
+          Wrap(spacing: 20, runSpacing: 12, children: [
+            InfoItemCard(
+              label: 'Institution',
+              value: record.institution ?? 'N/A',
+              icon: Icons.account_balance,
+              accentColor: const Color(0xFF3B82F6),
+            ),
+            InfoItemCard(
+              label: 'University',
+              value: record.university ?? 'N/A',
+              icon: Icons.school,
+              accentColor: const Color(0xFF3B82F6),
+            ),
+            InfoItemCard(
+              label: 'Duration',
+              value:
+                  '${record.startYear ?? 'N/A'} - ${record.endYear ?? 'N/A'}',
+              icon: Icons.access_time,
+              accentColor: const Color(0xFF3B82F6),
+            ),
+            InfoItemCard(
+              label: 'Percentage',
+              value:
+                  record.percentage != null ? '${record.percentage}%' : 'N/A',
+              icon: Icons.pie_chart,
+              accentColor: const Color(0xFF3B82F6),
+            ),
           ]),
         ],
       ),
-    );
-  }
-
-  Widget _buildInfoGrid(List<Map<String, String>> items) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 3,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 8,
-      children: items
-          .map((item) => _buildInfoItem(item['label']!, item['value']!))
-          .toList(),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontSize: 12,
-          color: const Color(0xFF5F6368),
-        ),
-        const SizedBox(height: 4),
-        CustomText(
-          text: value,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF202124),
-          maxLines: 1,
-        ),
-      ],
     );
   }
 }
