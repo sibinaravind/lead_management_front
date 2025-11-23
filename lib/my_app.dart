@@ -5,12 +5,11 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
-import 'package:overseas_front_end/view/screens/project/vacancy_details_tab.dart';
-import 'model/project/vacancy_model.dart' show VacancyModel;
+import 'package:overseas_front_end/view/screens/leads/widgets/test_lead_edit.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
-import 'view/screens/project/widget/edit_vacany_client_list.dart';
+import 'view/screens/leads/widgets/deatil_lead_page.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -87,8 +86,9 @@ class MyApp extends StatelessWidget {
         // ),
         GoRoute(
           path: '/test', //test move to /
-          builder: (context, state) => VacancyDetailTab(
-              id: '68764a2f4eadcf60814e94c5', vacancy: VacancyModel()),
+          builder: (context, state) => DetailedAddEditLeadScreen(
+            isEditMode: false,
+          ),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),

@@ -7,12 +7,20 @@ import 'sejeya_fields.dart';
 class EmployeeFlavour {
   static List<Map<String, dynamic>> userTableList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().userTableList();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
+      case Partner.education:
+        return MaximaFields().userTableList();
+      case Partner.realestate:
+        return MaximaFields().userTableList();
+      case Partner.others:
+        return MaximaFields().userTableList();
+      default:
+        return AffiniksFields().userTableList();
     }
   }
 }

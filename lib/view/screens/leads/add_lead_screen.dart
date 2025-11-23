@@ -15,6 +15,7 @@ class AddLeadScreen extends StatefulWidget {
 }
 
 class _AddLeadScreenState extends State<AddLeadScreen> {
+  final leadController = Get.find<LeadController>();
   final configController = Get.find<ConfigController>();
   final officersController = Get.find<OfficersController>();
   final _formKey = GlobalKey<FormState>();

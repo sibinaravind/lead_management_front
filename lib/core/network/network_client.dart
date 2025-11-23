@@ -26,7 +26,7 @@ class NetworkClient {
 //       if (token != null) {
 //         options.headers['Authorization'] = token;
 //       }
-//       if (FlavourConfig.partner() == Partner.affiniks) {
+//       if (FlavourConfig.partner() == Partner.travel) {
 //         options.headers['x-api-key'] =
 //             'uBzj6roJGPR4gxu6SvYS62LDRjnmid12wBssLAeb';
 //       }

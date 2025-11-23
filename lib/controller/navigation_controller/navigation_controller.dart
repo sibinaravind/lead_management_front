@@ -1,19 +1,16 @@
 // Updated Navigation Controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:overseas_front_end/model/access_permissions/access_permissions.dart';
-import 'package:overseas_front_end/view/screens/project/client_data_display.dart';
 import 'package:overseas_front_end/view/screens/project/project_data_display.dart';
-import 'package:overseas_front_end/view/screens/project/vacancy_data_display.dart';
 import 'package:overseas_front_end/view/screens/campaign/campaign_screen.dart';
 import 'package:overseas_front_end/view/screens/dashboard/dashbaord_screen.dart';
-import 'package:overseas_front_end/view/screens/registration/register_data_display.dart';
 import 'package:overseas_front_end/view/screens/team_lead/team_lead_data_display.dart';
 import '../../utils/style/colors/colors.dart';
 import '../../view/screens/config/config_screen.dart';
 import '../../view/screens/employee/employee_permission_screen.dart';
 import '../../view/screens/employee/round_robin_screen.dart';
-import '../../view/screens/leads/lead_data_display.dart';
+import '../../view/screens/leads/add_lead_screen.dart';
+
 import '../../view/screens/officers/employee_data_display.dart';
 
 class NavigationController extends GetxController {
@@ -52,11 +49,18 @@ class NavigationController extends GetxController {
             label: 'Lead',
             route: 'lead',
             icon: Icons.follow_the_signs_rounded,
-            screen: LeadDataDisplay()),
+            // screen: LeadDataDisplay()),
+            screen: AddLeadScreen()),
+        // screen: Scaffold()),
+        // NavigationItem(
+        //   label: 'CRE Followup',
+        //   route: 'cre_followup',
+        //   icon: Icons.mark_email_read_rounded,
+        // ),
         NavigationItem(
-          label: 'CRE Followup',
-          route: 'cre_followup',
-          icon: Icons.mark_email_read_rounded,
+          label: 'Follow Up',
+          route: 'follow_up',
+          icon: Icons.call_sharp,
         ),
         NavigationItem(
           label: 'Dead Lead',
@@ -65,124 +69,172 @@ class NavigationController extends GetxController {
         ),
       ],
     ),
-    'registrations': NavigationSection(
-      title: 'Registrations',
+    'customers': NavigationSection(
+      title: 'Customers',
       icon: Icons.app_registration_rounded,
       color: AppColors.greenSecondaryColor,
       items: [
+        // NavigationItem(
+        //     label: 'Registration Pending',
+        //     route: 'registration_pending',
+        //     icon: Icons.pending_actions_rounded,
+        //     screen: RegisterDataDisplay()),
         NavigationItem(
-            label: 'Registration Pending',
-            route: 'registration_pending',
-            icon: Icons.pending_actions_rounded,
-            screen: RegisterDataDisplay()),
-        NavigationItem(
-          label: 'Registration Completed',
-          route: 'registration_completed',
+          label: 'Customer',
+          route: 'customer',
           icon: Icons.task_alt_rounded,
         ),
       ],
     ),
-    'project': NavigationSection(
-      title: 'Project',
+    'products': NavigationSection(
+      title: 'Products',
       icon: Icons.work_rounded,
       color: AppColors.viloletSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Projects',
-          route: 'projects',
+          label: 'Products',
+          route: 'products',
           icon: Icons.folder_outlined,
           screen:
               ProjectDataDisplay(), // Placeholder, replace with actual screen
         ),
-        NavigationItem(
-          label: 'Client',
-          route: 'client',
-          icon: Icons.account_circle_outlined,
-          screen:
-              ClientDataDisplay(), // Placeholder, replace with actual screen
-        ),
-        NavigationItem(
-          label: 'Vacancies',
-          route: 'vacancies',
-          icon: Icons.work_outline_rounded,
-          screen:
-              VacancyDataDisplay(), // Placeholder, replace with actual screen
-        ),
+        // NavigationItem(
+        //   label: 'Client',
+        //   route: 'client',
+        //   icon: Icons.account_circle_outlined,
+        //   screen:
+        //       ClientDataDisplay(), // Placeholder, replace with actual screen
+        // ),
+        // NavigationItem(
+        //   label: 'Vacancies',
+        //   route: 'vacancies',
+        //   icon: Icons.work_outline_rounded,
+        //   screen:
+        //       VacancyDataDisplay(), // Placeholder, replace with actual screen
+        // ),
       ],
     ),
-    'application': NavigationSection(
-      title: 'Application',
-      icon: Icons.description_rounded,
+    'accounts': NavigationSection(
+      title: 'Accounts',
+      icon: Icons.book_rounded,
       color: AppColors.orangeSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Application Verification',
-          route: 'application_verification',
-          icon: Icons.fact_check_rounded,
+          label: 'Accounts',
+          route: 'accounts',
+          icon: Icons.book_rounded,
+          screen:
+              ProjectDataDisplay(), // Placeholder, replace with actual screen
         ),
         NavigationItem(
-          label: 'Application Pending',
-          route: 'application_pending',
-          icon: Icons.hourglass_empty_rounded,
+          label: 'Reports',
+          route: 'reports',
+          icon: Icons.assessment_rounded,
+          screen:
+              ProjectDataDisplay(), // Placeholder, replace with actual screen
         ),
         // NavigationItem(
-        //   label: 'Offer Letter Apply',
-        //   route: 'offer_letter_apply',
-        //   icon: Icons.mail_outline_rounded,
+        //   label: 'Client',
+        //   route: 'client',
+        //   icon: Icons.account_circle_outlined,
+        //   screen:
+        //       ClientDataDisplay(), // Placeholder, replace with actual screen
         // ),
         // NavigationItem(
-        //   label: 'Offer Letter Waiting',
-        //   route: 'offer_letter_waiting',
-        //   icon: Icons.timer_rounded,
-        // ),
-        // NavigationItem(
-        //   label: 'Offer Letter',
-        //   route: 'offer_letter',
-        //   icon: Icons.description_rounded,
-        // ),
-        // NavigationItem(
-        //   label: 'Application Schedule',
-        //   route: 'application_schedule',
-        //   icon: Icons.calendar_month_rounded,
+        //   label: 'Vacancies',
+        //   route: 'vacancies',
+        //   icon: Icons.work_outline_rounded,
+        //   screen:
+        //       VacancyDataDisplay(), // Placeholder, replace with actual screen
         // ),
       ],
     ),
-    'visa': NavigationSection(
-      title: 'Visa',
-      icon: Icons.card_membership_rounded,
+    'quotation': NavigationSection(
+      title: 'Quotation',
+      icon: Icons.request_quote_rounded,
       color: AppColors.redSecondaryColor,
       items: [
         NavigationItem(
-          label: 'Visa',
-          route: 'visa',
-          icon: Icons.contact_page_rounded,
+          label: 'Quotation',
+          route: 'quotation',
+          icon: Icons.description_rounded,
         ),
+        // Add more quotation-related items here if needed
       ],
     ),
-    'ticketing': NavigationSection(
-      title: 'Ticketing',
-      icon: Icons.airplane_ticket_rounded,
-      color: AppColors.skyBlueSecondaryColor,
-      items: [
-        NavigationItem(
-          label: 'Ticketing',
-          route: 'ticketing',
-          icon: Icons.flight_takeoff_rounded,
-        ),
-      ],
-    ),
-    'deployment': NavigationSection(
-      title: 'Deployment',
-      icon: Icons.message_rounded,
-      color: AppColors.greenSecondaryColor,
-      items: [
-        NavigationItem(
-          label: 'Deployed',
-          route: 'deployed',
-          icon: Icons.send_rounded,
-        ),
-      ],
-    ),
+    // 'application': NavigationSection(
+    //   title: 'Application',
+    //   icon: Icons.description_rounded,
+    //   color: AppColors.orangeSecondaryColor,
+    //   items: [
+    //     NavigationItem(
+    //       label: 'Application Verification',
+    //       route: 'application_verification',
+    //       icon: Icons.fact_check_rounded,
+    //     ),
+    //     NavigationItem(
+    //       label: 'Application Pending',
+    //       route: 'application_pending',
+    //       icon: Icons.hourglass_empty_rounded,
+    //     ),
+    //     // NavigationItem(
+    //     //   label: 'Offer Letter Apply',
+    //     //   route: 'offer_letter_apply',
+    //     //   icon: Icons.mail_outline_rounded,
+    //     // ),
+    //     // NavigationItem(
+    //     //   label: 'Offer Letter Waiting',
+    //     //   route: 'offer_letter_waiting',
+    //     //   icon: Icons.timer_rounded,
+    //     // ),
+    //     // NavigationItem(
+    //     //   label: 'Offer Letter',
+    //     //   route: 'offer_letter',
+    //     //   icon: Icons.description_rounded,
+    //     // ),
+    //     // NavigationItem(
+    //     //   label: 'Application Schedule',
+    //     //   route: 'application_schedule',
+    //     //   icon: Icons.calendar_month_rounded,
+    //     // ),
+    //   ],
+    // ),
+    // 'visa': NavigationSection(
+    //   title: 'Visa',
+    //   icon: Icons.card_membership_rounded,
+    //   color: AppColors.redSecondaryColor,
+    //   items: [
+    //     NavigationItem(
+    //       label: 'Visa',
+    //       route: 'visa',
+    //       icon: Icons.contact_page_rounded,
+    //     ),
+    //   ],
+    // ),
+    // 'ticketing': NavigationSection(
+    //   title: 'Ticketing',
+    //   icon: Icons.airplane_ticket_rounded,
+    //   color: AppColors.skyBlueSecondaryColor,
+    //   items: [
+    //     NavigationItem(
+    //       label: 'Ticketing',
+    //       route: 'ticketing',
+    //       icon: Icons.flight_takeoff_rounded,
+    //     ),
+    //   ],
+    // ),
+    // 'deployment': NavigationSection(
+    //   title: 'Deployment',
+    //   icon: Icons.message_rounded,
+    //   color: AppColors.greenSecondaryColor,
+    //   items: [
+    //     NavigationItem(
+    //       label: 'Deployed',
+    //       route: 'deployed',
+    //       icon: Icons.send_rounded,
+    //     ),
+    //   ],
+    // ),
     'employee': NavigationSection(
       title: 'Employee',
       icon: Icons.badge_rounded,
@@ -232,7 +284,7 @@ class NavigationController extends GetxController {
     'campaign': NavigationSection(
       title: 'Campaign',
       icon: Icons.campaign,
-      color: AppColors.greenSecondaryColor,
+      color: AppColors.blueSecondaryColor,
       items: [
         NavigationItem(
             label: 'Campaign',

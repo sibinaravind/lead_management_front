@@ -127,6 +127,23 @@ class AppColors {
   static const darkVioletColour = Color(0xff851B81);
 
   static const blueGrayColour = Color(0xffE1E8F7);
+
+  static Color getPriorityColor(int priority) {
+    switch (priority) {
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.blue;
+      case 3:
+        return Colors.orange;
+      case 4:
+        return Colors.red;
+      case 5:
+        return Colors.purple;
+      default:
+        return Colors.grey;
+    }
+  }
   // static const offWhiteColour = Color(0xffEBEBEB);
 }
 

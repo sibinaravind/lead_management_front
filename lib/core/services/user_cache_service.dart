@@ -58,7 +58,7 @@ class UserCacheService {
     if (token == null) {
       return null;
     } else {
-      if (FlavourConfig.partner() == Partner.partner2) {
+      if (FlavourConfig.partner() == Partner.vehicle) {
         return token;
       }
       return "Bearer $token";

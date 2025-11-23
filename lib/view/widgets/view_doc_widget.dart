@@ -4,9 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:overseas_front_end/core/di/service_locator.dart';
-import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import '../../utils/functions/base64_to_file.dart';
 import '../../utils/style/colors/colors.dart';
 import 'custom_text.dart';
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/model/lead/count_model.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
+import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 
 import '../../core/services/api_service.dart';
@@ -10,6 +11,11 @@ import '../../model/lead/lead_list_model.dart';
 
 class LeadController extends GetxController {
   final ApiService _apiService = ApiService();
+  RxString selectedBusinessType = ''.obs;
+  RxString filterStatus = ''.obs;
+  RxString leadStatistics = ''.obs;
+  RxString filterPriority = ''.obs;
+  RxList<Lead> filteredLeads = <Lead>[].obs;
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
   RxString selectedFilter = ''.obs;

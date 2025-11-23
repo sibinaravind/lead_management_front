@@ -22,7 +22,7 @@ Future<void> main() async {
   // final token = prefs.getString("token");
   // final officerData = prefs.getString("officer");
   FlavorConfigration(
-    name: Partner.affiniks, //
+    name: Partner.travel, //
     color: Colors.blue,
     // variables: {
     //   "counter": 5,

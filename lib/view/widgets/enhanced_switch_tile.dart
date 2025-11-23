@@ -5,14 +5,14 @@ import 'custom_text.dart';
 
 class EnhancedSwitchTile extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final IconData? icon;
   final bool value;
   final ValueChanged<bool> onChanged;
 
   const EnhancedSwitchTile({
     super.key,
     required this.label,
-    required this.icon,
+    this.icon,
     required this.value,
     required this.onChanged,
   });

@@ -207,40 +207,52 @@ class _AnimatedDrawerState extends State<AnimatedDrawer>
                             ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
-                                  .navigationSections['registrations']!,
-                              mainTab: 'registrations',
+                                  .navigationSections['customers']!,
+                              mainTab: 'customers',
                               delay: 200,
                             ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
-                                  .navigationSections['project']!,
-                              mainTab: 'project',
+                                  .navigationSections['products']!,
+                              mainTab: 'products',
                               delay: 100,
                             ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
-                                  .navigationSections['application']!,
-                              mainTab: 'application',
-                              delay: 300,
+                                  .navigationSections['accounts']!,
+                              mainTab: 'accounts',
+                              delay: 100,
                             ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
-                                  .navigationSections['visa']!,
-                              mainTab: 'visa',
-                              delay: 300,
+                                  .navigationSections['quotation']!,
+                              mainTab: 'quotation',
+                              delay: 200,
                             ),
-                            _buildAnimatedExpansionTile(
-                              section: navigationController
-                                  .navigationSections['ticketing']!,
-                              mainTab: 'ticketing',
-                              delay: 300,
-                            ),
-                            _buildAnimatedExpansionTile(
-                              section: navigationController
-                                  .navigationSections['deployment']!,
-                              mainTab: 'deployment',
-                              delay: 300,
-                            ),
+                            // _buildAnimatedExpansionTile(
+                            //   section: navigationController
+                            //       .navigationSections['application']!,
+                            //   mainTab: 'application',
+                            //   delay: 300,
+                            // ),
+                            // _buildAnimatedExpansionTile(
+                            //   section: navigationController
+                            //       .navigationSections['visa']!,
+                            //   mainTab: 'visa',
+                            //   delay: 300,
+                            // ),
+                            // _buildAnimatedExpansionTile(
+                            //   section: navigationController
+                            //       .navigationSections['ticketing']!,
+                            //   mainTab: 'ticketing',
+                            //   delay: 300,
+                            // ),
+                            // _buildAnimatedExpansionTile(
+                            //   section: navigationController
+                            //       .navigationSections['deployment']!,
+                            //   mainTab: 'deployment',
+                            //   delay: 300,
+                            // ),
                             _buildAnimatedExpansionTile(
                               section: navigationController
                                   .navigationSections['employee']!,
@@ -307,11 +319,111 @@ class _AnimatedDrawerState extends State<AnimatedDrawer>
     );
   }
 
+  // Widget _buildAnimatedExpansionTile({
+  //   required NavigationSection section,
+  //   required String mainTab,
+  //   required double delay,
+  // }) {
+  //   return TweenAnimationBuilder<double>(
+  //     duration: Duration(milliseconds: 400 + delay.toInt()),
+  //     tween: Tween(begin: 0.0, end: 1.0),
+  //     curve: Curves.easeOutCubic,
+  //     builder: (context, value, child) {
+  //       return Transform.translate(
+  //         offset: Offset(0, 20 * (1 - value)),
+  //         child: Opacity(
+  //           opacity: value,
+  //           child: Container(
+  //             margin: const EdgeInsets.only(bottom: 12),
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(16),
+  //               border: Border.all(
+  //                 color: const Color(0xFF475569),
+  //                 width: 1,
+  //               ),
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.black.withOpacity(0.2),
+  //                   blurRadius: 8,
+  //                   offset: const Offset(0, 2),
+  //                 ),
+  //               ],
+  //             ),
+  //             child: Theme(
+  //               data: Theme.of(context).copyWith(
+  //                 dividerColor: Colors.transparent,
+  //                 expansionTileTheme: ExpansionTileThemeData(
+  //                   backgroundColor: Colors.transparent.withOpacity(0.1),
+  //                   collapsedBackgroundColor:
+  //                       Colors.transparent.withOpacity(0.1),
+  //                   iconColor: AppColors.iconWhiteColour,
+  //                   collapsedIconColor: AppColors.iconWhiteColour.withAlpha(90),
+  //                   textColor: AppColors.iconWhiteColour.withAlpha(90),
+  //                   collapsedTextColor: AppColors.iconWhiteColour.withAlpha(90),
+  //                   tilePadding: const EdgeInsets.symmetric(
+  //                     horizontal: 20,
+  //                     vertical: 8,
+  //                   ),
+  //                   childrenPadding: const EdgeInsets.only(
+  //                     left: 20,
+  //                     right: 20,
+  //                     bottom: 12,
+  //                   ),
+  //                 ),
+  //               ),
+  //               child: ExpansionTile(
+  //                 leading: Container(
+  //                   padding: const EdgeInsets.all(10),
+  //                   decoration: BoxDecoration(
+  //                     gradient: LinearGradient(
+  //                       begin: Alignment.topLeft,
+  //                       end: Alignment.bottomRight,
+  //                       colors: [
+  //                         section.color.withOpacity(0.2),
+  //                         section.color.withOpacity(0.1),
+  //                       ],
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(12),
+  //                     border: Border.all(
+  //                       color: section.color.withOpacity(0.3),
+  //                       width: 1,
+  //                     ),
+  //                   ),
+  //                   child: Icon(
+  //                     section.icon,
+  //                     size: 20,
+  //                     color: section.color,
+  //                   ),
+  //                 ),
+  //                 title: CustomText(
+  //                   text: section.title,
+  //                   fontSize: 15,
+  //                   color: AppColors.textWhiteColour,
+  //                 ),
+  //                 children: section.items.map((item) {
+  //                   return _buildAnimatedDrawerTile(
+  //                     item: item,
+  //                     mainTab: mainTab,
+  //                     color: section.color,
+  //                     delay: section.items.indexOf(item) * 25.0,
+  //                   );
+  //                 }).toList(),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildAnimatedExpansionTile({
     required NavigationSection section,
     required String mainTab,
     required double delay,
   }) {
+    final hasSingleItem = section.items.length == 1;
+
     return TweenAnimationBuilder<double>(
       duration: Duration(milliseconds: 400 + delay.toInt()),
       tween: Tween(begin: 0.0, end: 1.0),
@@ -388,6 +500,18 @@ class _AnimatedDrawerState extends State<AnimatedDrawer>
                     fontSize: 15,
                     color: AppColors.textWhiteColour,
                   ),
+                  onExpansionChanged: (isExpanded) {
+                    if (isExpanded && hasSingleItem) {
+                      final item = section.items.first;
+                      final navigationController =
+                          Get.find<NavigationController>();
+
+                      navigationController.currentMainTab.value = mainTab;
+                      navigationController.currentSubTab.value = item.route;
+
+                      context.go('/dashboard/$mainTab/${item.route}');
+                    }
+                  },
                   children: section.items.map((item) {
                     return _buildAnimatedDrawerTile(
                       item: item,

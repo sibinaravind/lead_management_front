@@ -7,11 +7,11 @@ import 'sejeya_fields.dart';
 class ProjectFlavour {
   static List<Map<String, dynamic>> projectTableList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().projectTableList();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
       default:
         return [];
@@ -20,11 +20,11 @@ class ProjectFlavour {
 
   static List<Map<String, dynamic>> clientTableList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().clientTableList();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
       default:
         return [];
@@ -33,11 +33,11 @@ class ProjectFlavour {
 
   static List<Map<String, dynamic>> vacancyTableList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().vacancyTableList();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
       default:
         return [];
@@ -46,11 +46,11 @@ class ProjectFlavour {
 
   static List<Map<String, dynamic>> matchingList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().matchingList();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
       default:
         return [];
@@ -59,11 +59,11 @@ class ProjectFlavour {
 
   static List<Map<String, dynamic>> shortListedList() {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return AffiniksFields().shortListed();
-      case Partner.partner1:
+      case Partner.migration:
         return partner1Fields().userTableList();
-      case Partner.partner2:
+      case Partner.vehicle:
         return MaximaFields().userTableList();
       default:
         return [];

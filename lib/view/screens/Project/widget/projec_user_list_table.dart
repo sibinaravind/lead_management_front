@@ -6,7 +6,7 @@ import 'package:overseas_front_end/view/screens/project/flavour/customer_project
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../utils/style/colors/colors.dart';
 import '../../../widgets/delete_confirm_dialog.dart';
-import 'add_edit_project.dart';
+import 'add_edit_project.dart' hide showLoaderDialog;
 
 class ProjectUserListTable extends StatelessWidget {
   final List<ProjectModel> userlist;
@@ -97,7 +97,7 @@ class ProjectUserListTable extends StatelessWidget {
                                               builder: (context) =>
                                                   AddEditProject(
                                                 isEditMode: true,
-                                                project: listUser,
+                                                // project: listUser,
                                               ),
                                             ),
                                             value: 1,

@@ -4,12 +4,20 @@ class Constant {
   // Base URL DEV
   String get featureBaseUrl {
     switch (FlavourConfig.partner()) {
-      case Partner.affiniks:
+      case Partner.travel:
         return 'http://localhost:3000/'; // 'https://api-3tqsqkjuba-uc.a.run.app/'; //'http://52.66.252.146:3000/';
-      case Partner.partner1:
+      case Partner.migration:
         return '';
-      case Partner.partner2:
+      case Partner.vehicle:
         return "";
+      case Partner.education:
+        return "";
+      case Partner.realestate:
+        return "";
+      case Partner.others:
+        return "";
+      default:
+        return 'http://localhost:3000/';
     }
   }
 
