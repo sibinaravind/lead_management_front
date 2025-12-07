@@ -1,63 +1,75 @@
-import '../officer/officer_model.dart';
+import '../../utils/functions/format_date.dart';
 
 class CallEventModel {
-  String? sId;
+  String? id;
   String? type;
   String? clientId;
-  dynamic duration;
-  String? nextSchedule;
-  String? nextScheduleTime;
-  String? comment;
-  String? callType;
+  String? officerId;
+  String? officerPhone;
+  String? phone;
+  int? duration;
   String? callStatus;
-  String? createdAt;
-  String? clientStatus;
-  OfficerModel? officer;
+  String? callType;
+  DateTime? createdAt;
+  String? comment;
+  String? nextSchedule;
+  double? nextSheduleTime;
+  String? updatedAt;
 
   CallEventModel({
-    this.sId,
+    this.id,
     this.type,
     this.clientId,
-    this.duration,
-    this.nextSchedule,
-    this.nextScheduleTime,
-    this.comment,
-    this.callType,
+    this.officerId,
+    this.officerPhone,
+    this.phone,
     this.callStatus,
+    this.duration,
+    this.callType,
     this.createdAt,
-    this.officer,
-    this.clientStatus,
+    this.comment,
+    this.nextSchedule,
+    this.nextSheduleTime,
+    this.updatedAt,
   });
 
-  CallEventModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    type = json['type'];
-    clientId = json['client_id'];
-    duration = json['duration'];
-    nextSchedule = json['next_schedule'];
-    nextScheduleTime =
-        json['next_shedule_time']; // Note: keeping the typo from original JSON
-    comment = json['comment'];
-    callType = json['call_type'];
-    callStatus = json['call_status'];
-    createdAt = json['created_at'];
-    clientStatus = json['client_status'];
-    officer =
-        json['officer'] != null ? OfficerModel.fromJson(json['officer']) : null;
-  }
+  factory CallEventModel.fromJson(Map<String, dynamic> json) => CallEventModel(
+        id: json["_id"],
+        type: json["type"],
+        clientId: json["client_id"],
+        officerId: json["officer_id"],
+        officerPhone: json["officer_phone"],
+        phone: json["phone"],
+        duration: json["duration"],
+        callStatus: json["call_status"],
+        callType: json["call_type"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        comment: json["comment"],
+        nextSchedule: json["next_schedule"] == null
+            ? null
+            : formatDatetoString(json["next_schedule"]),
+        nextSheduleTime: json["next_shedule_time"]?.toDouble(),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : formatDatetoString(json["updated_at"]),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    // data['type'] = type;
-    data['client_id'] = clientId;
-    data['duration'] = duration;
-    data['next_schedule'] = nextSchedule;
-    data['next_shedule_time'] =
-        nextScheduleTime; // Note: keeping the typo from original JSON
-    data['comment'] = comment;
-    data['call_type'] = callType;
-    data['call_status'] = callStatus;
-    data['client_status'] = clientStatus;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "type": type,
+        "client_id": clientId,
+        "officer_id": officerId,
+        "officer_phone": officerPhone,
+        "phone": phone,
+        "duration": duration,
+        "call_type": callType,
+        "call_status": callStatus,
+        "created_at": createdAt,
+        "comment": comment,
+        "next_schedule": nextSchedule ?? formatDateToYYYYMMDD(nextSchedule),
+        "next_shedule_time": nextSheduleTime,
+        "updated_at": updatedAt,
+      };
 }

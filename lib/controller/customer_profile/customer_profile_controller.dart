@@ -18,11 +18,12 @@ class CustomerProfileController extends GetxController {
   Map<String, dynamic> filter = {};
   RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
   Rx<LeadModel> leadDetails = LeadModel().obs;
+  Rx<LeadModel> selectedLead = LeadModel().obs;
+
   var customerJourneyStages = <CustomerJourneyData>[].obs;
   String currentClientId = "";
 
   Future<void> getLeadDetails(context, String leadId) async {
-    print("hello");
     try {
       leadDetails.value = LeadModel();
       final response = await _apiService.getRequest(
@@ -34,7 +35,7 @@ class CustomerProfileController extends GetxController {
         },
         (loadedLeadDetails) {
           leadDetails.value = loadedLeadDetails;
-          currentClientId = loadedLeadDetails.sId ?? '';
+          currentClientId = loadedLeadDetails.id ?? '';
           refresh();
         },
       );
@@ -103,7 +104,7 @@ class CustomerProfileController extends GetxController {
     } catch (e) {
       CustomToast.showToast(
         context: context,
-        message: 'Error fetching call events: $e',
+        message: '$e',
       );
     }
   }

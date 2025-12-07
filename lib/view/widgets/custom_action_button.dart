@@ -8,6 +8,7 @@ class CustomActionButton extends StatelessWidget {
   final Gradient? gradient;
   final Color? textColor;
   final Color? borderColor;
+  final Color? backgroundColor;
 
   const CustomActionButton({
     super.key,
@@ -15,6 +16,7 @@ class CustomActionButton extends StatelessWidget {
     required this.onPressed,
     this.icon,
     this.isFilled = false,
+    this.backgroundColor,
     this.gradient,
     this.textColor,
     this.borderColor,

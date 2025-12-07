@@ -21,6 +21,17 @@ class Constant {
     }
   }
 
+  String productList = 'product/productList';
+  String addProduct = 'product/productCreate';
+  String updateProduct = 'product/productUpdate';
+  String productDetails = 'product/productDetails';
+  String productInterested = 'product/getProductIntrested';
+  String getCustomerInteraction = 'lead/interactions/';
+
+  String callEventList = "customer/customercall";
+
+  String getLeadDetail = 'lead/getLead';
+
   String officerLogin = 'officer/login';
   String officerPasswordReset = 'officer/resetPassword';
   String officerInsert = 'officer/insert';
@@ -46,8 +57,6 @@ class Constant {
   String addProject = "project/createProject";
   String deleteProject = "project/deleteProject";
   String editProject = "project/projectUpdate";
-
-  String callEventList = "customer/customercall";
 
   String vacancyList = "project/vacancyList";
   String createVacancy = "project/createVacancy";
@@ -79,11 +88,9 @@ class Constant {
   String allLeads = 'lead/getAllLeads';
   String addLead = 'lead/insertLead';
   String updateLead = 'lead/updateLead';
-  String getLeadDetail = 'customer/getCustomer';
+
   String getDeadLeads = 'lead/getAllDeadLeads';
   String restoreDeadLead = 'lead/restoreClientFromDead';
-
-  String getCustomerInteraction = 'customer/getCustomerInteraction/';
 
   String addFeedback = 'customer/logCallEvent';
   String getIncompleteList = 'customer/register/incompleteList';

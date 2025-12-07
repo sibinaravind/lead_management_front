@@ -78,6 +78,15 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  static LinearGradient blueBoxGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF6366F1).withOpacity(0.08),
+      AppColors.blueSecondaryColor.withOpacity(0.04),
+    ],
+  );
   static Color get violetPrimaryColor => Color(0xFF6366F1);
 
   static List<Color> roleColors = [

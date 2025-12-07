@@ -4,12 +4,9 @@
 import 'package:get/get.dart';
 // add_edit_bill.dart
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../widgets/widgets.dart';
 // bill_accounting_screen.dart
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../product/product_list_screen.dart';
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/model/lead/count_model.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
-import 'package:overseas_front_end/view/screens/leads/lead_data_display.dart';
 import 'package:overseas_front_end/view/widgets/custom_snackbar.dart';
 
 import '../../core/services/api_service.dart';
@@ -15,7 +14,7 @@ class LeadController extends GetxController {
   RxString filterStatus = ''.obs;
   RxString leadStatistics = ''.obs;
   RxString filterPriority = ''.obs;
-  RxList<Lead> filteredLeads = <Lead>[].obs;
+  RxList<LeadModel> filteredLeads = <LeadModel>[].obs;
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
   RxString selectedFilter = ''.obs;
@@ -33,7 +32,7 @@ class LeadController extends GetxController {
           fromJson: (json) => LeadListModel.fromJson(json));
       response.fold(
         (failure) {
-          throw Exception("Failed to load clients");
+          throw Exception(failure);
         },
         (loadedClients) {
           customerMatchingList.value = loadedClients;
@@ -57,7 +56,7 @@ class LeadController extends GetxController {
           fromJson: (json) => LeadListModel.fromJson(json));
       response.fold(
         (failure) {
-          throw Exception("Failed to load clients");
+          throw Exception(failure);
         },
         (loadedClients) {
           customerMatchingList.value = loadedClients;
@@ -78,7 +77,7 @@ class LeadController extends GetxController {
           fromJson: (json) => CountModel.fromJson(json));
       response.fold(
         (failure) {
-          throw Exception("Failed to load clients");
+          throw Exception(failure);
         },
         (loadedClients) {
           leadCount.value = loadedClients;
@@ -100,24 +99,63 @@ class LeadController extends GetxController {
       );
       return response.fold(
         (failure) {
-          throw Exception("Failed to create Lead: $failure");
+          throw failure;
         },
         (createdLead) {
-          leads.sId = createdLead;
+          leads.id = createdLead;
           if (selectedFilter.value == '' || selectedFilter.value == 'NEW') {
             customerMatchingList.value.leads?.add(leads);
             refresh();
           }
           Navigator.of(context).pop();
-          CustomSnackBar.showMessage("Success", "Lead created successfully",
+          CustomSnackBar.showMessage(
+              "Success", "LeadModel created successfully",
               backgroundColor: Colors.green);
-
           return true;
         },
       );
     } catch (e) {
-      CustomSnackBar.showMessage("Error", "Failed to create Lead: $e",
+      Navigator.of(context).pop();
+      CustomSnackBar.showMessage("Error", e.toString(),
           backgroundColor: Colors.red);
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> updateLead(
+      BuildContext context, LeadModel leads, String id) async {
+    try {
+      print(leads.toJson());
+      final response = await _apiService.patchRequest(
+        endpoint: '${Constant().updateLead}/$id',
+        body: leads.toJson()..removeWhere((key, value) => value == null),
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          throw failure;
+        },
+        (createdLead) {
+          // Find the lead in customerMatchingList with the same id and replace it
+          final leadsList = customerMatchingList.value.leads;
+          if (leadsList != null) {
+            final index = leadsList.indexWhere((l) => l.id == leads.id);
+            if (index != -1) {
+              leadsList[index] = leads;
+              customerMatchingList.refresh();
+            }
+          }
+          Navigator.of(context).pop();
+          CustomSnackBar.showMessage("Success", "Lead Updated successfully",
+              backgroundColor: Colors.green);
+          return true;
+        },
+      );
+    } catch (e) {
+      Navigator.of(context).pop();
+      CustomSnackBar.showMessage("Error", "$e", backgroundColor: Colors.red);
       return false;
     } finally {
       isLoading.value = false;

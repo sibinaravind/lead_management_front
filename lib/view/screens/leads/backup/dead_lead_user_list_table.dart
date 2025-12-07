@@ -189,7 +189,7 @@
 //                                                           builder: (context) =>
 //                                                               OfficerAssignmentPopup(
 //                                                             leadId:
-//                                                                 listUser.sId ??
+//                                                                 listuser.clientId ??
 //                                                                     '',
 //                                                           ),
 //                                                         );
@@ -236,7 +236,7 @@
 //                                                               listUser.name ??
 //                                                                   '',
 //                                                           clientId:
-//                                                               listUser.sId ??
+//                                                               listuser.clientId ??
 //                                                                   ""),
 //                                                 );
 //                                               },
@@ -285,7 +285,7 @@
 //                                           CustomerProfileScreen(
 //                                               isRegistration: false,
 //                                               clientId: "",
-//                                               leadId: listUser.sId ?? ""));
+//                                               leadId: listuser.clientId ?? ""));
 //                                 }
 //                               },
 //                             );

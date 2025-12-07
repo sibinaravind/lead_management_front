@@ -5,10 +5,11 @@ import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
-import 'package:overseas_front_end/view/screens/leads/widgets/test_lead_edit.dart';
+import 'view/screens/cutsomer_profile/customer_profile.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
+import 'view/screens/leads/add_lead_screen.dart';
 import 'view/screens/leads/widgets/deatil_lead_page.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
@@ -86,14 +87,14 @@ class MyApp extends StatelessWidget {
         // ),
         GoRoute(
           path: '/test', //test move to /
-          builder: (context, state) => DetailedAddEditLeadScreen(
-            isEditMode: false,
+          builder: (context, state) => CustomerProfileScreen(
+            leadId: '693280ea138d99fa16ea4cb7',
           ),
         ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
-      initialLocation: '/dashboard/dashboard/overview',
-      // initialLocation: '/test',
+      // initialLocation: '/dashboard/leads/lead',
+      initialLocation: '/test',
     );
     // Initialize the navigation service with the router
     NavigationService.initialize(router);
@@ -119,3 +120,12 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+//service type to get Intrested  in  dropdown
+
+//leadSource for face ,
+
+//courseType for course type Field of Study
+
+//courses for Courses Interested

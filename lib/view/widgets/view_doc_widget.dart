@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/di/service_locator.dart';
 import 'package:printing/printing.dart';
 import '../../utils/style/colors/colors.dart';
@@ -102,7 +103,6 @@ class _ViewDocWidgetState extends State<ViewDocWidget> {
   }
 
   Future<void> _loadBinaryFile() async {
-    print('Loading binary file from ${widget.fileUrl}');
     final response = await http.get(Uri.parse(widget.fileUrl));
 
     if (response.statusCode != 200) {
@@ -234,7 +234,7 @@ class _ViewDocWidgetState extends State<ViewDocWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            "assets/images/affiniks_logo.webp",
+            FlavourConfig.appLogo(),
             fit: BoxFit.contain,
             height: 100,
             width: 200,
@@ -301,29 +301,54 @@ class _ViewDocWidgetState extends State<ViewDocWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundColor.withOpacity(0.1),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 10,
+            spreadRadius: 0,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
         maxWidth: 1000,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            CustomText(
-              text: widget.fileName,
-              fontSize: 21,
-              textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              // color: AppColors.primaryColor.withOpacity(0.05),
+              color: AppColors.primaryColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
             ),
-            const SizedBox(height: 10),
-            Expanded(child: _buildContent()),
-          ],
-        ),
+            child: Row(
+              children: [
+                const SizedBox(width: 12),
+                Expanded(
+                  child: CustomText(
+                    text: widget.fileName,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.whiteMainColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: _buildContent(),
+          ),
+        ],
       ),
     );
   }

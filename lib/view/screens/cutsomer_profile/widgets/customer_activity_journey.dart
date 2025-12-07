@@ -16,44 +16,47 @@ class CustomerJourneyStages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Sample data for demonstration
-    final profile_controller = Get.find<CustomerProfileController>();
-    profile_controller.getCustomerJourneyStages(context, leadid);
-    return Container(
-      decoration: BoxDecoration(
-        gradient: AppColors.backgroundGraident,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Obx(
-        () => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (profile_controller.customerJourneyStages.isEmpty) ...[
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    return CustomShimmerWidget(
-                      height: 50,
-                    );
-                  },
-                  itemCount: 3,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                ),
-              ] else ...[
-                ...profile_controller.customerJourneyStages
-                    .asMap()
-                    .entries
-                    .map((entry) {
-                  int index = entry.key;
-                  CustomerJourneyData data = entry.value;
-                  bool isLast = index ==
-                      profile_controller.customerJourneyStages.length - 1;
+    final profileController = Get.find<CustomerProfileController>();
+    profileController.getCustomerJourneyStages(context, leadid);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        // decoration: BoxDecoration(
+        //   gradient: AppColors.backgroundGraident,
+        //   borderRadius: BorderRadius.circular(16),
+        // ),
+        margin: const EdgeInsets.all(2),
+        child: Obx(
+          () => SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (profileController.customerJourneyStages.isEmpty) ...[
+                  ListView.builder(
+                    itemBuilder: (context, index) {
+                      return CustomShimmerWidget(
+                        height: 50,
+                      );
+                    },
+                    itemCount: 3,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                  ),
+                ] else ...[
+                  ...profileController.customerJourneyStages
+                      .asMap()
+                      .entries
+                      .map((entry) {
+                    int index = entry.key;
+                    CustomerJourneyData data = entry.value;
+                    bool isLast = index ==
+                        profileController.customerJourneyStages.length - 1;
 
-                  return _buildStageItem(data, index, isLast);
-                }).toList(),
-              ]
-            ],
+                    return _buildStageItem(data, index, isLast);
+                  }).toList(),
+                ]
+              ],
+            ),
           ),
         ),
       ),
@@ -74,11 +77,11 @@ class CustomerJourneyStages extends StatelessWidget {
                 gradient: _getGradientForType(data.type),
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(
-                    color: _getColorForType(data.type).withOpacity(0.3),
-                    blurRadius: 8,
-                    spreadRadius: 2,
-                  ),
+                  // BoxShadow(
+                  //   color: _getColorForType(data.type).withOpacity(0),
+                  //   blurRadius: 8,
+                  //   spreadRadius: 2,
+                  // ),
                 ],
               ),
               child: Icon(
@@ -108,14 +111,17 @@ class CustomerJourneyStages extends StatelessWidget {
         // Content
         Expanded(
           child: Container(
-            margin: const EdgeInsets.only(bottom: 20),
+            margin: EdgeInsets.only(
+              bottom: 20,
+              right: 10,
+            ),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withOpacity(0.2),
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),
@@ -126,19 +132,21 @@ class CustomerJourneyStages extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        gradient: _getGradientForType(data.type),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        _getStageTitle(data.type),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          gradient: _getGradientForType(data.type),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          _getStageTitle(data.type),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),

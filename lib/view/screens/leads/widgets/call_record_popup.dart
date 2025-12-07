@@ -68,12 +68,11 @@ class _CallRecordPopupState extends State<CallRecordPopup>
     final model = CallEventModel(
       clientId: widget.clientId,
       nextSchedule: scheduleDate,
-      nextScheduleTime: scheduleTime,
+      nextSheduleTime: double.parse(scheduleTime),
       duration: durationSeconds,
       comment: _feedbackController.text.trim(),
       callType: _selectedCallType,
       callStatus: _selectedCallStatus,
-      clientStatus: _selectedLeadStatus,
     );
 
     customerController.callRecordInsert(context: context, log: model);

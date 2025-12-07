@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../config/flavour_config.dart';
 import '../../utils/style/colors/colors.dart';
 
 showLoaderDialog(context) {
@@ -22,7 +23,7 @@ showLoaderDialog(context) {
                           Center(
                             child: SizedBox(
                               child: Image.asset(
-                                "assets/images/affiniks_logo.webp",
+                                FlavourConfig.appLogo(),
                                 // color: Colors.t,
                                 fit: BoxFit.contain,
                                 height: 100,

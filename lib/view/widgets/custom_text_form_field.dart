@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../../utils/style/colors/colors.dart';
 
 class CustomTextFormField extends StatefulWidget {
   final String label;
-  final TextEditingController controller;
+  final IconData? prefixIcon;
+  final String? value; // Changed from controller to value
   final bool isRequired;
   final bool readOnly;
   final Function()? onTap;
@@ -16,16 +16,21 @@ class CustomTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final DateTime? initialDate;
   final String? hintText;
   final List<TextInputFormatter>? inputFormatters;
   final FormFieldValidator<String>? validator;
-  final bool showPasswordToggle; // ⬅️ New
+  final bool showPasswordToggle;
+  final void Function(String)? onChanged;
+  final TextEditingController? controller; // Optional external controller
 
-  const CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.label,
-    required this.controller,
+    this.value,
+    this.controller, // Optional: for external control
     this.isRequired = false,
+    this.prefixIcon,
     this.readOnly = false,
     this.onTap,
     this.obscureText = false,
@@ -35,10 +40,12 @@ class CustomTextFormField extends StatefulWidget {
     this.maxLines = 1,
     this.firstDate,
     this.lastDate,
+    this.initialDate,
     this.hintText,
     this.inputFormatters,
     this.validator,
-    this.showPasswordToggle = false, // ⬅️ Default off
+    this.onChanged,
+    this.showPasswordToggle = false,
   });
 
   @override
@@ -46,20 +53,46 @@ class CustomTextFormField extends StatefulWidget {
 }
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
-  late bool _obscureText; // ⬅️ Controls visibility
+  late TextEditingController _internalController;
+  late bool _obscureText;
+
+  // Getter for controller (internal or external)
+  TextEditingController get _effectiveController {
+    return widget.controller ?? _internalController;
+  }
 
   @override
   void initState() {
     super.initState();
-    _obscureText = widget.obscureText; // Start with given state
+    _obscureText = widget.obscureText;
+
+    // Initialize internal controller only if external controller is not provided
+    if (widget.controller == null) {
+      _internalController = TextEditingController(text: widget.value ?? '');
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomTextFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update internal controller if value changes and we're using internal controller
+    if (widget.controller == null && oldWidget.value != widget.value) {
+      _internalController.text = widget.value ?? '';
+    }
+
+    // Update obscureText if changed
+    if (oldWidget.obscureText != widget.obscureText) {
+      _obscureText = widget.obscureText;
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: widget.firstDate ?? DateTime.now(),
-      lastDate: widget.lastDate ?? DateTime(2030),
+      initialDate: widget.initialDate ?? DateTime.now(),
+      firstDate: widget.firstDate ?? DateTime(1900),
+      lastDate: widget.lastDate ?? DateTime(2100),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -74,10 +107,20 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         );
       },
     );
-    if (date != null) {
-      widget.controller.text =
+    if (date != null && context.mounted) {
+      _effectiveController.text =
           "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+      widget.onChanged?.call(_effectiveController.text);
     }
+  }
+
+  @override
+  void dispose() {
+    // Only dispose internal controller, not external one
+    if (widget.controller == null) {
+      _internalController.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -106,8 +149,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
-          controller: widget.controller,
+          controller: _effectiveController,
           decoration: InputDecoration(
+            prefixIcon:
+                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
             hintText: widget.hintText,
             fillColor: Colors.white,
             filled: true,
@@ -115,18 +160,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             isDense: true,
-            suffixIcon: widget.showPasswordToggle
-                ? IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  )
-                : null,
+            suffixIcon: _buildSuffixIcon(),
           ),
           keyboardType: widget.keyboardType ?? TextInputType.text,
           maxLines: widget.maxLines,
@@ -138,26 +172,42 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               : widget.onTap,
           obscureText: _obscureText,
           inputFormatters: widget.inputFormatters ?? defaultFormatters,
-          validator: (value) {
-            if (widget.isRequired && (value == null || value.trim().isEmpty)) {
-              return 'This field is required';
-            }
-
-            if (widget.isEmail && value != null && value.trim().isNotEmpty) {
-              final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (!emailRegex.hasMatch(value)) {
-                return 'Enter a valid email address';
-              }
-            }
-
-            if (widget.validator != null) {
-              return widget.validator!(value);
-            }
-
-            return null;
-          },
+          validator: widget.validator ?? _defaultValidator,
+          onChanged: widget.onChanged,
         ),
       ],
     );
+  }
+
+  Widget? _buildSuffixIcon() {
+    if (widget.showPasswordToggle) {
+      return IconButton(
+        icon: Icon(
+          _obscureText ? Icons.visibility_off : Icons.visibility,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            _obscureText = !_obscureText;
+          });
+        },
+      );
+    }
+    return null;
+  }
+
+  String? _defaultValidator(String? value) {
+    if (widget.isRequired && (value == null || value.trim().isEmpty)) {
+      return 'This field is required';
+    }
+
+    if (widget.isEmail && value != null && value.trim().isNotEmpty) {
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(value)) {
+        return 'Enter a valid email address';
+      }
+    }
+
+    return null;
   }
 }

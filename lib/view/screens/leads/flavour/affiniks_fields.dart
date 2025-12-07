@@ -23,7 +23,7 @@ class AffiniksFields {
       },
       {
         'name': 'Officer',
-        'extractor': (LeadModel user) => user.officerName.toString()
+        'extractor': (LeadModel user) => user.officerId.toString()
       },
       {
         'name': 'Created Date',

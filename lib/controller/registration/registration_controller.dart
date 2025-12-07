@@ -61,7 +61,7 @@ class RegistrationController extends GetxController {
         },
         (loadedLeadDetails) {
           leadDetails.value = loadedLeadDetails;
-          currentClientId = loadedLeadDetails.sId ?? '';
+          currentClientId = loadedLeadDetails.id ?? '';
           refresh();
         },
       );
@@ -78,45 +78,43 @@ class RegistrationController extends GetxController {
   Future<bool> updatePersonalDetails(
       {required LeadModel lead, required String customerId}) async {
     try {
-      final response = await _apiService.patchRequest(
-          endpoint: '${Constant().updatePersonalDetails}/$customerId',
-          body: lead.toPersonalDetailsJson(),
-          fromJson: (json) => json);
-      response.fold(
-        (failure) {
-          throw Exception(failure);
-        },
-        (loadedClients) {
-          leadDetails.value.name = lead.name;
-          leadDetails.value.lastName = lead.lastName;
-          leadDetails.value.email = lead.email;
-          leadDetails.value.emailPassword = lead.emailPassword;
-          leadDetails.value.phone = lead.phone;
-          leadDetails.value.countryCode = lead.countryCode;
-          leadDetails.value.emergencyContact = lead.emergencyContact;
-          leadDetails.value.alternatePhone = lead.alternatePhone;
-          leadDetails.value.whatsapp = lead.whatsapp;
-          leadDetails.value.gender = lead.gender;
-          leadDetails.value.dob = lead.dob;
-          leadDetails.value.maritalStatus = lead.maritalStatus;
-          leadDetails.value.country = lead.country;
-          leadDetails.value.address = lead.address;
-          leadDetails.value.birthPlace = lead.birthPlace;
-          leadDetails.value.birthCountry = lead.birthCountry;
-          leadDetails.value.religion = lead.religion;
-          leadDetails.value.passportNumber = lead.passportNumber;
-          leadDetails.value.passportExpiryDate = lead.passportExpiryDate;
-          leadDetails.value.note = lead.note;
-          leadDetails.value.onCallCommunication = lead.onCallCommunication;
-          leadDetails.value.onWhatsappCommunication =
-              lead.onWhatsappCommunication;
-          leadDetails.value.onEmailCommunication = lead.onEmailCommunication;
-          leadDetails.value.countryInterested = lead.countryInterested;
-          // Add more fields as needed based on your LeadModel
+      // final response = await _apiService.patchRequest(
+      //     endpoint: '${Constant().updatePersonalDetails}/$customerId',
+      //     body: lead.toPersonalDetailsJson(),
+      //     fromJson: (json) => json);
+      // response.fold(
+      //   (failure) {
+      //     throw Exception(failure);
+      //   },
+      //   (loadedClients) {
+      //     leadDetails.value.name = lead.name;
+      //     leadDetails.value.email = lead.email;
+      //     leadDetails.value.emailPassword = lead.emailPassword;
+      //     leadDetails.value.phone = lead.phone;
+      //     leadDetails.value.countryCode = lead.countryCode;
+      //     leadDetails.value.emergencyContact = lead.emergencyContact;
+      //     leadDetails.value.alternatePhone = lead.alternatePhone;
+      //     leadDetails.value.whatsapp = lead.whatsapp;
+      //     leadDetails.value.gender = lead.gender;
+      //     leadDetails.value.dob = lead.dob;
+      //     leadDetails.value.maritalStatus = lead.maritalStatus;
+      //     leadDetails.value.country = lead.country;
+      //     leadDetails.value.address = lead.address;
+      //     leadDetails.value.birthPlace = lead.birthPlace;
+      //     leadDetails.value.birthCountry = lead.birthCountry;
+      //     leadDetails.value.religion = lead.religion;
+      //     leadDetails.value.passportNumber = lead.passportNumber;
+      //     leadDetails.value.passportExpiryDate = lead.passportExpiryDate;
+      //     leadDetails.value.note = lead.note;
+      //     leadDetails.value.onCallCommunication = lead.onCallCommunication;
+      //     leadDetails.value.whatsappCommunication = lead.whatsappCommunication;
+      //     leadDetails.value.emailCommunication = lead.emailCommunication;
+      //     leadDetails.value.countryInterested = lead.countryInterested;
+      //     // Add more fields as needed based on your LeadModel
 
-          return true;
-        },
-      );
+      //     return true;
+      //   },
+      // );
     } catch (e) {
       errorMessage = 'Error : $e';
       return false;

@@ -1,33 +1,40 @@
+import '../../utils/functions/format_date.dart';
+
 class DocumentRecordModel {
   String? docType;
-  bool? required;
   String? filePath;
-  DateTime? uploadedAt;
+  String? uploadedAt;
 
   DocumentRecordModel({
     this.docType,
-    this.required,
     this.filePath,
     this.uploadedAt,
   });
 
-  factory DocumentRecordModel.fromJson(Map<String, dynamic> json) {
-    return DocumentRecordModel(
-      docType: json['doc_type'],
-      required: json['required'],
-      filePath: json['file_path'],
-      uploadedAt: json['uploaded_at'] != null
-          ? DateTime.tryParse(json['uploaded_at'])
-          : null,
-    );
-  }
+  factory DocumentRecordModel.fromJson(Map<String, dynamic> json) =>
+      DocumentRecordModel(
+        docType: json["doc_type"],
+        filePath: json["file_path"],
+        uploadedAt: json["uploaded_at"] == null
+            ? null
+            : formatDatetoString(json["uploaded_at"]),
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'doc_type': docType,
-      'required': required,
-      // 'file_path': filePath,
-      // 'uploaded_at': uploadedAt?.toIso8601String(),
-    };
+  Map<String, dynamic> toJson() => {
+        "doc_type": docType,
+        "file_path": filePath,
+        "uploaded_at": uploadedAt,
+      };
+
+  DocumentRecordModel copyWith({
+    String? docType,
+    String? filePath,
+    String? uploadedAt,
+  }) {
+    return DocumentRecordModel(
+      docType: docType ?? this.docType,
+      filePath: filePath ?? this.filePath,
+      uploadedAt: uploadedAt ?? this.uploadedAt,
+    );
   }
 }

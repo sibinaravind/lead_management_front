@@ -100,15 +100,16 @@ class LeadUserListTable extends StatelessWidget {
                                     case 'Action':
                                       return TextButton(
                                           onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  CallRecordPopup(
-                                                      clientName:
-                                                          listUser.name ?? '',
-                                                      clientId:
-                                                          listUser.sId ?? ""),
-                                            );
+                                            // showDialog(
+                                            //   context: context,
+                                            //   builder: (context) =>
+                                            //       CallRecordPopup(
+                                            //           clientName:
+                                            //               listUser.name ?? '',
+                                            //           clientId:
+                                            //               listuser.clientId ??
+                                            //                   ""),
+                                            // );
                                           },
                                           child: CustomText(
                                             text: "Feedback",
@@ -137,12 +138,12 @@ class LeadUserListTable extends StatelessWidget {
                             ),
                             onTap: () {
                               if (column['name'] == 'ID') {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => CustomerProfileScreen(
-                                        // isRegistration: false,
-                                        clientId: listUser.clientId ?? '',
-                                        leadId: listUser.sId ?? ""));
+                                //   showDialog(
+                                //       context: context,
+                                //       builder: (context) => CustomerProfileScreen(
+                                //           // isRegistration: false,
+                                //           clientId: listUser.clientId ?? '',
+                                //           leadId: listuser.clientId ?? ""));
                               }
                             },
                           );

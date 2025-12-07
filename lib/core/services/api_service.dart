@@ -36,7 +36,11 @@ class ApiService extends GetxService {
         throw Left(Exception(response.data['msg'] ?? 'Unknown error'));
       }
     } on DioException catch (e) {
-      return Left(handleApiException(e));
+      final serverMessage = e.response?.data?['message'];
+      if (serverMessage != null) {
+        return Left(Exception(serverMessage));
+      }
+      return Left(handleApiException(e.message));
     }
   }
 
@@ -66,8 +70,11 @@ class ApiService extends GetxService {
         return Left(Exception("response.data['msg']" ?? 'Unknown error'));
       }
     } on DioException catch (e) {
-      print("🔥 DioException: $e");
-      return Left(handleApiException(e));
+      final serverMessage = e.response?.data?['message'];
+      if (serverMessage != null) {
+        return Left(Exception(serverMessage));
+      }
+      return Left(handleApiException(e.message));
     } catch (e) {
       print("🔥 Exception: $e");
       return Left(Exception(e));
@@ -122,7 +129,11 @@ class ApiService extends GetxService {
         return Left(Exception(response.data['msg'] ?? 'Unknown error'));
       }
     } on DioException catch (e) {
-      throw Left(handleApiException(e));
+      final serverMessage = e.response?.data?['message'];
+      if (serverMessage != null) {
+        return Left(Exception(serverMessage));
+      }
+      return Left(handleApiException(e.message));
     }
   }
 
@@ -137,7 +148,6 @@ class ApiService extends GetxService {
       if (body is Map<String, dynamic>) {
         cleanedBody = removeNullFields(body);
       }
-      print(cleanedBody);
       Dio dio = serviceLocator();
       final response = await dio.patch(
         endpoint,
@@ -147,10 +157,16 @@ class ApiService extends GetxService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
       } else {
-        return Left(Exception(response.data['msg'] ?? 'Unknown error'));
+        return Left(Exception(response.data['message'] ??
+            response.data['msg'] ??
+            'Unknown error'));
       }
     } on DioException catch (e) {
-      return Left(handleApiException(e));
+      final serverMessage = e.response?.data?['message'];
+      if (serverMessage != null) {
+        return Left(Exception(serverMessage));
+      }
+      return Left(handleApiException(e.message));
     }
   }
 
@@ -189,9 +205,13 @@ class ApiService extends GetxService {
         final decoded = jsonDecode(response.body);
         return Left(Exception(decoded["msg"] ?? "Unknown error"));
       }
+    } on DioException catch (e) {
+      final serverMessage = e.response?.data?['message'];
+      if (serverMessage != null) {
+        return Left(Exception(serverMessage));
+      }
+      return Left(handleApiException(e.message));
     } catch (e, st) {
-      print("🔥 Exception: $e");
-      print(st);
       return Left(Exception(e.toString()));
     }
   }

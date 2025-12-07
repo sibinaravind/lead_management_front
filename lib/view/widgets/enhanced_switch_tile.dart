@@ -8,6 +8,7 @@ class EnhancedSwitchTile extends StatelessWidget {
   final IconData? icon;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final EdgeInsetsGeometry? margin;
 
   const EnhancedSwitchTile({
     super.key,
@@ -15,11 +16,13 @@ class EnhancedSwitchTile extends StatelessWidget {
     this.icon,
     required this.value,
     required this.onChanged,
+    this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: value

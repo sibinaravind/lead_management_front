@@ -13,6 +13,7 @@ import '../../controller/app_common/bloc/app_user_contoller.dart'
 import '../../controller/campaign/campaign_controller.dart';
 import '../../controller/officers_controller/officers_controller.dart';
 import '../../controller/permission_controller/access_permission_controller.dart';
+import '../../controller/product_controller/product_controller.dart';
 import '../../view/screens/accounting/accounting.dart';
 import '../../view/screens/product/product_list_screen.dart';
 // import 'package:overseas_front_end/controller/employee/bloc/employee_data_controller.dart';
@@ -32,6 +33,7 @@ class GlobalBindings extends Bindings {
     // Get.put(AppUserController());
     Get.lazyPut(() => AppUserController());
     Get.put(ConfigController());
+    Get.put(ProductController());
     Get.lazyPut(() => RegistrationController());
     Get.lazyPut(() => AccessPermissionController());
     Get.lazyPut(() => CampaignController());
@@ -39,7 +41,7 @@ class GlobalBindings extends Bindings {
     Get.lazyPut(() => RoundRobinController());
     Get.lazyPut(() => OfficersController());
     Get.lazyPut(() => TeamLeadController());
-    Get.lazyPut(() => ProjectController());
+
     Get.lazyPut(() => LeadController());
     Get.lazyPut(() => CustomerProfileController());
     Get.lazyPut(() => ProductServiceController());

@@ -1,47 +1,54 @@
 class AcademicRecordModel {
   String? qualification;
-  String? course;
   String? institution;
-  String? university;
-  int? startYear;
-  int? endYear;
-  String? grade;
+  int? yearOfPassing;
   double? percentage;
+  String? board;
+  String? description;
 
   AcademicRecordModel({
     this.qualification,
-    this.course,
     this.institution,
-    this.university,
-    this.startYear,
-    this.endYear,
-    this.grade,
+    this.yearOfPassing,
     this.percentage,
+    this.board,
+    this.description,
   });
 
-  factory AcademicRecordModel.fromJson(Map<String, dynamic> json) {
-    return AcademicRecordModel(
-      qualification: json['qualification'],
-      course: json['course'],
-      institution: json['institution'],
-      university: json['university'],
-      startYear: json['start_year'],
-      endYear: json['end_year'],
-      grade: json['grade'],
-      percentage: json['percentage']?.toDouble(),
-    );
-  }
+  factory AcademicRecordModel.fromJson(Map<String, dynamic> json) =>
+      AcademicRecordModel(
+        qualification: json["qualification"],
+        institution: json["institution"],
+        yearOfPassing: json["year_of_passing"],
+        percentage: json["percentage"],
+        board: json["board"],
+        description: json["description"],
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'qualification': qualification,
-      'course': course,
-      'institution': institution,
-      'university': university,
-      'start_year': startYear,
-      'end_year': endYear,
-      'grade': grade,
-      'percentage': percentage,
-    };
+  Map<String, dynamic> toJson() => {
+        "qualification": qualification,
+        "institution": institution,
+        "year_of_passing": yearOfPassing,
+        "percentage": percentage,
+        "board": board,
+        "description": description,
+      };
+
+  AcademicRecordModel copyWith({
+    String? qualification,
+    String? institution,
+    int? yearOfPassing,
+    double? percentage,
+    String? board,
+    String? description,
+  }) {
+    return AcademicRecordModel(
+      qualification: qualification ?? this.qualification,
+      institution: institution ?? this.institution,
+      yearOfPassing: yearOfPassing ?? this.yearOfPassing,
+      percentage: percentage ?? this.percentage,
+      board: board ?? this.board,
+      description: description ?? this.description,
+    );
   }
 }

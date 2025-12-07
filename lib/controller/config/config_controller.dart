@@ -28,12 +28,9 @@ class ConfigController extends GetxController {
         fromJson: (json) => ConfigListModel.fromJson(json),
       );
 
-      result.fold(
-        (failure) {
-          return false;
-        },
-        (data) => configData.value = data,
-      );
+      result.fold((failure) {
+        return false;
+      }, (data) => {configData.value = data});
       return true;
     } catch (e) {
       return false;

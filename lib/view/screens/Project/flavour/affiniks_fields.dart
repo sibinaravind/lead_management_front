@@ -1,8 +1,6 @@
-import 'package:overseas_front_end/model/project/client_model.dart';
-import 'package:overseas_front_end/model/project/project_model.dart';
-import 'package:overseas_front_end/model/project/vacancy_model.dart';
-
 import '../../../../model/lead/lead_model.dart';
+import '../../../../model/project/client_model.dart';
+import '../../../../model/project/project_model.dart';
 
 class AffiniksFields {
   List<Map<String, dynamic>> clientTableList() {
@@ -89,51 +87,51 @@ class AffiniksFields {
 
   List<Map<String, dynamic>> vacancyTableList() {
     return [
-      {
-        'name': 'Project Name',
-        'extractor': (VacancyModel user) => user.project?.projectName ?? ''
-      },
-      {
-        'name': 'Job Profile',
-        'extractor': (VacancyModel user) => user.jobCategory ?? ''
-      },
-      {
-        'name': 'Specializations',
-        'extractor': (VacancyModel user) => user.specializationTotals != null
-            ? user.specializationTotals
-                ?.map((e) => e.specialization.toString())
-                .join(", ")
-            : ''
-      },
-      {
-        'name': 'Experience',
-        'extractor': (VacancyModel user) => user.experience ?? ''
-      },
-      {
-        'name': 'Qualifications',
-        'extractor': (VacancyModel user) =>
-            user.qualifications?.join(", ") ?? ''
-      },
-      {
-        'name': 'Country',
-        'extractor': (VacancyModel user) => user.country ?? ''
-      },
-      {
-        'name': 'Last Date',
-        'extractor': (VacancyModel user) => user.lastDateToApply
-      },
-      {
-        'name': 'Total Vacancies',
-        'extractor': (VacancyModel user) => user.totalVacancies.toString()
-      },
-      {
-        'name': 'Target CV',
-        'extractor': (VacancyModel user) => user.totalTargetCv.toString()
-      },
-      {
-        'name': 'Action',
-        'extractor': (VacancyModel user) => user,
-      },
+      // {
+      //   'name': 'Project Name',
+      //   'extractor': (VacancyModel user) => user.project?.projectName ?? ''
+      // },
+      // {
+      //   'name': 'Job Profile',
+      //   'extractor': (VacancyModel user) => user.jobCategory ?? ''
+      // },
+      // {
+      //   'name': 'Specializations',
+      //   'extractor': (VacancyModel user) => user.specializationTotals != null
+      //       ? user.specializationTotals
+      //           ?.map((e) => e.specialization.toString())
+      //           .join(", ")
+      //       : ''
+      // },
+      // {
+      //   'name': 'Experience',
+      //   'extractor': (VacancyModel user) => user.experience ?? ''
+      // },
+      // {
+      //   'name': 'Qualifications',
+      //   'extractor': (VacancyModel user) =>
+      //       user.qualifications?.join(", ") ?? ''
+      // },
+      // {
+      //   'name': 'Country',
+      //   'extractor': (VacancyModel user) => user.country ?? ''
+      // },
+      // {
+      //   'name': 'Last Date',
+      //   'extractor': (VacancyModel user) => user.lastDateToApply
+      // },
+      // {
+      //   'name': 'Total Vacancies',
+      //   'extractor': (VacancyModel user) => user.totalVacancies.toString()
+      // },
+      // {
+      //   'name': 'Target CV',
+      //   'extractor': (VacancyModel user) => user.totalTargetCv.toString()
+      // },
+      // {
+      //   'name': 'Action',
+      //   'extractor': (VacancyModel user) => user,
+      // },
     ];
   }
 
@@ -165,7 +163,10 @@ class AffiniksFields {
         'extractor': (LeadModel user) =>
             user.countryInterested?.map((e) => e.toString()).join(", ") ?? ''
       },
-      {'name': 'Action', 'extractor': (LeadModel user) => user.sId.toString()},
+      {
+        'name': 'Action',
+        'extractor': (LeadModel user) => user.clientId.toString()
+      },
     ];
   }
 
@@ -193,13 +194,16 @@ class AffiniksFields {
         'extractor': (LeadModel user) =>
             user.countryInterested?.map((e) => e.toString()).join(", ") ?? ''
       },
-      {'name': 'Action', 'extractor': (LeadModel user) => user.sId.toString()},
+      {
+        'name': 'Action',
+        'extractor': (LeadModel user) => user.clientId.toString()
+      },
     ];
   }
 
   // List<Map<String, dynamic>> vacancyTableList() {
   //   return [
-  //     // {'name': 'ID', 'extractor': (VacancyModel user) => user.sId.toString()},
+  //     // {'name': 'ID', 'extractor': (VacancyModel user) => user.clientId.toString()},
   //     {
   //       'name': 'Job Title',
   //       'extractor': (VacancyModel user) => user.jobTitle.toString()

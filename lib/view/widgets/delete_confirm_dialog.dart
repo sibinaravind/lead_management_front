@@ -16,7 +16,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.whiteMainColor,
+      backgroundColor: AppColors.whiteMainColor.withOpacity(0.95),
       title: Row(
         children: [
           Icon(Icons.warning_amber_rounded, color: AppColors.redSecondaryColor),

@@ -44,19 +44,19 @@ class FlavourConfig {
   }
 
   static String appLogo() {
-    switch (partner()) {
-      case Partner.travel:
-        return 'assets/images/affiniks_logo.webp';
-      case Partner.migration:
-        return 'assets/images/app_logo.png';
-      case Partner.vehicle:
-        return 'assets/images/app_logo.png';
-      case Partner.education:
-        return 'assets/images/app_logo.png';
-      case Partner.realestate:
-        return 'assets/images/app_logo.png';
-      case Partner.others:
-        return 'assets/images/app_logo.png';
-    }
+    // switch (partner()) {
+    //   case Partner.travel:
+    return 'assets/images/affiniks_logo.webp';
+    //     case Partner.migration:
+    //       return 'assets/images/app_logo.png';
+    //     case Partner.vehicle:
+    //       return 'assets/images/app_logo.png';
+    //     case Partner.education:
+    //       return 'assets/images/app_logo.png';
+    //     case Partner.realestate:
+    //       return 'assets/images/app_logo.png';
+    //     case Partner.others:
+    //       return 'assets/images/app_logo.png';
+    //   }
   }
 }

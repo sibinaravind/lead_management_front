@@ -30,7 +30,8 @@ Exception handleApiException(dynamic e) {
   } else if (e is SocketException) {
     return ServerException("Check your internet connection and try again.");
   } else {
-    return ServerException("An error has occurred. Please try later.");
+    return ServerException(
+        e?.message ?? "An error has occurred. Please try later.");
   }
 }
 

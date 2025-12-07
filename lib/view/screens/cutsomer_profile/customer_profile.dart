@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/other_tab.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/product_intrested_tab.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/vehicle_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
-import 'widgets/academic_record_tab.dart';
+import '../leads/add_lead_screen.dart';
+import 'widgets/education_tab.dart';
+import 'widgets/real_estate_tab.dart';
+import 'widgets/travel_tab.dart';
 import 'widgets/call_history_tab.dart';
 import 'widgets/customer_activity_journey.dart';
 import 'widgets/document_tab.dart';
-import 'widgets/exam_record_tab.dart';
-import 'widgets/travel_record_tab.dart';
-import 'widgets/work_record_tab.dart';
+import 'widgets/professional_tab.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
   const CustomerProfileScreen({
     super.key,
     required this.leadId,
-    required this.clientId,
   });
 
   final String leadId;
-  final String clientId;
 
   @override
   State<CustomerProfileScreen> createState() => _CustomerProfileScreenState();
@@ -34,11 +36,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   @override
   initState() {
     super.initState();
-    print("hello");
     initializeTabs();
-    // Initialize the first tab as selected
-
-    // In initState:
   }
 
   Future<void> initializeTabs() async {
@@ -47,64 +45,79 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       {
         'icon': Icons.assignment_outlined,
         'label': 'Candidate Details',
-        'widget': const LeadDetailsTab(),
+        'widget': LeadDetailsTab(),
         'completed': true,
       },
       {
         'icon': Icons.call_outlined,
         'label': 'Call History',
-        'widget': CallHistoryTab(clientId: widget.clientId),
+        'widget': CallHistoryTab(clientId: widget.leadId),
         'completed': true,
       },
-      if (profile_controller.leadDetails.value.academicRecords != null)
-        {
-          'icon': Icons.school_outlined,
-          'label': 'Education',
-          'widget': AcademicRecordsTab(
-              records:
-                  profile_controller.leadDetails.value.academicRecords ?? []),
-          'completed': true,
-        },
-      if (profile_controller.leadDetails.value.examRecords != null)
-        {
-          'icon': Icons.school_outlined,
-          'label': 'Exams',
-          'widget': ExamRecordsTab(
-              records: profile_controller.leadDetails.value.examRecords ?? []),
-          'completed': true,
-        },
-      if (profile_controller.leadDetails.value.workRecords != null)
-        {
-          'icon': Icons.work,
-          'label': 'Work Experience',
-          'widget': WorkRecordsTab(
-            records: profile_controller.leadDetails.value.workRecords ?? [],
-            firstJobDate: null,
-            jobGapMonths: null,
-          ),
-          'completed': true,
-        },
-      if (profile_controller.leadDetails.value.travelRecords != null)
-        {
-          'icon': Icons.airplanemode_on,
-          'label': 'Travel Details',
-          'widget': TravelRecordsTab(
-            records: profile_controller.leadDetails.value.travelRecords ?? [],
-          ),
-          'completed': true,
-        },
-      if (profile_controller.leadDetails.value.documents != null)
-        {
-          'icon': Icons.document_scanner,
-          'label': 'Documents',
-          'widget': DocumentsTab(
-            documents: profile_controller.leadDetails.value.documents ?? [],
-          ),
-          'completed': true,
-        },
       {
-        'icon': Icons.history,
-        'label': 'Candidate Activity',
+        'icon': Icons.shopping_bag_rounded,
+        'label': 'Products Interested',
+        'widget':
+            ProductInterestedTab(lead: profile_controller.leadDetails.value),
+        'completed': true,
+      },
+      {
+        'icon': Icons.work_outline,
+        'label': 'Finance/Professional ',
+        'widget': ProfessionalTab(lead: profile_controller.leadDetails.value),
+        'completed': true,
+      },
+      {
+        'icon': Icons.travel_explore,
+        'label': 'Travel Pref',
+        'widget': TravelTab(lead: profile_controller.leadDetails.value),
+        'completed': true,
+      },
+      {
+        'icon': Icons.work,
+        'label': 'Educational Pref',
+        'widget': EducationDeatilsTab(
+          lead: profile_controller.leadDetails.value,
+        ),
+        'completed': true,
+      },
+      {
+        'icon': Icons.directions_car_rounded,
+        'label': 'Vehicle Pref',
+        'widget': VehicleTab(lead: profile_controller.leadDetails.value),
+        // 'widget': TravelRecordsTab(
+        //   records: profile_controller.leadDetails.value.travelRecords ?? [],
+        // ),
+        'completed': true,
+      },
+      {
+        'icon': Icons.home_work_rounded,
+        'label': 'Real Estate Pref',
+        'widget': RealEstateTab(lead: profile_controller.leadDetails.value),
+        // 'widget': DocumentsTab(
+        //   documents: profile_controller.leadDetails.value.documents ?? [],
+        // ),
+        'completed': true,
+      },
+      {
+        'icon': Icons.info_outline,
+        'label': 'Other Details',
+        'widget': OtherDeatilsTab(
+          lead: profile_controller.leadDetails.value,
+        ),
+        'completed': true,
+      },
+      {
+        'icon': Icons.folder_copy,
+        'label': 'Documents',
+        'widget': DocumentsTab(
+          lead: profile_controller.leadDetails.value,
+        ),
+        'completed': true,
+      },
+      {
+        'icon': Icons.chat_bubble_outline,
+        'label': 'Customer Journey',
         'widget': CustomerJourneyStages(
           leadid: widget.leadId,
         ),
@@ -122,8 +135,10 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       backgroundColor: Colors.white,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.9,
-          maxWidth: MediaQuery.of(context).size.width > 600
+          maxHeight: MediaQuery.of(context).size.width < 500
+              ? MediaQuery.of(context).size.height * 0.98
+              : MediaQuery.of(context).size.height * 0.9,
+          maxWidth: MediaQuery.of(context).size.width < 600
               ? MediaQuery.of(context).size.width * 0.95
               : double.infinity,
         ),
@@ -147,7 +162,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                   children: [
                     const Flexible(
                       child: CustomText(
-                        text: 'Candidate Profile',
+                        text: 'Lead Profile',
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -231,6 +246,22 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                   ),
                                 ),
                               ),
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AddLeadScreen(
+                                      leadToEdit:
+                                          profile_controller.leadDetails.value,
+                                    ),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.edit_square,
+                                  color: AppColors.redSecondaryColor,
+                                  size: isSmallScreen ? 24 : 28,
+                                ),
+                              ),
                             ],
                           ),
                           // Edit button - move to separate row on small screens
@@ -247,23 +278,30 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                       runSpacing: 8,
                       children: [
                         _buildInfoChip(
-                            Icons.phone,
-                            profile_controller.leadDetails?.value.phone ??
-                                'N/A',
-                            AppColors.blueSecondaryColor),
-                        _buildInfoChip(
-                            Icons.email,
-                            profile_controller.leadDetails?.value.email ??
+                            Icons.update,
+                            profile_controller.leadDetails.value.status ??
                                 'N/A',
                             AppColors.greenSecondaryColor),
                         _buildInfoChip(
-                            Icons.person_outline,
-                            'Counselor: ${profile_controller.leadDetails?.value.officerName ?? 'N/A'}',
-                            AppColors.viloletSecondaryColor),
+                            Icons.phone,
+                            profile_controller.leadDetails.value.phone ?? 'N/A',
+                            AppColors.whiteMainColor),
                         _buildInfoChip(
-                            Icons.location_on,
-                            'Location: ${profile_controller.leadDetails?.value.address ?? 'N/A'}',
-                            AppColors.orangeSecondaryColor),
+                            Icons.email,
+                            profile_controller.leadDetails.value.email ?? 'N/A',
+                            AppColors.redSecondaryColor),
+                        _buildInfoChip(
+                            Icons.person_outline,
+                            'Officer: ${profile_controller.leadDetails.value.officerName ?? 'N/A'}',
+                            AppColors.blueSecondaryColor),
+                        _buildInfoChip(
+                            Icons.person_outline,
+                            'Branch: ${profile_controller.leadDetails.value.branch ?? 'N/A'}',
+                            AppColors.viloletSecondaryColor),
+                        // _buildInfoChip(
+                        //     Icons.location_on,
+                        //     'Location: ${profile_controller.leadDetails.value.address ?? 'N/A'}',
+                        //     AppColors.orangeSecondaryColor),
                       ],
                     ),
                   ),
@@ -288,118 +326,114 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                         final isDesktop =
                             MediaQuery.of(context).size.width > 1000;
                         return isDesktop
-                            ? Expanded(
-                                child: Container(
-                                  height: 420,
-                                  // margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(12),
+                            ? Container(
+                                height: 420,
+                                // margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(12),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.white.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      // Left Tab List
-                                      Container(
-                                        width: 280,
-                                        decoration: const BoxDecoration(
-                                          color: AppColors.primaryColor,
-                                          borderRadius: BorderRadius.only(
-                                            // topLeft: Radius.circular(12),
-                                            bottomLeft: Radius.circular(12),
-                                          ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Left Tab List
+                                    Container(
+                                      width: 280,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                        borderRadius: BorderRadius.only(
+                                          // topLeft: Radius.circular(12),
+                                          bottomLeft: Radius.circular(12),
                                         ),
-                                        child: ListView.builder(
-                                          padding: const EdgeInsets.all(8),
-                                          itemCount: _tabs.length,
-                                          itemBuilder: (context, index) {
-                                            final tab = _tabs[index];
-                                            final isSelected =
-                                                _selectedTabIndex == index;
-                                            return Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 4),
-                                              decoration: BoxDecoration(
-                                                gradient: isSelected
-                                                    ? AppColors
-                                                        .buttonGraidentColour
-                                                    : null,
+                                      ),
+                                      child: ListView.builder(
+                                        padding: const EdgeInsets.all(8),
+                                        itemCount: _tabs.length,
+                                        itemBuilder: (context, index) {
+                                          final tab = _tabs[index];
+                                          final isSelected =
+                                              _selectedTabIndex == index;
+                                          return Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 4),
+                                            decoration: BoxDecoration(
+                                              gradient: isSelected
+                                                  ? AppColors
+                                                      .buttonGraidentColour
+                                                  : null,
+                                              color: isSelected
+                                                  ? null
+                                                  : Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: ListTile(
+                                              dense: true,
+                                              leading: Icon(
+                                                tab['icon'] as IconData,
                                                 color: isSelected
-                                                    ? null
-                                                    : Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
+                                                    ? Colors.white
+                                                    : AppColors.textGrayColour,
+                                                size: 22,
                                               ),
-                                              child: ListTile(
-                                                dense: true,
-                                                leading: Icon(
-                                                  tab['icon'] as IconData,
-                                                  color: isSelected
-                                                      ? Colors.white
-                                                      : AppColors
-                                                          .textGrayColour,
-                                                  size: 22,
-                                                ),
-                                                title: CustomText(
-                                                  text: tab['label'] as String,
-                                                  fontSize: 14,
-                                                  fontWeight: isSelected
-                                                      ? FontWeight.w600
-                                                      : FontWeight.w100,
-                                                  color: isSelected
-                                                      ? Colors.white
-                                                      : Colors.white
-                                                          .withOpacity(0.5),
-                                                ),
-                                                trailing:
-                                                    tab['completed'] as bool
-                                                        ? Icon(
-                                                            Icons.check_circle,
-                                                            color: isSelected
-                                                                ? Colors.white
-                                                                : AppColors
-                                                                    .greenSecondaryColor,
-                                                            size: 18,
-                                                          )
-                                                        : Icon(
-                                                            Icons
-                                                                .radio_button_unchecked,
-                                                            color: isSelected
-                                                                ? Colors.white70
-                                                                : AppColors
-                                                                    .textGrayColour,
-                                                            size: 18,
-                                                          ),
-                                                onTap: () {
-                                                  setState(() {
-                                                    _selectedTabIndex = index;
-                                                  });
-                                                },
+                                              title: CustomText(
+                                                text: tab['label'] as String,
+                                                fontSize: 14,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w100,
+                                                color: isSelected
+                                                    ? Colors.white
+                                                    : Colors.white
+                                                        .withOpacity(0.5),
                                               ),
-                                            );
-                                          },
-                                        ),
+                                              trailing: tab['completed'] as bool
+                                                  ? Icon(
+                                                      Icons.check_circle,
+                                                      color: isSelected
+                                                          ? Colors.white
+                                                          : AppColors
+                                                              .greenSecondaryColor,
+                                                      size: 18,
+                                                    )
+                                                  : Icon(
+                                                      Icons
+                                                          .radio_button_unchecked,
+                                                      color: isSelected
+                                                          ? Colors.white70
+                                                          : AppColors
+                                                              .textGrayColour,
+                                                      size: 18,
+                                                    ),
+                                              onTap: () {
+                                                setState(() {
+                                                  _selectedTabIndex = index;
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        },
                                       ),
+                                    ),
 
-                                      // Right content
-                                      Expanded(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(24),
-                                          child: _tabs[_selectedTabIndex]
-                                              ['widget'] as Widget,
-                                        ),
+                                    // Right content
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(24),
+                                        child: _tabs[_selectedTabIndex]
+                                            ['widget'] as Widget,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               )
                             : // Mobile layout with tabs

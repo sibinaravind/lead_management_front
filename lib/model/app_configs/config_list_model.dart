@@ -7,15 +7,18 @@ class ConfigListModel {
   List<ConfigModel>? callType;
   List<ConfigModel>? callStatus;
   List<ConfigModel>? clientStatus;
-  List<ConfigModel>? programType; // New field
-  List<ConfigModel>? program; // New field
+  List<ConfigModel>? courseType;
+  List<ConfigModel>? program;
+  List<ConfigModel>? vehicleBrand;
+  List<ConfigModel>? vehicleType;
   List<ConfigModel>? country;
   List<ConfigModel>? leadSource;
   List<ConfigModel>? serviceType;
   List<ConfigModel>? test;
-  List<ConfigModel>? jobCategory; // New field
+  List<ConfigModel>? jobCategory;
   List<ConfigModel>? specialized;
-  List<ConfigModel>? closedStatus; // New field
+  List<ConfigModel>? closedStatus;
+  List<ConfigModel>? courses; // Added field
 
   ConfigListModel({
     this.id,
@@ -26,13 +29,16 @@ class ConfigListModel {
     this.leadSource,
     this.serviceType,
     this.callType,
+    this.vehicleBrand,
+    this.vehicleType,
     this.clientStatus,
     this.specialized,
     this.test,
-    this.programType,
+    this.courseType,
     this.program,
     this.jobCategory,
     this.closedStatus,
+    this.courses, // Added field
   });
 
   factory ConfigListModel.fromJson(Map<String, dynamic> json) =>
@@ -41,40 +47,39 @@ class ConfigListModel {
         name: json["name"],
         branch: _parseConfigList(json["branch"]),
         callStatus: _parseConfigList(json["call_status"]),
-
         country: _parseConfigList(json["country"]),
         leadSource: _parseConfigList(json["lead_source"]),
         serviceType: _parseConfigList(json["service_type"]),
-
+        vehicleBrand: _parseConfigList(json["vehicle_brand"]),
+        vehicleType: _parseConfigList(json["vehicle_type"]),
         callType: _parseConfigList(json["call_type"]),
-
         specialized: _parseConfigList(json["specialized"]),
         clientStatus: _parseConfigList(json["client_status"]),
         test: _parseConfigList(json["test"]),
-        programType: _parseConfigList(json["program_type"]), // New field
-        program: _parseConfigList(json["program"]), // New field
-        jobCategory: _parseConfigList(json["job_category"]), // New field
-        closedStatus: _parseConfigList(json["closed_status"]), // New field
+        courseType: _parseConfigList(json["course_type"]),
+        program: _parseConfigList(json["program"]),
+        jobCategory: _parseConfigList(json["job_category"]),
+        closedStatus: _parseConfigList(json["closed_status"]),
+        courses: _parseConfigList(json["courses"]), // Added field
       );
 
   Map<String, dynamic> toJson() => {
         "branch": _mapList(branch),
-
         "call_status": _mapList(callStatus),
         "call_type": _mapList(callType),
         "client_status": _mapList(clientStatus),
-
         "country": _mapList(country),
         "lead_source": _mapList(leadSource),
         "service_type": _mapList(serviceType),
-
+        "vehicle_brand": _mapList(vehicleBrand),
+        "vehicle_type": _mapList(vehicleType),
         "specialized": _mapList(specialized),
-
         "test": _mapList(test),
-        "program_type": _mapList(programType), // New field
-        "program": _mapList(program), // New field
-        "job_category": _mapList(jobCategory), // New field
-        "closed_status": _mapList(closedStatus), // New field
+        "course_type": _mapList(courseType),
+        "program": _mapList(program),
+        "job_category": _mapList(jobCategory),
+        "closed_status": _mapList(closedStatus),
+        "courses": _mapList(courses), // Added field
       };
 
   static List<ConfigModel>? _parseConfigList(dynamic list) {
@@ -107,20 +112,21 @@ class ConfigListModel {
   Map<String, List<ConfigModel>?> _asMap() {
     return {
       "branch": branch,
-
       "call_status": callStatus,
       "call_type": callType,
       "client_status": clientStatus,
       "country": country,
       "lead_source": leadSource,
       "service_type": serviceType,
-
+      "vehicle_brand": vehicleBrand,
+      "vehicle_type": vehicleType,
       "test": test,
-      "program_type": programType, // New field
-      "program": program, // New field
-      "job_category": jobCategory, // New field
+      "course_type": courseType,
+      "program": program,
+      "job_category": jobCategory,
       "specialized": specialized,
-      "closed_status": closedStatus, // New field
+      "closed_status": closedStatus,
+      "courses": courses, // Added field
     };
   }
 
@@ -164,22 +170,28 @@ class ConfigListModel {
         return clientStatus ??= [];
       case 'country':
         return country ??= [];
+      case 'vehicle_brand':
+        return vehicleBrand ??= [];
+      case 'vehicle_type':
+        return vehicleType ??= [];
       case 'lead_source':
         return leadSource ??= [];
       case 'service_type':
         return serviceType ??= [];
       case 'test':
         return test ??= [];
-      case 'program_type': // New case
-        return programType ??= [];
-      case 'program': // New case
+      case 'course_type':
+        return courseType ??= [];
+      case 'program':
         return program ??= [];
-      case 'job_category': // New case
+      case 'job_category':
         return jobCategory ??= [];
       case 'specialized':
         return specialized ??= [];
-      case 'closed_status': // New case
+      case 'closed_status':
         return closedStatus ??= [];
+      case 'courses': // Added case
+        return courses ??= [];
       default:
         throw ArgumentError('Unknown category: $category');
     }

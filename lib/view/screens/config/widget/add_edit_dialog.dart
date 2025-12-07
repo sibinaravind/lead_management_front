@@ -314,7 +314,7 @@ class _AddEditDialogState extends State<AddEditDialog> {
   }
 
   Widget _buildProgramTypeDropdown(bool isRequired) {
-    final programTypes = controller.configData.value.programType
+    final programTypes = controller.configData.value.courseType
             ?.where((e) => e.name != null && e.name!.trim().isNotEmpty)
             .map((e) => e.name!)
             .toList() ??

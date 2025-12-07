@@ -162,13 +162,10 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                                 /// TEAM LEAD DROPDOWN
                                                 CustomOfficerDropDown(
                                                   label: 'Select Officer',
-                                                  value: selectedNewTeamLead,
-                                                  items: <String>[
-                                                    ...availableOfficersForLead
-                                                        .map((e) =>
-                                                            "${e.officerId} - ${e.name},${e.id}")
-                                                        .toList()
-                                                  ],
+                                                  selectedOfficerId:
+                                                      selectedNewTeamLead,
+                                                  officers:
+                                                      availableOfficersForLead,
                                                   onChanged: (p0) {
                                                     setDialogState(() {
                                                       selectedNewTeamLead =
@@ -178,8 +175,6 @@ class _TeamLeadDataDisplayState extends State<TeamLeadDataDisplay> {
                                                     });
                                                   },
                                                   isRequired: true,
-                                                  isSplit: true,
-                                                  prefixIcon: Icons.person,
                                                 ),
 
                                                 const SizedBox(height: 16),

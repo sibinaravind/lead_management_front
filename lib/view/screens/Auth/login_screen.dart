@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/utils/style/colors/dimension.dart';
+import '../../../config/flavour_config.dart';
 import '../../../controller/auth/login_controller.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_snackbar.dart';
@@ -153,9 +154,9 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
         color: AppColors.whiteMainColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-        child: Image(image: AssetImage("assets/images/affiniks_logo.webp")),
+        child: Image(image: AssetImage(FlavourConfig.appLogo())),
       ),
     );
   }
@@ -242,10 +243,12 @@ class _ResponsiveLoginScreenState extends State<LoginScreen> {
             child: SizedBox(
               width: 200,
               height: 150,
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
                 child: Image(
-                    image: AssetImage("assets/images/affiniks_logo.webp")),
+                    image: AssetImage(
+                  FlavourConfig.appLogo(),
+                )),
               ),
             ),
           ),
