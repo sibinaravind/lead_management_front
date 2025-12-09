@@ -17,6 +17,28 @@ class LoginController extends GetxController {
   var officer = Rxn<OfficerModel>();
   var isLoading = false.obs;
 
+  @override
+  void onInit() {
+    //test
+    super.onInit();
+    loadDummyData(); //test
+  }
+
+  Future<void> loadDummyData() async {
+    OfficerModel? cachedOfficer = await _userCacheService.getUser();
+    if (cachedOfficer != null) {
+      officer.value = cachedOfficer;
+    } else {
+      officer.value = OfficerModel(
+        id: '686ceda9e9299f3429d6239a',
+        officerId: 'AEOID00004',
+        name: 'Mr Sibin James',
+        token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZjZWRhOWU5Mjk5ZjM0MjlkNjIzOWEiLCJvZmZpY2VyX2lkIjoiQUVPSUQwMDAwNCIsImRlc2lnbmF0aW9uIjpbIkNPVU5TSUxPUiIsIkFETUlOIl0sImJyYW5jaCI6WyJUU1QxMyJdLCJvZmZpY2VycyI6W10sImlhdCI6MTc2NTI5MzEwMiwiZXhwIjoxNzY1MzExMTAyfQ.9UENeDjWh-w7OfCQf-MZa26i2r_ghPCAKjAgmmJydF8',
+      );
+    }
+  }
+
   /// LOGIN OFFICER
   Future<void> loginOfficer({
     required String officerId,

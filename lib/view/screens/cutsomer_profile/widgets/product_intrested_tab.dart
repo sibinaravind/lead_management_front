@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:overseas_front_end/model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_action_button.dart';
 import '../../../widgets/responsive_grid.dart';
 import '../../../widgets/section_title.dart';
 import 'info_item.dart';
+import 'product_intrested_popup.dart';
 
 class ProductInterestedTab extends StatelessWidget {
   final LeadModel lead;
@@ -26,11 +28,36 @@ class ProductInterestedTab extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionTitle(
+                SectionTitle(
                   title: "Products Interested",
                   icon: Icons.shopping_bag_rounded,
+                  tail: SizedBox(
+                    width: 180,
+                    // height: 35,
+                    child: CustomActionButton(
+                      text: 'Add  Interested',
+                      icon: Icons.add_rounded,
+                      textColor: AppColors.violetPrimaryColor,
+                      // gradient: AppColors.greenGradient,
+                      // backgroundColor: AppColors.blueSecondaryColor,
+                      // isFilled: true,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ProductInterestedPopup(
+                              // initialProducts:
+                              //     lead.productInterested ?? <ProductItem>[],
+                              clientId: lead.id,
+                            );
+                          },
+                        );
+                      },
+                      // gradient: AppColors.greenGradient,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 17),
                 if (lead.productInterested == null ||
                     lead.productInterested!.isEmpty)
                   Center(
@@ -86,8 +113,21 @@ class ProductInterestedTab extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              Icon(Icons.local_offer_rounded,
-                                  size: 18, color: Colors.orange),
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return ProductInterestedPopup(
+                                        clientId: lead.id,
+                                        productId: product.productId,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Icon(Icons.add_box_outlined,
+                                    size: 30, color: Colors.orange),
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),

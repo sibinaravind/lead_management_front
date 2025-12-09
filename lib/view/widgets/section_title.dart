@@ -6,11 +6,13 @@ import 'widgets.dart';
 class SectionTitle extends StatelessWidget {
   final String title;
   final IconData icon;
+  final Widget? tail;
 
   const SectionTitle({
     super.key,
     required this.title,
     required this.icon,
+    this.tail,
   });
 
   @override
@@ -51,6 +53,10 @@ class SectionTitle extends StatelessWidget {
             ),
           ),
         ),
+        if (tail != null) ...[
+          const SizedBox(width: 16),
+          tail!,
+        ],
       ],
     );
   }

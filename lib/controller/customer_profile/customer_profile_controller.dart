@@ -8,6 +8,7 @@ import '../../model/lead/call_event_model.dart';
 import '../../model/lead/customer_journeydata.dart';
 import '../../model/lead/lead_list_model.dart';
 import '../../model/lead/lead_model.dart';
+import '../../model/lead/product_intreseted_model.dart';
 import '../../view/widgets/custom_snackbar.dart';
 
 class CustomerProfileController extends GetxController {
@@ -18,7 +19,6 @@ class CustomerProfileController extends GetxController {
   Map<String, dynamic> filter = {};
   RxList<CallEventModel> callEvents = <CallEventModel>[].obs;
   Rx<LeadModel> leadDetails = LeadModel().obs;
-  Rx<LeadModel> selectedLead = LeadModel().obs;
 
   var customerJourneyStages = <CustomerJourneyData>[].obs;
   String currentClientId = "";
@@ -131,6 +131,94 @@ class CustomerProfileController extends GetxController {
     } catch (e) {
       CustomToast.showToast(
           context: context, message: "Failed to create Call Log: $e");
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> addProductInterest(
+      {String? clientId,
+      ProductInterestedModel? productInterested,
+      required BuildContext context}) async {
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: Constant().addProductInterest + (clientId ?? ''),
+        body: productInterested?.toJson(),
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (data) {
+          CustomSnackBar.showMessage(
+              "Success", "Product interest added successfully",
+              backgroundColor: Colors.green);
+          // Add product interest to leadDetails
+          final newProduct = productInterested;
+          if (newProduct != null) {
+            final existingProducts = leadDetails.value.productInterested ?? [];
+            final index = existingProducts.indexWhere(
+              (p) => p.productId == newProduct.productId,
+            );
+            if (index != -1) {
+              // Product exists, add offers to it
+              final existingOffers = existingProducts[index].offers ?? [];
+              for (var offer in newProduct.offers ?? []) {
+                existingOffers.add(offer);
+              }
+              existingProducts[index].offers = existingOffers;
+            } else {
+              existingProducts.add(newProduct);
+            }
+            leadDetails.value.productInterested = existingProducts;
+            leadDetails.refresh();
+          }
+          return true;
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+          context: context, message: "Failed to add product interest: $e");
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> uploadDocument(
+      {String? clientId,
+      Map<String, dynamic>? body,
+      required BuildContext context}) async {
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: Constant().uploadLeadDocument + (clientId ?? ''),
+        body: body,
+        fromJson: (json) {
+          // Extract file path from response if available
+          if (json['file_path'] != null) {
+            return json['file_path'];
+          }
+          return null;
+        },
+      );
+      // print('File path: $response');
+      return response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (data) {
+          CustomSnackBar.showMessage(
+              "Success", "Document uploaded successfully",
+              backgroundColor: Colors.green);
+
+          return true;
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+          context: context, message: "Failed to upload document: $e");
       return false;
     } finally {
       isLoading.value = false;

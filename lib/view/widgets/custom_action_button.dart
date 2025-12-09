@@ -7,6 +7,7 @@ class CustomActionButton extends StatelessWidget {
   final bool isFilled;
   final Gradient? gradient;
   final Color? textColor;
+  final double? textSize;
   final Color? borderColor;
   final Color? backgroundColor;
 
@@ -20,6 +21,7 @@ class CustomActionButton extends StatelessWidget {
     this.gradient,
     this.textColor,
     this.borderColor,
+    this.textSize = 16,
   });
 
   @override
@@ -37,7 +39,7 @@ class CustomActionButton extends StatelessWidget {
             text,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontSize: textSize,
               color: isFilled ? Colors.white : textColor ?? Colors.black,
             ),
           ),

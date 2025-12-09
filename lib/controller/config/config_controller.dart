@@ -36,6 +36,7 @@ class ConfigController extends GetxController {
       return false;
     } finally {
       isLoading.value = false;
+      // ignore: control_flow_in_finally
       return true;
     }
   }

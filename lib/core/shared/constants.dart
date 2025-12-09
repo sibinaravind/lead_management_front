@@ -32,6 +32,11 @@ class Constant {
 
   String getLeadDetail = 'lead/getLead';
 
+  String addFeedback = 'customer/logCallEvent';
+  String addProductInterest = 'lead/addProductInterested/';
+
+  String uploadLeadDocument = 'lead/updateClientRequiredDocuments/';
+
   String officerLogin = 'officer/login';
   String officerPasswordReset = 'officer/resetPassword';
   String officerInsert = 'officer/insert';
@@ -92,7 +97,6 @@ class Constant {
   String getDeadLeads = 'lead/getAllDeadLeads';
   String restoreDeadLead = 'lead/restoreClientFromDead';
 
-  String addFeedback = 'customer/logCallEvent';
   String getIncompleteList = 'customer/register/incompleteList';
 
   // String editConfig = customer/register/incompleteList lead/getAllDeadLeads customer/register/update_academic_records 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList

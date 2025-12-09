@@ -30,7 +30,7 @@ class CustomerProfileScreen extends StatefulWidget {
 
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   int _selectedTabIndex = 0;
-  final profile_controller = Get.find<CustomerProfileController>();
+  final profileController = Get.find<CustomerProfileController>();
   List<Map<String, dynamic>> _tabs = [];
 
   @override
@@ -40,7 +40,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   }
 
   Future<void> initializeTabs() async {
-    await profile_controller.getLeadDetails(context, widget.leadId);
+    await profileController.getLeadDetails(context, widget.leadId);
     _tabs = [
       {
         'icon': Icons.assignment_outlined,
@@ -58,44 +58,44 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         'icon': Icons.shopping_bag_rounded,
         'label': 'Products Interested',
         'widget':
-            ProductInterestedTab(lead: profile_controller.leadDetails.value),
+            ProductInterestedTab(lead: profileController.leadDetails.value),
         'completed': true,
       },
       {
         'icon': Icons.work_outline,
         'label': 'Finance/Professional ',
-        'widget': ProfessionalTab(lead: profile_controller.leadDetails.value),
+        'widget': ProfessionalTab(lead: profileController.leadDetails.value),
         'completed': true,
       },
       {
         'icon': Icons.travel_explore,
         'label': 'Travel Pref',
-        'widget': TravelTab(lead: profile_controller.leadDetails.value),
+        'widget': TravelTab(lead: profileController.leadDetails.value),
         'completed': true,
       },
       {
         'icon': Icons.work,
         'label': 'Educational Pref',
         'widget': EducationDeatilsTab(
-          lead: profile_controller.leadDetails.value,
+          lead: profileController.leadDetails.value,
         ),
         'completed': true,
       },
       {
         'icon': Icons.directions_car_rounded,
         'label': 'Vehicle Pref',
-        'widget': VehicleTab(lead: profile_controller.leadDetails.value),
+        'widget': VehicleTab(lead: profileController.leadDetails.value),
         // 'widget': TravelRecordsTab(
-        //   records: profile_controller.leadDetails.value.travelRecords ?? [],
+        //   records: profileController.leadDetails.value.travelRecords ?? [],
         // ),
         'completed': true,
       },
       {
         'icon': Icons.home_work_rounded,
         'label': 'Real Estate Pref',
-        'widget': RealEstateTab(lead: profile_controller.leadDetails.value),
+        'widget': RealEstateTab(lead: profileController.leadDetails.value),
         // 'widget': DocumentsTab(
-        //   documents: profile_controller.leadDetails.value.documents ?? [],
+        //   documents: profileController.leadDetails.value.documents ?? [],
         // ),
         'completed': true,
       },
@@ -103,7 +103,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         'icon': Icons.info_outline,
         'label': 'Other Details',
         'widget': OtherDeatilsTab(
-          lead: profile_controller.leadDetails.value,
+          lead: profileController.leadDetails.value,
         ),
         'completed': true,
       },
@@ -111,7 +111,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         'icon': Icons.folder_copy,
         'label': 'Documents',
         'widget': DocumentsTab(
-          lead: profile_controller.leadDetails.value,
+          lead: profileController.leadDetails.value,
         ),
         'completed': true,
       },
@@ -125,6 +125,31 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       },
     ];
     setState(() {});
+  }
+
+  List<Widget> _chipsList() {
+    return [
+      _buildInfoChip(
+          Icons.update,
+          profileController.leadDetails.value.status ?? 'N/A',
+          AppColors.greenSecondaryColor),
+      _buildInfoChip(
+          Icons.phone,
+          profileController.leadDetails.value.phone ?? 'N/A',
+          AppColors.whiteMainColor),
+      _buildInfoChip(
+          Icons.email,
+          profileController.leadDetails.value.email ?? 'N/A',
+          AppColors.redSecondaryColor),
+      _buildInfoChip(
+          Icons.person_outline,
+          'Officer: ${profileController.leadDetails.value.officerName ?? 'N/A'}',
+          AppColors.blueSecondaryColor),
+      _buildInfoChip(
+          Icons.person_outline,
+          'Branch: ${profileController.leadDetails.value.branch ?? 'N/A'}',
+          AppColors.viloletSecondaryColor),
+    ];
   }
 
   @override
@@ -225,7 +250,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           CustomText(
-                                            text: profile_controller
+                                            text: profileController
                                                     .leadDetails?.value.name ??
                                                 'N/A',
                                             fontSize: isSmallScreen ? 20 : 24,
@@ -234,7 +259,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                           ),
                                           const SizedBox(height: 4),
                                           CustomText(
-                                            text: profile_controller.leadDetails
+                                            text: profileController.leadDetails
                                                     ?.value.clientId ??
                                                 'N/A',
                                             fontSize: 14,
@@ -252,7 +277,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                     context: context,
                                     builder: (context) => AddLeadScreen(
                                       leadToEdit:
-                                          profile_controller.leadDetails.value,
+                                          profileController.leadDetails.value,
                                     ),
                                   );
                                 },
@@ -264,47 +289,37 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: isSmallScreen
+                                ? SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: _chipsList()
+                                          .map((chip) => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 8.0),
+                                                child: chip,
+                                              ))
+                                          .toList(),
+                                    ),
+                                  )
+                                : Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: _chipsList()),
+                          ),
                           // Edit button - move to separate row on small screens
                         ],
                       );
                     },
                   ),
-                  const SizedBox(height: 16),
+
                   // Info chips - make them responsive
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _buildInfoChip(
-                            Icons.update,
-                            profile_controller.leadDetails.value.status ??
-                                'N/A',
-                            AppColors.greenSecondaryColor),
-                        _buildInfoChip(
-                            Icons.phone,
-                            profile_controller.leadDetails.value.phone ?? 'N/A',
-                            AppColors.whiteMainColor),
-                        _buildInfoChip(
-                            Icons.email,
-                            profile_controller.leadDetails.value.email ?? 'N/A',
-                            AppColors.redSecondaryColor),
-                        _buildInfoChip(
-                            Icons.person_outline,
-                            'Officer: ${profile_controller.leadDetails.value.officerName ?? 'N/A'}',
-                            AppColors.blueSecondaryColor),
-                        _buildInfoChip(
-                            Icons.person_outline,
-                            'Branch: ${profile_controller.leadDetails.value.branch ?? 'N/A'}',
-                            AppColors.viloletSecondaryColor),
-                        // _buildInfoChip(
-                        //     Icons.location_on,
-                        //     'Location: ${profile_controller.leadDetails.value.address ?? 'N/A'}',
-                        //     AppColors.orangeSecondaryColor),
-                      ],
-                    ),
-                  ),
+
                   // const SizedBox(height: 16),
                   // Row(
                   //   children: [
@@ -428,7 +443,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                     // Right content
                                     Expanded(
                                       child: Container(
-                                        padding: const EdgeInsets.all(24),
+                                        padding: const EdgeInsets.all(10),
                                         child: _tabs[_selectedTabIndex]
                                             ['widget'] as Widget,
                                       ),
@@ -513,7 +528,11 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                   // Tab content
                                   Expanded(
                                     child: Container(
-                                      padding: const EdgeInsets.all(16),
+                                      padding: const EdgeInsets.only(
+                                          top: 10,
+                                          left: 10,
+                                          right: 0,
+                                          bottom: 0),
                                       child: _tabs[_selectedTabIndex]['widget']
                                           as Widget,
                                     ),

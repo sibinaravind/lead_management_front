@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/upload_document_popup.dart';
+import '../../../../controller/config/config_controller.dart';
 import '../../../../core/shared/constants.dart';
 import '../../../../model/lead/document_record_model.dart';
 import '../../../../model/lead/lead_model.dart';
 import '../../../../utils/style/colors/colors.dart';
+import '../../../widgets/custom_action_button.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/view_doc_widget.dart';
 import 'info_item.dart';
@@ -10,6 +16,7 @@ import 'info_section.dart';
 
 class DocumentsTab extends StatelessWidget {
   final LeadModel lead;
+
   const DocumentsTab({super.key, required this.lead});
 
   @override
@@ -367,14 +374,128 @@ class DocumentsTab extends StatelessWidget {
                 ],
               ),
             const SizedBox(height: 16),
-            InfoSection(
-              title: 'Documents',
-              icon: Icons.description,
-              items: lead.documents
-                      ?.map((doc) => _buildDocumentCard(doc, context))
-                      .toList() ??
-                  [],
+
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.08),
+                    blurRadius: 5,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section Header
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor.withOpacity(0.05),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.buttonGraidentColour,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(Icons.description,
+                              color: Colors.white, size: 18),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomText(
+                            text: 'Documents',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                            width: 170,
+                            // height: 35,
+                            child: CustomActionButton(
+                              text: 'Add Document',
+                              textSize: 14,
+                              icon: Icons.add_rounded,
+                              textColor: AppColors.violetPrimaryColor,
+                              // gradient: AppColors.greenGradient,
+                              // backgroundColor: AppColors.blueSecondaryColor,
+                              // isFilled: true,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return ModernUploadPopup(
+                                      // initialProducts:
+                                      //     lead.productInterested ?? <ProductItem>[],
+                                      onSave: (documents) {
+                                        Get.find<CustomerProfileController>()
+                                            .uploadDocument(
+                                                clientId: lead.id,
+                                                body: documents,
+                                                context: context);
+                                      },
+                                      items: Get.find<ConfigController>()
+                                              .configData
+                                              .value
+                                              .leadDocuments
+                                              ?.map((e) => e.name ?? "")
+                                              .toList() ??
+                                          [
+                                            "Passport",
+                                            "ID Proof",
+                                            "PAN Card",
+                                            "GST Certificate"
+                                          ],
+                                    );
+                                  },
+                                );
+                              },
+                              // gradient: AppColors.greenGradient,
+                            )),
+                      ],
+                    ),
+                  ),
+
+                  // Items
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: lead.documents
+                              ?.map((doc) => _buildDocumentCard(doc, context))
+                              .toList() ??
+                          [].asMap().entries.map((entry) {
+                            final isLast = entry.key ==
+                                (lead.documents
+                                                ?.map((doc) =>
+                                                    _buildDocumentCard(
+                                                        doc, context))
+                                                .toList() ??
+                                            [])
+                                        .length -
+                                    1;
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+                              child: entry.value,
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
+
             const SizedBox(height: 16),
           ],
         ),

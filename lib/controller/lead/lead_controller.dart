@@ -127,7 +127,6 @@ class LeadController extends GetxController {
   Future<bool> updateLead(
       BuildContext context, LeadModel leads, String id) async {
     try {
-      print(leads.toJson());
       final response = await _apiService.patchRequest(
         endpoint: '${Constant().updateLead}/$id',
         body: leads.toJson()..removeWhere((key, value) => value == null),

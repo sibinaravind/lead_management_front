@@ -424,9 +424,9 @@ class LeadModel {
         "phone_communication": phoneCommunication,
         "email_communication": emailCommunication,
         "whatsapp_communication": whatsappCommunication,
-        "product_interested": productInterested == null
-            ? []
-            : List<dynamic>.from(productInterested!.map((x) => x.toJson())),
+        // "product_interested": productInterested == null
+        //     ? []
+        //     : List<dynamic>.from(productInterested!.map((x) => x.toJson())),
         "budget": budget,
         "preferred_location": preferredLocation,
         "preferred_date":

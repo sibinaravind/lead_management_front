@@ -33,4 +33,20 @@ class ProductOfferedModel {
         "updated_by": updatedBy,
         "description": description,
       };
+
+  ProductOfferedModel copyWith({
+    int? offerPrice,
+    int? demandingPrice,
+    String? uploadedAt,
+    String? updatedBy,
+    String? description,
+  }) {
+    return ProductOfferedModel(
+      offerPrice: offerPrice ?? this.offerPrice,
+      demandingPrice: demandingPrice ?? this.demandingPrice,
+      uploadedAt: uploadedAt ?? this.uploadedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      description: description ?? this.description,
+    );
+  }
 }

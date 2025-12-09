@@ -34,10 +34,12 @@ class GlobalBindings extends Bindings {
     Get.lazyPut(() => AppUserController());
     Get.put(ConfigController());
     Get.put(ProductController());
+    // Get.lazyPut(() => LoginController()); //test
+    Get.put(LoginController());
     Get.lazyPut(() => RegistrationController());
     Get.lazyPut(() => AccessPermissionController());
     Get.lazyPut(() => CampaignController());
-    Get.lazyPut(() => LoginController());
+
     Get.lazyPut(() => RoundRobinController());
     Get.lazyPut(() => OfficersController());
     Get.lazyPut(() => TeamLeadController());

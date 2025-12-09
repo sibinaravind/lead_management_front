@@ -18,7 +18,9 @@ class ConfigListModel {
   List<ConfigModel>? jobCategory;
   List<ConfigModel>? specialized;
   List<ConfigModel>? closedStatus;
-  List<ConfigModel>? courses; // Added field
+  List<ConfigModel>? courses;
+  List<ConfigModel>? leadDocuments; // Added field
+  List<ConfigModel>? bookingDocuments; // Added field
 
   ConfigListModel({
     this.id,
@@ -38,7 +40,9 @@ class ConfigListModel {
     this.program,
     this.jobCategory,
     this.closedStatus,
-    this.courses, // Added field
+    this.courses,
+    this.leadDocuments, // Added field
+    this.bookingDocuments, // Added field
   });
 
   factory ConfigListModel.fromJson(Map<String, dynamic> json) =>
@@ -60,7 +64,10 @@ class ConfigListModel {
         program: _parseConfigList(json["program"]),
         jobCategory: _parseConfigList(json["job_category"]),
         closedStatus: _parseConfigList(json["closed_status"]),
-        courses: _parseConfigList(json["courses"]), // Added field
+        courses: _parseConfigList(json["courses"]),
+        leadDocuments: _parseConfigList(json["lead_documents"]), // Added field
+        bookingDocuments:
+            _parseConfigList(json["booking_documents"]), // Added field
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,7 +86,9 @@ class ConfigListModel {
         "program": _mapList(program),
         "job_category": _mapList(jobCategory),
         "closed_status": _mapList(closedStatus),
-        "courses": _mapList(courses), // Added field
+        "courses": _mapList(courses),
+        "lead_documents": _mapList(leadDocuments), // Added field
+        "booking_documents": _mapList(bookingDocuments), // Added field
       };
 
   static List<ConfigModel>? _parseConfigList(dynamic list) {
@@ -126,7 +135,9 @@ class ConfigListModel {
       "job_category": jobCategory,
       "specialized": specialized,
       "closed_status": closedStatus,
-      "courses": courses, // Added field
+      "courses": courses,
+      "lead_documents": leadDocuments, // Added field
+      "booking_documents": bookingDocuments, // Added field
     };
   }
 
@@ -190,8 +201,12 @@ class ConfigListModel {
         return specialized ??= [];
       case 'closed_status':
         return closedStatus ??= [];
-      case 'courses': // Added case
+      case 'courses':
         return courses ??= [];
+      case 'lead_documents': // Added case
+        return leadDocuments ??= [];
+      case 'booking_documents': // Added case
+        return bookingDocuments ??= [];
       default:
         throw ArgumentError('Unknown category: $category');
     }

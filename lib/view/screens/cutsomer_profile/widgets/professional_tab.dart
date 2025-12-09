@@ -14,7 +14,6 @@ class ProfessionalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
       child: GetBuilder<CustomerProfileController>(
         builder: (controller) {
           final lead = controller.leadDetails.value;
