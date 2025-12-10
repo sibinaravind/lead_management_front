@@ -57,7 +57,7 @@ class UserCacheService {
     var token = sharedPrefs.getString(TOKEN_CACHE_KEY);
     if (token == null) {
       // return null;  //test
-      return "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZjZWRhOWU5Mjk5ZjM0MjlkNjIzOWEiLCJvZmZpY2VyX2lkIjoiQUVPSUQwMDAwNCIsImRlc2lnbmF0aW9uIjpbIkNPVU5TSUxPUiIsIkFETUlOIl0sImJyYW5jaCI6WyJUU1QxMyJdLCJvZmZpY2VycyI6W10sImlhdCI6MTc2NTI5MzU0NywiZXhwIjoxNzY1MzExNTQ3fQ.glErZeL1SJZUQAm139sye-ebofCVmgD2tYGaBpRU6cA";
+      return "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZjZWRhOWU5Mjk5ZjM0MjlkNjIzOWEiLCJvZmZpY2VyX2lkIjoiQUVPSUQwMDAwNCIsImRlc2lnbmF0aW9uIjpbIkNPVU5TSUxPUiIsIkFETUlOIl0sImJyYW5jaCI6WyJUU1QxMyJdLCJvZmZpY2VycyI6W10sImlhdCI6MTc2NTM2ODIwMiwiZXhwIjoxNzY1Mzg2MjAyfQ.0kx-H-WadGXnLoLYlK6WbU5GgQkGry66C0H0mkNmglU";
     } else {
       return "Bearer $token";
     }

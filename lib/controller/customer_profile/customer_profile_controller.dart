@@ -192,11 +192,10 @@ class CustomerProfileController extends GetxController {
       Map<String, dynamic>? body,
       required BuildContext context}) async {
     try {
-      final response = await _apiService.patchRequest(
+      final response = await _apiService.postRequest(
         endpoint: Constant().uploadLeadDocument + (clientId ?? ''),
         body: body,
         fromJson: (json) {
-          // Extract file path from response if available
           if (json['file_path'] != null) {
             return json['file_path'];
           }
@@ -209,6 +208,8 @@ class CustomerProfileController extends GetxController {
           throw Exception(failure);
         },
         (data) {
+          print('Uploaded file path: $data');
+
           CustomSnackBar.showMessage(
               "Success", "Document uploaded successfully",
               backgroundColor: Colors.green);

@@ -176,8 +176,6 @@ class ApiService extends GetxService {
     required T Function(dynamic json) fromJson,
   }) async {
     try {
-      print("📤 POST to $endpoint with body: $body");
-
       final response = await http.post(
         Uri.parse(endpoint),
         headers: {

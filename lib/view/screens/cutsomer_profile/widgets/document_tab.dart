@@ -436,7 +436,7 @@ class DocumentsTab extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return ModernUploadPopup(
+                                    return UploadDocumentPopup(
                                       // initialProducts:
                                       //     lead.productInterested ?? <ProductItem>[],
                                       onSave: (documents) {

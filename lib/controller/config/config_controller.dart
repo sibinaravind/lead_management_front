@@ -6,6 +6,7 @@ import '../../core/services/api_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../core/shared/constants.dart';
 import '../../view/widgets/custom_snackbar.dart';
+import '../product_controller/product_controller.dart';
 
 class ConfigController extends GetxController {
   var isLoading = false.obs;
@@ -14,12 +15,16 @@ class ConfigController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loaddata();
+  }
+
+  void loaddata() {
     loadConfigData();
+    Get.find<ProductController>().fetchProducts();
   }
 
   Future<bool> loadConfigData() async {
     // print(configData.value);
-
     if (configData.value.id != null) return true;
     isLoading.value = true;
     try {

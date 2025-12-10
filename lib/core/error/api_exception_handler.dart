@@ -6,13 +6,15 @@ import 'package:overseas_front_end/core/error/handle_unathorized.dart';
 import 'exception.dart';
 
 Exception handleApiException(dynamic e) {
+  print("API Exception Handler Invoked with error: ${e.response?.statusCode}");
   if (e is DioException) {
     if (e.type == DioExceptionType.connectionError ||
         e.error is SocketException) {
       return ServerException(
           "No internet connection. Please check your network.");
     } else if (e.response != null) {
-      if (e.response!.statusCode == 401) {
+      if (e.response?.statusCode == 401) {
+        print("API Exception Handler: Unauthorized access detected.");
         handleUnauthorized(); // 👈 handle logout + redirect
         return ServerException('Unauthorized');
       }

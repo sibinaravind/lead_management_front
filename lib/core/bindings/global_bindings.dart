@@ -31,12 +31,13 @@ class GlobalBindings extends Bindings {
   @override
   void dependencies() {
     // Get.put(AppUserController());
-    Get.lazyPut(() => AppUserController());
-    Get.put(ConfigController());
-    Get.put(ProductController());
+    // Get.lazyPut(() => AppUserController());
+
+    // Get.put(ProductController());
+    Get.lazyPut(() => ProductController());
     // Get.lazyPut(() => LoginController()); //test
     Get.put(LoginController());
-    Get.lazyPut(() => RegistrationController());
+
     Get.lazyPut(() => AccessPermissionController());
     Get.lazyPut(() => CampaignController());
 
@@ -49,6 +50,7 @@ class GlobalBindings extends Bindings {
     Get.lazyPut(() => ProductServiceController());
     Get.lazyPut(() => BillController());
 
+    Get.put(ConfigController());
     // Get.lazyPut(() => RegistrationDataController());
     // Get.lazyPut(() => ProjectsDataContorller());
     // Get.lazyPut(() => EmployeeDataController());
@@ -56,7 +58,7 @@ class GlobalBindings extends Bindings {
     // Get.lazyPut(() => OfficerController());
     // Get.lazyPut(() => VisaDataController());
     // Get.lazyPut(() => CallDataController());
-
+    // Get.lazyPut(() => RegistrationController());
     // Get.lazyPut(() => DrawerMoveController());
     // Get.lazyPut(() => LogoutController());
     // Get.lazyPut(() => UserDetailsController());

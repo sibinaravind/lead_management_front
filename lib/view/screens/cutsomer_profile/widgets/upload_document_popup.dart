@@ -1,27 +1,37 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
 
-class ModernUploadPopup extends StatefulWidget {
+class UploadDocumentPopup extends StatefulWidget {
   final bool allowMultiple;
   final List<String> items;
   final Function(Map<String, dynamic>) onSave;
 
-  const ModernUploadPopup({
+  const UploadDocumentPopup({
     super.key,
     required this.onSave,
     this.allowMultiple = false,
-    this.items = const ['Toyota', 'Honda', 'Ford', 'BMW', 'Audi'],
+    this.items = const ['Passport', 'Aadhaar', 'Pan', 'Degree', 'Certificate'],
   });
 
   @override
-  State<ModernUploadPopup> createState() => _ModernUploadPopupState();
+  State<UploadDocumentPopup> createState() => _ModernUploadPopupState();
 }
 
-class _ModernUploadPopupState extends State<ModernUploadPopup> {
+class _ModernUploadPopupState extends State<UploadDocumentPopup> {
   String selectedDocType = "";
   List<Map<String, dynamic>> files = [];
+  bool isProcessing = false;
+
+  // File size limits
+  static const int maxImageSize = 2 * 1024 * 1024; // 2MB for images
+  static const int maxPdfSize = 5 * 1024 * 1024; // 5MB for PDFs
+  static const int imageQuality = 85; // JPEG quality (0-100)
+  static const int maxImageDimension = 1920; // Max width/height
 
   @override
   void initState() {
@@ -32,32 +42,149 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
   }
 
   Future<void> pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: widget.allowMultiple,
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-      withData: true, // Important: load file bytes
-    );
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: widget.allowMultiple,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+        withData: true,
+      );
 
-    if (result != null) {
-      files.clear();
+      if (result != null && result.files.isNotEmpty) {
+        setState(() => isProcessing = true);
 
-      for (var file in result.files) {
-        if (file.bytes != null) {
-          String ext = file.extension ?? "";
-          String mime = _getMimeType(ext);
-          String base64 = base64Encode(file.bytes!);
+        // Process files in background
+        final processedFiles = await _processFilesInBackground(result.files);
 
-          files.add({
-            "mime": mime,
-            "base64": base64,
-            "name": file.name,
+        if (mounted) {
+          setState(() {
+            files = processedFiles;
+            isProcessing = false;
           });
         }
       }
-
-      setState(() {});
+    } catch (e) {
+      debugPrint('Error picking files: $e');
+      if (mounted) {
+        setState(() => isProcessing = false);
+        _showError('Error selecting files: ${e.toString()}');
+      }
     }
+  }
+
+  Future<List<Map<String, dynamic>>> _processFilesInBackground(
+      List<PlatformFile> platformFiles) async {
+    List<Map<String, dynamic>> processedFiles = [];
+
+    for (var file in platformFiles) {
+      try {
+        if (file.bytes == null) continue;
+
+        String ext = file.extension?.toLowerCase() ?? "";
+        String mime = _getMimeType(ext);
+
+        // Validate file size before processing
+        if (_isImageFile(ext)) {
+          if (file.bytes!.length > maxImageSize * 2) {
+            // Allow 2x for compression
+            _showError(
+                '${file.name} is too large. Max size for images: ${maxImageSize / (1024 * 1024)}MB');
+            continue;
+          }
+        } else if (ext == 'pdf') {
+          if (file.bytes!.length > maxPdfSize) {
+            _showError(
+                '${file.name} is too large. Max size for PDFs: ${maxPdfSize / (1024 * 1024)}MB');
+            continue;
+          }
+        }
+
+        // Process file based on type
+        String base64String;
+        if (_isImageFile(ext)) {
+          // Compress and encode image in isolate
+          base64String = await _compressAndEncodeImage(file.bytes!, ext);
+        } else {
+          // For PDFs, just encode in isolate
+          base64String = await compute(_encodeBase64, file.bytes!);
+        }
+
+        // Format with data URI (no space after comma)
+        final formattedBase64 = _formatBase64WithDataUri(base64String, mime);
+
+        processedFiles.add({
+          "mime": mime,
+          "base64": formattedBase64,
+          "name": file.name,
+          "size": file.bytes!.length,
+        });
+      } catch (e) {
+        debugPrint('Error processing ${file.name}: $e');
+        _showError('Failed to process ${file.name}');
+      }
+    }
+
+    return processedFiles;
+  }
+
+  bool _isImageFile(String ext) {
+    return ext == 'jpg' || ext == 'jpeg' || ext == 'png';
+  }
+
+  Future<String> _compressAndEncodeImage(
+      Uint8List bytes, String extension) async {
+    return await compute(_compressImageInIsolate, {
+      'bytes': bytes,
+      'extension': extension,
+      'quality': imageQuality,
+      'maxDimension': maxImageDimension,
+    });
+  }
+
+  static String _compressImageInIsolate(Map<String, dynamic> params) {
+    try {
+      final Uint8List bytes = params['bytes'];
+      final String extension = params['extension'];
+      final int quality = params['quality'];
+      final int maxDimension = params['maxDimension'];
+
+      // Decode image
+      img.Image? image = img.decodeImage(bytes);
+      if (image == null) {
+        // If decoding fails, just encode as-is
+        return base64Encode(bytes);
+      }
+
+      // Resize if too large
+      if (image.width > maxDimension || image.height > maxDimension) {
+        image = img.copyResize(
+          image,
+          width: image.width > image.height ? maxDimension : null,
+          height: image.height >= image.width ? maxDimension : null,
+          interpolation: img.Interpolation.linear,
+        );
+      }
+
+      // Encode with compression
+      Uint8List compressed;
+      if (extension == 'png') {
+        compressed = Uint8List.fromList(img.encodePng(image, level: 6));
+      } else {
+        compressed = Uint8List.fromList(img.encodeJpg(image, quality: quality));
+      }
+
+      // Use smaller version
+      final finalBytes = compressed.length < bytes.length ? compressed : bytes;
+      return base64Encode(finalBytes);
+    } catch (e) {
+      debugPrint('Error compressing image: $e');
+      // Fallback to original
+      return base64Encode(params['bytes']);
+    }
+  }
+
+  static String _encodeBase64(Uint8List bytes) {
+    return base64Encode(bytes);
   }
 
   String _getMimeType(String ext) {
@@ -74,28 +201,34 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
     }
   }
 
-  void save() {
-    // if (selectedDocType.isEmpty) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: const Text("Please select document type"),
-    //       behavior: SnackBarBehavior.floating,
-    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    //     ),
-    //   );
-    //   return;
-    // }
+  String _formatBase64WithDataUri(String base64, String mimeType) {
+    // Format: data:image/jpeg;base64,<base64_string>
+    // Note: NO SPACE after the comma
+    return "data:$mimeType;base64,$base64";
+  }
 
-    // if (files.isEmpty) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: const Text("Please select at least one file"),
-    //       behavior: SnackBarBehavior.floating,
-    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    //     ),
-    //   );
-    //   return;
-    // }
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  void save() {
+    if (selectedDocType.isEmpty) {
+      _showError("Please select document type");
+      return;
+    }
+
+    if (files.isEmpty) {
+      _showError("Please select at least one file");
+      return;
+    }
 
     final output = {
       "doc_type": selectedDocType,
@@ -103,7 +236,7 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
           ? files.map((e) => e["base64"]).toList()
           : files.first["base64"],
     };
-    print(output);
+
     widget.onSave(output);
     Navigator.pop(context);
   }
@@ -151,7 +284,7 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
 
             // Document Type Dropdown
             CustomDropdownField(
-              label: 'Status',
+              label: 'Document Type',
               value: selectedDocType,
               items: widget.items.map((e) => e).toList(),
               onChanged: (value) {
@@ -164,8 +297,13 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
 
             const SizedBox(height: 24),
 
-            // Upload Area or Preview
-            if (files.isEmpty) _buildUploadArea() else _buildPreviewArea(),
+            // Processing indicator or upload/preview area
+            if (isProcessing)
+              _buildProcessingIndicator()
+            else if (files.isEmpty)
+              _buildUploadArea()
+            else
+              _buildPreviewArea(),
 
             const SizedBox(height: 24),
 
@@ -174,7 +312,7 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: isProcessing ? null : () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 12),
@@ -186,10 +324,11 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
-                  onPressed: save,
+                  onPressed: isProcessing || files.isEmpty ? null : save,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade700,
                     foregroundColor: Colors.white,
+                    disabledBackgroundColor: Colors.grey.shade300,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -202,6 +341,46 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProcessingIndicator() {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.blue.shade50,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade700),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Processing files...",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.blue.shade900,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Compressing and optimizing",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -250,10 +429,19 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Supported: JPG, PNG, PDF",
+              "JPG, PNG (max 2MB) • PDF (max 5MB)",
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Images will be automatically compressed",
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.grey.shade500,
+                fontStyle: FontStyle.italic,
               ),
             ),
           ],
@@ -305,6 +493,7 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
                 final mime = file["mime"];
                 final base64 = file["base64"];
                 final name = file["name"] ?? "File ${index + 1}";
+                final size = file["size"] ?? 0;
 
                 return Container(
                   width: 120,
@@ -339,10 +528,16 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
                                       ),
                                     )
                                   : Image.memory(
-                                      base64Decode(base64),
+                                      base64Decode(base64.split(',').last),
                                       width: double.infinity,
                                       height: double.infinity,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        color: Colors.grey.shade200,
+                                        child: Icon(Icons.broken_image,
+                                            size: 32,
+                                            color: Colors.grey.shade400),
+                                      ),
                                     ),
                             ),
                             // Delete button
@@ -376,18 +571,31 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
                           ],
                         ),
                       ),
-                      // File name
+                      // File name and size
                       Padding(
                         padding: const EdgeInsets.all(8),
-                        child: Text(
-                          name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _formatFileSize(size),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -400,7 +608,417 @@ class _ModernUploadPopupState extends State<ModernUploadPopup> {
       ),
     );
   }
+
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
 }
+
+// import 'dart:convert';
+// import 'package:file_picker/file_picker.dart';
+// import 'package:flutter/material.dart';
+// import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
+
+// class UploadDocumentPopup extends StatefulWidget {
+//   final bool allowMultiple;
+//   final List<String> items;
+//   final Function(Map<String, dynamic>) onSave;
+
+//   const UploadDocumentPopup({
+//     super.key,
+//     required this.onSave,
+//     this.allowMultiple = false,
+//     this.items = const ['Passport', 'Aadhaar', 'Pan', 'Degree', 'Certificate'],
+//   });
+
+//   @override
+//   State<UploadDocumentPopup> createState() => _ModernUploadPopupState();
+// }
+
+// class _ModernUploadPopupState extends State<UploadDocumentPopup> {
+//   String selectedDocType = "";
+//   List<Map<String, dynamic>> files = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     if (widget.items.isNotEmpty) {
+//       selectedDocType = widget.items.first;
+//     }
+//   }
+
+//   Future<void> pickFiles() async {
+//     FilePickerResult? result = await FilePicker.platform.pickFiles(
+//       allowMultiple: widget.allowMultiple,
+//       type: FileType.custom,
+//       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+//       withData: true, // Important: load file bytes
+//     );
+
+//     if (result != null) {
+//       files.clear();
+
+//       for (var file in result.files) {
+//         if (file.bytes != null) {
+//           String ext = file.extension ?? "";
+//           String mime = _getMimeType(ext);
+//           String base64 = base64Encode(file.bytes!);
+
+//           files.add({
+//             "mime": mime,
+//             "base64": base64,
+//             "name": file.name,
+//           });
+//         }
+//       }
+
+//       setState(() {});
+//     }
+//   }
+
+//   String _getMimeType(String ext) {
+//     switch (ext.toLowerCase()) {
+//       case "jpg":
+//       case "jpeg":
+//         return "image/jpeg";
+//       case "png":
+//         return "image/png";
+//       case "pdf":
+//         return "application/pdf";
+//       default:
+//         return "application/octet-stream";
+//     }
+//   }
+
+//   void save() {
+//     // if (selectedDocType.isEmpty) {
+//     //   ScaffoldMessenger.of(context).showSnackBar(
+//     //     SnackBar(
+//     //       content: const Text("Please select document type"),
+//     //       behavior: SnackBarBehavior.floating,
+//     //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//     //     ),
+//     //   );
+//     //   return;
+//     // }
+
+//     // if (files.isEmpty) {
+//     //   ScaffoldMessenger.of(context).showSnackBar(
+//     //     SnackBar(
+//     //       content: const Text("Please select at least one file"),
+//     //       behavior: SnackBarBehavior.floating,
+//     //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//     //     ),
+//     //   );
+//     //   return;
+//     // }
+
+//     final output = {
+//       "doc_type": selectedDocType,
+//       "base64": widget.allowMultiple
+//           ? files.map((e) => e["base64"]).toList()
+//           : files.first["base64"],
+//     };
+
+//     widget.onSave(output);
+//     Navigator.pop(context);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Dialog(
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//       child: Container(
+//         constraints: const BoxConstraints(maxWidth: 500),
+//         padding: const EdgeInsets.all(24),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           children: [
+//             // Header
+//             Row(
+//               children: [
+//                 Container(
+//                   padding: const EdgeInsets.all(10),
+//                   decoration: BoxDecoration(
+//                     color: Colors.blue.shade50,
+//                     borderRadius: BorderRadius.circular(12),
+//                   ),
+//                   child: Icon(Icons.cloud_upload_outlined,
+//                       color: Colors.blue.shade700, size: 24),
+//                 ),
+//                 const SizedBox(width: 12),
+//                 const Text(
+//                   "Upload Document",
+//                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+//                 ),
+//                 const Spacer(),
+//                 IconButton(
+//                   onPressed: () => Navigator.pop(context),
+//                   icon: const Icon(Icons.close),
+//                   style: IconButton.styleFrom(
+//                     backgroundColor: Colors.grey.shade100,
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // Document Type Dropdown
+//             CustomDropdownField(
+//               label: 'Status',
+//               value: selectedDocType,
+//               items: widget.items.map((e) => e).toList(),
+//               onChanged: (value) {
+//                 setState(() {
+//                   selectedDocType = value ?? "";
+//                 });
+//               },
+//               isRequired: true,
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // Upload Area or Preview
+//             if (files.isEmpty) _buildUploadArea() else _buildPreviewArea(),
+
+//             const SizedBox(height: 24),
+
+//             // Action Buttons
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.end,
+//               children: [
+//                 OutlinedButton(
+//                   onPressed: () => Navigator.pop(context),
+//                   style: OutlinedButton.styleFrom(
+//                     padding: const EdgeInsets.symmetric(
+//                         horizontal: 24, vertical: 12),
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                   ),
+//                   child: const Text("Cancel"),
+//                 ),
+//                 const SizedBox(width: 12),
+//                 ElevatedButton(
+//                   onPressed: save,
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.blue.shade700,
+//                     foregroundColor: Colors.white,
+//                     padding: const EdgeInsets.symmetric(
+//                         horizontal: 32, vertical: 12),
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                   ),
+//                   child: const Text("Save"),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildUploadArea() {
+//     return InkWell(
+//       onTap: pickFiles,
+//       borderRadius: BorderRadius.circular(16),
+//       child: Container(
+//         height: 200,
+//         decoration: BoxDecoration(
+//           borderRadius: BorderRadius.circular(16),
+//           border: Border.all(color: Colors.blue.shade300, width: 2),
+//           color: Colors.blue.shade50,
+//         ),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Container(
+//               padding: const EdgeInsets.all(16),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 shape: BoxShape.circle,
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.blue.shade100,
+//                     blurRadius: 12,
+//                     spreadRadius: 2,
+//                   ),
+//                 ],
+//               ),
+//               child: Icon(
+//                 Icons.cloud_upload_outlined,
+//                 size: 48,
+//                 color: Colors.blue.shade700,
+//               ),
+//             ),
+//             const SizedBox(height: 16),
+//             Text(
+//               widget.allowMultiple ? "Upload Files" : "Upload File",
+//               style: TextStyle(
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.w600,
+//                 color: Colors.blue.shade900,
+//               ),
+//             ),
+//             const SizedBox(height: 8),
+//             Text(
+//               "Supported: JPG, PNG, PDF",
+//               style: TextStyle(
+//                 fontSize: 14,
+//                 color: Colors.grey.shade600,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildPreviewArea() {
+//     return Container(
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(16),
+//         color: Colors.grey.shade50,
+//         border: Border.all(color: Colors.grey.shade300),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Text(
+//                 "Selected ${widget.allowMultiple ? 'Files' : 'File'} (${files.length})",
+//                 style: const TextStyle(
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//               TextButton.icon(
+//                 onPressed: pickFiles,
+//                 icon: const Icon(Icons.refresh, size: 18),
+//                 label: const Text("Reselect"),
+//                 style: TextButton.styleFrom(
+//                   foregroundColor: Colors.blue.shade700,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(height: 12),
+//           SizedBox(
+//             height: 140,
+//             child: ListView.separated(
+//               scrollDirection: Axis.horizontal,
+//               itemCount: files.length,
+//               separatorBuilder: (_, __) => const SizedBox(width: 12),
+//               itemBuilder: (context, index) {
+//                 final file = files[index];
+//                 final mime = file["mime"];
+//                 final base64 = file["base64"];
+//                 final name = file["name"] ?? "File ${index + 1}";
+
+//                 return Container(
+//                   width: 120,
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.circular(12),
+//                     color: Colors.white,
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.grey.shade200,
+//                         blurRadius: 4,
+//                         spreadRadius: 1,
+//                       ),
+//                     ],
+//                   ),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.stretch,
+//                     children: [
+//                       // Preview
+//                       Expanded(
+//                         child: Stack(
+//                           children: [
+//                             ClipRRect(
+//                               borderRadius: const BorderRadius.vertical(
+//                                   top: Radius.circular(12)),
+//                               child: mime.contains("pdf")
+//                                   ? Container(
+//                                       color: Colors.red.shade50,
+//                                       child: Center(
+//                                         child: Icon(Icons.picture_as_pdf,
+//                                             size: 48,
+//                                             color: Colors.red.shade700),
+//                                       ),
+//                                     )
+//                                   : Image.memory(
+//                                       base64Decode(base64),
+//                                       width: double.infinity,
+//                                       height: double.infinity,
+//                                       fit: BoxFit.cover,
+//                                     ),
+//                             ),
+//                             // Delete button
+//                             Positioned(
+//                               right: 6,
+//                               top: 6,
+//                               child: GestureDetector(
+//                                 onTap: () {
+//                                   setState(() => files.removeAt(index));
+//                                 },
+//                                 child: Container(
+//                                   padding: const EdgeInsets.all(6),
+//                                   decoration: BoxDecoration(
+//                                     color: Colors.red.shade600,
+//                                     shape: BoxShape.circle,
+//                                     boxShadow: [
+//                                       BoxShadow(
+//                                         color: Colors.black.withOpacity(0.2),
+//                                         blurRadius: 4,
+//                                       ),
+//                                     ],
+//                                   ),
+//                                   child: const Icon(
+//                                     Icons.close,
+//                                     size: 14,
+//                                     color: Colors.white,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       // File name
+//                       Padding(
+//                         padding: const EdgeInsets.all(8),
+//                         child: Text(
+//                           name,
+//                           maxLines: 1,
+//                           overflow: TextOverflow.ellipsis,
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(
+//                             fontSize: 12,
+//                             color: Colors.grey.shade700,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 // import 'dart:io';
 // import 'package:flutter/material.dart';
