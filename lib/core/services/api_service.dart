@@ -57,13 +57,12 @@ class ApiService extends GetxService {
       if (body is Map<String, dynamic>) {
         cleanedBody = removeNullFields(body);
       }
-      print("POST Request to $endpoint with body: $cleanedBody");
       final response = await dio.post(
         endpoint,
         data: cleanedBody,
         options: await _getOptions(),
       );
-      print("🔥 DioException: $response");
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson(response.data["data"]));
       } else {
@@ -177,7 +176,7 @@ class ApiService extends GetxService {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse(endpoint),
+        Uri.parse(Constant().featureBaseUrl + endpoint),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -185,9 +184,8 @@ class ApiService extends GetxService {
         },
         body: jsonEncode(body),
       );
-
-      print("📥 Response status: ${response.statusCode}");
-      print("📥 Response body: ${response.body}");
+      // print("📥 Response status: ${response.statusCode}");
+      // print("📥 Response body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (response.body.isEmpty) {

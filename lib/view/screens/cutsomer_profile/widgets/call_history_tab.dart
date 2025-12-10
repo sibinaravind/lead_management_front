@@ -7,6 +7,7 @@ import '../../../../model/lead/call_event_model.dart';
 import '../../../../utils/functions/format_date.dart';
 import '../../../widgets/widgets.dart';
 
+// ignore: must_be_immutable
 class CallHistoryTab extends StatelessWidget {
   CallHistoryTab({super.key, required this.clientId});
   final String clientId;

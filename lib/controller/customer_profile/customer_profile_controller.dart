@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:overseas_front_end/utils/functions/format_date.dart';
 import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 
 import '../../core/services/api_service.dart';
 import '../../core/shared/constants.dart';
 import '../../model/lead/call_event_model.dart';
 import '../../model/lead/customer_journeydata.dart';
+import '../../model/lead/document_record_model.dart';
 import '../../model/lead/lead_list_model.dart';
 import '../../model/lead/lead_model.dart';
 import '../../model/lead/product_intreseted_model.dart';
-import '../../view/widgets/custom_snackbar.dart';
 
 class CustomerProfileController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -123,7 +124,9 @@ class CustomerProfileController extends GetxController {
         },
         (data) {
           Navigator.pop(context);
-          CustomSnackBar.showMessage("Success", "Lead created successfully",
+          CustomToast.showToast(
+              context: context,
+              message: "Lead created successfully",
               backgroundColor: Colors.green);
           return true;
         },
@@ -152,11 +155,14 @@ class CustomerProfileController extends GetxController {
           throw Exception(failure);
         },
         (data) {
-          CustomSnackBar.showMessage(
-              "Success", "Product interest added successfully",
+          CustomToast.showToast(
+              context: context,
+              message: "Product interest added successfully",
               backgroundColor: Colors.green);
           // Add product interest to leadDetails
           final newProduct = productInterested;
+          newProduct?.offers?[0].uploadedAt =
+              formatDatetoString(DateTime.now());
           if (newProduct != null) {
             final existingProducts = leadDetails.value.productInterested ?? [];
             final index = existingProducts.indexWhere(
@@ -187,39 +193,98 @@ class CustomerProfileController extends GetxController {
     }
   }
 
-  Future<bool> uploadDocument(
-      {String? clientId,
-      Map<String, dynamic>? body,
-      required BuildContext context}) async {
+  Future<bool> uploadDocument({
+    String? clientId,
+    Map<String, dynamic>? body,
+    required BuildContext context,
+  }) async {
     try {
-      final response = await _apiService.postRequest(
+      isLoading.value = true;
+
+      final response = await _apiService.postHttpRequest(
         endpoint: Constant().uploadLeadDocument + (clientId ?? ''),
         body: body,
-        fromJson: (json) {
-          if (json['file_path'] != null) {
-            return json['file_path'];
-          }
-          return null;
-        },
+        fromJson: (json) => json['file_path'],
       );
-      // print('File path: $response');
-      return response.fold(
-        (failure) {
-          throw Exception(failure);
-        },
-        (data) {
-          print('Uploaded file path: $data');
 
-          CustomSnackBar.showMessage(
-              "Success", "Document uploaded successfully",
-              backgroundColor: Colors.green);
+      return await response.fold(
+        (failure) async {
+          // Check if context is still mounted before showing toast
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Failed to upload document: $failure",
+            );
+          }
+          return false;
+        },
+        (filePath) async {
+          if (filePath == null) {
+            if (context.mounted) {
+              CustomToast.showToast(
+                context: context,
+                message: "Failed to upload document: No file path returned",
+              );
+            }
+            return false;
+          }
+
+          // Use 'doc_type' instead of 'data' - check both possible keys
+          final uploadedDocType = body?['doc_type'] ?? body?['data'];
+          if (uploadedDocType == null) {
+            if (context.mounted) {
+              CustomToast.showToast(
+                context: context,
+                message: "Document type not specified",
+              );
+            }
+            return false;
+          }
+
+          // Update documents using immutable pattern
+          leadDetails.update((lead) {
+            if (lead == null) return;
+
+            final currentDocs = lead.documents ?? [];
+
+            // Find index by doc_type
+            final index =
+                currentDocs.indexWhere((doc) => doc.docType == uploadedDocType);
+
+            final updatedDoc = DocumentRecordModel(
+              docType: uploadedDocType,
+              filePath: filePath,
+              uploadedAt: formatDatetoString(DateTime.now()),
+            );
+
+            final newDocs = List<DocumentRecordModel>.from(currentDocs);
+
+            if (index != -1) {
+              newDocs[index] = updatedDoc;
+            } else {
+              newDocs.add(updatedDoc);
+            }
+
+            lead.documents = newDocs;
+          });
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Document uploaded successfully",
+              backgroundColor: Colors.green,
+            );
+          }
 
           return true;
         },
       );
     } catch (e) {
-      CustomToast.showToast(
-          context: context, message: "Failed to upload document: $e");
+      if (context.mounted) {
+        CustomToast.showToast(
+          context: context,
+          message: "Failed to upload document: $e",
+        );
+      }
       return false;
     } finally {
       isLoading.value = false;

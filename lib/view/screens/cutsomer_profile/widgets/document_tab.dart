@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/upload_document_popup.dart';
 import '../../../../controller/config/config_controller.dart';
@@ -469,29 +468,35 @@ class DocumentsTab extends StatelessWidget {
                   ),
 
                   // Items
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: lead.documents
-                              ?.map((doc) => _buildDocumentCard(doc, context))
-                              .toList() ??
-                          [].asMap().entries.map((entry) {
-                            final isLast = entry.key ==
-                                (lead.documents
-                                                ?.map((doc) =>
-                                                    _buildDocumentCard(
-                                                        doc, context))
-                                                .toList() ??
-                                            [])
-                                        .length -
-                                    1;
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
-                              child: entry.value,
-                            );
-                          }).toList(),
-                    ),
-                  ),
+                  Obx(() {
+                    return Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: Get.find<CustomerProfileController>()
+                                  .leadDetails
+                                  .value
+                                  .documents
+                                  ?.map(
+                                      (doc) => _buildDocumentCard(doc, context))
+                                  .toList() ??
+                              [].asMap().entries.map((entry) {
+                                final isLast = entry.key ==
+                                    (lead.documents
+                                                    ?.map((doc) =>
+                                                        _buildDocumentCard(
+                                                            doc, context))
+                                                    .toList() ??
+                                                [])
+                                            .length -
+                                        1;
+                                return Padding(
+                                  padding:
+                                      EdgeInsets.only(bottom: isLast ? 0 : 12),
+                                  child: entry.value,
+                                );
+                              }).toList(),
+                        ));
+                  })
                 ],
               ),
             ),

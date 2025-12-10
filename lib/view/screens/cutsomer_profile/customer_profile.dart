@@ -57,8 +57,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       {
         'icon': Icons.shopping_bag_rounded,
         'label': 'Products Interested',
-        'widget':
-            ProductInterestedTab(lead: profileController.leadDetails.value),
+        'widget': ProductInterestedTab(),
         'completed': true,
       },
       {

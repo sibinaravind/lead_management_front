@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
@@ -39,13 +37,13 @@ class _ProductInterestedPopupState extends State<ProductInterestedPopup> {
         offers ?? ProductOfferedModel(),
       ],
     );
-    // showLoaderDialog(context);
+    showLoaderDialog(context);
     await Get.find<CustomerProfileController>().addProductInterest(
         context: context,
         clientId: widget.clientId,
         productInterested: savedData);
-    // Navigator.pop(context);
-    // Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override

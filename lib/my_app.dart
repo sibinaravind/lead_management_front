@@ -10,7 +10,8 @@ import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
 import 'view/screens/leads/add_lead_screen.dart';
-import 'view/screens/leads/widgets/deatil_lead_page.dart';
+import 'view/screens/leads/backup/deatil_lead_page.dart';
+import 'view/screens/leads/widgets/call_record_popup.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -87,8 +88,10 @@ class MyApp extends StatelessWidget {
         // ),
         GoRoute(
           path: '/test', //test move to /
-          builder: (context, state) => CustomerProfileScreen(
-            leadId: '693280ea138d99fa16ea4cb7',
+          builder: (context, state) => CallRecordPopup(
+            clientId: "",
+            clientName: "",
+            // leadId: '693280ea138d99fa16ea4cb7',
           ),
         ),
       ],
@@ -100,7 +103,8 @@ class MyApp extends StatelessWidget {
     NavigationService.initialize(router);
     return GetMaterialApp.router(
       initialBinding: GlobalBindings(),
-      title: ' ${FlavourConfig.partnerName()} ',
+      // title: ' ${FlavourConfig.partnerName()} ',
+      title: 'Alead',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
