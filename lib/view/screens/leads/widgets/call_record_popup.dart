@@ -4,21 +4,19 @@ import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/config/config_controller.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
 import '../../../../model/lead/call_event_model.dart';
 
 class CallRecordPopup extends StatefulWidget {
   final String clientId;
-  final String clientName;
-  final CallEventModel? editData; // For edit mode
-  final bool isEditMode;
+  final CallEventModel? editData;
 
   const CallRecordPopup({
     super.key,
-    required this.clientId,
-    required this.clientName,
     this.editData,
-  }) : isEditMode = editData != null;
+    required this.clientId,
+  });
 
   @override
   State<CallRecordPopup> createState() => _CallRecordPopupState();
@@ -30,20 +28,20 @@ class _CallRecordPopupState extends State<CallRecordPopup>
   final customerController = Get.find<CustomerProfileController>();
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
-
   // Controllers
   final TextEditingController _callDurationController = TextEditingController();
   final TextEditingController _feedbackController = TextEditingController();
   final TextEditingController _nextScheduleController = TextEditingController();
   final TextEditingController _deadLeadReasonController =
       TextEditingController();
+
   // Dropdown values
   String? _selectedCallType;
   String? _selectedCallStatus;
   String? _selectedLeadStatus;
   String? _selectedDeadLeadReason;
-
-  // Track if DEAD status is selected
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
   bool get _isDeadLeadSelected => _selectedLeadStatus?.toUpperCase() == 'DEAD';
 
   @override
@@ -53,26 +51,34 @@ class _CallRecordPopupState extends State<CallRecordPopup>
   }
 
   void _initializeFormData() {
-    if (widget.isEditMode && widget.editData != null) {
+    if (widget.editData != null) {
       final data = widget.editData!;
-
       // Set dropdown values
       _selectedCallType = data.callType;
       _selectedCallStatus = data.callStatus;
       _selectedLeadStatus = data.clientStatus;
       _selectedDeadLeadReason = data.deadLeadReason;
-
-      // Set text field values
-      _callDurationController.text = data.formattedDuration;
+      if (data.duration != null) {
+        _callDurationController.text = _formatDuration(data.duration!);
+      }
       _feedbackController.text = data.comment ?? '';
+      if (data.nextSchedule != null) {
+        try {
+          _selectedDate = DateTime.parse(data.nextSchedule!);
 
-      // Set next schedule with time
-      if (data.nextSchedule != null && data.nextSheduleTime != null) {
-        final date = data.nextSchedule!;
-        final time = data.formattedTime;
-        _nextScheduleController.text = '$date $time';
-      } else if (data.nextSchedule != null) {
-        _nextScheduleController.text = data.nextSchedule!;
+          if (data.nextSheduleTime != null) {
+            final timeParts =
+                data.nextSheduleTime?.toString().split('.') ?? ["10", '00'];
+            if (timeParts.length == 2) {
+              final hour = int.tryParse(timeParts[0]) ?? 0;
+              final minute = int.tryParse(timeParts[1]) ?? 0;
+              _selectedTime = TimeOfDay(hour: hour, minute: minute);
+            }
+          }
+          _updateDateTimeDisplay();
+        } catch (e) {
+          debugPrint('Error parsing date/time: $e');
+        }
       }
 
       // Set dead lead reason
@@ -88,56 +94,6 @@ class _CallRecordPopupState extends State<CallRecordPopup>
     _deadLeadReasonController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _handleSave() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    // Parse duration
-    final durationText = _callDurationController.text.trim();
-    final durationSeconds = CallEventModel.parseDuration(durationText) ?? 0;
-
-    // Parse next schedule date and time
-    String? scheduleDate;
-    double? scheduleTime;
-
-    final scheduleText = _nextScheduleController.text.trim();
-    if (scheduleText.isNotEmpty) {
-      final parts = scheduleText.split(' ');
-      if (parts.isNotEmpty) {
-        scheduleDate = parts.first;
-
-        if (parts.length > 1) {
-          // Parse time from string like "14:30"
-          final timeString = parts.last;
-          scheduleTime = CallEventModel.parseTime(timeString);
-        }
-      }
-    }
-
-    // Create model
-    final model = CallEventModel(
-      id: widget.isEditMode ? widget.editData!.id : null,
-      clientId: widget.clientId,
-      duration: durationSeconds,
-      nextSchedule: scheduleDate,
-      nextSheduleTime: scheduleTime,
-      clientStatus: _selectedLeadStatus,
-      deadLeadReason: _isDeadLeadSelected ? _selectedDeadLeadReason : null,
-      comment: _feedbackController.text.trim(),
-      callType: _selectedCallType,
-      callStatus: _selectedCallStatus,
-    );
-
-    final success = await customerController.callRecordInsert(
-      context: context,
-      log: model,
-      // isEdit: widget.isEditMode,
-    );
-
-    if (success && context.mounted) {
-      Navigator.pop(context, true); // Return success
-    }
   }
 
   Future<bool> _showDeadLeadDialog() async {
@@ -169,7 +125,7 @@ class _CallRecordPopupState extends State<CallRecordPopup>
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              child: const Text('Procced'),
+              child: const Text('Proceed'),
             ),
           ],
         ),
@@ -206,8 +162,8 @@ class _CallRecordPopupState extends State<CallRecordPopup>
             child: Container(
               width: dialogWidth,
               height: dialogHeight,
-              constraints: BoxConstraints(
-                maxWidth: 800, // Max width for better appearance
+              constraints: const BoxConstraints(
+                maxWidth: 800,
                 maxHeight: 900,
               ),
               decoration: BoxDecoration(
@@ -309,7 +265,6 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                             ),
 
                                             // Lead Status
-
                                             CustomDropdownField(
                                               label: 'Lead Status ',
                                               value: _selectedLeadStatus,
@@ -364,22 +319,202 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                               ),
 
                                             // Next Schedule with Time
-                                            CustomDateField(
-                                              label: 'Next Schedule',
-                                              isTimeRequired: true,
-                                              controller:
-                                                  _nextScheduleController,
-                                              initialDate: DateTime.now()
-                                                  .add(const Duration(days: 1)),
-                                              focusDate: DateTime.now()
-                                                  .add(const Duration(days: 1)),
-                                              endDate: DateTime.now().add(
-                                                  const Duration(days: 365)),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 8.0),
+                                                  child: CustomText(
+                                                    text: 'Next Schedule',
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          {
+                                                            final DateTime?
+                                                                picked =
+                                                                await showDatePicker(
+                                                              context: context,
+                                                              initialDate: _selectedDate ??
+                                                                  DateTime.now().add(
+                                                                      const Duration(
+                                                                          days:
+                                                                              1)),
+                                                              firstDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                              lastDate: DateTime
+                                                                      .now()
+                                                                  .add(const Duration(
+                                                                      days:
+                                                                          365)),
+                                                            );
+
+                                                            if (picked !=
+                                                                null) {
+                                                              setState(() {
+                                                                _selectedDate =
+                                                                    picked;
+                                                                _updateDateTimeDisplay();
+                                                              });
+                                                            }
+                                                          }
+                                                        },
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 12,
+                                                            vertical: 14,
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border.all(
+                                                                color: AppColors
+                                                                    .blackNeutralColor),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                            color: Colors.white,
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .calendar_today,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade600,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 8),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  _selectedDate !=
+                                                                          null
+                                                                      ? _formatDate(
+                                                                          _selectedDate!)
+                                                                      : 'Select Date',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    color: _selectedDate !=
+                                                                            null
+                                                                        ? Colors
+                                                                            .black87
+                                                                        : Colors
+                                                                            .grey
+                                                                            .shade500,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          final TimeOfDay?
+                                                              picked =
+                                                              await showTimePicker(
+                                                            context: context,
+                                                            initialTime:
+                                                                _selectedTime ??
+                                                                    TimeOfDay
+                                                                        .now(),
+                                                          );
+
+                                                          if (picked != null) {
+                                                            setState(() {
+                                                              _selectedTime =
+                                                                  picked;
+                                                              _updateDateTimeDisplay();
+                                                            });
+                                                          }
+                                                        },
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 12,
+                                                            vertical: 14,
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border.all(
+                                                                color: AppColors
+                                                                    .blackNeutralColor),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                            color: Colors.white,
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .access_time,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade600,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 8),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  _selectedTime !=
+                                                                          null
+                                                                      ? '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}'
+                                                                      : 'Time',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    color: _selectedTime !=
+                                                                            null
+                                                                        ? Colors
+                                                                            .black87
+                                                                        : Colors
+                                                                            .grey
+                                                                            .shade500,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
 
                                             // Call Duration
                                             CustomTextFormField(
-                                              label: 'Call Duration *',
+                                              label: 'Call Duration',
                                               hintText: 'MM:SS or HH:MM:SS',
                                               controller:
                                                   _callDurationController,
@@ -396,11 +531,6 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                                 if (value == null ||
                                                     value.isEmpty) {
                                                   return 'Please enter call duration';
-                                                }
-                                                final parsed = CallEventModel
-                                                    .parseDuration(value);
-                                                if (parsed == null) {
-                                                  return 'Invalid duration format (use MM:SS or HH:MM:SS)';
                                                 }
                                                 return null;
                                               },
@@ -467,7 +597,63 @@ class _CallRecordPopupState extends State<CallRecordPopup>
                                             Color(0xFFE100FF)
                                           ],
                                         ),
-                                        onPressed: _handleSave,
+                                        onPressed: () async {
+                                          if (!_formKey.currentState!
+                                              .validate()) {
+                                            return;
+                                          }
+                                          try {
+                                            final scheduleData =
+                                                _parseNextSchedule();
+                                            if (scheduleData['date'] == null ||
+                                                scheduleData['time'] == null) {
+                                              CustomToast.showToast(
+                                                  context: context,
+                                                  message:
+                                                      "Please select a valid next schedule date and time.");
+                                              return;
+                                            }
+                                            CallEventModel requestBody =
+                                                CallEventModel(
+                                              clientId: widget.clientId,
+                                              duration: _parseDurationToSeconds(
+                                                  _callDurationController.text),
+                                              nextSchedule:
+                                                  scheduleData['date'],
+                                              nextSheduleTime:
+                                                  scheduleData['time'] != null
+                                                      ? double.parse(
+                                                          scheduleData[
+                                                                  'time'] ??
+                                                              '0')
+                                                      : null,
+                                              clientStatus: _selectedLeadStatus,
+                                              deadLeadReason: _isDeadLeadSelected
+                                                  ? _deadLeadReasonController
+                                                      .text
+                                                  : null,
+                                              comment: _feedbackController
+                                                      .text.isEmpty
+                                                  ? null
+                                                  : _feedbackController.text,
+                                              callType: _selectedCallType,
+                                              callStatus: _selectedCallStatus,
+                                            );
+                                            if (widget.editData != null) {
+                                              // Update existing record
+                                              // await customerController.updateCallRecord(
+                                              //   recordId: widget.editData!.id!,
+                                              //   data: requestBody,
+                                              // );
+                                            } else {
+                                              // Create new record
+                                              await customerController
+                                                  .callRecordInsert(
+                                                      context: context,
+                                                      log: requestBody);
+                                            }
+                                          } catch (e) {}
+                                        },
                                       ),
                                     ),
                                   ],
@@ -506,7 +692,7 @@ class _CallRecordPopupState extends State<CallRecordPopup>
       child: Row(
         children: [
           Icon(
-            widget.isEditMode ? Icons.edit_rounded : Icons.add_call,
+            widget.editData != null ? Icons.edit_rounded : Icons.add_call,
             size: 26,
             color: Colors.white,
           ),
@@ -517,19 +703,12 @@ class _CallRecordPopupState extends State<CallRecordPopup>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
-                  text: widget.isEditMode
+                  text: widget.editData != null
                       ? 'Edit Call Record'
                       : 'Add Call Record',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
-                ),
-                CustomText(
-                  text: widget.clientName,
-                  fontSize: 14,
-                  color: Colors.white70,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -543,14 +722,83 @@ class _CallRecordPopupState extends State<CallRecordPopup>
       ),
     );
   }
+
+  void _updateDateTimeDisplay() {
+    if (_selectedDate != null) {
+      final dateStr = _formatDate(_selectedDate!);
+      if (_selectedTime != null) {
+        final timeStr =
+            '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}';
+        _nextScheduleController.text = '$dateStr $timeStr';
+      } else {
+        _nextScheduleController.text = dateStr;
+      }
+    } else {
+      _nextScheduleController.text = '';
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDuration(int seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final secs = seconds % 60;
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+    }
+  }
+
+  // Convert MM:SS or HH:MM:SS format to seconds
+  int _parseDurationToSeconds(String duration) {
+    final parts = duration.split(':');
+    if (parts.length == 2) {
+      // MM:SS format
+      final minutes = int.tryParse(parts[0]) ?? 0;
+      final seconds = int.tryParse(parts[1]) ?? 0;
+      return (minutes * 60) + seconds;
+    } else if (parts.length == 3) {
+      // HH:MM:SS format
+      final hours = int.tryParse(parts[0]) ?? 0;
+      final minutes = int.tryParse(parts[1]) ?? 0;
+      final seconds = int.tryParse(parts[2]) ?? 0;
+      return (hours * 3600) + (minutes * 60) + seconds;
+    }
+    return 0;
+  }
+
+  // Parse datetime string to separate date and time in 24-hour format
+  Map<String, String?> _parseNextSchedule() {
+    if (_selectedDate == null) {
+      return {'date': null, 'time': null};
+    }
+
+    final date = _formatDate(_selectedDate!);
+    String? time;
+
+    if (_selectedTime != null) {
+      final hour = _selectedTime!.hour.toString().padLeft(2, '0');
+      final minute = _selectedTime!.minute.toString().padLeft(2, '0');
+      time = '$hour.$minute'; // Format as HH.MM for API
+    }
+
+    return {'date': date, 'time': time};
+  }
+
+  // Show date picker
+
+  // Show time picker
 }
 
 // Duration input formatter
 class DurationInputFormatter extends TextInputFormatter {
   final bool allowHours;
-
   DurationInputFormatter({this.allowHours = false});
-
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,

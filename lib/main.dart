@@ -29,7 +29,7 @@ Future<void> main() async {
     //   "baseUrl": "https://www.example.com",
     // },
   );
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   // await dotenv.load();
   setPathUrlStrategy();
   await setupServiceLocator();

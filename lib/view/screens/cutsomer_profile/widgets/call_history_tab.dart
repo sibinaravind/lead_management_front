@@ -5,6 +5,7 @@ import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import '../../../../controller/customer_profile/customer_profile_controller.dart';
 import '../../../../model/lead/call_event_model.dart';
 import '../../../../utils/functions/format_date.dart';
+import '../../../../utils/functions/format_time.dart';
 import '../../../widgets/widgets.dart';
 
 // ignore: must_be_immutable
@@ -334,11 +335,6 @@ class CallHistoryTab extends StatelessWidget {
   }
 }
 
-String formatDecimalMinutes(double decimalMinutes) {
-  final minutes = decimalMinutes.floor();
-  final seconds = ((decimalMinutes - minutes) * 60).round();
-  return "$minutes:${seconds.toString().padLeft(2, '0')} ";
-}
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:overseas_front_end/utils/style/colors/colors.dart';

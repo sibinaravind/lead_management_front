@@ -88,10 +88,12 @@ class MyApp extends StatelessWidget {
         // ),
         GoRoute(
           path: '/test', //test move to /
-          builder: (context, state) => CallRecordPopup(
-            clientId: "",
-            clientName: "",
-            // leadId: '693280ea138d99fa16ea4cb7',
+          builder: (context, state) => Scaffold(
+            body: CallRecordPopup(
+              // clientId: "",
+              // clientName: "",
+              clientId: '693280ea138d99fa16ea4cb7',
+            ),
           ),
         ),
       ],
