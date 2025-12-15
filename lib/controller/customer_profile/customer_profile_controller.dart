@@ -140,6 +140,72 @@ class CustomerProfileController extends GetxController {
     }
   }
 
+  Future<bool> updateCallRecord(
+      {required CallEventModel log,
+      required BuildContext context,
+      required String recordId}) async {
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: "${Constant().updateFeedback}/$recordId",
+        body: log.updateToJson(),
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          throw Exception("Failed to create Lead: $failure");
+        },
+        (data) {
+          Navigator.pop(context);
+          CustomToast.showToast(
+              context: context,
+              message: "Record updated successfully",
+              backgroundColor: Colors.green);
+          return true;
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+          context: context, message: "Failed to update Call Log: $e");
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> updateLeadStatusRecord(
+      {required Map<String, dynamic> body,
+      required BuildContext context,
+      required String recordId}) async {
+    try {
+      final response = await _apiService.patchRequest(
+        endpoint: "${Constant().updateLeadStatus}/$recordId",
+        body: body,
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          throw Exception("Failed to create Lead: $failure");
+        },
+        (data) {
+          Navigator.pop(context);
+          CustomToast.showToast(
+              context: context,
+              message: "Lead updated successfully",
+              backgroundColor: Colors.green);
+          leadDetails.value.status = body['client_status'];
+          leadDetails.refresh();
+          return true;
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+          context: context, message: "Failed to update Lead Status: $e");
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<bool> addProductInterest(
       {String? clientId,
       ProductInterestedModel? productInterested,

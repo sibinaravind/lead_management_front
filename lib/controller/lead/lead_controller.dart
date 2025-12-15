@@ -160,6 +160,31 @@ class LeadController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<Map<String, dynamic>> createBulkLead(
+      BuildContext context, Map<String, dynamic> body) async {
+    try {
+      final response = await _apiService.postRequest(
+        endpoint: Constant().addBulkLead,
+        body: body,
+        fromJson: (json) => json,
+      );
+      return response.fold(
+        (failure) {
+          throw failure;
+        },
+        (createdLead) {
+          return createdLead;
+        },
+      );
+    } catch (e) {
+      CustomSnackBar.showMessage("Error", e.toString(),
+          backgroundColor: Colors.red);
+      return {"success": false, "message": e.toString()};
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
 
 

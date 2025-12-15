@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:overseas_front_end/config/flavour_config.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
+import 'package:overseas_front_end/view/screens/leads/widgets/bulk_lead.dart';
 import 'view/screens/cutsomer_profile/customer_profile.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
@@ -86,13 +86,25 @@ class MyApp extends StatelessWidget {
         //   ),
         //   // builder: (context, state) => CustomerJourneyScreen(),
         // ),
+        // GoRoute(
+        //   path: '/test', //test move to /
+        //   builder: (context, state) => Scaffold(
+        //     body: CallRecordPopup(
+        //       // clientId: "",
+        //       // clientName: "",
+        //       clientId: '693280ea138d99fa16ea4cb7',
+        //     ),
+        //   ),
+        // ),
         GoRoute(
           path: '/test', //test move to /
           builder: (context, state) => Scaffold(
-            body: CallRecordPopup(
-              // clientId: "",
-              // clientName: "",
-              clientId: '693280ea138d99fa16ea4cb7',
+            body: Scaffold(
+              body: BulkLeadScreen(
+                  // clientId: "",
+                  // clientName: "",
+                  // leadId: '693280ea138d99fa16ea4cb7',
+                  ),
             ),
           ),
         ),

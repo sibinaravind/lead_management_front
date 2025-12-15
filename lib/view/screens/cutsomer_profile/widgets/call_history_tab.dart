@@ -5,8 +5,8 @@ import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import '../../../../controller/customer_profile/customer_profile_controller.dart';
 import '../../../../model/lead/call_event_model.dart';
 import '../../../../utils/functions/format_date.dart';
-import '../../../../utils/functions/format_time.dart';
 import '../../../widgets/widgets.dart';
+import '../../leads/widgets/call_record_popup.dart';
 
 // ignore: must_be_immutable
 class CallHistoryTab extends StatelessWidget {
@@ -31,17 +31,20 @@ class CallHistoryTab extends StatelessWidget {
           try {
             // Handle dd/MM/yyyy format
             final parts = e.nextSchedule!.split('/');
+
             if (parts.length == 3) {
               final day = int.parse(parts[0]);
               final month = int.parse(parts[1]);
               final year = int.parse(parts[2]);
+
               final upcoming = DateTime(year, month, day);
+
               return upcoming.isAfter(DateTime.now());
             }
             // Fallback to DateTime.parse for other formats
             final upcoming = DateTime.parse(e.nextSchedule!);
             return upcoming.isAfter(DateTime.now());
-          } catch (_) {
+          } catch (e) {
             return false;
           }
         }
@@ -88,6 +91,16 @@ class CallHistoryTab extends StatelessWidget {
               return true;
           }
         }).toList();
+
+        // Sort filteredCalls by createdAt descending (most recent first)
+        filteredCalls.sort((a, b) {
+          final aDate = a.createdAt;
+          final bDate = b.createdAt;
+          if (aDate == null && bDate == null) return 0;
+          if (aDate == null) return 1;
+          if (bDate == null) return -1;
+          return bDate.compareTo(aDate);
+        });
 
         final totalDurationMinutes = filteredCalls.fold<int>(
           0,
@@ -149,9 +162,9 @@ class CallHistoryTab extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            /// CALL LIST
+            // // / CALL LIST
             // ...filteredCalls.map(
-            //   (call) => callCard(call, isUpcoming(call)),
+            //   (call) => callCard(call, isUpcoming(call));
             // ),
             Expanded(
               child: ListView.builder(
@@ -159,7 +172,7 @@ class CallHistoryTab extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 20),
                 itemBuilder: (context, index) {
                   final call = filteredCalls[index];
-                  return callCard(call, isUpcoming(call));
+                  return callCard(call, isUpcoming(call), context);
                 },
               ),
             ),
@@ -225,7 +238,7 @@ class CallHistoryTab extends StatelessWidget {
   /// ───────────────────────────
   /// CALL ITEM CARD WITH UPCOMING BADGE
   /// ───────────────────────────
-  Widget callCard(CallEventModel call, bool isupcoming) {
+  Widget callCard(CallEventModel call, bool isupcoming, BuildContext context) {
     final status = (call.callStatus ?? '').toUpperCase();
     final type = (call.callType ?? '').toLowerCase();
 
@@ -273,18 +286,78 @@ class CallHistoryTab extends StatelessWidget {
                 /// Time + Status + Upcoming Tag
                 Row(
                   children: [
-                    Text(
-                      isUpComingSelected
-                          ? "${call.nextSchedule ?? ''} ${formatDecimalMinutes(call.nextSheduleTime ?? 0)}"
-                          : (formatDatetoISTString(call.createdAt!) ?? 'N/A'),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 14),
-                    ),
-                    const Spacer(),
+                    CustomRichText(sections: [
+                      // if (!isUpComingSelected) ...[
+                      //   RichTextSection(
+                      //       text: type.toUpperCase(),
+                      //       fontWeight: FontWeight.w600,
+                      //       fontSize: 14,
+                      //       color: AppColors.textGrayColour),
+                      //   RichTextSection(
+                      //       text: "  |  ",
+                      //       fontWeight: FontWeight.w400,
+                      //       fontSize: 14,
+                      //       color: AppColors.textGrayColour),
+                      // ],
+                      RichTextSection(
+                          text: isUpComingSelected
+                              ? "${call.nextSchedule ?? ''} ${call.nextSheduleTime ?? ''}"
+                              : (formatDatetoISTString(call.createdAt!) ??
+                                  'N/A'),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16,
+                          color: AppColors.primaryColor),
+                      if (!isUpComingSelected) ...[
+                        RichTextSection(
+                            text: "  |  ",
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textGrayColour),
+                        RichTextSection(
+                            text:
+                                " ${(call.duration ?? 0) ~/ 60}:${(call.duration ?? 0) % 60} Min",
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.violetPrimaryColor),
+                      ],
+                    ]),
+                    Spacer(),
+                    if (call.nextSchedule != null && isupcoming)
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => CallRecordPopup(
+                              clientId: clientId,
+                              editData: call,
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Icon(
+                            Icons.edit_calendar_sharp,
+                            size: 30,
+                            color: AppColors.redSecondaryColor,
+                          ),
+                        ),
+                      )
+                  ],
+                ),
 
-                    /// Upcoming badge
+                /// Comment
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if ((call.comment ?? '').isNotEmpty) ...[
+                      Text(call.comment ?? '',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black87)),
+                    ],
                     if (!isUpComingSelected)
                       Container(
+                        alignment: AlignmentDirectional.centerEnd,
+                        margin: const EdgeInsets.only(top: 8),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
@@ -299,33 +372,6 @@ class CallHistoryTab extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                if (!isUpComingSelected)
-
-                  /// Duration + Type
-                  Row(
-                    children: [
-                      Text(
-                        "Duration: ${(call.duration ?? 0) ~/ 60}:${(call.duration ?? 0) % 60} Min",
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      const Spacer(),
-                      Text(
-                        type.toUpperCase(),
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-
-                /// Comment
-                if ((call.comment ?? '').isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(call.comment ?? '',
-                      style:
-                          const TextStyle(fontSize: 12, color: Colors.black87)),
-                ],
               ],
             ),
           ),

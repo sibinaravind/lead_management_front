@@ -29,12 +29,19 @@ class Constant {
   String getCustomerInteraction = 'lead/interactions/';
 
   String callEventList = "customer/customercall";
-
-  String getLeadDetail = 'lead/getLead';
-
+  String updateFeedback = 'customer/updatelog';
   String addFeedback = 'customer/logCallEvent';
-  String addProductInterest = 'lead/addProductInterested/';
 
+  String getAllFilterdLeads = 'lead/getAllFilterdLeads';
+  String getAllFilterdHistory = 'lead/getAllFilterdHistory';
+  String getLeadCount = 'lead/getLeadCount';
+  String allLeads = 'lead/getAllLeads';
+  String addLead = 'lead/insertLead';
+  String addBulkLead = 'lead/bulkInsertLeads';
+  String updateLead = 'lead/updateLead';
+  String getLeadDetail = 'lead/getLead';
+  String updateLeadStatus = 'lead/updateLeadStatus';
+  String addProductInterest = 'lead/addProductInterested/';
   String uploadLeadDocument = 'lead/updateClientRequiredDocuments/';
 
   String officerLogin = 'officer/login';
@@ -53,28 +60,10 @@ class Constant {
   String insertRoundRobin = 'officer/insertRoundRobin';
   String deleteRoundRobin = 'officer/deleteRoundRobin';
 
-  String addClient = "project/clientCreate";
-  String clientList = "project/clientList";
-  String updateClient = "project/clientUpdate";
-  String deleteClient = "project/deleteClient";
-
   String projectList = "project/projectList";
   String addProject = "project/createProject";
   String deleteProject = "project/deleteProject";
   String editProject = "project/projectUpdate";
-
-  String vacancyList = "project/vacancyList";
-  String createVacancy = "project/createVacancy";
-  String editVacancy = "project/editVacancy";
-  String deleteVacancy = "project/deleteVacancy";
-  String vacancyClientList = "project/getClientListOnVacancy";
-  String removeClientFromVacancy = "project/removeClient";
-  String addClientToVacancy = "project/insertClient/";
-  String editClientInVacancy = "project/editClientInVacancy/";
-  String getMatchingProfiles = "project/getMatchingProfiles";
-  String addClientToFavourites = "project/addClientToFavourites";
-  String removeClientFromFavourites = "project/removeClientFromFavourites";
-  String getFavouriteClients = "project/getFavouriteClients/";
 
   String configList = 'config/list';
   String editConfigList = 'config/edit_configList';
@@ -87,31 +76,10 @@ class Constant {
   String addOfficerToLead = 'officer/addOfficerToLead';
   String deleteOfficerFromLead = 'officer/deleteOfficerFromLead';
 
-  String getAllFilterdLeads = 'lead/getAllFilterdLeads';
-  String getAllFilterdHistory = 'lead/getAllFilterdHistory';
-  String getLeadCount = 'lead/getLeadCount';
-  String allLeads = 'lead/getAllLeads';
-  String addLead = 'lead/insertLead';
-  String updateLead = 'lead/updateLead';
-
-  String getDeadLeads = 'lead/getAllDeadLeads';
-  String restoreDeadLead = 'lead/restoreClientFromDead';
-
-  String getIncompleteList = 'customer/register/incompleteList';
-
   // String editConfig = customer/register/incompleteList lead/getAllDeadLeads customer/register/update_academic_records 'config/edit_configList'; customer/logCallEvent officer/addOfficerToLead officer/deleteOfficerFromLead lead/getAllLeads getCustomer lead/insertLead projectList
 
   String accessPermissions = 'config/access_permission';
   String accessPermissionsEdit = 'config/edit_accessList';
   String accessPermissionsDelete = 'config/delete_accesspermission';
   String accessPermissionsAdd = 'config/insert_accesspermission';
-
-  String updatePersonalDetails = 'customer/register/update_basic_info';
-  String updateAcademicRecords = 'customer/register/update_academic_records';
-  String updateTravelHistory = 'customer/register/travel_history_records';
-  String updateExamRecords = 'customer/register/update_exam_records';
-  String updateWorkRecords = 'customer/register/work_history_records';
-  String setRequiredDocuments = 'customer/register/setRequiredDocuments';
-  String updateClientRequiredDocuments =
-      'customer/register/updateClientRequiredDocuments';
 }

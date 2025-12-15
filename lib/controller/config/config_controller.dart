@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:overseas_front_end/controller/officers_controller/officers_controller.dart';
 import 'package:overseas_front_end/model/app_configs/config_model.dart';
 import 'package:overseas_front_end/model/app_configs/config_list_model.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
@@ -21,6 +22,7 @@ class ConfigController extends GetxController {
   void loaddata() {
     loadConfigData();
     Get.find<ProductController>().fetchProducts();
+    Get.find<OfficersController>().fetchOfficersList();
   }
 
   Future<bool> loadConfigData() async {

@@ -14,7 +14,7 @@ class CallEventModel {
   DateTime? createdAt;
   String? comment;
   String? nextSchedule;
-  double? nextSheduleTime;
+  String? nextSheduleTime;
   String? updatedAt;
   String? deadLeadReason;
 
@@ -54,7 +54,7 @@ class CallEventModel {
         nextSchedule: json["next_schedule"] == null
             ? null
             : formatDatetoString(json["next_schedule"]),
-        nextSheduleTime: json["next_shedule_time"]?.toDouble(),
+        nextSheduleTime: json["next_shedule_time"].toString(),
         updatedAt: json["updated_at"] == null
             ? null
             : formatDatetoString(json["updated_at"]),
@@ -77,6 +77,11 @@ class CallEventModel {
         // "updated_at": updatedAt,
         "client_status": clientStatus,
         "dead_lead_reason": deadLeadReason,
+      };
+  Map<String, dynamic> updateToJson() => {
+        "comment": comment,
+        "next_schedule": nextSchedule ?? formatDateToYYYYMMDD(nextSchedule),
+        "next_shedule_time": nextSheduleTime,
       };
 }
 

@@ -4,6 +4,7 @@ import 'package:overseas_front_end/controller/customer_profile/customer_profile_
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/lead_details_tab.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/other_tab.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/product_intrested_tab.dart';
+import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/status_update_popup.dart';
 import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/vehicle_tab.dart';
 import '../../../utils/style/colors/colors.dart';
 import '../../widgets/custom_text.dart';
@@ -250,7 +251,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                         children: [
                                           CustomText(
                                             text: profileController
-                                                    .leadDetails?.value.name ??
+                                                    .leadDetails.value.name ??
                                                 'N/A',
                                             fontSize: isSmallScreen ? 20 : 24,
                                             fontWeight: FontWeight.bold,
@@ -259,7 +260,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                           const SizedBox(height: 4),
                                           CustomText(
                                             text: profileController.leadDetails
-                                                    ?.value.clientId ??
+                                                    .value.clientId ??
                                                 'N/A',
                                             fontSize: 14,
                                             color: AppColors.textGrayColour,
@@ -270,46 +271,125 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                   ),
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AddLeadScreen(
-                                      leadToEdit:
-                                          profileController.leadDetails.value,
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: PopupMenuButton<String>(
+                                  elevation: 8,
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                    size: isSmallScreen ? 24 : 28,
+                                  ),
+                                  onSelected: (value) {
+                                    if (value == 'edit_lead') {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AddLeadScreen(
+                                          leadToEdit: profileController
+                                              .leadDetails.value,
+                                        ),
+                                      );
+                                    } else if (value == 'update_status') {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => StatusUpdatePopup(
+                                          clientId: profileController
+                                                  .leadDetails.value.id ??
+                                              '',
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 'edit_lead',
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.edit,
+                                              size: 20,
+                                              color:
+                                                  AppColors.redSecondaryColor),
+                                          SizedBox(width: 10),
+                                          CustomText(
+                                            text: 'Edit Lead',
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.edit_square,
-                                  color: AppColors.redSecondaryColor,
-                                  size: isSmallScreen ? 24 : 28,
+                                    PopupMenuItem(
+                                      value: 'update_status',
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.update,
+                                              size: 20,
+                                              color: AppColors
+                                                  .greenSecondaryColor),
+                                          SizedBox(width: 10),
+                                          CustomText(
+                                            text: 'Update Status',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     // showDialog(
+                              //     //   context: context,
+                              //     //   builder: (context) => AddLeadScreen(
+                              //     //     leadToEdit:
+                              //     //         profileController.leadDetails.value,
+                              //     //   ),
+                              //     // );
+                              //     showDialog(
+                              //       context: context,
+                              //       builder: (context) => StatusUpdatePopup(
+                              //         clientId: profileController
+                              //                 .leadDetails.value.id ??
+                              //             '',
+                              //       ),
+                              //     );
+                              //   },
+                              //   child: Icon(
+                              //     Icons.edit_square,
+                              //     color: AppColors.redSecondaryColor,
+                              //     size: isSmallScreen ? 24 : 28,
+                              //   ),
+                              // ),
                             ],
                           ),
+
                           const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: isSmallScreen
-                                ? SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: _chipsList()
-                                          .map((chip) => Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 8.0),
-                                                child: chip,
-                                              ))
-                                          .toList(),
-                                    ),
-                                  )
-                                : Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: _chipsList()),
+                          Obx(
+                            () => Align(
+                              alignment: Alignment.centerLeft,
+                              child: isSmallScreen
+                                  ? SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: _chipsList()
+                                            .map((chip) => Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 8.0),
+                                                  child: chip,
+                                                ))
+                                            .toList(),
+                                      ),
+                                    )
+                                  : Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: _chipsList()),
+                            ),
                           ),
                           // Edit button - move to separate row on small screens
                         ],
@@ -562,23 +642,6 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           const SizedBox(width: 6),
           CustomText(text: text, fontSize: 12, color: color),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: CustomText(
-        text: text,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        color: color,
       ),
     );
   }
