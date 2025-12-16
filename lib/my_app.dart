@@ -12,6 +12,7 @@ import 'core/services/navigation_service.dart';
 import 'view/screens/leads/add_lead_screen.dart';
 import 'view/screens/leads/backup/deatil_lead_page.dart';
 import 'view/screens/leads/widgets/call_record_popup.dart';
+import 'view/screens/product/add_edit_product_screen.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -100,7 +101,7 @@ class MyApp extends StatelessWidget {
           path: '/test', //test move to /
           builder: (context, state) => Scaffold(
             body: Scaffold(
-              body: BulkLeadScreen(
+              body: AddProductScreen(
                   // clientId: "",
                   // clientName: "",
                   // leadId: '693280ea138d99fa16ea4cb7',

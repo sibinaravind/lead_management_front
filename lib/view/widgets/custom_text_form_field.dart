@@ -154,6 +154,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             prefixIcon:
                 widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
             hintText: widget.hintText,
+            hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
             fillColor: Colors.white,
             filled: true,
             border: const OutlineInputBorder(),

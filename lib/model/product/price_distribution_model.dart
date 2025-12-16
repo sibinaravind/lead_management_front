@@ -1,13 +1,13 @@
 class PriceDistributionModel {
   String? title;
-  int? percent;
-  int? gstPercent;
-  int? cgstPercent;
-  int? sgstPercent;
+  double? amount;
+  double? gstPercent;
+  double? cgstPercent;
+  double? sgstPercent;
 
   PriceDistributionModel({
     this.title,
-    this.percent,
+    this.amount,
     this.gstPercent,
     this.cgstPercent,
     this.sgstPercent,
@@ -16,7 +16,7 @@ class PriceDistributionModel {
   factory PriceDistributionModel.fromJson(Map<String, dynamic> json) =>
       PriceDistributionModel(
         title: json["title"],
-        percent: json["percent"],
+        amount: json["amount"],
         gstPercent: json["gstPercent"],
         cgstPercent: json["cgstPercent"],
         sgstPercent: json["sgstPercent"],
@@ -24,7 +24,7 @@ class PriceDistributionModel {
 
   Map<String, dynamic> toJson() => {
         "title": title,
-        "percent": percent,
+        "amount": amount,
         "gstPercent": gstPercent,
         "cgstPercent": cgstPercent,
         "sgstPercent": sgstPercent,

@@ -1,3 +1,4 @@
+import 'package:overseas_front_end/model/product/discount_model.dart';
 import 'package:overseas_front_end/model/product/product_provider_deatils_model.dart';
 
 import 'price_distribution_model.dart';
@@ -15,15 +16,15 @@ class ProductModel {
   String? status;
   DateTime? updatedAt;
   DateTime? createdAt;
-  int? advanceRequiredPercent;
+  double? advanceRequiredPercent;
   String? ageLimit;
-  int? basePrice;
+  double? basePrice;
   String? bhk;
   String? brand;
   String? city;
-  int? costPrice;
+  double? costPrice;
   String? country;
-  String? countryOfStudy;
+  // String? countryOfStudy;
   String? courseDuration;
   String? courseLevel;
   String? description;
@@ -36,7 +37,7 @@ class ProductModel {
   List<String>? images;
   List<String>? inclusions;
   String? institutionName;
-  DateTime? insuranceValidTill;
+  String? insuranceValidTill;
   bool? interviewPreparation;
   bool? isRefundable;
   bool? jobAssistance;
@@ -52,7 +53,7 @@ class ProductModel {
   String? qualificationRequired;
   String? refundPolicy;
   String? registrationYear;
-  int? sellingPrice;
+  double? sellingPrice;
   String? serviceMode;
   String? shortDescription;
   String? size;
@@ -66,7 +67,9 @@ class ProductModel {
   String? validity;
   String? visaType;
   String? warrantyInfo;
-  List<dynamic>? discounts;
+  List<DiscountModel>? discounts;
+  double? downpayment;
+  double? loanEligibility;
 
   ProductModel({
     this.id,
@@ -89,7 +92,7 @@ class ProductModel {
     this.city,
     this.costPrice,
     this.country,
-    this.countryOfStudy,
+    // this.countryOfStudy,
     this.courseDuration,
     this.courseLevel,
     this.description,
@@ -133,6 +136,8 @@ class ProductModel {
     this.visaType,
     this.warrantyInfo,
     this.discounts,
+    this.downpayment,
+    this.loanEligibility,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -162,7 +167,7 @@ class ProductModel {
         city: json["city"],
         costPrice: json["costPrice"],
         country: json["country"],
-        countryOfStudy: json["countryOfStudy"],
+        // countryOfStudy: json["countryOfStudy"],
         courseDuration: json["courseDuration"],
         courseLevel: json["courseLevel"],
         description: json["description"],
@@ -184,9 +189,7 @@ class ProductModel {
             ? []
             : List<String>.from(json["inclusions"]!.map((x) => x)),
         institutionName: json["institutionName"],
-        insuranceValidTill: json["insuranceValidTill"] == null
-            ? null
-            : DateTime.parse(json["insuranceValidTill"]),
+        insuranceValidTill: json["insuranceValidTill"],
         interviewPreparation: json["interviewPreparation"],
         isRefundable: json["isRefundable"],
         jobAssistance: json["jobAssistance"],
@@ -223,14 +226,17 @@ class ProductModel {
         validity: json["validity"],
         visaType: json["visaType"],
         warrantyInfo: json["warrantyInfo"],
+        downpayment: json["downpayment"],
+        loanEligibility: json["loanEligibility"],
         discounts: json["discounts"] == null
             ? []
-            : List<dynamic>.from(json["discounts"]!.map((x) => x)),
+            : List<DiscountModel>.from(
+                json["discounts"]!.map((x) => DiscountModel.fromMap(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "product_id": productId,
+        // "_id": id,
+        // "product_id": productId,
         "name": name,
         "code": code,
         "category": category,
@@ -239,8 +245,6 @@ class ProductModel {
         "supportAvailable": supportAvailable,
         "providerDetails": providerDetails?.toJson(),
         "status": status,
-        "updated_at": updatedAt?.toIso8601String(),
-        "created_at": createdAt?.toIso8601String(),
         "advanceRequiredPercent": advanceRequiredPercent,
         "ageLimit": ageLimit,
         "basePrice": basePrice,
@@ -249,7 +253,7 @@ class ProductModel {
         "city": city,
         "costPrice": costPrice,
         "country": country,
-        "countryOfStudy": countryOfStudy,
+        // "countryOfStudy": countryOfStudy,
         "courseDuration": courseDuration,
         "courseLevel": courseLevel,
         "description": description,
@@ -269,8 +273,7 @@ class ProductModel {
             ? []
             : List<dynamic>.from(inclusions!.map((x) => x)),
         "institutionName": institutionName,
-        "insuranceValidTill":
-            "${insuranceValidTill!.year.toString().padLeft(4, '0')}-${insuranceValidTill!.month.toString().padLeft(2, '0')}-${insuranceValidTill!.day.toString().padLeft(2, '0')}",
+        "insuranceValidTill": insuranceValidTill,
         "interviewPreparation": interviewPreparation,
         "isRefundable": isRefundable,
         "jobAssistance": jobAssistance,
@@ -303,9 +306,11 @@ class ProductModel {
         "validity": validity,
         "visaType": visaType,
         "warrantyInfo": warrantyInfo,
-        "discounts": discounts == null
-            ? []
-            : List<dynamic>.from(discounts!.map((x) => x)),
+        "downpayment": downpayment,
+        "loanEligibility": loanEligibility,
+        // "discounts": discounts == null
+        //     ? []
+        //     : List<dynamic>.from(discounts!.map((x) => x)),
       };
 }
 

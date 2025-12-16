@@ -55,10 +55,11 @@ class ProductController extends GetxController {
   }
 
 // Create a new product
-  Future<bool> createProd({
+  Future<dynamic> createProd({
     required ProductModel product,
     required BuildContext context,
   }) async {
+    print("Creating product: ${product.toJson()}");
     isLoading.value = true;
     final body = product.toJson()
       ..remove('_id')
@@ -73,13 +74,7 @@ class ProductController extends GetxController {
 
       return response.fold(
         (failure) {
-          CustomToast.showToast(
-            context: context,
-            message: failure != null
-                ? failure.toString()
-                : "Failed to create project",
-          );
-          return false;
+          throw Exception(failure);
         },
         (data) {
           product.id = data;
@@ -89,8 +84,7 @@ class ProductController extends GetxController {
             context: context,
             message: 'Product created successfully',
           );
-          Navigator.of(context).pop();
-          return true;
+          return data;
         },
       );
     } catch (e) {
@@ -134,7 +128,7 @@ class ProductController extends GetxController {
             context: context,
             message: 'Product updated successfully',
           );
-          Navigator.of(context).pop();
+          // Navigator.of(context).pop();
           return true;
         },
       );
