@@ -4,17 +4,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:overseas_front_end/view/widgets/custom_dropdown_field.dart';
+import 'package:overseas_front_end/view/widgets/widgets.dart';
 
 class UploadDocumentPopup extends StatefulWidget {
   final bool allowMultiple;
-  final List<String> items;
+  final List<String>? items;
   final Function(Map<String, dynamic>) onSave;
+  final bool onlyImages;
+  final bool noDocType;
 
   const UploadDocumentPopup({
     super.key,
     required this.onSave,
     this.allowMultiple = false,
-    this.items = const ['Passport', 'Aadhaar', 'Pan', 'Degree', 'Certificate'],
+    this.items,
+    this.onlyImages = false,
+    this.noDocType = false,
   });
 
   @override
@@ -23,6 +28,7 @@ class UploadDocumentPopup extends StatefulWidget {
 
 class _ModernUploadPopupState extends State<UploadDocumentPopup> {
   String selectedDocType = "";
+  TextEditingController selectedDocTypeController = TextEditingController();
   List<Map<String, dynamic>> files = [];
   bool isProcessing = false;
 
@@ -35,8 +41,11 @@ class _ModernUploadPopupState extends State<UploadDocumentPopup> {
   @override
   void initState() {
     super.initState();
-    if (widget.items.isNotEmpty) {
-      selectedDocType = widget.items.first;
+    if ((widget.items ?? []).isNotEmpty) {
+      selectedDocType = widget.items?.first ?? "";
+    }
+    if (widget.noDocType) {
+      selectedDocType = "Doc";
     }
   }
 
@@ -45,7 +54,9 @@ class _ModernUploadPopupState extends State<UploadDocumentPopup> {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: widget.allowMultiple,
         type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+        allowedExtensions: widget.onlyImages
+            ? ['jpg', 'jpeg', 'png']
+            : ['jpg', 'jpeg', 'png', 'pdf'],
         withData: true,
       );
 
@@ -280,22 +291,31 @@ class _ModernUploadPopupState extends State<UploadDocumentPopup> {
             ),
 
             const SizedBox(height: 24),
+            if (widget.noDocType == false) ...[
+              // Document Type Dropdown
+              if (widget.items != null)
+                CustomDropdownField(
+                  label: 'Document Type',
+                  value: selectedDocType,
+                  items: (widget.items ?? []).map((e) => e).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDocType = value ?? "";
+                    });
+                  },
+                  isRequired: true,
+                )
+              else
+                CustomTextFormField(
+                  label: 'Document Type',
+                  controller: selectedDocTypeController,
+                  onChanged: (value) {
+                    selectedDocType = value;
+                  },
+                ),
 
-            // Document Type Dropdown
-            CustomDropdownField(
-              label: 'Document Type',
-              value: selectedDocType,
-              items: widget.items.map((e) => e).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedDocType = value ?? "";
-                });
-              },
-              isRequired: true,
-            ),
-
-            const SizedBox(height: 24),
-
+              const SizedBox(height: 24),
+            ],
             // Processing indicator or upload/preview area
             if (isProcessing)
               _buildProcessingIndicator()

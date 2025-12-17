@@ -267,8 +267,7 @@ class ProductModel {
         "experienceRequired": experienceRequired,
         "fuelType": fuelType,
         "furnishingStatus": furnishingStatus,
-        "images":
-            images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
+
         "inclusions": inclusions == null
             ? []
             : List<dynamic>.from(inclusions!.map((x) => x)),

@@ -791,6 +791,10 @@ class _AddProductScreenState extends State<AddProductScreen>
                 label: 'Institution Name',
                 controller: _institutionNameController,
               ),
+              CustomTextFormField(
+                label: 'Mode of Study',
+                controller: _modelController,
+              ),
             ],
           ),
           const SizedBox(height: 20),

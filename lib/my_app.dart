@@ -4,15 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:overseas_front_end/core/bindings/global_bindings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overseas_front_end/view/screens/auth/login_screen.dart';
-import 'package:overseas_front_end/view/screens/leads/widgets/bulk_lead.dart';
-import 'view/screens/cutsomer_profile/customer_profile.dart';
+import 'model/product/product_model.dart';
 import 'view/screens/drawer/main_layout_screen.dart';
 import 'view/screens/error_screen/error_screen.dart';
 import 'core/services/navigation_service.dart';
-import 'view/screens/leads/add_lead_screen.dart';
-import 'view/screens/leads/backup/deatil_lead_page.dart';
-import 'view/screens/leads/widgets/call_record_popup.dart';
-import 'view/screens/product/add_edit_product_screen.dart';
+
+import 'view/screens/product/product_details_screen.dart';
 
 final GlobalKey<NavigatorState> routerNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -101,11 +98,9 @@ class MyApp extends StatelessWidget {
           path: '/test', //test move to /
           builder: (context, state) => Scaffold(
             body: Scaffold(
-              body: AddProductScreen(
-                  // clientId: "",
-                  // clientName: "",
-                  // leadId: '693280ea138d99fa16ea4cb7',
-                  ),
+              body: ProductProfileScreen(
+                productid: "692ac813cdc77773395fbdf8",
+              ),
             ),
           ),
         ),

@@ -12,7 +12,7 @@ class ProductController extends GetxController {
   RxString? error;
   RxBool isLoading = false.obs;
   RxString? responseId;
-
+  Rx<ProductModel> productDetails = ProductModel().obs;
   RxList<ProductModel> products = <ProductModel>[].obs;
   RxList<ProductModel> filteredProducts = <ProductModel>[].obs;
 
@@ -23,6 +23,30 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
     // fetchProducts();
+  }
+
+  Future<void> getProductDetails(context, String productId) async {
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: "${Constant().productDetails}/$productId",
+          fromJson: (json) => ProductModel.fromJson(json));
+      response.fold(
+        (failure) {
+          throw Exception("Failed to load lead details");
+        },
+        (loadedProductDetails) {
+          productDetails.value = loadedProductDetails;
+          refresh();
+        },
+      );
+    } catch (e) {
+      CustomToast.showToast(
+        context: context,
+        message: 'Error fetching lead details: $e',
+      );
+    } finally {
+      // notifyListeners();
+    }
   }
 
   Future<void> fetchProducts() async {
@@ -59,7 +83,6 @@ class ProductController extends GetxController {
     required ProductModel product,
     required BuildContext context,
   }) async {
-    print("Creating product: ${product.toJson()}");
     isLoading.value = true;
     final body = product.toJson()
       ..remove('_id')
@@ -166,4 +189,195 @@ class ProductController extends GetxController {
       return matchesQuery && matchesFilter;
     }).toList();
   }
+
+  Future<bool> uploadImage({
+    String? productId,
+    Map<String, dynamic>? body,
+    required BuildContext context,
+  }) async {
+    try {
+      isLoading.value = true;
+      final response = await _apiService.postHttpRequest(
+        endpoint: Constant().addProductImage + (productId ?? ''),
+        body: body,
+        fromJson: (json) => json['file_path'],
+      );
+      return await response.fold((failure) async {
+        // Check if context is still mounted before showing toast
+        if (context.mounted) {
+          CustomToast.showToast(
+            context: context,
+            message: "Failed to upload document: $failure",
+          );
+        }
+        return false;
+      }, (filePath) async {
+        if (filePath == null) {
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Failed to upload document: No file path returned",
+            );
+          }
+          return false;
+        }
+
+        productDetails.update((product) {
+          productDetails.value.images?.add(filePath);
+        });
+        if (context.mounted) {
+          CustomToast.showToast(
+            context: context,
+            message: "Document uploaded successfully",
+            backgroundColor: Colors.green,
+          );
+        }
+        return true;
+      });
+    } catch (e) {
+      if (context.mounted) {
+        CustomToast.showToast(
+          context: context,
+          message: "Failed to upload document: $e",
+        );
+      }
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> deleteProductImage({
+    String? productId,
+    Map<String, dynamic>? body,
+    required BuildContext context,
+  }) async {
+    try {
+      isLoading.value = true;
+      final response = await _apiService.deleteRequest(
+        endpoint: Constant().deleteProductImage + (productId ?? ''),
+        body: body,
+        fromJson: (json) => json,
+      );
+
+      return await response.fold((failure) async {
+        // Check if context is still mounted before showing toast
+        if (context.mounted) {
+          CustomToast.showToast(
+            context: context,
+            message: "Failed to upload document: $failure",
+          );
+        }
+        return false;
+      }, (filePath) async {
+        if (filePath == null) {
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Failed to upload document: No file path returned",
+            );
+          }
+          return false;
+        }
+        productDetails.update((product) {
+          product?.images?.remove(body?['url']);
+        });
+        productDetails.refresh();
+        if (context.mounted) {
+          CustomToast.showToast(
+            context: context,
+            message: "Document deleted successfully",
+            backgroundColor: Colors.green,
+          );
+        }
+        return true;
+      });
+    } catch (e) {
+      if (context.mounted) {
+        CustomToast.showToast(
+          context: context,
+          message: "Failed to upload document: $e",
+        );
+      }
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
+
+
+
+  // Future<bool> uploadDocument({
+  //   String? productId,
+  //   Map<String, dynamic>? body,
+  //   required BuildContext context,
+  // }) async {
+  //   try {
+  //     isLoading.value = true;
+  //     final response = await _apiService.postHttpRequest(
+  //       endpoint: Constant().addProductImage + (productId ?? ''),
+  //       body: body,
+  //       fromJson: (json) => json['file_path'],
+  //     );
+  //     return await response.fold(
+  //       (failure) async {
+  //         // Check if context is still mounted before showing toast
+  //         if (context.mounted) {
+  //           CustomToast.showToast(
+  //             context: context,
+  //             message: "Failed to upload document: $failure",
+  //           );
+  //         }
+  //         return false;
+  //       },
+  //       (filePath) async {
+  //         if (filePath == null) {
+  //           if (context.mounted) {
+  //             CustomToast.showToast(
+  //               context: context,
+  //               message: "Failed to upload document: No file path returned",
+  //             );
+  //           }
+  //           return false;
+  //         }
+  //         productDetails.update((product) {
+  //           if (product == null) return;
+  //           final currentDocs = product.images ?? [];
+  //           // Find index by doc_type
+  //           final updatedDoc = DocumentRecordModel(
+  //             docType: body?['doc_type'],
+  //             filePath: filePath,
+  //             uploadedAt: formatDatetoString(DateTime.now()),
+  //           );
+  //           final newDocs = List<DocumentRecordModel>.from(currentDocs);
+  //           newDocs.add(updatedDoc);
+  //           productDetails.value.images?.add(filePath);
+  //           // Update documents using immutable pattern
+  //           // productDetails.update((product) {
+  //           //   productDetails.value.images?.add(filePath);
+  //           // });
+  //           if (context.mounted) {
+  //             CustomToast.showToast(
+  //               context: context,
+  //               message: "Document uploaded successfully",
+  //               backgroundColor: Colors.green,
+  //             );
+  //           }
+  //         });
+
+  //         return true;
+  //       },
+  //     );
+  //   } catch (e) {
+  //     if (context.mounted) {
+  //       CustomToast.showToast(
+  //         context: context,
+  //         message: "Failed to upload document: $e",
+  //       );
+  //     }
+  //     return false;
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }

@@ -27,6 +27,8 @@ class Constant {
   String productDetails = 'product/productDetails';
   String productInterested = 'product/getProductIntrested';
   String getCustomerInteraction = 'lead/interactions/';
+  String addProductImage = 'product/addProductImage/';
+  String deleteProductImage = 'product/deleteProductImage/';
 
   String callEventList = "customer/customercall";
   String updateFeedback = 'customer/updatelog';

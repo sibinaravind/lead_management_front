@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/controller/customer_profile/customer_profile_controller.dart';
-import 'package:overseas_front_end/view/screens/cutsomer_profile/widgets/upload_document_popup.dart';
+import 'package:overseas_front_end/view/widgets/upload_document_popup.dart';
 import '../../../../controller/config/config_controller.dart';
 import '../../../../core/shared/constants.dart';
 import '../../../../model/lead/document_record_model.dart';
