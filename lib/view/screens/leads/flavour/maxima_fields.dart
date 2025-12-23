@@ -1,5 +1,3 @@
-import 'package:overseas_front_end/model/backup/client/client_data_model.dart';
-
 import '../../../../model/lead/lead_model.dart';
 
 class MaximaFields {

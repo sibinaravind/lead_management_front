@@ -96,6 +96,7 @@ class _AddProductScreenState extends State<AddProductScreen>
       TextEditingController();
   String? _selectedFuelType;
   String? _selectedTransmission;
+  String? _selectedProductType;
 
   // Real Estate Specific
   final TextEditingController _sizeController = TextEditingController();
@@ -154,6 +155,7 @@ class _AddProductScreenState extends State<AddProductScreen>
     _nameController.text = product.name ?? '';
     _codeController.text = product.code ?? '';
     _selectedSubCategory = product.subCategory;
+    _selectedProductType = product.productType;
     _selectedStatus = product.status;
     _descriptionController.text = product.description ?? '';
     _shortDescriptionController.text = product.shortDescription ?? '';
@@ -474,12 +476,22 @@ class _AddProductScreenState extends State<AddProductScreen>
                     setState(() => _selectedSubCategory = value),
               ),
               CustomDropdownField(
-                label: 'Service Mode',
-                value: _selectedServiceMode,
-                items: const ['ONLINE', 'OFFLINE', 'HYBRID'],
+                label: 'Product Type',
+                value: _selectedProductType,
+                items: configController.configData.value.productType
+                        ?.map((e) => e.name ?? "")
+                        .toList() ??
+                    [],
                 onChanged: (value) =>
-                    setState(() => _selectedServiceMode = value),
+                    setState(() => _selectedProductType = value),
               ),
+              // CustomDropdownField(
+              //   label: 'Service Mode',
+              //   value: _selectedServiceMode,
+              //   items: const ['ONLINE', 'OFFLINE', 'HYBRID'],
+              //   onChanged: (value) =>
+              //       setState(() => _selectedServiceMode = value),
+              // ),
               CustomDropdownField(
                 label: 'Status',
                 value: _selectedStatus,
@@ -1316,6 +1328,7 @@ class _AddProductScreenState extends State<AddProductScreen>
         name: _nameController.text.trim(),
         code: _codeController.text.trim(),
         category: _selectedCategory,
+        productType: _selectedProductType,
         subCategory: _selectedSubCategory,
         status: _selectedStatus,
         description: _descriptionController.text.trim(),

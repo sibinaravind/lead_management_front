@@ -45,6 +45,7 @@ class Constant {
   String updateLeadStatus = 'lead/updateLeadStatus';
   String addProductInterest = 'lead/addProductInterested/';
   String uploadLeadDocument = 'lead/updateClientRequiredDocuments/';
+  String searchLead = 'lead/search/';
 
   String officerLogin = 'officer/login';
   String officerPasswordReset = 'officer/resetPassword';
@@ -84,4 +85,15 @@ class Constant {
   String accessPermissionsEdit = 'config/edit_accessList';
   String accessPermissionsDelete = 'config/delete_accesspermission';
   String accessPermissionsAdd = 'config/insert_accesspermission';
+
+  String bookingCreate = 'booking/bookingCreate';
+  String bookingPaymentAdd = 'booking/payment/add';
+  String bookingPaymentReschedule = 'booking/payment/reschedule';
+  String bookingList = 'booking/bookingList';
+  String bookingDetails = 'booking/bookingDetails/';
+  String bookingUpcoming = 'booking/upcomingBookings?';
+  String bookingPaymentScheduleList = 'booking/getPaymentScheduleList?';
+  String bookingEdit = 'booking/editBooking';
+  String insertDocuments = 'booking/updateDocuments/';
+  String deleteDocuments = 'booking/deleteDocument/';
 }

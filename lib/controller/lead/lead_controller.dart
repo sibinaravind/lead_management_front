@@ -14,7 +14,7 @@ class LeadController extends GetxController {
   RxString filterStatus = ''.obs;
   RxString leadStatistics = ''.obs;
   RxString filterPriority = ''.obs;
-  RxList<LeadModel> filteredLeads = <LeadModel>[].obs;
+  RxList<LeadModel> searchResults = <LeadModel>[].obs;
   Rx<LeadListModel> customerMatchingList = LeadListModel().obs;
   RxBool isLoading = false.obs;
   RxString selectedFilter = ''.obs;
@@ -36,6 +36,28 @@ class LeadController extends GetxController {
         },
         (loadedClients) {
           customerMatchingList.value = loadedClients;
+        },
+      );
+    } catch (e) {
+      throw Exception('Error fetching clients: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> searchLead({String? query}) async {
+    try {
+      final response = await _apiService.getRequest(
+          endpoint: '${Constant().searchLead}$query',
+          params: filter,
+          fromJson: (json) =>
+              (json as List).map((e) => LeadModel.fromJson(e)).toList());
+      response.fold(
+        (failure) {
+          throw Exception(failure);
+        },
+        (loadedClients) {
+          searchResults.value = loadedClients;
         },
       );
     } catch (e) {

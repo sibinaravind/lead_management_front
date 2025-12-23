@@ -11,6 +11,7 @@ class CustomDateField extends StatelessWidget {
   final DateTime? endDate;
   final DateTime? focusDate;
   final bool isTimeRequired;
+  final bool readOnly;
   CustomDateField({
     super.key,
     required this.label,
@@ -21,6 +22,7 @@ class CustomDateField extends StatelessWidget {
     this.focusDate,
     this.initialDate,
     this.endDate,
+    this.readOnly = false,
   });
 
   @override
@@ -44,7 +46,7 @@ class CustomDateField extends StatelessWidget {
       const SizedBox(height: 8),
       TextFormField(
         controller: controller,
-        readOnly: true,
+        readOnly: readOnly,
         decoration: const InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -62,6 +64,7 @@ class CustomDateField extends StatelessWidget {
               }
             : null,
         onTap: () async {
+          if (readOnly) return;
           final date = await showDatePicker(
             context: context,
             initialDate: controller.text.isNotEmpty

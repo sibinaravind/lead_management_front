@@ -68,16 +68,52 @@ class ProductBasicInfoTab extends StatelessWidget {
                         iconColor: AppColors.viloletSecondaryColor,
                       ),
                       InfoItem(
-                        label: 'Service Mode',
-                        value: product.serviceMode ?? 'N/A',
-                        icon: Icons.help_outline_sharp,
-                        iconColor: AppColors.redSecondaryColor,
+                        label: 'Product Type',
+                        value: product.productType ?? 'N/A',
+                        icon: Icons.category_outlined,
+                        iconColor: AppColors.orangeSecondaryColor,
                       ),
+                      // InfoItem(
+                      //   label: 'Service Mode',
+                      //   value: product.serviceMode ?? 'N/A',
+                      //   icon: Icons.help_outline_sharp,
+                      //   iconColor: AppColors.redSecondaryColor,
+                      // ),
                       InfoItem(
                         label: 'Status',
                         value: product.status ?? 'N/A',
                         icon: Icons.toggle_on,
                         iconColor: AppColors.greenSecondaryColor,
+                      ),
+                    ],
+                  )),
+              const SizedBox(height: 24),
+              const SectionTitle(
+                title: "Descriptions",
+                icon: Icons.description_outlined,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade300, width: 0.8),
+                  ),
+                  child: ResponsiveGrid(
+                    columns: 1,
+                    children: [
+                      InfoItem(
+                        label: 'Short Description',
+                        value: product.shortDescription ?? 'N/A',
+                        icon: Icons.description_outlined,
+                        iconColor: AppColors.orangeSecondaryColor,
+                      ),
+                      InfoItem(
+                        label: 'Long Description',
+                        value: product.description ?? 'N/A',
+                        icon: Icons.description,
+                        iconColor: AppColors.blueSecondaryColor,
                       ),
                     ],
                   )),
@@ -194,36 +230,6 @@ class ProductBasicInfoTab extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              const SectionTitle(
-                title: "Descriptions",
-                icon: Icons.description_outlined,
-              ),
-              const SizedBox(height: 12),
-              Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade300, width: 0.8),
-                  ),
-                  child: ResponsiveGrid(
-                    columns: 1,
-                    children: [
-                      InfoItem(
-                        label: 'Short Description',
-                        value: product.shortDescription ?? 'N/A',
-                        icon: Icons.description_outlined,
-                        iconColor: AppColors.orangeSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Long Description',
-                        value: product.description ?? 'N/A',
-                        icon: Icons.description,
-                        iconColor: AppColors.blueSecondaryColor,
-                      ),
-                    ],
-                  )),
               SizedBox(height: 24),
               const SectionTitle(
                 title: 'Terms & Conditions',

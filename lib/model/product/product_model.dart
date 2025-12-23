@@ -70,6 +70,7 @@ class ProductModel {
   List<DiscountModel>? discounts;
   double? downpayment;
   double? loanEligibility;
+  String? productType;
 
   ProductModel({
     this.id,
@@ -138,6 +139,7 @@ class ProductModel {
     this.discounts,
     this.downpayment,
     this.loanEligibility,
+    this.productType,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -232,6 +234,7 @@ class ProductModel {
             ? []
             : List<DiscountModel>.from(
                 json["discounts"]!.map((x) => DiscountModel.fromMap(x))),
+        productType: json["productType"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -307,6 +310,7 @@ class ProductModel {
         "warrantyInfo": warrantyInfo,
         "downpayment": downpayment,
         "loanEligibility": loanEligibility,
+        "productType": productType,
         // "discounts": discounts == null
         //     ? []
         //     : List<dynamic>.from(discounts!.map((x) => x)),

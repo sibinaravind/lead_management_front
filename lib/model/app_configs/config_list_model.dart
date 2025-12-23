@@ -25,6 +25,8 @@ class ConfigListModel {
   List<ConfigModel>? tags;
   List<ConfigModel>? serviceIncludes;
   List<ConfigModel>? stepList;
+  List<ConfigModel>? productType;
+  List<ConfigModel>? bookingStatus;
 
   ConfigListModel({
     this.id,
@@ -51,6 +53,8 @@ class ConfigListModel {
     this.tags,
     this.serviceIncludes,
     this.stepList,
+    this.productType,
+    this.bookingStatus,
   });
 
   factory ConfigListModel.fromJson(Map<String, dynamic> json) =>
@@ -79,6 +83,8 @@ class ConfigListModel {
         tags: _parseConfigList(json["tags"]),
         serviceIncludes: _parseConfigList(json["serviceIncludes"]),
         stepList: _parseConfigList(json["stepList"]),
+        productType: _parseConfigList(json["product_type"]),
+        bookingStatus: _parseConfigList(json["booking_status"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -104,6 +110,8 @@ class ConfigListModel {
         "tags": _mapList(tags),
         "serviceIncludes": _mapList(serviceIncludes),
         "stepList": _mapList(stepList),
+        "product_type": _mapList(productType),
+        "booking_status": _mapList(bookingStatus),
       };
 
   static List<ConfigModel>? _parseConfigList(dynamic list) {
@@ -157,6 +165,8 @@ class ConfigListModel {
       "tags": tags,
       "serviceIncludes": serviceIncludes,
       "stepList": stepList,
+      "product_type": productType,
+      "booking_status": bookingStatus,
     };
   }
 
@@ -235,6 +245,10 @@ class ConfigListModel {
         return serviceIncludes ??= [];
       case 'stepList':
         return stepList ??= [];
+      case 'product_type':
+        return productType ??= [];
+      case 'booking_status':
+        return bookingStatus ??= [];
       default:
         throw ArgumentError('Unknown category: $category');
     }

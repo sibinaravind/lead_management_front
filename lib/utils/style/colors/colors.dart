@@ -111,6 +111,7 @@ class AppColors {
 
   static const Color textGrayColour = Color(0xFF94A3B8);
   static const Color textWhiteColour = Color(0xFFF1F5F9);
+  static const Color greyShadowColour = Color.fromARGB(255, 250, 250, 250);
 
   static const Color iconWhiteColour = Color(0xFFE2E8F0);
   //old
