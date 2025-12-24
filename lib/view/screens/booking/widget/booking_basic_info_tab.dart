@@ -29,55 +29,6 @@ class BookingBasicInfoTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionTitle(
-                  title: "Booking Information",
-                  icon: Icons.book_online,
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade300, width: 0.8),
-                  ),
-                  child: ResponsiveGrid(
-                    columns: columns,
-                    children: [
-                      InfoItem(
-                        label: 'Booking ID',
-                        value: booking.id ?? 'N/A',
-                        icon: Icons.fingerprint,
-                        iconColor: AppColors.blueSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Booking Date',
-                        value: _formatDate(booking.bookingDate),
-                        icon: Icons.calendar_today,
-                        iconColor: AppColors.greenSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Expected Closure',
-                        value: _formatDate(booking.expectedClosureDate),
-                        icon: Icons.event_available,
-                        iconColor: AppColors.orangeSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Status',
-                        value: booking.status ?? 'Active',
-                        icon: Icons.toggle_on,
-                        iconColor: AppColors.greenSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Officer ID',
-                        value: booking.officerId ?? 'N/A',
-                        icon: Icons.person_pin,
-                        iconColor: AppColors.viloletSecondaryColor,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                const SectionTitle(
                   title: "Product Information",
                   icon: Icons.shopping_bag,
                 ),
@@ -94,7 +45,7 @@ class BookingBasicInfoTab extends StatelessWidget {
                     children: [
                       InfoItem(
                         label: 'Product ID',
-                        value: booking.productId ?? 'N/A',
+                        value: booking.productAppId ?? 'N/A',
                         icon: Icons.qr_code,
                         iconColor: AppColors.blueSecondaryColor,
                       ),
@@ -106,6 +57,86 @@ class BookingBasicInfoTab extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+                const SizedBox(height: 24),
+                const SectionTitle(
+                  title: "Booking Information",
+                  icon: Icons.book_online,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade300, width: 0.8),
+                  ),
+                  child: ResponsiveGrid(
+                    columns: columns,
+                    children: [
+                      InfoItem(
+                        label: 'Booking Date',
+                        value: _formatDate(booking.bookingDate),
+                        icon: Icons.calendar_today,
+                        iconColor: AppColors.greenSecondaryColor,
+                      ),
+                      InfoItem(
+                        label: 'Status',
+                        value: booking.status ?? 'Active',
+                        icon: Icons.toggle_on,
+                        iconColor: AppColors.greenSecondaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SectionTitle(
+                      title: "Customer Information",
+                      icon: Icons.person,
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border:
+                            Border.all(color: Colors.grey.shade300, width: 0.8),
+                      ),
+                      child: ResponsiveGrid(
+                        columns: columns,
+                        children: [
+                          InfoItem(
+                            label: 'Customer ID',
+                            value: booking.customerAppId ?? 'N/A',
+                            icon: Icons.badge,
+                            iconColor: AppColors.blueSecondaryColor,
+                          ),
+                          InfoItem(
+                            label: 'Customer Name',
+                            value: booking.customerName ?? 'N/A',
+                            icon: Icons.person_outline,
+                            iconColor: AppColors.greenSecondaryColor,
+                          ),
+                          InfoItem(
+                            label: 'Phone Number',
+                            value: booking.customerPhone ?? 'N/A',
+                            icon: Icons.phone,
+                            iconColor: AppColors.orangeSecondaryColor,
+                          ),
+                          InfoItem(
+                            label: 'Address',
+                            value: booking.customerAddress ?? 'N/A',
+                            icon: Icons.location_on,
+                            iconColor: AppColors.redSecondaryColor,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 if (booking.notes != null && booking.notes!.isNotEmpty) ...[
                   const SizedBox(height: 24),

@@ -1,20 +1,23 @@
-// models/BookingModel_model.dart
-// Removed unused import 'dart:convert';
-
 import 'package:overseas_front_end/model/booking_model/booking_applied_offer_model.dart';
 import 'package:overseas_front_end/model/booking_model/co_applicant_model.dart';
 import 'package:overseas_front_end/model/booking_model/payment_shedule_model.dart';
 import 'package:overseas_front_end/model/booking_model/price_component_model.dart';
 import 'package:overseas_front_end/model/booking_model/transaction_model.dart';
 
+import '../lead/document_record_model.dart';
+import '../product/product_model.dart';
+
 class BookingModel {
   String? id;
+  String? bookingId;
   String? customerId;
+  String? customerAppId;
   String? customerName;
   String? customerPhone;
   String? officerId;
   String? customerAddress;
   String? productId;
+  String? productAppId;
   String? productName;
   DateTime? bookingDate;
   DateTime? expectedClosureDate;
@@ -43,15 +46,21 @@ class BookingModel {
   int? noOfTravellers;
   List<CoApplicantModel>? coApplicantList;
   List<PriceComponentModel>? priceComponents;
+  List<DocumentRecordModel>? documents;
+  List<DocumentsRequired>? requiredDocuments;
+  List<DocumentRecordModel>? customerDocuments;
 
   BookingModel({
     this.id,
+    this.bookingId,
     this.customerId,
+    this.customerAppId,
     this.customerName,
     this.customerPhone,
     this.officerId,
     this.customerAddress,
     this.productId,
+    this.productAppId,
     this.productName,
     this.bookingDate,
     this.expectedClosureDate,
@@ -80,17 +89,23 @@ class BookingModel {
     this.noOfTravellers,
     this.coApplicantList,
     this.priceComponents,
+    this.documents,
+    this.requiredDocuments,
+    this.customerDocuments,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
       id: json['_id'],
       customerId: json['customer_id'],
+      bookingId: json['booking_id'],
+      customerAppId: json['customer_app_id'],
       customerName: json['customer_name'],
       customerPhone: json['customer_phone'],
       officerId: json['officer_id'],
       customerAddress: json['customer_address'],
       productId: json['product_id'],
+      productAppId: json['product_app_id'],
       status: json['status'],
       productName: json['product_name'],
       bookingDate: json['booking_date'] != null
@@ -139,17 +154,31 @@ class BookingModel {
           ? List<CoApplicantModel>.from(json['co_applicant_list']
               .map((x) => CoApplicantModel.fromJson(x)))
           : null,
+      documents: json['documents'] != null
+          ? List<DocumentRecordModel>.from(
+              json['documents'].map((x) => DocumentRecordModel.fromJson(x)))
+          : null,
+      requiredDocuments: json['required_documents'] != null
+          ? List<DocumentsRequired>.from(json['required_documents']
+              .map((x) => DocumentsRequired.fromJson(x)))
+          : null,
+      customerDocuments: json['customer_documents'] != null
+          ? List<DocumentRecordModel>.from(json['customer_documents']
+              .map((x) => DocumentRecordModel.fromJson(x)))
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'customer_id': customerId,
+      'customer_app_id': customerAppId,
       'customer_name': customerName,
       'customer_phone': customerPhone,
       'officer_id': officerId,
       'customer_address': customerAddress,
       'product_id': productId,
+      'product_app_id': productAppId,
       'status': status,
       'product_name': productName,
       'booking_date': bookingDate?.toIso8601String(),
@@ -178,6 +207,26 @@ class BookingModel {
       'no_of_travellers': noOfTravellers,
       'co_applicant_list': coApplicantList?.map((x) => x.toJson()).toList(),
       'price_components': priceComponents?.map((x) => x.toJson()).toList(),
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'customer_phone': customerPhone,
+      'customer_address': customerAddress,
+      'status': status,
+      'booking_date': bookingDate?.toIso8601String(),
+      'loan_amount_requested': loanAmountRequested,
+      'notes': notes,
+      'course_name': courseName,
+      'institution_name': institutionName,
+      'country_applying_for': countryApplyingFor,
+      'visa_type': visaType,
+      'origin': origin,
+      'destination': destination,
+      'return_date': returnDate?.toIso8601String(),
+      'no_of_travellers': noOfTravellers,
+      'co_applicant_list': coApplicantList?.map((x) => x.toJson()).toList()
     };
   }
 }

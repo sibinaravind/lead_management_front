@@ -1,8 +1,22 @@
 // widget/booking_documents_tab.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:overseas_front_end/model/booking_model/booking_model.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
 import 'package:overseas_front_end/view/widgets/section_title.dart';
+
+import '../../../../controller/booking/booking_controller.dart';
+import '../../../../controller/config/config_controller.dart';
+import '../../../../controller/customer_profile/customer_profile_controller.dart';
+import '../../../../core/shared/constants.dart';
+import '../../../../model/lead/document_record_model.dart';
+import '../../../widgets/custom_action_button.dart';
+import '../../../widgets/custom_text.dart';
+import '../../../widgets/upload_document_popup.dart';
+import '../../../widgets/view_doc_widget.dart';
+import '../../cutsomer_profile/widgets/info_item.dart';
+import '../../cutsomer_profile/widgets/info_section.dart';
+import '../../cutsomer_profile/widgets/product_intrested_popup.dart';
 
 class BookingDocumentsTab extends StatelessWidget {
   final BookingModel booking;
@@ -12,36 +26,6 @@ class BookingDocumentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock document data - Replace with actual document list from your model
-    final documents = <Map<String, dynamic>>[
-      {
-        'name': 'Passport Copy',
-        'status': 'Uploaded',
-        'uploadedDate': DateTime(2025, 1, 15),
-        'type': 'PDF',
-        'size': '2.5 MB',
-      },
-      {
-        'name': 'Visa Application',
-        'status': 'Pending',
-        'uploadedDate': null,
-        'type': 'PDF',
-        'size': null,
-      },
-      {
-        'name': 'Travel Insurance',
-        'status': 'Uploaded',
-        'uploadedDate': DateTime(2025, 1, 18),
-        'type': 'PDF',
-        'size': '1.8 MB',
-      },
-      {
-        'name': 'Flight Tickets',
-        'status': 'Pending',
-        'uploadedDate': null,
-        'type': 'PDF',
-        'size': null,
-      },
-    ];
 
     return Align(
       alignment: Alignment.topLeft,
@@ -50,328 +34,332 @@ class BookingDocumentsTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Document Status Overview
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatusCard(
-                    'Total Documents',
-                    documents.length.toString(),
-                    Icons.folder,
-                    Colors.blue,
+            InfoSection(
+              title: 'Required Documents',
+              icon: Icons.description_rounded,
+              padding: const EdgeInsets.all(15),
+              items: (booking.requiredDocuments ?? []).map((doc) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                  child: InfoItem(
+                    label: doc.docName ?? 'Document',
+                    value: doc.mandatory == true ? 'Mandatory' : 'Optional',
+                    icon: Icons.file_present_rounded,
+                    iconColor: doc.mandatory == true
+                        ? AppColors.redSecondaryColor
+                        : AppColors.greenSecondaryColor,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildStatusCard(
-                    'Uploaded',
-                    documents
-                        .where((doc) => doc['status'] == 'Uploaded')
-                        .length
-                        .toString(),
-                    Icons.check_circle,
-                    Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildStatusCard(
-                    'Pending',
-                    documents
-                        .where((doc) => doc['status'] == 'Pending')
-                        .length
-                        .toString(),
-                    Icons.pending,
-                    Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Documents List
-            const SectionTitle(
-              title: "Required Documents",
-              icon: Icons.description_outlined,
+                );
+              }).toList(),
             ),
             const SizedBox(height: 12),
-
-            ...documents
-                .map((doc) => _buildDocumentCard(context, doc))
-                .toList(),
-
-            const SizedBox(height: 24),
-
-            // Upload Section
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.blue.shade200, width: 1),
-              ),
-              child: Column(
-                children: [
-                  Icon(Icons.cloud_upload,
-                      size: 48, color: Colors.blue.shade700),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Upload New Document',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade900,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Click below to upload additional documents',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.blue.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
+            SectionTitle(
+                title: "Booking Documents",
+                icon: Icons.description_outlined,
+                tail: SizedBox(
+                  width: 180,
+                  // height: 35,
+                  child: CustomActionButton(
+                    text: 'Add  Document',
+                    icon: Icons.add_rounded,
+                    textColor: AppColors.violetPrimaryColor,
+                    // gradient: AppColors.greenGradient,
+                    // backgroundColor: AppColors.blueSecondaryColor,
+                    // isFilled: true,
                     onPressed: () {
-                      // TODO: Implement file upload
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return UploadDocumentPopup(
+                            // initialProducts:
+                            //     lead.productInterested ?? <ProductItem>[],
+                            onSave: (documents) {
+                              Get.find<BookingController>().uploadDocument(
+                                  bookingId: booking.id,
+                                  body: documents,
+                                  context: context);
+                            },
+                          );
+                        },
+                      );
                     },
-                    icon: const Icon(Icons.upload_file),
-                    label: const Text('Choose File'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    // gradient: AppColors.greenGradient,
                   ),
-                ],
+                )),
+            const SizedBox(height: 12),
+            if (booking.documents == null ||
+                (booking.documents?.isEmpty ?? false))
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: CustomText(
+                    text: 'No Booking documents uploaded.',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
-            ),
+            // Items
+            Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: booking.documents
+                          ?.map((doc) => buildDocumentCard(doc, context))
+                          .toList() ??
+                      [].asMap().entries.map((entry) {
+                        final isLast = entry.key ==
+                            (booking.documents
+                                            ?.map((doc) => buildDocumentCard(
+                                                  doc,
+                                                  context,
+                                                ))
+                                            .toList() ??
+                                        [])
+                                    .length -
+                                1;
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+                          child: entry.value,
+                        );
+                      }).toList(),
+                )),
 
             const SizedBox(height: 24),
 
-            // Notes Section
-            const SectionTitle(
-              title: "Document Notes",
-              icon: Icons.note_outlined,
+            SectionTitle(
+              title: "Customer Documents",
+              icon: Icons.description_outlined,
+              tail: SizedBox(
+                width: 180,
+                // height: 35,
+                child: CustomActionButton(
+                  text: 'Add  Document',
+                  icon: Icons.add_rounded,
+                  textColor: AppColors.violetPrimaryColor,
+                  // gradient: AppColors.greenGradient,
+                  // backgroundColor: AppColors.blueSecondaryColor,
+                  // isFilled: true,
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return UploadDocumentPopup(
+                          // initialProducts:
+                          //     lead.productInterested ?? <ProductItem>[],
+                          onSave: (documents) {
+                            Get.find<CustomerProfileController>()
+                                .uploadDocument(
+                                    clientId: booking.customerId,
+                                    body: documents,
+                                    context: context);
+                          },
+                        );
+                      },
+                    );
+                  },
+                  // gradient: AppColors.greenGradient,
+                ),
+              ),
             ),
             const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.grey.shade300, width: 0.8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.info_outline,
-                          color: AppColors.blueSecondaryColor, size: 20),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Important Information',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+
+            // Items
+            if (booking.customerDocuments == null ||
+                booking.customerDocuments!.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: CustomText(
+                    text: 'No customer documents uploaded.',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    '• All documents must be in PDF format\n'
-                    '• Maximum file size: 5MB per document\n'
-                    '• Documents should be clear and legible\n'
-                    '• Ensure all information is visible',
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.8,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              )
+            else
+              Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: booking.customerDocuments
+                            ?.map((doc) => buildDocumentCard(doc, context))
+                            .toList() ??
+                        [].asMap().entries.map((entry) {
+                          final isLast = entry.key ==
+                              (booking.customerDocuments
+                                              ?.map((doc) => buildDocumentCard(
+                                                    doc,
+                                                    context,
+                                                  ))
+                                              .toList() ??
+                                          [])
+                                      .length -
+                                  1;
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+                            child: entry.value,
+                          );
+                        }).toList(),
+                  )),
 
             const SizedBox(height: 24),
+
+            // const SectionTitle(
+            //   title: "Required Documents",
+            //   icon: Icons.description_outlined,
+            // ),
+            // const SizedBox(height: 12),
+
+            // // ...documents
+            // //     .map((doc) => _buildDocumentCard(context, doc))
+            // //     .toList(),
+
+            // const SizedBox(height: 24),
+
+            // // Upload Section
+            // Container(
+            //   padding: const EdgeInsets.all(20),
+            //   decoration: BoxDecoration(
+            //     color: Colors.blue.shade50,
+            //     borderRadius: BorderRadius.circular(14),
+            //     border: Border.all(color: Colors.blue.shade200, width: 1),
+            //   ),
+            //   child: Column(
+            //     children: [
+            //       Icon(Icons.cloud_upload,
+            //           size: 48, color: Colors.blue.shade700),
+            //       const SizedBox(height: 12),
+            //       Text(
+            //         'Upload New Document',
+            //         style: TextStyle(
+            //           fontSize: 16,
+            //           fontWeight: FontWeight.bold,
+            //           color: Colors.blue.shade900,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 8),
+            //       Text(
+            //         'Click below to upload additional documents',
+            //         style: TextStyle(
+            //           fontSize: 13,
+            //           color: Colors.blue.shade700,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 16),
+            //       ElevatedButton.icon(
+            //         onPressed: () {
+            //           // TODO: Implement file upload
+            //         },
+            //         icon: const Icon(Icons.upload_file),
+            //         label: const Text('Choose File'),
+            //         style: ElevatedButton.styleFrom(
+            //           backgroundColor: AppColors.primaryColor,
+            //           foregroundColor: Colors.white,
+            //           padding: const EdgeInsets.symmetric(
+            //               horizontal: 24, vertical: 12),
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(8),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatusCard(
-      String label, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1.5),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDocumentCard(BuildContext context, Map<String, dynamic> doc) {
-    final isUploaded = doc['status'] == 'Uploaded';
-    final statusColor = isUploaded ? Colors.green : Colors.orange;
-
+  Widget buildDocumentCard(DocumentRecordModel document, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isUploaded ? Colors.green.shade200 : Colors.orange.shade200,
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF34A853).withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
+              color: const Color(0xFF34A853).withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
-              isUploaded ? Icons.description : Icons.upload_file,
-              color: statusColor,
-              size: 28,
+              Icons.check_circle,
+              color: const Color(0xFF34A853),
+              size: 20,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  doc['name'],
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                CustomText(
+                  text: document.docType?.toString().toUpperCase() ?? 'N/A',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF202124),
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        doc['status'],
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: statusColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (doc['size'] != null) ...[
-                      const SizedBox(width: 8),
-                      Text(
-                        '${doc['type']} • ${doc['size']}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ],
+                CustomText(
+                  text: "uploaded on:  ${document.uploadedAt ?? 'N/A'}",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF5F6368),
                 ),
-                if (doc['uploadedDate'] != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      'Uploaded: ${_formatDate(doc['uploadedDate'])}',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),
-          if (isUploaded)
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.visibility,
-                      color: Colors.blue.shade700, size: 20),
-                  onPressed: () {
-                    // TODO: View document
-                  },
-                  tooltip: 'View',
-                ),
-                IconButton(
-                  icon: Icon(Icons.download,
-                      color: Colors.green.shade700, size: 20),
-                  onPressed: () {
-                    // TODO: Download document
-                  },
-                  tooltip: 'Download',
-                ),
-              ],
-            )
-          else
-            ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Upload document
-              },
-              icon: const Icon(Icons.upload, size: 16),
-              label: const Text('Upload'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      contentPadding: const EdgeInsets.all(0),
+                      content: ViewDocWidget(
+                        fileUrl: Constant().featureBaseUrl + document.filePath!,
+                        fileName: document.docType ?? 'Unknown',
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF34A853).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: CustomText(
+                      text: 'view',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF34A853)),
                 ),
               ),
-            ),
+            ],
+          ),
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }

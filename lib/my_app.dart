@@ -85,147 +85,147 @@ class MyApp extends StatelessWidget {
         //   ),
         //   // builder: (context, state) => CustomerJourneyScreen(),
         // ),
-        // GoRoute(
-        //   path: '/test', //test move to /
-        //   builder: (context, state) => Scaffold(
-        //     body: BookingDetailsScreen(
-        //       // clientId: "",
-        //       // clientName: "",
-        //       bookingId: '6949325fdb98126c71bd6dbd',
-        //     ),
-        //   ),
-        // ),
         GoRoute(
           path: '/test', //test move to /
           builder: (context, state) => Scaffold(
-            body: BookingScreen(
-              product: ProductModel.fromJson({
-                "_id": "692ac813cdc77773395fbdf8",
-                "product_id": "AEPID00001",
-                "name": "Europe Holiday Packagess",
-                "code": "EHP-2025",
-                "category": null,
-                "subCategory": "TOUR_PACKAGE",
-                "requiresAgreement": true,
-                "supportAvailable": true,
-                "providerDetails": {
-                  "name": "Global Travel Solutions",
-                  "contact": "+91 9876543210",
-                  "email": "info@globaltravel.com",
-                  "address": "MG Road, Bangalore"
-                },
-                "status": "ACTIVE",
-                "updated_at": "2025-12-18T16:51:01.865Z",
-                "created_at": "2025-11-29T10:16:51.386Z",
-                "advanceRequiredPercent": 30,
-                "ageLimit": "18 - 60 years",
-                "basePrice": 120000,
-                "bhk": "3 BHK",
-                "brand": "BMW",
-                "city": "Bangalore",
-                "costPrice": 100000,
-                "country": "UAE",
-                "countryOfStudy": "Canada",
-                "courseDuration": "2 Years",
-                "courseLevel": "MBBS",
-                "description":
-                    "A premium Europe holiday package covering 6 countries in 10 days.",
-                "documentsRequired": [
-                  {"docName": "Passport", "mandatory": true},
-                  {"docName": "Pan Card", "mandatory": true},
-                  {"docName": "Bank Statement (6 Months)", "mandatory": true}
-                ],
-                "duration": "10D/9N",
-                "exclusions": [
-                  "Lunch & Dinner",
-                  "Personal expenses",
-                  "Extra travel activities"
-                ],
-                "experienceRequired": "rrtty",
-                "fuelType": "Diesel",
-                "furnishingStatus": "Semi-Furnished",
-                "images": [
-                  "uploads/product_images/doc_product_692ac813cdc77773395fbdf8_1765992577545_ioe0q.webp"
-                ],
-                "inclusions": [
-                  "Hotel stay",
-                  "Breakfast",
-                  "Airport transfers",
-                  "Sightseeing",
-                  "Travel insurance"
-                ],
-                "institutionName": "University of Toronto",
-                "insuranceValidTill": "2026-05-20",
-                "interviewPreparation": false,
-                "isRefundable": true,
-                "jobAssistance": false,
-                "kmsDriven": "18,000 KM",
-                "location": "Whitefield, Bangalore",
-                "minIncomeRequired": "₹35,000 monthly",
-                "model": "X5",
-                "notes":
-                    "Check Schengen visa availability depending on travel dates.",
-                "possessionTime": "2026 Q2",
-                "priceComponents": [
-                  {
-                    "title": "Service Fee",
-                    "amount": 34554,
-                    "gstPercent": 18,
-                    "cgstPercent": 9,
-                    "sgstPercent": 9
-                  },
-                  {
-                    "title": "Processing Fee",
-                    "amount": 354353,
-                    "gstPercent": 12,
-                    "cgstPercent": 6,
-                    "sgstPercent": 6
-                  }
-                ],
-                "processingTime": "7-14 working days",
-                "propertyType": "Residential",
-                "qualificationRequired": "rtrt",
-                "refundPolicy":
-                    "Full refund if cancelled 30 days before travel. 50% refund if cancelled within 15 days.",
-                "registrationYear": "2022",
-                "sellingPrice": 135000,
-                "serviceMode": "HYBRID",
-                "shortDescription": "Europe 10D/9N Holiday Package.",
-                "size": "1500 sq ft",
-                "state": "Karnataka",
-                "stepList": [
-                  "Enquiry Received",
-                  "Package Selection",
-                  "Document Submission",
-                  "Visa Processing",
-                  "Ticketing & Hotel Confirmation",
-                  "Travel Start"
-                ],
-                "supportDuration": "6 Months",
-                "tags": ["travel", "europe", "holiday", "international"],
-                "termsAndConditions":
-                    "Payment must be completed before travel date. Passport should be valid for at least 6 months.",
-                "transmission": "Automatic",
-                "travelType": "TOUR",
-                "validity": "Valid for 6 months from date of purchase",
-                "visaType": "Tourist Visa",
-                "warrantyInfo": "Travel insurance covers major risks only.",
-                "documents": [
-                  {
-                    "doc_type": "product_image",
-                    "file_path":
-                        "uploads/product_images/product_image_product_692ac813cdc77773395fbdf8_1765990280519_wzno5.webp",
-                    "uploaded_at": "2025-12-17T16:51:21.046Z"
-                  }
-                ],
-                "downpayment": 324,
-                "loanEligibility": 454545,
-                "productType": "3bhk",
-                "discounts": []
-              }),
+            body: BookingDetailsScreen(
+              // clientId: "",
+              // clientName: "",
+              bookingId: '694bb9f93accc7eeda5e3e0f',
             ),
           ),
         ),
+        // GoRoute(
+        //   path: '/test', //test move to /
+        //   builder: (context, state) => Scaffold(
+        //     body: AddEditBookingScreen(
+        //       product: ProductModel.fromJson({
+        //         "_id": "692ac813cdc77773395fbdf8",
+        //         "product_id": "AEPID00001",
+        //         "name": "Europe Holiday Packagess",
+        //         "code": "EHP-2025",
+        //         "category": null,
+        //         "subCategory": "TOUR_PACKAGE",
+        //         "requiresAgreement": true,
+        //         "supportAvailable": true,
+        //         "providerDetails": {
+        //           "name": "Global Travel Solutions",
+        //           "contact": "+91 9876543210",
+        //           "email": "info@globaltravel.com",
+        //           "address": "MG Road, Bangalore"
+        //         },
+        //         "status": "ACTIVE",
+        //         "updated_at": "2025-12-18T16:51:01.865Z",
+        //         "created_at": "2025-11-29T10:16:51.386Z",
+        //         "advanceRequiredPercent": 30,
+        //         "ageLimit": "18 - 60 years",
+        //         "basePrice": 120000,
+        //         "bhk": "3 BHK",
+        //         "brand": "BMW",
+        //         "city": "Bangalore",
+        //         "costPrice": 100000,
+        //         "country": "UAE",
+        //         "countryOfStudy": "Canada",
+        //         "courseDuration": "2 Years",
+        //         "courseLevel": "MBBS",
+        //         "description":
+        //             "A premium Europe holiday package covering 6 countries in 10 days.",
+        //         "documentsRequired": [
+        //           {"docName": "Passport", "mandatory": true},
+        //           {"docName": "Pan Card", "mandatory": true},
+        //           {"docName": "Bank Statement (6 Months)", "mandatory": true}
+        //         ],
+        //         "duration": "10D/9N",
+        //         "exclusions": [
+        //           "Lunch & Dinner",
+        //           "Personal expenses",
+        //           "Extra travel activities"
+        //         ],
+        //         "experienceRequired": "rrtty",
+        //         "fuelType": "Diesel",
+        //         "furnishingStatus": "Semi-Furnished",
+        //         "images": [
+        //           "uploads/product_images/doc_product_692ac813cdc77773395fbdf8_1765992577545_ioe0q.webp"
+        //         ],
+        //         "inclusions": [
+        //           "Hotel stay",
+        //           "Breakfast",
+        //           "Airport transfers",
+        //           "Sightseeing",
+        //           "Travel insurance"
+        //         ],
+        //         "institutionName": "University of Toronto",
+        //         "insuranceValidTill": "2026-05-20",
+        //         "interviewPreparation": false,
+        //         "isRefundable": true,
+        //         "jobAssistance": false,
+        //         "kmsDriven": "18,000 KM",
+        //         "location": "Whitefield, Bangalore",
+        //         "minIncomeRequired": "₹35,000 monthly",
+        //         "model": "X5",
+        //         "notes":
+        //             "Check Schengen visa availability depending on travel dates.",
+        //         "possessionTime": "2026 Q2",
+        //         "priceComponents": [
+        //           {
+        //             "title": "Service Fee",
+        //             "amount": 34554,
+        //             "gstPercent": 18,
+        //             "cgstPercent": 9,
+        //             "sgstPercent": 9
+        //           },
+        //           {
+        //             "title": "Processing Fee",
+        //             "amount": 354353,
+        //             "gstPercent": 12,
+        //             "cgstPercent": 6,
+        //             "sgstPercent": 6
+        //           }
+        //         ],
+        //         "processingTime": "7-14 working days",
+        //         "propertyType": "Residential",
+        //         "qualificationRequired": "rtrt",
+        //         "refundPolicy":
+        //             "Full refund if cancelled 30 days before travel. 50% refund if cancelled within 15 days.",
+        //         "registrationYear": "2022",
+        //         "sellingPrice": 135000,
+        //         "serviceMode": "HYBRID",
+        //         "shortDescription": "Europe 10D/9N Holiday Package.",
+        //         "size": "1500 sq ft",
+        //         "state": "Karnataka",
+        //         "stepList": [
+        //           "Enquiry Received",
+        //           "Package Selection",
+        //           "Document Submission",
+        //           "Visa Processing",
+        //           "Ticketing & Hotel Confirmation",
+        //           "Travel Start"
+        //         ],
+        //         "supportDuration": "6 Months",
+        //         "tags": ["travel", "europe", "holiday", "international"],
+        //         "termsAndConditions":
+        //             "Payment must be completed before travel date. Passport should be valid for at least 6 months.",
+        //         "transmission": "Automatic",
+        //         "travelType": "TOUR",
+        //         "validity": "Valid for 6 months from date of purchase",
+        //         "visaType": "Tourist Visa",
+        //         "warrantyInfo": "Travel insurance covers major risks only.",
+        //         "documents": [
+        //           {
+        //             "doc_type": "product_image",
+        //             "file_path":
+        //                 "uploads/product_images/product_image_product_692ac813cdc77773395fbdf8_1765990280519_wzno5.webp",
+        //             "uploaded_at": "2025-12-17T16:51:21.046Z"
+        //           }
+        //         ],
+        //         "downpayment": 324,
+        //         "loanEligibility": 454545,
+        //         "productType": "3bhk",
+        //         "discounts": []
+        //       }),
+        //     ),
+        //   ),
+        // ),
       ],
       errorBuilder: (context, state) => ErrorScreen(),
       // initialLocation: '/dashboard/leads/lead',

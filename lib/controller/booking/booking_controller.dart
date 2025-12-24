@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overseas_front_end/core/shared/constants.dart';
+import 'package:overseas_front_end/view/widgets/custom_toast.dart';
 
 import '../../core/services/api_service.dart';
 import '../../model/booking_model/booking_model.dart';
@@ -57,16 +58,16 @@ class BookingController extends GetxController {
   Future<BookingModel?> getBookingById(String id) async {
     try {
       final response = await _apiService.getRequest(
-          endpoint: Constant().getAllFilterdLeads,
+          endpoint: Constant().bookingDetails + id,
           fromJson: (json) => BookingModel.fromJson(json));
       BookingModel? result;
       response.fold(
         (failure) {
           throw Exception(failure);
         },
-        (loadedClients) {
-          selectedBooking.value = loadedClients;
-          result = loadedClients;
+        (booking) {
+          selectedBooking.value = booking;
+          result = booking;
         },
       );
       return result;
@@ -111,7 +112,8 @@ class BookingController extends GetxController {
     try {
       final response = await _apiService.patchRequest(
         endpoint: '${Constant().bookingEdit}/$id',
-        body: booking.toJson()..removeWhere((key, value) => value == null),
+        body: booking.toUpdateJson()
+          ..removeWhere((key, value) => value == null),
         fromJson: (json) => json,
       );
       return response.fold(
@@ -136,7 +138,102 @@ class BookingController extends GetxController {
       );
     } catch (e) {
       Navigator.of(context).pop();
-      CustomSnackBar.showMessage("Error", "$e", backgroundColor: Colors.red);
+      CustomToast.showToast(
+          context: context, message: "$e", backgroundColor: Colors.red);
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> uploadDocument({
+    String? bookingId,
+    Map<String, dynamic>? body,
+    required BuildContext context,
+  }) async {
+    try {
+      isLoading.value = true;
+
+      final response = await _apiService.postHttpRequest(
+        endpoint: Constant().insertBookingDocuments + (bookingId ?? ''),
+        body: body,
+        fromJson: (json) => json['file_path'],
+      );
+      return await response.fold(
+        (failure) async {
+          // Check if context is still mounted before showing toast
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Failed to upload document: $failure",
+            );
+          }
+          return false;
+        },
+        (filePath) async {
+          if (filePath == null) {
+            if (context.mounted) {
+              CustomToast.showToast(
+                context: context,
+                message: "Failed to upload document",
+              );
+            }
+            return false;
+          }
+
+          if (context.mounted) {
+            CustomToast.showToast(
+              context: context,
+              message: "Document uploaded successfully",
+              backgroundColor: Colors.green,
+            );
+          }
+          return true;
+        },
+      );
+    } catch (e) {
+      if (context.mounted) {
+        CustomToast.showToast(
+          context: context,
+          message: "Failed to upload document: $e",
+        );
+      }
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool?> addPayment(
+      Map<String, dynamic> paymentData, BuildContext context) async {
+    try {
+      final response = await _apiService.postRequest(
+        endpoint: Constant().bookingPaymentAdd,
+        body: paymentData,
+        fromJson: (json) => json,
+      );
+      bool? result = false;
+      response.fold(
+        (failure) {
+          throw failure;
+        },
+        (booking) {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+          CustomToast.showToast(
+              context: context,
+              message: "Payment added successfully",
+              backgroundColor: Colors.green);
+          result = true;
+        },
+      );
+      return result;
+    } catch (e) {
+      Navigator.of(context).pop();
+      CustomToast.showToast(
+          context: context,
+          message: "Error: ${e.toString()}",
+          backgroundColor: Colors.red);
       return false;
     } finally {
       isLoading.value = false;

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:overseas_front_end/model/booking_model/booking_model.dart';
 import 'package:overseas_front_end/utils/style/colors/colors.dart';
-import 'package:overseas_front_end/view/widgets/custom_text.dart';
 import 'package:overseas_front_end/view/widgets/widgets.dart';
+import '../../../controller/booking/booking_controller.dart';
+import 'add_edit_booking_screen.dart';
+import 'widget/add_transaction_popup.dart';
 import 'widget/booking_basic_info_tab.dart';
 import 'widget/booking_documents_tab.dart';
+import 'widget/booking_invoice_usage_helper.dart';
 import 'widget/booking_pricing_tab.dart';
 import 'widget/booking_payment_tab.dart';
 import 'widget/booking_customer_tab.dart';
@@ -13,19 +17,18 @@ class BookingDetailsScreen extends StatefulWidget {
   const BookingDetailsScreen({
     super.key,
     required this.bookingId,
-    this.booking,
   });
 
   final String bookingId;
-  final BookingModel? booking;
 
   @override
   State<BookingDetailsScreen> createState() => _BookingProfileScreenState();
 }
 
 class _BookingProfileScreenState extends State<BookingDetailsScreen> {
+  final bookingController = Get.find<BookingController>();
   int _selectedTabIndex = 0;
-  late BookingModel _booking;
+  BookingModel? _booking;
   bool _isLoading = true;
   List<Map<String, dynamic>> _tabs = [];
 
@@ -36,48 +39,44 @@ class _BookingProfileScreenState extends State<BookingDetailsScreen> {
   }
 
   Future<void> _initializeBooking() async {
-    if (widget.booking != null) {
-      _booking = widget.booking!;
-      _isLoading = false;
-    } else {
-      // TODO: Fetch booking details from API using widget.bookingId
-      await Future.delayed(const Duration(seconds: 1));
-      // _booking = await bookingController.getBookingDetails(widget.bookingId);
-      _isLoading = false;
-    }
+    await Future.delayed(const Duration(seconds: 1));
 
     _initializeTabs();
     setState(() {});
   }
 
-  void _initializeTabs() {
+  Future<void> _initializeTabs() async {
+    _booking = await bookingController.getBookingById(widget.bookingId);
+
     _tabs = [
       {
         'icon': Icons.info_outline,
         'label': 'Basic Info',
-        'widget': BookingBasicInfoTab(booking: _booking),
+        'widget': BookingBasicInfoTab(booking: _booking ?? BookingModel()),
       },
       {
-        'icon': Icons.person_outline,
-        'label': 'Customer',
-        'widget': BookingCustomerTab(booking: _booking),
+        'icon': Icons.person,
+        'label': 'Details',
+        'widget': BookingCustomerTab(booking: _booking ?? BookingModel()),
       },
       {
         'icon': Icons.attach_money,
         'label': 'Pricing',
-        'widget': BookingPricingTab(booking: _booking),
+        'widget': BookingPricingTab(booking: _booking ?? BookingModel()),
       },
       {
         'icon': Icons.payment,
         'label': 'Payments',
-        'widget': BookingPaymentsTab(booking: _booking),
+        'widget': BookingPaymentsTab(booking: _booking ?? BookingModel()),
       },
       {
-        'icon': Icons.details,
-        'label': 'Details',
-        'widget': BookingDocumentsTab(booking: _booking),
+        'icon': Icons.description_outlined,
+        'label': 'Documents',
+        'widget': BookingDocumentsTab(booking: _booking ?? BookingModel()),
       },
     ];
+    _isLoading = false;
+    setState(() {});
   }
 
   @override
@@ -126,15 +125,14 @@ class _BookingProfileScreenState extends State<BookingDetailsScreen> {
                         CustomText(
                           text: _isLoading
                               ? 'Loading...'
-                              : _booking.productName ?? 'Booking Details',
+                              : _booking?.productName ?? 'Booking Details',
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                         if (!_isLoading)
                           CustomText(
-                            text:
-                                'Booking ID: ${_booking.id ?? widget.bookingId}',
+                            text: 'Booking ID: ${_booking?.bookingId ?? ''}',
                             fontSize: 12,
                             color: Colors.white70,
                           ),
@@ -153,7 +151,7 @@ class _BookingProfileScreenState extends State<BookingDetailsScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: CustomText(
-                        text: _booking.status ?? 'Active',
+                        text: _booking?.status ?? 'PROCESSING',
                         fontSize: 12,
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -171,16 +169,46 @@ class _BookingProfileScreenState extends State<BookingDetailsScreen> {
                       color: Colors.white,
                       size: 24,
                     ),
-                    onSelected: (value) {
-                      if (value == 'edit_booking') {
-                        // TODO: Navigate to edit booking screen
+                    onSelected: (value) async {
+                      if (value == 'add_transaction') {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AddTransactionPopup(
+                            bookingId: _booking?.id ?? '',
+                          ),
+                        );
+                      } else if (value == 'edit_booking') {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AddEditBookingScreen(
+                            bookingToEdit: _booking,
+                            isViewMode: true,
+                          ),
+                        );
                       } else if (value == 'download_invoice') {
-                        // TODO: Download invoice
-                      } else if (value == 'send_email') {
-                        // TODO: Send email to customer
+                        await BookingInvoiceHelper.previewInvoice(
+                            context, _booking ?? BookingModel());
+                        // await BookingInvoiceHelper.downloadInvoice(
+                        //     context, _booking ?? BookingModel());
                       }
+
+                      //  else if (value == 'send_email') {
+                      //   await BookingInvoiceHelper.shareInvoice(
+                      //       context, _booking ?? BookingModel());
+                      // }
                     },
                     itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'add_transaction',
+                        child: Row(
+                          children: [
+                            Icon(Icons.payment,
+                                size: 20, color: AppColors.darkVioletColour),
+                            SizedBox(width: 10),
+                            CustomText(text: 'Add Transaction'),
+                          ],
+                        ),
+                      ),
                       const PopupMenuItem(
                         value: 'edit_booking',
                         child: Row(
@@ -203,18 +231,19 @@ class _BookingProfileScreenState extends State<BookingDetailsScreen> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
-                        value: 'send_email',
-                        child: Row(
-                          children: [
-                            Icon(Icons.email,
-                                size: 20,
-                                color: AppColors.orangeSecondaryColor),
-                            SizedBox(width: 10),
-                            CustomText(text: 'Send Email'),
-                          ],
-                        ),
-                      ),
+
+                      // const PopupMenuItem(
+                      //   value: 'send_email',
+                      //   child: Row(
+                      //     children: [
+                      //       Icon(Icons.email,
+                      //           size: 20,
+                      //           color: AppColors.orangeSecondaryColor),
+                      //       SizedBox(width: 10),
+                      //       CustomText(text: 'Send Email'),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                   IconButton(

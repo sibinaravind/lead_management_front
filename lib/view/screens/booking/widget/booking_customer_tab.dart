@@ -29,7 +29,7 @@ class BookingCustomerTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionTitle(
-                  title: "Customer Information",
+                  title: "Booking Details",
                   icon: Icons.person,
                 ),
                 const SizedBox(height: 12),
@@ -43,30 +43,69 @@ class BookingCustomerTab extends StatelessWidget {
                   child: ResponsiveGrid(
                     columns: columns,
                     children: [
-                      InfoItem(
-                        label: 'Customer ID',
-                        value: booking.customerId ?? 'N/A',
-                        icon: Icons.badge,
-                        iconColor: AppColors.blueSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Customer Name',
-                        value: booking.customerName ?? 'N/A',
-                        icon: Icons.person_outline,
-                        iconColor: AppColors.greenSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Phone Number',
-                        value: booking.customerPhone ?? 'N/A',
-                        icon: Icons.phone,
-                        iconColor: AppColors.orangeSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Address',
-                        value: booking.customerAddress ?? 'N/A',
-                        icon: Icons.location_on,
-                        iconColor: AppColors.redSecondaryColor,
-                      ),
+                      if (booking.courseName != null &&
+                          (booking.courseName?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Course Name',
+                          value: booking.courseName ?? 'N/A',
+                          icon: Icons.school,
+                          iconColor: AppColors.blueSecondaryColor,
+                        ),
+                      if (booking.institutionName != null &&
+                          (booking.institutionName?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Institution Name',
+                          value: booking.institutionName ?? 'N/A',
+                          icon: Icons.account_balance,
+                          iconColor: AppColors.greenSecondaryColor,
+                        ),
+                      if (booking.countryApplyingFor != null &&
+                          (booking.countryApplyingFor?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Country Applying For',
+                          value: booking.countryApplyingFor ?? 'N/A',
+                          icon: Icons.flag,
+                          iconColor: AppColors.viloletSecondaryColor,
+                        ),
+                      if (booking.visaType != null &&
+                          (booking.visaType?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Visa Type',
+                          value: booking.visaType ?? 'N/A',
+                          icon: Icons.assignment_turned_in,
+                          iconColor: AppColors.blueSecondaryColor,
+                        ),
+                      if (booking.origin != null &&
+                          (booking.origin?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Origin',
+                          value: booking.origin ?? 'N/A',
+                          icon: Icons.flight_takeoff,
+                          iconColor: AppColors.greenSecondaryColor,
+                        ),
+                      if (booking.destination != null &&
+                          (booking.destination?.isNotEmpty ?? false))
+                        InfoItem(
+                          label: 'Destination',
+                          value: booking.destination ?? 'N/A',
+                          icon: Icons.flight_land,
+                          iconColor: AppColors.orangeSecondaryColor,
+                        ),
+                      if (booking.returnDate != null)
+                        InfoItem(
+                          label: 'Return Date',
+                          value: _formatDate(booking.returnDate),
+                          icon: Icons.calendar_today,
+                          iconColor: AppColors.redSecondaryColor,
+                        ),
+                      if (booking.noOfTravellers != null &&
+                          (booking.noOfTravellers ?? 0) > 0)
+                        InfoItem(
+                          label: 'Number of Travellers',
+                          value: booking.noOfTravellers?.toString() ?? 'N/A',
+                          icon: Icons.people,
+                          iconColor: AppColors.viloletSecondaryColor,
+                        ),
                     ],
                   ),
                 ),
@@ -148,18 +187,37 @@ class BookingCustomerTab extends StatelessWidget {
                                 icon: Icons.cake,
                                 iconColor: AppColors.viloletSecondaryColor,
                               ),
+                              if (applicant.address != null &&
+                                  applicant.address!.isNotEmpty) ...[
+                                InfoItem(
+                                  label: 'Address',
+                                  value: applicant.address!,
+                                  icon: Icons.location_on,
+                                  iconColor: AppColors.redSecondaryColor,
+                                ),
+                              ],
+                              if (applicant.idCardType != null &&
+                                  (applicant.idCardType?.isNotEmpty ??
+                                      false)) ...[
+                                InfoItem(
+                                  label: ' ID Card Type',
+                                  value: applicant.idCardType ?? 'N/A',
+                                  icon: Icons.badge,
+                                  iconColor: AppColors.offWhiteColour,
+                                ),
+                              ],
+                              if (applicant.idCardNumber != null &&
+                                  (applicant.idCardNumber?.isNotEmpty ??
+                                      false)) ...[
+                                InfoItem(
+                                  label: ' ID Card Number',
+                                  value: applicant.idCardNumber ?? 'N/A',
+                                  icon: Icons.confirmation_number,
+                                  iconColor: AppColors.blueSecondaryColor,
+                                ),
+                              ],
                             ],
                           ),
-                          if (applicant.address != null &&
-                              applicant.address!.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            InfoItem(
-                              label: 'Address',
-                              value: applicant.address!,
-                              icon: Icons.location_on,
-                              iconColor: AppColors.redSecondaryColor,
-                            ),
-                          ],
                         ],
                       ),
                     );

@@ -26,14 +26,12 @@ class BookingPaymentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate payment summary
-    double totalScheduled = 0;
+    double totalPaid = 0;
     if (booking.paymentSchedule != null) {
       for (var payment in booking.paymentSchedule!) {
-        totalScheduled += payment.amount ?? 0;
+        totalPaid += payment.paidAmount ?? 0;
       }
     }
-    final initialPaid = booking.transaction?.paidAmount ?? 0;
-    final totalPaid = totalScheduled + initialPaid;
     final grandTotal = booking.grandTotal ?? 0;
     final balance = grandTotal - totalPaid;
 
@@ -79,10 +77,6 @@ class BookingPaymentsTab extends StatelessWidget {
                       const Divider(height: 24),
                       _buildSummaryRow('Grand Total', grandTotal, isBold: true),
                       const SizedBox(height: 8),
-                      _buildSummaryRow('Initial Paid', initialPaid),
-                      const SizedBox(height: 8),
-                      _buildSummaryRow('Scheduled Payments', totalScheduled),
-                      const SizedBox(height: 8),
                       _buildSummaryRow('Total Paid', totalPaid,
                           color: Colors.blue.shade700),
                       const Divider(height: 16),
@@ -94,52 +88,7 @@ class BookingPaymentsTab extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 24),
-
                 // Initial Transaction
-                const SectionTitle(
-                  title: "Initial Transaction",
-                  icon: Icons.receipt_outlined,
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade300, width: 0.8),
-                  ),
-                  child: ResponsiveGrid(
-                    columns: columns,
-                    children: [
-                      InfoItem(
-                        label: 'Paid Amount',
-                        value: _formatCurrency(booking.transaction?.paidAmount),
-                        icon: Icons.payment,
-                        iconColor: AppColors.greenSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Payment Method',
-                        value: booking.transaction?.paymentMethod ?? 'N/A',
-                        icon: Icons.credit_card,
-                        iconColor: AppColors.blueSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Transaction ID',
-                        value: booking.transaction?.transactionId ?? 'N/A',
-                        icon: Icons.confirmation_number,
-                        iconColor: AppColors.viloletSecondaryColor,
-                      ),
-                      InfoItem(
-                        label: 'Remarks',
-                        value: booking.transaction?.remarks ?? 'N/A',
-                        icon: Icons.notes,
-                        iconColor: AppColors.orangeSecondaryColor,
-                      ),
-                    ],
-                  ),
-                ),
 
                 const SizedBox(height: 24),
 
@@ -154,8 +103,7 @@ class BookingPaymentsTab extends StatelessWidget {
                   ...booking.paymentSchedule!.asMap().entries.map((entry) {
                     final index = entry.key;
                     final payment = entry.value;
-                    final isPaid =
-                        false; // TODO: Implement payment status logic
+                    final isPaid = (payment.status?.toLowerCase() == 'paid');
 
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
@@ -222,7 +170,7 @@ class BookingPaymentsTab extends StatelessWidget {
                                   ),
                                 ),
                                 child: Text(
-                                  isPaid ? 'PAID' : 'PENDING',
+                                  payment.status?.toUpperCase() ?? 'PENDING',
                                   style: TextStyle(
                                     color: isPaid
                                         ? Colors.green.shade700
@@ -253,6 +201,18 @@ class BookingPaymentsTab extends StatelessWidget {
                               InfoItem(
                                 label: 'Amount',
                                 value: _formatCurrency(payment.amount),
+                                icon: Icons.monetization_on,
+                                iconColor: AppColors.greenSecondaryColor,
+                              ),
+                              InfoItem(
+                                label: 'Paid Amount',
+                                value: _formatCurrency(payment.paidAmount),
+                                icon: Icons.monetization_on,
+                                iconColor: AppColors.greenSecondaryColor,
+                              ),
+                              InfoItem(
+                                label: 'Paid At',
+                                value: payment.paidAt ?? 'N/A',
                                 icon: Icons.monetization_on,
                                 iconColor: AppColors.greenSecondaryColor,
                               ),

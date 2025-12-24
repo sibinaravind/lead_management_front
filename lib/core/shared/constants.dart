@@ -94,6 +94,6 @@ class Constant {
   String bookingUpcoming = 'booking/upcomingBookings?';
   String bookingPaymentScheduleList = 'booking/getPaymentScheduleList?';
   String bookingEdit = 'booking/editBooking';
-  String insertDocuments = 'booking/updateDocuments/';
-  String deleteDocuments = 'booking/deleteDocument/';
+  String insertBookingDocuments = 'booking/updateDocuments/';
+  String deleteBookingDocuments = 'booking/deleteDocument/';
 }

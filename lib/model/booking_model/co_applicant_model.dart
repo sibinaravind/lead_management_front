@@ -4,6 +4,8 @@ class CoApplicantModel {
   DateTime? dob;
   String? address;
   String? email;
+  String? idCardType;
+  String? idCardNumber;
 
   CoApplicantModel({
     this.name,
@@ -11,6 +13,8 @@ class CoApplicantModel {
     this.dob,
     this.address,
     this.email,
+    this.idCardType,
+    this.idCardNumber,
   });
 
   factory CoApplicantModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class CoApplicantModel {
       dob: json['dob'] != null ? DateTime.tryParse(json['dob']) : null,
       address: json['address'],
       email: json['email'],
+      idCardType: json['idCardType'],
+      idCardNumber: json['idCardNumber'],
     );
   }
 
@@ -30,6 +36,8 @@ class CoApplicantModel {
       'dob': dob?.toIso8601String(),
       'address': address,
       'email': email,
+      'idCardType': idCardType,
+      'idCardNumber': idCardNumber,
     };
   }
 }

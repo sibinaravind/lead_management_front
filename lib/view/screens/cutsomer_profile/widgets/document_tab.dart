@@ -477,13 +477,13 @@ class DocumentsTab extends StatelessWidget {
                                   .value
                                   .documents
                                   ?.map(
-                                      (doc) => _buildDocumentCard(doc, context))
+                                      (doc) => buildDocumentCard(doc, context))
                                   .toList() ??
                               [].asMap().entries.map((entry) {
                                 final isLast = entry.key ==
                                     (lead.documents
                                                     ?.map((doc) =>
-                                                        _buildDocumentCard(
+                                                        buildDocumentCard(
                                                             doc, context))
                                                     .toList() ??
                                                 [])
@@ -509,7 +509,7 @@ class DocumentsTab extends StatelessWidget {
   }
 }
 
-Widget _buildDocumentCard(DocumentRecordModel document, BuildContext context) {
+Widget buildDocumentCard(DocumentRecordModel document, BuildContext context) {
   return Container(
     margin: const EdgeInsets.only(bottom: 12),
     padding: const EdgeInsets.all(16),

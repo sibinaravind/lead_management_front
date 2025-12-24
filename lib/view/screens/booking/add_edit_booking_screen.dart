@@ -20,36 +20,30 @@ import '../../../controller/config/config_controller.dart';
 import '../../../model/booking_model/booking_applied_offer_model.dart';
 import '../../../model/booking_model/payment_shedule_model.dart';
 
-class BookingScreen extends StatefulWidget {
-  final ProductModel product;
+class AddEditBookingScreen extends StatefulWidget {
+  final ProductModel? product;
   final BookingModel? bookingToEdit;
   final bool isViewMode;
 
-  const BookingScreen({
+  const AddEditBookingScreen({
     super.key,
-    required this.product,
+    this.product,
     this.bookingToEdit,
     this.isViewMode = false,
   });
 
   @override
-  State<BookingScreen> createState() => _BookingScreenState();
+  State<AddEditBookingScreen> createState() => _AddEditBookingScreenState();
 }
 
-class _BookingScreenState extends State<BookingScreen>
+class _AddEditBookingScreenState extends State<AddEditBookingScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final leadController = Get.find<LeadController>();
   final bookingController = Get.find<BookingController>();
   final _formKey = GlobalKey<FormState>();
 
-  static const List<Tab> _tabs = [
-    Tab(text: 'Basic Info', icon: Icon(Icons.info_outline, size: 16)),
-    Tab(text: 'Pricing', icon: Icon(Icons.attach_money, size: 16)),
-    Tab(text: 'Payments', icon: Icon(Icons.payment, size: 16)),
-    Tab(text: 'Details', icon: Icon(Icons.details, size: 16)),
-    Tab(text: 'Summary', icon: Icon(Icons.summarize, size: 16)),
-  ];
+  static List<Tab> _tabs = [];
 
   // Customer Search
   final _customerSearchController = TextEditingController();
@@ -87,19 +81,31 @@ class _BookingScreenState extends State<BookingScreen>
   final List<PaymentScheduleHelper> _paymentSchedules = [];
   final List<CoApplicantHelper> _coApplicants = [];
   String? _selectedStatus = "PROCESSING";
-
+  String? customerAppId;
+  String? productAppId;
+  int _previousTabIndex = 0;
   BookingModel _booking = BookingModel();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
+
     _initializeBooking();
+    _tabs = [
+      Tab(text: 'Basic Info', icon: Icon(Icons.info_outline, size: 16)),
+      Tab(text: 'Pricing', icon: Icon(Icons.attach_money, size: 16)),
+      if (!widget.isViewMode)
+        Tab(text: 'Payments', icon: Icon(Icons.payment, size: 16)),
+      Tab(text: 'Details', icon: Icon(Icons.details, size: 16)),
+      Tab(text: 'Summary', icon: Icon(Icons.summarize, size: 16)),
+    ];
+    _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
   void _selectCustomer(LeadModel customer) {
     setState(() {
       _selectedCustomerId = customer.id;
+      customerAppId = customer.clientId;
       _customerNameController.text = customer.name ?? '';
       _customerPhoneController.text = customer.phone ?? '';
       _customerAddressController.text = customer.address ?? '';
@@ -120,11 +126,12 @@ class _BookingScreenState extends State<BookingScreen>
 
   BookingModel _createNewBooking() {
     return BookingModel(
-      productId: widget.product.id ?? '',
-      productName: widget.product.name ?? '',
+      productAppId: widget.product?.productId ?? '',
+      productId: widget.product?.id ?? '',
+      productName: widget.product?.name ?? '',
       bookingDate: DateTime.now(),
       expectedClosureDate: DateTime.now().add(const Duration(days: 20)),
-      totalAmount: widget.product.sellingPrice ?? 0,
+      totalAmount: widget.product?.sellingPrice ?? 0,
       gstPercentage: 18,
       cgstPercentage: 9,
       sgstPercentage: 9,
@@ -151,14 +158,14 @@ class _BookingScreenState extends State<BookingScreen>
     _loanAmountController.text = '';
     _paidAmountController.text = '';
 
-    _institutionNameController.text = widget.product.institutionName ?? '';
-    _countryController.text = widget.product.country ?? '';
-    _visaTypeController.text = widget.product.visaType ?? '';
-    _destinationController.text = widget.product.location ?? '';
+    _institutionNameController.text = widget.product?.institutionName ?? '';
+    _countryController.text = widget.product?.country ?? '';
+    _visaTypeController.text = widget.product?.visaType ?? '';
+    _destinationController.text = widget.product?.location ?? '';
 
     // Add default price components from product
-    if (widget.product.priceComponents != null) {
-      for (var component in widget.product.priceComponents!) {
+    if (widget.product?.priceComponents != null) {
+      for (var component in widget.product!.priceComponents!) {
         _priceComponents.add(PriceComponentHelper(
           title: component.title,
           amount: component.amount,
@@ -172,6 +179,8 @@ class _BookingScreenState extends State<BookingScreen>
 
   void _populateFromBooking() {
     _selectedCustomerId = _booking.customerId;
+    customerAppId = _booking.customerAppId;
+    productAppId = _booking.productAppId;
     _customerNameController.text = _booking.customerName ?? '';
     _customerPhoneController.text = _booking.customerPhone ?? '';
     _customerAddressController.text = _booking.customerAddress ?? '';
@@ -431,13 +440,15 @@ class _BookingScreenState extends State<BookingScreen>
 
     final bookingData = BookingModel(
       customerId: _selectedCustomerId ?? "",
+      customerAppId: customerAppId,
       customerName: _customerNameController.text,
       customerPhone: _customerPhoneController.text,
       officerId: Get.find<LoginController>().officer.value?.id ?? "",
       customerAddress: _customerAddressController.text,
       status: _selectedStatus ?? "",
-      productId: widget.product.id,
-      productName: widget.product.name,
+      productId: widget.product?.id,
+      productAppId: widget.product?.productId,
+      productName: widget.product?.name,
       bookingDate: formatStringToDate(_bookingDateController.text),
       // expectedClosureDate:
       //     formatStringToDate(_expectedClosureDateController.text),
@@ -478,9 +489,12 @@ class _BookingScreenState extends State<BookingScreen>
           dob: formatStringToDate(applicant.dobController.text),
           address: applicant.addressController.text,
           email: applicant.emailController.text,
+          idCardNumber: applicant.idCardNumberController.text,
+          idCardType: applicant.idCardTypeController.text,
         );
       }).toList(),
     );
+
     if (widget.isViewMode) {
       showLoaderDialog(context);
       await bookingController.updateBooking(
@@ -543,11 +557,11 @@ class _BookingScreenState extends State<BookingScreen>
                         ),
                       ),
                       const SizedBox(width: 12),
-                      IconButton(
-                        icon: const Icon(Icons.person_add, color: Colors.blue),
-                        tooltip: 'Create New Customer',
-                        onPressed: () {},
-                      ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.person_add, color: Colors.blue),
+                      //   tooltip: 'Create New Customer',
+                      //   onPressed: () {},
+                      // ),
                     ],
                   ),
                   Obx(() {
@@ -579,10 +593,11 @@ class _BookingScreenState extends State<BookingScreen>
                                         color: AppColors.primaryColor,
                                       ),
                                     ),
-                                    title: Text(
-                                      customer.name ?? '',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500),
+                                    title: CustomText(
+                                      text:
+                                          ' ${customer.name ?? ''} (${customer.clientId ?? ''})',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
                                     ),
                                     subtitle: Text(customer.phone ?? ''),
                                     trailing: const Icon(Icons.chevron_right,
@@ -602,13 +617,35 @@ class _BookingScreenState extends State<BookingScreen>
                   const Divider(),
                   const SizedBox(height: 16),
                 ],
+                if (customerAppId != null) ...[
+                  Row(children: [
+                    CustomText(
+                        text: 'Customer ID : ${customerAppId ?? ''}',
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        color: AppColors.darkOrangeColour),
+                    if (!widget.isViewMode)
+                      IconButton(
+                          icon: const Icon(Icons.close, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              _selectedCustomerId = null;
+                              customerAppId = null;
+                              _customerNameController.clear();
+                              _customerPhoneController.clear();
+                              _customerAddressController.clear();
+                            });
+                          }),
+                  ]),
+                ],
+                SizedBox(height: 10),
 
                 // Customer form fields
                 CustomTextFormField(
                   controller: _customerNameController,
                   label: 'Customer Name',
                   isRequired: true,
-                  readOnly: widget.isViewMode,
+                  readOnly: widget.isViewMode || _selectedCustomerId != null,
                   prefixIcon: Icons.person_outline,
                 ),
                 const SizedBox(height: 16),
@@ -618,7 +655,6 @@ class _BookingScreenState extends State<BookingScreen>
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   isRequired: true,
-                  readOnly: widget.isViewMode,
                   prefixIcon: Icons.phone_outlined,
                 ),
                 const SizedBox(height: 16),
@@ -626,7 +662,6 @@ class _BookingScreenState extends State<BookingScreen>
                   controller: _customerAddressController,
                   label: 'Customer Address',
                   maxLines: 2,
-                  readOnly: widget.isViewMode,
                   prefixIcon: Icons.location_on_outlined,
                 ),
               ],
@@ -642,6 +677,9 @@ class _BookingScreenState extends State<BookingScreen>
                   controller: _bookingDateController,
                   label: 'Booking For ',
                   isRequired: true,
+                  initialDate: DateTime.now(),
+                  focusDate: DateTime.now(),
+                  endDate: DateTime.now().add(const Duration(days: 365 * 5)),
                 ),
                 const SizedBox(height: 16),
                 CustomDropdownField(
@@ -670,7 +708,6 @@ class _BookingScreenState extends State<BookingScreen>
                   controller: _notesController,
                   label: 'Notes / Special Requirements',
                   maxLines: 3,
-                  readOnly: widget.isViewMode,
                   prefixIcon: Icons.note_outlined,
                 ),
               ],
@@ -687,17 +724,19 @@ class _BookingScreenState extends State<BookingScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Price Components', Icons.receipt_long_outlined),
-          const SizedBox(height: 16),
-          ..._priceComponents.asMap().entries.map((entry) {
-            return _buildPriceComponentCard(entry.key, entry.value);
-          }).toList(),
           if (!widget.isViewMode) ...[
-            _buildAddButton('Add Price Component', _addPriceComponent),
+            _buildSectionTitle('Price Components', Icons.receipt_long_outlined),
+            const SizedBox(height: 16),
+            ..._priceComponents.asMap().entries.map((entry) {
+              return _buildPriceComponentCard(entry.key, entry.value);
+            }).toList(),
+            if (!widget.isViewMode) ...[
+              _buildAddButton('Add Price Component', _addPriceComponent),
+              const SizedBox(height: 24),
+            ],
+            _buildFinancialSummaryCard(),
             const SizedBox(height: 24),
           ],
-          _buildFinancialSummaryCard(),
-          const SizedBox(height: 24),
           _buildSectionTitle(
               'Loan Information', Icons.account_balance_outlined),
           const SizedBox(height: 16),
@@ -706,7 +745,6 @@ class _BookingScreenState extends State<BookingScreen>
               controller: _loanAmountController,
               label: 'Loan Amount Requested (₹)',
               keyboardType: TextInputType.number,
-              readOnly: widget.isViewMode,
             ),
           ),
         ],
@@ -752,18 +790,52 @@ class _BookingScreenState extends State<BookingScreen>
                   keyboardType: TextInputType.number,
                   readOnly: widget.isViewMode,
                   onChanged: (_) => setState(() {}),
+                  validator: (value) {
+                    // If any of the transaction fields are filled, all must be filled
+                    final paid = _paidAmountController.text.trim();
+                    final method = _paymentMethodController.text.trim();
+                    final txnId = _transactionIdController.text.trim();
+                    if (paid.isNotEmpty ||
+                        method.isNotEmpty ||
+                        txnId.isNotEmpty) {
+                      if (paid.isEmpty) return 'Enter paid amount';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 CustomTextFormField(
                   controller: _paymentMethodController,
                   label: 'Payment Method',
                   readOnly: widget.isViewMode,
+                  validator: (value) {
+                    final paid = _paidAmountController.text.trim();
+                    final method = _paymentMethodController.text.trim();
+                    final txnId = _transactionIdController.text.trim();
+                    if (paid.isNotEmpty ||
+                        method.isNotEmpty ||
+                        txnId.isNotEmpty) {
+                      if (method.isEmpty) return 'Enter payment method';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 CustomTextFormField(
                   controller: _transactionIdController,
                   label: 'Transaction ID',
                   readOnly: widget.isViewMode,
+                  validator: (value) {
+                    final paid = _paidAmountController.text.trim();
+                    final method = _paymentMethodController.text.trim();
+                    final txnId = _transactionIdController.text.trim();
+                    if (paid.isNotEmpty ||
+                        method.isNotEmpty ||
+                        txnId.isNotEmpty) {
+                      if (txnId.isEmpty) return 'Enter transaction ID';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 CustomTextFormField(
@@ -796,32 +868,26 @@ class _BookingScreenState extends State<BookingScreen>
                   CustomTextFormField(
                     controller: _courseNameController,
                     label: 'Course Name',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomTextFormField(
                     controller: _institutionNameController,
                     label: 'Institution Name',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomTextFormField(
                     controller: _countryController,
                     label: 'Country Applying For',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomTextFormField(
                     controller: _visaTypeController,
                     label: 'Visa Type',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomTextFormField(
                     controller: _originController,
                     label: 'Origin',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomTextFormField(
                     controller: _destinationController,
                     label: 'Destination',
-                    readOnly: widget.isViewMode,
                   ),
                   CustomDateField(
                     controller: _returnDateController,
@@ -835,7 +901,6 @@ class _BookingScreenState extends State<BookingScreen>
                     controller: _noOfTravellersController,
                     label: 'Number of Travellers',
                     keyboardType: TextInputType.number,
-                    readOnly: widget.isViewMode,
                   ),
                 ],
               );
@@ -847,8 +912,7 @@ class _BookingScreenState extends State<BookingScreen>
           ..._coApplicants.asMap().entries.map((entry) {
             return _buildCoApplicantCard(entry.key, entry.value);
           }).toList(),
-          if (!widget.isViewMode)
-            _buildAddButton('Add Co-Applicant', _addCoApplicant),
+          _buildAddButton('Add Co-Applicant', _addCoApplicant),
         ],
       ),
     );
@@ -876,11 +940,19 @@ class _BookingScreenState extends State<BookingScreen>
             title: 'Product Details',
             icon: Icons.shopping_bag,
             children: [
-              _buildInfoRow('Product', widget.product.name ?? ''),
-              _buildInfoRow('Code', widget.product.code ?? ''),
-              _buildInfoRow('Booking Date', _bookingDateController.text),
               _buildInfoRow(
-                  'Closure Date', _expectedClosureDateController.text),
+                  'Product',
+                  widget.product?.name ??
+                      widget.bookingToEdit?.productName ??
+                      ''),
+              _buildInfoRow(
+                  'productId',
+                  widget.product?.productId ??
+                      widget.bookingToEdit?.productId ??
+                      ''),
+              _buildInfoRow('Booking Date', _bookingDateController.text),
+              // _buildInfoRow(
+              //     'Closure Date', _expectedClosureDateController.text),
             ],
           ),
           const SizedBox(height: 16),
@@ -952,14 +1024,29 @@ class _BookingScreenState extends State<BookingScreen>
             CustomTextFormField(
               controller: component.titleController,
               label: 'Component Title',
+              isRequired: true,
               readOnly: widget.isViewMode,
             ),
             const SizedBox(height: 12),
             CustomTextFormField(
               controller: component.amountController,
               label: 'Amount (₹)',
+              isRequired: true,
               keyboardType: TextInputType.number,
               readOnly: widget.isViewMode,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter amount';
+                }
+                final parsed = double.tryParse(value);
+                if (parsed == null) {
+                  return 'Please enter a valid number';
+                }
+                if (parsed <= 0) {
+                  return 'Amount must be greater than 0';
+                }
+                return null;
+              },
               onChanged: (_) => _recalculate(),
             ),
             const SizedBox(height: 12),
@@ -1133,6 +1220,7 @@ class _BookingScreenState extends State<BookingScreen>
           CustomTextFormField(
             controller: offer.offerNameController,
             label: 'Offer Name',
+            isRequired: true,
             readOnly: widget.isViewMode,
           ),
           const SizedBox(height: 8),
@@ -1182,7 +1270,27 @@ class _BookingScreenState extends State<BookingScreen>
                       : 'Discount Amount (₹)',
                   keyboardType: TextInputType.number,
                   readOnly: widget.isViewMode,
+                  isRequired: true,
                   onChanged: (_) => _recalculate(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter discount';
+                    }
+                    final parsed = double.tryParse(value);
+                    if (parsed == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (parsed < 0) {
+                      return 'Discount cannot be negative';
+                    }
+                    if (offer.isPercentage && parsed > 100) {
+                      return 'Percentage cannot exceed 100%';
+                    }
+                    if (!offer.isPercentage && parsed > componentAmount) {
+                      return 'Discount cannot exceed component amount';
+                    }
+                    return null;
+                  },
                 ),
               ),
             ],
@@ -1273,7 +1381,8 @@ class _BookingScreenState extends State<BookingScreen>
             const SizedBox(height: 12),
             CustomTextFormField(
               controller: schedule.paymentTypeController,
-              label: 'Payment Type',
+              label: 'Payment Name',
+              isRequired: true,
               readOnly: widget.isViewMode,
             ),
             const SizedBox(height: 12),
@@ -1296,6 +1405,21 @@ class _BookingScreenState extends State<BookingScreen>
                     label: 'Amount (₹)',
                     keyboardType: TextInputType.number,
                     readOnly: widget.isViewMode,
+                    isRequired: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter amount';
+                      }
+                      final parsed = double.tryParse(value);
+                      if (parsed == null) {
+                        return 'Please enter a valid number';
+                      }
+                      if (parsed <= 0) {
+                        return 'Amount must be greater than 0';
+                      }
+                      return null;
+                    },
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
@@ -1345,19 +1469,19 @@ class _BookingScreenState extends State<BookingScreen>
                     CustomTextFormField(
                       controller: applicant.nameController,
                       label: 'Full Name',
-                      readOnly: widget.isViewMode,
+                      isRequired: true,
                     ),
                     CustomTextFormField(
                       controller: applicant.phoneController,
                       label: 'Phone Number',
                       keyboardType: TextInputType.phone,
-                      readOnly: widget.isViewMode,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
                     CustomTextFormField(
                       controller: applicant.emailController,
                       label: 'Email',
                       keyboardType: TextInputType.emailAddress,
-                      readOnly: widget.isViewMode,
+                      isEmail: true,
                     ),
                     CustomDateField(
                       controller: applicant.dobController,
@@ -1366,10 +1490,17 @@ class _BookingScreenState extends State<BookingScreen>
                       isRequired: false,
                     ),
                     CustomTextFormField(
+                      controller: applicant.idCardTypeController,
+                      label: 'ID Card Type',
+                    ),
+                    CustomTextFormField(
+                      controller: applicant.idCardNumberController,
+                      label: 'ID Card Number',
+                    ),
+                    CustomTextFormField(
                       controller: applicant.addressController,
                       label: 'Address',
                       maxLines: 2,
-                      readOnly: widget.isViewMode,
                     ),
                   ],
                 );
@@ -1417,7 +1548,9 @@ class _BookingScreenState extends State<BookingScreen>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    widget.product.name ?? 'Product',
+                    widget.product?.name ??
+                        widget.bookingToEdit?.productName ??
+                        'Product',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -1426,7 +1559,9 @@ class _BookingScreenState extends State<BookingScreen>
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    widget.product.code ?? '',
+                    widget.product?.productId ??
+                        widget.bookingToEdit?.productAppId ??
+                        '',
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 12,
@@ -1435,21 +1570,23 @@ class _BookingScreenState extends State<BookingScreen>
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '₹${widget.product.sellingPrice ?? 0}',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+            if (!widget.isViewMode)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '₹${widget.product?.sellingPrice ?? 0}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -1816,7 +1953,9 @@ class _BookingScreenState extends State<BookingScreen>
                                 ),
                               ),
                               Text(
-                                widget.product.name ?? 'Product Booking',
+                                widget.product?.name ??
+                                    widget.bookingToEdit?.productName ??
+                                    'Product Booking',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.white70,
@@ -1847,7 +1986,17 @@ class _BookingScreenState extends State<BookingScreen>
                       ),
                     ),
                     child: TabBar(
-                      onTap: (value) => setState(() {}),
+                      onTap: (value) {
+                        if (!_formKey.currentState!.validate()) {
+                          Future.microtask(() {
+                            _tabController.animateTo(_previousTabIndex);
+                          });
+                          return;
+                        }
+                        // ✅ Validation success → allow tab switch
+                        _previousTabIndex = value;
+                        setState(() {});
+                      },
                       controller: _tabController,
                       isScrollable: true,
                       labelColor: AppColors.primaryColor,
@@ -1864,10 +2013,11 @@ class _BookingScreenState extends State<BookingScreen>
                       key: _formKey,
                       child: TabBarView(
                         controller: _tabController,
+                        physics: const NeverScrollableScrollPhysics(),
                         children: [
                           _buildBasicInfoTab(),
                           _buildPricingTab(),
-                          _buildPaymentsTab(),
+                          if (!widget.isViewMode) _buildPaymentsTab(),
                           _buildDetailsTab(),
                           _buildSummaryTab(),
                         ],
@@ -1911,6 +2061,12 @@ class _BookingScreenState extends State<BookingScreen>
                               icon: Icons.arrow_forward_rounded,
                               textColor: Colors.grey.shade700,
                               onPressed: () {
+                                if (!_formKey.currentState!.validate()) {
+                                  Future.microtask(() {
+                                    _tabController.animateTo(_previousTabIndex);
+                                  });
+                                  return;
+                                }
                                 _tabController.animateTo(
                                   _tabController.index + 1,
                                 );
@@ -2073,6 +2229,8 @@ class CoApplicantHelper {
   final TextEditingController emailController;
   final TextEditingController dobController;
   final TextEditingController addressController;
+  final TextEditingController idCardTypeController;
+  final TextEditingController idCardNumberController;
 
   CoApplicantHelper({
     String? name,
@@ -2080,12 +2238,17 @@ class CoApplicantHelper {
     String? email,
     DateTime? dob,
     String? address,
+    String? idCardType,
+    String? idCardNumber,
   })  : nameController = TextEditingController(text: name ?? ''),
         phoneController = TextEditingController(text: phone ?? ''),
         emailController = TextEditingController(text: email ?? ''),
         dobController = TextEditingController(
             text: dob != null ? DateFormat('yyyy-MM-dd').format(dob) : ''),
-        addressController = TextEditingController(text: address ?? '');
+        addressController = TextEditingController(text: address ?? ''),
+        idCardTypeController = TextEditingController(text: idCardType ?? ''),
+        idCardNumberController =
+            TextEditingController(text: idCardNumber ?? '');
 
   void dispose() {
     nameController.dispose();
@@ -2093,6 +2256,8 @@ class CoApplicantHelper {
     emailController.dispose();
     dobController.dispose();
     addressController.dispose();
+    idCardTypeController.dispose();
+    idCardNumberController.dispose();
   }
 }
 

@@ -138,6 +138,31 @@ class BookingPricingTab extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (booking.loanAmountRequested != null &&
+                    booking.loanAmountRequested! > 0) ...[
+                  const SizedBox(height: 24),
+                  const SectionTitle(
+                    title: "Loan Information",
+                    icon: Icons.account_balance,
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border:
+                          Border.all(color: Colors.grey.shade300, width: 0.8),
+                    ),
+                    child: InfoItem(
+                      label: 'Loan Amount Requested',
+                      value:
+                          '₹${booking.loanAmountRequested?.toStringAsFixed(2) ?? '0.00'}',
+                      icon: Icons.monetization_on,
+                      iconColor: AppColors.orangeSecondaryColor,
+                    ),
+                  ),
+                ],
                 if (booking.priceComponents != null &&
                     booking.priceComponents!.isNotEmpty) ...[
                   const SizedBox(height: 24),
@@ -294,31 +319,6 @@ class BookingPricingTab extends StatelessWidget {
                       ),
                     );
                   }).toList(),
-                ],
-                if (booking.loanAmountRequested != null &&
-                    booking.loanAmountRequested! > 0) ...[
-                  const SizedBox(height: 24),
-                  const SectionTitle(
-                    title: "Loan Information",
-                    icon: Icons.account_balance,
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border:
-                          Border.all(color: Colors.grey.shade300, width: 0.8),
-                    ),
-                    child: InfoItem(
-                      label: 'Loan Amount Requested',
-                      value:
-                          '₹${booking.loanAmountRequested?.toStringAsFixed(2) ?? '0.00'}',
-                      icon: Icons.monetization_on,
-                      iconColor: AppColors.orangeSecondaryColor,
-                    ),
-                  ),
                 ],
               ],
             );
